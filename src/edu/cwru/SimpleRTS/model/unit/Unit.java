@@ -1,5 +1,12 @@
 package edu.cwru.SimpleRTS.model.unit;
 
-public class Unit {
+import edu.cwru.SimpleRTS.model.Target;
 
+public abstract class Unit {
+	protected Target target;
+	protected int currentHealth;
+	protected int player;
+	protected int xPosition;
+	protected int yPosition;
+	protected UnitTemplate template;
 }
