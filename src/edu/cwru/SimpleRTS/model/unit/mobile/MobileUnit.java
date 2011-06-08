@@ -4,6 +4,6 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 
 public class MobileUnit extends Unit {
 	public MobileUnit(MobileUnitTemplate template) {
-		this.template = template;
+		super(template);
 	}
 }
