@@ -8,10 +8,12 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 public class BuildingTemplate extends UnitTemplate {
 	private List<String> produces;
+	public BuildingTemplate() {
+		produces = new ArrayList<String>();
+	}
 	@Override
 	public Unit produceInstance() {
 		Building building = new Building(this);
-		produces = new ArrayList<String>();
 		return building;
 	}
 	public void addProductionItem(String item) {

@@ -31,9 +31,9 @@ public final class UnitTypeLoader {
 			if("Mobile".equals(templateType))
 				list.add(handleMobileUnit(template,key));
 			else if("Building".equals(templateType))
-				list.add(handleBuilding(template));
+				list.add(handleBuilding(template,key));
 			else if("Upgrade".equals(templateType))
-				list.add(handleUpgrade(template));
+				list.add(handleUpgrade(template,key));
 		}
 		return list;
 	}
@@ -54,24 +54,27 @@ public final class UnitTypeLoader {
 		template.setWoodCost(obj.getInt("WoodCost"));
 		return template;
 	}
-	private static Template handleBuilding(JSONObject obj) throws JSONException {
+	private static Template handleBuilding(JSONObject obj, String name) throws JSONException {
 		BuildingTemplate template = new BuildingTemplate();
 		template.setArmor(obj.getInt("Armor"));
 		template.setAttack(obj.getInt("Attack"));
 		template.setBaseHealth(obj.getInt("HitPoints"));
-		template.setFoodCost(obj.getInt("FoodCost"));
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setPiercingAttack(obj.getInt("Piercing"));
 		template.setRange(obj.getInt("Range"));
 		template.setSightRange(obj.getInt("SightRange"));
 		template.setTimeCost(obj.getInt("TimeCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
-		JSONArray produces = obj.getJSONArray("Produces");
-		for(int i = 0; i < produces.length(); i++)
-			template.addProductionItem(produces.getString(i));		
+		if(obj.has("Produces"))
+		{
+			JSONArray produces = obj.getJSONArray("Produces");
+			for(int i = 0; i < produces.length(); i++)
+				template.addProductionItem(produces.getString(i));		
+		}
+		template.setUnitName(name);
 		return template;
 	}
-	private static Template handleUpgrade(JSONObject obj) {
+	private static Template handleUpgrade(JSONObject obj, String name) {
 		return null;
 	}
 }

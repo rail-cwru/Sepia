@@ -93,4 +93,13 @@ public abstract class Unit {
 			return false;
 		return ((Unit)o).ID == ID;
 	}
+
+	@Override
+	public String toString() {
+		return "Unit [ID=" + ID + ", unitType=" + template.getUnitName() 
+				+ ", target=" + target + ", currentHealth="
+				+ currentHealth + ", player=" + player + ", xPosition="
+				+ xPosition + ", yPosition=" + yPosition +  "]";
+	}
+	
 }
