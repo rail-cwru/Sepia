@@ -3,7 +3,7 @@ package edu.cwru.SimpleRTS.model.unit;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Target;
 
-public abstract class Unit {
+public abstract class Unit implements Target{
 	private static int nextID = 0;
 	
 	protected Target target;
