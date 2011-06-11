@@ -51,38 +51,6 @@ public abstract class Unit implements Target{
 	public UnitTemplate getTemplate() {
 		return template;
 	}
-	public void move(Direction direction) {
-		switch(direction) {
-			case NORTH:
-				yPosition--;
-				break;
-			case NORTHEAST:
-				yPosition--;
-				xPosition++;
-				break;
-			case EAST:
-				xPosition++;
-				break;
-			case SOUTHEAST:
-				yPosition++;
-				xPosition++;
-				break;
-			case SOUTH:
-				yPosition++;
-				break;
-			case SOUTHWEST:
-				yPosition++;
-				xPosition--;
-				break;
-			case WEST:
-				xPosition--;
-				break;
-			case NORTHWEST:
-				yPosition--;
-				xPosition--;
-				break;				
-		}
-	}
 	@Override
 	public int hashCode() {
 		return ID;

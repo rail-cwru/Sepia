@@ -7,12 +7,14 @@ public class Resource {
 	private Type type;
 	private int xPosition;
 	private int yPosition;
+	private int amountRemaining;
 	private final int ID;
 	
-	public Resource(Type type, int xPosition, int yPosition) {
+	public Resource(Type type, int xPosition, int yPosition, int initialAmount) {
 		this.type = type;
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
+		this.amountRemaining = initialAmount;
 		ID = nextID++;
 	}
 	
@@ -31,7 +33,12 @@ public class Resource {
 	public int getID() {
 		return ID;
 	}
-
+	public int getAmountRemaining() {
+		return amountRemaining;
+	}
+	public void setAmountRemaining(int amount) {
+		amountRemaining = amount;
+	}
 	@Override
 	public int hashCode() {
 		return ID;
