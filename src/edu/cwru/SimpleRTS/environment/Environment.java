@@ -3,6 +3,7 @@ import edu.cwru.SimpleRTS.agent.*;
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.model.*;
 import java.util.concurrent.*;
+import java.io.*;
 public abstract class Environment
 {
 	public abstract void requestTermination();
@@ -16,17 +17,23 @@ public abstract class Environment
 		this.connectedagents = connectedagents;
 		this.model = model;
 	}
-	public final void initializeEpisode()
+	/**
+	 * A basic save
+	 * Feel free to change the argument
+	 * @param w
+	 * @return
+	 */
+	public abstract boolean saveState(BufferedWriter w);
+	/**
+	 * A basic load
+	 * Feel free to change the argument
+	 * @param r
+	 * @return
+	 */
+	public abstract boolean loadState(BufferedReader r);
+	public final State getState()
 	{
-		
-	}
-	public final void doStep(Action[] action)
-	{
-		//TODO: update the model with an action
-	}
-	public final void terminateEpisode()
-	{
-		//TODO: 
+		return model.getState();
 	}
 	public final void runEpisode()
 	{

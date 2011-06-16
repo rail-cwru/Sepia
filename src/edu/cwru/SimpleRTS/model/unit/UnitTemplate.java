@@ -8,7 +8,9 @@ import edu.cwru.SimpleRTS.model.Template;
  * @author Tim
  *
  */
-public abstract class UnitTemplate implements Template<Unit>{
+public abstract class UnitTemplate implements Template<Unit>
+{
+	
 	protected String unitName;
 	protected int baseHealth;
 	protected int attack;
@@ -20,6 +22,11 @@ public abstract class UnitTemplate implements Template<Unit>{
 	protected int goldCost;
 	protected int woodCost;
 	protected int foodCost;
+	
+	public UnitTemplate()
+	{
+		
+	}
 	@Override
 	public abstract Unit produceInstance();
 	public String getUnitName() {

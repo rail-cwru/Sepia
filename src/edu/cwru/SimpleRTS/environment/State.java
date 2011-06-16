@@ -45,4 +45,12 @@ public class State {
 		}
 		return null;
 	}
+	/**
+	 * Provide a referenceless state for 
+	 * @return
+	 */
+	public ReferencelessState getStateData()
+	{
+		return new ReferencelessState();
+	}
 }
