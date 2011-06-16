@@ -2,8 +2,9 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Target;
+import edu.cwru.SimpleRTS.model.resource.Resource;
 
-public abstract class Unit implements Target{
+public class Unit implements Target{
 	private static int nextID = 0;
 	
 	protected Target target;
@@ -13,6 +14,9 @@ public abstract class Unit implements Target{
 	protected int xPosition;
 	protected int yPosition;
 	protected UnitTemplate template;
+	
+	protected Resource.Type cargoType;
+	protected int cargoAmount;
 	
 	protected Unit(UnitTemplate template) {
 		ID = nextID++;
@@ -51,6 +55,22 @@ public abstract class Unit implements Target{
 	public UnitTemplate getTemplate() {
 		return template;
 	}
+	public boolean canGather()
+	{
+		return template.canGather;
+	}
+	public boolean canBuild()
+	{
+		return template.canBuild;
+	}
+	public boolean canMove()
+	{
+		return template.canMove;
+	}
+	public boolean canAttack()
+	{
+		return template.canAttack();
+	}
 	@Override
 	public int hashCode() {
 		return ID;
@@ -70,4 +90,18 @@ public abstract class Unit implements Target{
 				+ xPosition + ", yPosition=" + yPosition +  "]";
 	}
 	
+	public boolean move(Direction direction) {
+		if (!template.canMove)
+			return false;
+		xPosition += direction.xComponent();
+		yPosition += direction.yComponent();
+		return true;
+	}
+	public boolean pickUpResource(Resource.Type type, int amount) {
+		if(!(template).canGather())
+			return false;
+		cargoType = type;
+		cargoAmount = amount;
+		return true;
+	}
 }

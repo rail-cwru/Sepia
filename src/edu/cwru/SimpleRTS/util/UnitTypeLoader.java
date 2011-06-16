@@ -7,8 +7,6 @@ import org.json.*;
 
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.model.unit.building.BuildingTemplate;
-import edu.cwru.SimpleRTS.model.unit.mobile.MobileUnitTemplate;
 
 public final class UnitTypeLoader {
 	private UnitTypeLoader(){}
@@ -28,20 +26,19 @@ public final class UnitTypeLoader {
 		{
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
-			if("Mobile".equals(templateType))
-				list.add(handleMobileUnit(template,key));
-			else if("Building".equals(templateType))
-				list.add(handleBuilding(template,key));
+			if("Unit".equals(templateType))
+				list.add(handleUnit(template,key));
 			else if("Upgrade".equals(templateType))
 				list.add(handleUpgrade(template,key));
 		}
 		return list;
 	}
-	private static Template handleMobileUnit(JSONObject obj, String name) throws JSONException {
-		MobileUnitTemplate template = new MobileUnitTemplate();
+	private static Template handleUnit(JSONObject obj, String name) throws JSONException {
+		UnitTemplate template = new UnitTemplate();
 		template.setArmor(obj.getInt("Armor"));
 		template.setAttack(obj.getInt("Attack"));
 		template.setBaseHealth(obj.getInt("HitPoints"));
+		template.setCanMove(obj.getBoolean("Mobile"));
 		template.setCanBuild(obj.getBoolean("Builder"));
 		template.setCanGather(obj.getBoolean("Gatherer"));
 		template.setFoodCost(obj.getInt("FoodCost"));
@@ -52,26 +49,12 @@ public final class UnitTypeLoader {
 		template.setTimeCost(obj.getInt("TimeCost"));
 		template.setUnitName(name);
 		template.setWoodCost(obj.getInt("WoodCost"));
-		return template;
-	}
-	private static Template handleBuilding(JSONObject obj, String name) throws JSONException {
-		BuildingTemplate template = new BuildingTemplate();
-		template.setArmor(obj.getInt("Armor"));
-		template.setAttack(obj.getInt("Attack"));
-		template.setBaseHealth(obj.getInt("HitPoints"));
-		template.setGoldCost(obj.getInt("GoldCost"));
-		template.setPiercingAttack(obj.getInt("Piercing"));
-		template.setRange(obj.getInt("Range"));
-		template.setSightRange(obj.getInt("SightRange"));
-		template.setTimeCost(obj.getInt("TimeCost"));
-		template.setWoodCost(obj.getInt("WoodCost"));
 		if(obj.has("Produces"))
 		{
 			JSONArray produces = obj.getJSONArray("Produces");
 			for(int i = 0; i < produces.length(); i++)
 				template.addProductionItem(produces.getString(i));		
 		}
-		template.setUnitName(name);
 		return template;
 	}
 	private static Template handleUpgrade(JSONObject obj, String name) {

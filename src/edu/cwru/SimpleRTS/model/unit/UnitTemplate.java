@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.model.unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.cwru.SimpleRTS.model.Template;
 /**
  * Contains information about default and invariant attributes of units. The class
@@ -8,9 +11,9 @@ import edu.cwru.SimpleRTS.model.Template;
  * @author Tim
  *
  */
-public abstract class UnitTemplate implements Template<Unit>
+public class UnitTemplate extends Template<Unit>
 {
-	
+	protected List<String> produces;
 	protected String unitName;
 	protected int baseHealth;
 	protected int attack;
@@ -22,13 +25,18 @@ public abstract class UnitTemplate implements Template<Unit>
 	protected int goldCost;
 	protected int woodCost;
 	protected int foodCost;
-	
+	protected boolean canGather;
+	protected boolean canBuild;
+	protected boolean canMove;
 	public UnitTemplate()
 	{
-		
+		produces = new ArrayList<String>();
 	}
 	@Override
-	public abstract Unit produceInstance();
+	public Unit produceInstance()
+	{
+		return new Unit(this);
+	}
 	public String getUnitName() {
 		return unitName;
 	}
@@ -97,5 +105,23 @@ public abstract class UnitTemplate implements Template<Unit>
 	}
 	public boolean canAttack() {
 		return attack > 0 || piercingAttack > 0;
+	}
+	public boolean canMove()
+	{
+		return canMove;
+	}
+	public void setCanMove(boolean canMove)
+	{
+		this.canMove = canMove;
+	}
+	public boolean canGather() { return canGather; }
+	public void setCanGather(boolean canGather) { this.canGather = canGather; } 
+	public boolean canBuild() { return canBuild; }
+	public void setCanBuild(boolean canBuild) { this.canBuild = canBuild; }
+	public void addProductionItem(String item) {
+		this.produces.add(item);
+	}
+	public List<String> getProduces() {
+		return produces;
 	}
 }

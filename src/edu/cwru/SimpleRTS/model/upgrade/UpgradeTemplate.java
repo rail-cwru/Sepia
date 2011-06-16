@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-public class UpgradeTemplate implements Template<Upgrade>
+public class UpgradeTemplate extends Template<Upgrade>
 {
 	private boolean isattackupgrade;
 	private UnitTemplate[] unittemplatesaffected;

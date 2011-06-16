@@ -1,16 +1,18 @@
 package edu.cwru.SimpleRTS.model;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.mobile.MobileUnit;
-import edu.cwru.SimpleRTS.model.unit.mobile.MobileUnitTemplate;
 import edu.cwru.SimpleRTS.util.Preferences;
 
 public class SimpleModel implements Model {
 	
 	private State state;
+	private HashMap<Unit, LinkedList<Action>> queuedPrimatives;
 	
 	@Override
 	public void createNewWorld() {
@@ -28,41 +30,40 @@ public class SimpleModel implements Model {
 	public void executeActions(Action[] action) {
 		for(Action a : action) 
 		{
-			PrimitiveAction primitive = null;
-			if(a instanceof CompoundAction)
-				primitive = ((CompoundAction)a).getNextAction();
-			else
-				primitive = (PrimitiveAction)a;
-			Unit u = a.getUnit();
+			Unit u = getUnitFromID(a.getActer());
 			int x = u.getxPosition();
 			int y = u.getyPosition();
-			int xPrime = 0;
-			int yPrime = 0;
-			if(primitive.getType() != PrimitiveActionType.UPGRADE)
+			switch(a.getType())
 			{
-				xPrime = x + primitive.getDirection().xComponent();
-				yPrime = y + primitive.getDirection().yComponent();
-			}
-			switch(primitive.getType())
-			{
-				case MOVE:
-					if(u instanceof MobileUnit && empty(xPrime,yPrime))
-						((MobileUnit)u).move(primitive.getDirection());
+				case PRIMATIVEMOVE:
+				{
+					if (u.canMove())
+					{
+						DirectedAction act = (DirectedAction)a;
+						int xPrime = x + act.getDirection().xComponent();
+						int yPrime = y + act.getDirection().yComponent();
+						if(empty(xPrime,yPrime))
+							u.move(act.getDirection());
+					}
 					break;
-				case GATHER:
-					if(!(u instanceof MobileUnit))
+				}
+				case PRIMATIVEGATHER:
+				{
+						if(u.canGather())
+						{
+							DirectedAction act = (DirectedAction)a;
+							int xPrime = x + act.getDirection().xComponent();
+							int yPrime = y + act.getDirection().yComponent();
+							Resource resource = state.resourceAt(xPrime, yPrime);
+							if(resource == null)
+								break;
+							int amountToExtract = Integer.parseInt(Preferences.getInstance().getPreference(resource.getType()+"GatherRate"));
+							amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
+							u.pickUpResource(resource.getType(), amountToExtract);
+							resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
+						}
 						break;
-					Resource resource = state.resourceAt(xPrime, yPrime);
-					if(resource == null)
-						break;
-					if(!((MobileUnitTemplate)((MobileUnit)u).getTemplate()).canGather())
-						break;
-					int amountToExtract = Integer.parseInt(Preferences.getInstance().getPreference(
-																	resource.getType()+"GatherRate"));
-					amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
-					((MobileUnit)u).pickUpResource(resource.getType(), amountToExtract);
-					resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
-					break;
+				}
 			}
 		}
 	}
