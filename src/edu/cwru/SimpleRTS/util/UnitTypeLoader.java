@@ -26,28 +26,27 @@ public final class UnitTypeLoader {
 		{
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
-			if("Unit".equals(templateType))
-				list.add(handleUnit(template,key));
-			else if("Upgrade".equals(templateType))
+			if("Upgrade".equals(templateType))
 				list.add(handleUpgrade(template,key));
+			else
+				list.add(handleUnit(template,key));
 		}
 		return list;
 	}
 	private static Template handleUnit(JSONObject obj, String name) throws JSONException {
 		UnitTemplate template = new UnitTemplate();
-		template.setArmor(obj.getInt("Armor"));
-		template.setAttack(obj.getInt("Attack"));
-		template.setBaseHealth(obj.getInt("HitPoints"));
 		template.setCanMove(obj.getBoolean("Mobile"));
 		template.setCanBuild(obj.getBoolean("Builder"));
 		template.setCanGather(obj.getBoolean("Gatherer"));
-		template.setFoodCost(obj.getInt("FoodCost"));
-		template.setGoldCost(obj.getInt("GoldCost"));
+		template.setBaseHealth(obj.getInt("HitPoints"));
+		template.setArmor(obj.getInt("Armor"));
+		template.setAttack(obj.getInt("Attack"));
 		template.setPiercingAttack(obj.getInt("Piercing"));
 		template.setRange(obj.getInt("Range"));
 		template.setSightRange(obj.getInt("SightRange"));
 		template.setTimeCost(obj.getInt("TimeCost"));
-		template.setUnitName(name);
+		template.setFoodCost(obj.getInt("FoodCost"));
+		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
 		if(obj.has("Produces"))
 		{

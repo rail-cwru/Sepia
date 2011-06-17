@@ -1,3 +1,4 @@
+
 package edu.cwru.SimpleRTS.action;
 
 import edu.cwru.SimpleRTS.model.Direction;

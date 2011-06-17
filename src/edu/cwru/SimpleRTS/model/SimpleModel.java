@@ -30,40 +30,43 @@ public class SimpleModel implements Model {
 	public void executeActions(Action[] action) {
 		for(Action a : action) 
 		{
-			Unit u = getUnitFromID(a.getActer());
+			Unit u = state.getUnit(a.getUnitId());
 			int x = u.getxPosition();
 			int y = u.getyPosition();
+			int xPrime = 0;
+			int yPrime = 0;
+			if(a instanceof DirectedAction)
+			{
+				Direction d = ((DirectedAction)a).getDirection();
+				xPrime = x + d.xComponent();
+				yPrime = y + d.yComponent();
+			}
+			else if(a instanceof LocatedAction)
+			{
+				xPrime = x + ((LocatedAction)a).getX();
+				yPrime = y + ((LocatedAction)a).getY();
+			}
 			switch(a.getType())
 			{
-				case PRIMATIVEMOVE:
-				{
-					if (u.canMove())
+				case PRIMITIVEMOVE:
+					if(u.canMove() && empty(xPrime,yPrime))
 					{
-						DirectedAction act = (DirectedAction)a;
-						int xPrime = x + act.getDirection().xComponent();
-						int yPrime = y + act.getDirection().yComponent();
-						if(empty(xPrime,yPrime))
-							u.move(act.getDirection());
+						u.setxPosition(xPrime);
+						u.setyPosition(yPrime);
 					}
 					break;
-				}
-				case PRIMATIVEGATHER:
-				{
-						if(u.canGather())
-						{
-							DirectedAction act = (DirectedAction)a;
-							int xPrime = x + act.getDirection().xComponent();
-							int yPrime = y + act.getDirection().yComponent();
-							Resource resource = state.resourceAt(xPrime, yPrime);
-							if(resource == null)
-								break;
-							int amountToExtract = Integer.parseInt(Preferences.getInstance().getPreference(resource.getType()+"GatherRate"));
-							amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
-							u.pickUpResource(resource.getType(), amountToExtract);
-							resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
-						}
+				case PRIMITIVEGATHER:
+					Resource resource = state.resourceAt(xPrime, yPrime);
+					if(resource == null)
 						break;
-				}
+					if(!u.canGather())
+						break;
+					int amountToExtract = Integer.parseInt(Preferences.getInstance().getPreference(
+																	resource.getType()+"GatherRate"));
+					amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
+					u.pickUpResource(resource.getType(), amountToExtract);
+					resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
+					break;
 			}
 		}
 	}
@@ -72,8 +75,7 @@ public class SimpleModel implements Model {
 	}
 	@Override
 	public State getState() {
-		// TODO Auto-generated method stub
-		return null;
+		return state;//TODO: make read-only version of the state
 	}
 
 }

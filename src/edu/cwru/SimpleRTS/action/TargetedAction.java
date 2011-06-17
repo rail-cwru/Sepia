@@ -1,7 +1,5 @@
 package edu.cwru.SimpleRTS.action;
 
-import edu.cwru.SimpleRTS.model.unit.Unit;
-
 public class TargetedAction extends Action
 {
 	int targetid;

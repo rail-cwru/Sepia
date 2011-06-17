@@ -11,9 +11,9 @@ import edu.cwru.SimpleRTS.model.Template;
  * @author Tim
  *
  */
+
 public class UnitTemplate extends Template<Unit>
 {
-	protected List<String> produces;
 	protected String unitName;
 	protected int baseHealth;
 	protected int attack;
@@ -28,14 +28,15 @@ public class UnitTemplate extends Template<Unit>
 	protected boolean canGather;
 	protected boolean canBuild;
 	protected boolean canMove;
+	private List<String> produces;
 	public UnitTemplate()
 	{
 		produces = new ArrayList<String>();
 	}
 	@Override
-	public Unit produceInstance()
-	{
-		return new Unit(this);
+	public Unit produceInstance() {
+		Unit unit = new Unit(this);
+		return unit;
 	}
 	public String getUnitName() {
 		return unitName;
@@ -106,18 +107,12 @@ public class UnitTemplate extends Template<Unit>
 	public boolean canAttack() {
 		return attack > 0 || piercingAttack > 0;
 	}
-	public boolean canMove()
-	{
-		return canMove;
-	}
-	public void setCanMove(boolean canMove)
-	{
-		this.canMove = canMove;
-	}
 	public boolean canGather() { return canGather; }
 	public void setCanGather(boolean canGather) { this.canGather = canGather; } 
 	public boolean canBuild() { return canBuild; }
 	public void setCanBuild(boolean canBuild) { this.canBuild = canBuild; }
+	public boolean canMove() { return canMove; }
+	public void setCanMove(boolean canMove) { this.canMove = canMove; }
 	public void addProductionItem(String item) {
 		this.produces.add(item);
 	}

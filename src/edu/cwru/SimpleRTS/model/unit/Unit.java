@@ -14,7 +14,6 @@ public class Unit implements Target{
 	protected int xPosition;
 	protected int yPosition;
 	protected UnitTemplate template;
-	
 	protected Resource.Type cargoType;
 	protected int cargoAmount;
 	
@@ -47,11 +46,15 @@ public class Unit implements Target{
 	public int getxPosition() {
 		return xPosition;
 	}
-
+	public void setxPosition(int x) {
+		xPosition = x;
+	}
 	public int getyPosition() {
 		return yPosition;
 	}
-
+	public void setyPosition(int y) {
+		yPosition = y;
+	}
 	public UnitTemplate getTemplate() {
 		return template;
 	}
@@ -81,21 +84,12 @@ public class Unit implements Target{
 			return false;
 		return ((Unit)o).ID == ID;
 	}
-
 	@Override
 	public String toString() {
 		return "Unit [ID=" + ID + ", unitType=" + template.getUnitName() 
 				+ ", target=" + target + ", currentHealth="
 				+ currentHealth + ", player=" + player + ", xPosition="
 				+ xPosition + ", yPosition=" + yPosition +  "]";
-	}
-	
-	public boolean move(Direction direction) {
-		if (!template.canMove)
-			return false;
-		xPosition += direction.xComponent();
-		yPosition += direction.yComponent();
-		return true;
 	}
 	public boolean pickUpResource(Resource.Type type, int amount) {
 		if(!(template).canGather())

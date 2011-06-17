@@ -22,6 +22,14 @@ public class State {
 	public List<Unit> getUnits() {
 		return Collections.unmodifiableList(allUnits);
 	}
+	public Unit getUnit(int unitId) {
+		for(Unit u : allUnits)
+		{
+			if(unitId == u.hashCode())
+				return u;
+		}
+		return null;
+	}
 	public List<Unit> getUnits(int agent) {
 		if(unitsByAgent.get(agent) == null)
 			return null;

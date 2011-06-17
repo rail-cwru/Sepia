@@ -1,18 +1,16 @@
 package edu.cwru.SimpleRTS.action;
 
-import edu.cwru.SimpleRTS.model.unit.Unit;
-
 public class Action {
 
 	protected ActionType type;
-	protected int acterid;
-	public Action(int acterid, ActionType type)
+	protected int unitId;
+	public Action(int untId, ActionType type)
 	{
 		this.type = type;
-		this.acterid = acterid;
+		this.unitId = untId;
 	}
-	public int getActer() {
-		return acterid;
+	public int getUnitId() {
+		return unitId;
 	}
 	public ActionType getType()
 	{
