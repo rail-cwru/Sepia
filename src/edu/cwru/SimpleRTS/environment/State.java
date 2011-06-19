@@ -7,7 +7,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.util.Pair;
 
 public class State {
-	private List<Unit> allUnits;
+	private List<Unit> allUnits;//TODO - find a more efficient way of storing these (maybe HashMap of IDs to units?)s
 	private Map<Integer,List<Unit>> unitsByAgent;
 	private List<Resource> resources;
 	private int turnNumber;
@@ -16,6 +16,7 @@ public class State {
 	public State() {
 		allUnits = new ArrayList<Unit>();
 		unitsByAgent = new HashMap<Integer,List<Unit>>();
+		resources = new ArrayList<Resource>();
 		currentResources = new HashMap<Pair<Integer,Resource.Type>,Integer>();
 	}
 	public int getTurnNumber() { return turnNumber; }
@@ -34,6 +35,17 @@ public class State {
 		if(unitsByAgent.get(agent) == null)
 			return null;
 		return Collections.unmodifiableList(unitsByAgent.get(agent));
+	}
+	public void addUnit(Unit u) {
+		int player = u.getPlayer();
+		if(!allUnits.contains(u))
+		{
+			List<Unit> list = unitsByAgent.get(player);
+			if(list == null)
+				unitsByAgent.put(player, list = new ArrayList<Unit>());
+			allUnits.add(u);
+			list.add(u);
+		}
 	}
 	public List<Resource> getResources() {
 		return Collections.unmodifiableList(resources);
@@ -60,5 +72,49 @@ public class State {
 	public ReferencelessState getStateData()
 	{
 		return new ReferencelessState();
+	}
+	
+	/**
+	 * Builder class that allows one-time access to a new state for construction purposes.
+	 * @author Tim
+	 *
+	 */
+	public static class StateBuilder {
+		private State state;
+		private boolean built;
+		public StateBuilder() {
+			state = new State();
+			built = false;
+		}
+		public void addUnit(Unit u) {
+			state.addUnit(u);
+		}
+		public void addResource(Resource r) {
+			if(!state.resources.contains(r))
+				state.resources.add(r);
+		}
+		public void setTurn(int turn) {
+			state.turnNumber = turn;
+		}
+		public void setResourceAmount(int player, Resource.Type resource, int amount) {
+			state.currentResources.put(new Pair<Integer,Resource.Type>(player,resource), amount);
+		}
+		/**
+		 * Completes construction of the state and returns a reference to the state.
+		 * Subsequent calls to this method will result in returning null.
+		 * @return - the state being built if this is the first call for this object, null otherwise
+		 */
+		public State build() {
+			if(!built)
+			{
+				built = true;
+				return state;
+			}
+			else
+				return null;
+		}
+		public boolean closed() {
+			return built;
+		}
 	}
 }

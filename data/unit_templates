@@ -1,6 +1,6 @@
 {
 	"Footman" : {
-		"TemplateType" : "Mobile",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 600,
 		"WoodCost" : 0,
@@ -11,11 +11,12 @@
 		"Piercing" : 3,
 		"Armor" : 2,
 		"Range" : 1,
+		"Mobile" : true,
 		"Gatherer" : false,
 		"Builder" : false
 	},
 	"Archer" : {
-		"TemplateType" : "Mobile",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 500,
 		"WoodCost" : 50,
@@ -26,11 +27,12 @@
 		"Piercing" : 6,
 		"Armor" : 0,
 		"Range" : 4,
+		"Mobile" : true,
 		"Gatherer" : false,
 		"Builder" : false
 	},
 	"Peasant" : {
-		"TemplateType" : "Mobile",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 400,
 		"WoodCost" : 0,
@@ -41,11 +43,12 @@
 		"Piercing" : 2,
 		"Armor" : 0,
 		"Range" : 1,
+		"Mobile" : true,
 		"Gatherer" : true,
 		"Builder" : true
 	},
 	"Knight" : {
-		"TemplateType" : "Mobile",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 800,
 		"WoodCost" : 100,
@@ -56,11 +59,12 @@
 		"Piercing" : 4,
 		"Armor" : 4,
 		"Range" : 1,
+		"Mobile" : true,
 		"Gatherer" : false,
 		"Builder" : false
 	},
 	"TownHall" : {
-		"TemplateType" : "Building",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 1200,
 		"WoodCost" : 800,
@@ -76,7 +80,7 @@
 		"Produces" : ["Peasant"]
 	},
 	"Farm" : {
-		"TemplateType" : "Building",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 500,
 		"WoodCost" : 250,
@@ -89,7 +93,7 @@
 		"FoodGiven" : 5
 	},
 	"Barracks" : {
-		"TemplateType" : "Building",
+		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 700,
 		"WoodCost" : 450,

@@ -14,12 +14,16 @@ public class SimpleModel implements Model {
 	private State state;
 	private HashMap<Unit, LinkedList<Action>> queuedPrimatives;
 	
+	public SimpleModel(State init) {
+		state = init;
+	}
+	
 	@Override
 	public void createNewWorld() {
 		// TODO Auto-generated method stub
 
 	}
-
+	
 	@Override
 	public boolean isTerminated() {
 		// TODO Auto-generated method stub

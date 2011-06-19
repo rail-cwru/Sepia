@@ -1,10 +1,9 @@
 package edu.cwru.SimpleRTS.model.unit;
 
-import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 
-public class Unit implements Target{
+public class Unit implements Target {
 	private static int nextID = 0;
 	
 	protected Target target;
@@ -86,10 +85,11 @@ public class Unit implements Target{
 	}
 	@Override
 	public String toString() {
-		return "Unit [ID=" + ID + ", unitType=" + template.getUnitName() 
-				+ ", target=" + target + ", currentHealth="
+		return "Unit [target=" + target + ", ID=" + ID + ", currentHealth="
 				+ currentHealth + ", player=" + player + ", xPosition="
-				+ xPosition + ", yPosition=" + yPosition +  "]";
+				+ xPosition + ", yPosition=" + yPosition + ", template="
+				+ template + ", cargoType=" + cargoType + ", cargoAmount="
+				+ cargoAmount + "]";
 	}
 	public boolean pickUpResource(Resource.Type type, int amount) {
 		if(!(template).canGather())
