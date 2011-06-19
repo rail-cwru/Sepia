@@ -7,7 +7,7 @@ import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.util.Preferences;
+import edu.cwru.SimpleRTS.util.Configuration;
 
 public class SimpleModel implements Model {
 	
@@ -61,7 +61,7 @@ public class SimpleModel implements Model {
 						break;
 					if(!u.canGather())
 						break;
-					int amountToExtract = Integer.parseInt(Preferences.getInstance().getPreference(
+					int amountToExtract = Integer.parseInt(Configuration.getInstance().get(
 																	resource.getType()+"GatherRate"));
 					amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
 					u.pickUpResource(resource.getType(), amountToExtract);

@@ -11,19 +11,19 @@ import java.util.Set;
  * @author Tim
  *
  */
-public final class Preferences {
-	private static Preferences instance;	
-	public static Preferences getInstance() {
+public final class Configuration {
+	private static Configuration instance;	
+	public static Configuration getInstance() {
 		if(instance == null)
-			instance = new Preferences();
+			instance = new Configuration();
 		return instance;
 	}
 	
 	private File file;
-	private HashMap<String,String> preferences;
+	private HashMap<String,String> settings;
 	
-	private Preferences() {
-		preferences = new HashMap<String,String>();
+	private Configuration() {
+		settings = new HashMap<String,String>();
 	}
 	/**
 	 * Attempts to load a set of preferences from a file.
@@ -40,7 +40,7 @@ public final class Preferences {
 				String line = in.nextLine();
 				String[] parts = line.split("=",2);
 				if(parts.length == 2)
-					preferences.put(parts[0], parts[1]);
+					settings.put(parts[0], parts[1]);
 			}
 			in.close();
 		}
@@ -55,11 +55,11 @@ public final class Preferences {
 		try
 		{
 			PrintWriter out = new PrintWriter(file);
-			for(String key : preferences.keySet())
+			for(String key : settings.keySet())
 			{
 				out.print(key);
 				out.print("=");
-				out.println(preferences.get(key));
+				out.println(settings.get(key));
 			}
 			out.close();
 		}
@@ -81,8 +81,8 @@ public final class Preferences {
 	 * @param key - the name of the preference
 	 * @return the value of the preference or null
 	 */
-	public String getPreference(String key) {
-		return preferences.get(key);
+	public String get(String key) {
+		return settings.get(key);
 	}
 	/**
 	 * Registers or overwrites a preference.
@@ -90,14 +90,14 @@ public final class Preferences {
 	 * @param value - the value of the preference
 	 * @return the previous value of the preference if it was overwritten, or null otherwise
 	 */
-	public String putPreference(String key, String value) {
-		return preferences.put(key, value);
+	public String put(String key, String value) {
+		return settings.put(key, value);
 	}
 	/**
 	 * Returns a read-only view of the names of all registered preferences.
 	 * @return
 	 */
-	public Set<String> existingPreferences() {
-		return Collections.unmodifiableSet(preferences.keySet());
+	public Set<String> keySet() {
+		return Collections.unmodifiableSet(settings.keySet());
 	}
 }

@@ -4,7 +4,6 @@ import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.model.*;
 import java.util.concurrent.*;
 import java.io.*;
-import edu.cwru.SimpleRTS.environment.configuration.Configuration;
 public abstract class Environment
 {
 	public abstract void requestTermination();
@@ -13,12 +12,10 @@ public abstract class Environment
 	
 	private Agent[] connectedagents;
 	private Model model;
-	private Configuration configuration;
-	public Environment(Agent[] connectedagents, Model model, Configuration configuration)
+	public Environment(Agent[] connectedagents, Model model)
 	{
 		this.connectedagents = connectedagents;
 		this.model = model;
-		this.configuration = configuration;
 	}
 	/**
 	 * A basic save
