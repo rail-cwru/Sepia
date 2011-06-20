@@ -1,21 +1,19 @@
 package edu.cwru.SimpleRTS.model.resource;
 
+import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 
-public class Resource {
-	private static int nextID = 0;
+public class Resource extends Target {
 	private Type type;
 	private int xPosition;
 	private int yPosition;
 	private int amountRemaining;
-	private final int ID;
 	
 	public Resource(Type type, int xPosition, int yPosition, int initialAmount) {
 		this.type = type;
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
 		this.amountRemaining = initialAmount;
-		ID = nextID++;
 	}
 	
 	public Type getType() {

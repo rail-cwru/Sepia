@@ -3,11 +3,9 @@ package edu.cwru.SimpleRTS.model.unit;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 
-public class Unit implements Target {
-	private static int nextID = 0;
+public class Unit extends Target {
 	
 	protected Target target;
-	protected final int ID;
 	protected int currentHealth;
 	protected int player;
 	protected int xPosition;
@@ -17,7 +15,7 @@ public class Unit implements Target {
 	protected int cargoAmount;
 	
 	protected Unit(UnitTemplate template) {
-		ID = nextID++;
+		
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
 	}
@@ -56,6 +54,14 @@ public class Unit implements Target {
 	}
 	public UnitTemplate getTemplate() {
 		return template;
+	}
+	public void takeDamage(int amount)
+	{
+		currentHealth -= amount;
+		if (currentHealth < 0)
+			currentHealth = 0;
+		if (currentHealth > template.baseHealth)
+			currentHealth = template.baseHealth;
 	}
 	public boolean canGather()
 	{

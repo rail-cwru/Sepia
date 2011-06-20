@@ -1,18 +1,20 @@
 package edu.cwru.SimpleRTS.environment;
 
+import java.io.Serializable;
 import java.util.*;
 
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.util.Pair;
 
-public class State {
+public class State implements Serializable{
 	private List<Unit> allUnits;//TODO - find a more efficient way of storing these (maybe HashMap of IDs to units?)s
 	private Map<Integer,List<Unit>> unitsByAgent;
 	private List<Resource> resources;
 	private int turnNumber;
 	private Map<Pair<Integer,Resource.Type>,Integer> currentResources;
-	
+	private int xextent;
+	private int yextent;
 	public State() {
 		allUnits = new ArrayList<Unit>();
 		unitsByAgent = new HashMap<Integer,List<Unit>>();
@@ -30,6 +32,10 @@ public class State {
 				return u;
 		}
 		return null;
+	}
+	public void setSize(int x, int y) {
+		xextent = x;
+		yextent = y;
 	}
 	public List<Unit> getUnits(int agent) {
 		if(unitsByAgent.get(agent) == null)
@@ -51,11 +57,16 @@ public class State {
 		return Collections.unmodifiableList(resources);
 	}
 	public Unit unitAt(int x, int y) {
+		//This could probably be replaced by a 2D boolean array, but then you would need to ensure that things can't move without changing that array 
 		for(Unit u : allUnits) {
 			if(u.getxPosition() == x && u.getyPosition() == y)
 				return u;
 		}
 		return null;
+	}
+	public boolean inBounds(int x, int y)
+	{
+		return x>=0 && y>=0 && x<xextent && y<yextent; 
 	}
 	public Resource resourceAt(int x, int y) {
 		for(Resource r : resources)
@@ -88,6 +99,9 @@ public class State {
 		}
 		public void addUnit(Unit u) {
 			state.addUnit(u);
+		}
+		public void setSize(int x, int y) {
+			state.setSize(x, y);
 		}
 		public void addResource(Resource r) {
 			if(!state.resources.contains(r))

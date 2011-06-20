@@ -33,6 +33,7 @@ public class GameUnitTest {
 		State.StateBuilder builder = new StateBuilder();
 		int x = 0;
 		int y = 0;
+		builder.setSize(30,30);
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
@@ -44,13 +45,14 @@ public class GameUnitTest {
 			y += 5;
 			builder.addUnit(u);
 		}
-		model = new SimpleModel(builder.build());
+		model = new SimpleModel(builder.build(), 5336);
 	}
 	@Test
 	public void test1() {
 		List<Unit> allUnits = model.getState().getUnits();
 		DirectedAction a = new DirectedAction(1, ActionType.PRIMITIVEMOVE, Direction.SOUTHEAST);
-		model.executeActions(new Action[]{a});
+		model.setActions(new Action[]{a});
+		model.executeStep();
 		Unit u = model.getState().getUnit(1);
 		assertEquals("Unit was not in expected row!",6,u.getxPosition());
 		assertEquals("Unit was not in expected column!",6,u.getyPosition());

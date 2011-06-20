@@ -12,4 +12,9 @@ public class TargetedAction extends Action
 	{
 		return targetid;
 	}
+	@Override
+	public String toString()
+	{
+		return super.toString() + ", At Unit " + targetid;
+	}
 }

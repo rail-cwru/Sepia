@@ -1,9 +1,15 @@
 package edu.cwru.SimpleRTS.model;
 /**
- * An empty interface that signifies that an implementing class can be the direct object of an action.
+ * An class that signifies that an extending class can be the direct object of an action
+ * This requires that they all share an ID scheme
  * @author Tim
  *
  */
-public interface Target {
-
+public class Target {
+	protected static int nextID = 0;
+	protected int ID;
+	public Target()
+	{
+		ID = nextID++;
+	}
 }

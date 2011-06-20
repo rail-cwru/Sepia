@@ -65,7 +65,8 @@ public abstract class Environment
 				}
 				actions[i] = connectedagents[i].getAction();
 			}
-			model.executeActions(actions);
+			model.setActions(actions);
+			model.executeStep();
 		}
 		for (int i = 0; i<connectedagents.length;i++)
 		{

@@ -43,8 +43,10 @@ public final class UnitTypeLoader {
 			template.setCanGather(obj.getBoolean("Gatherer"));
 		template.setBaseHealth(obj.getInt("HitPoints"));
 		template.setArmor(obj.getInt("Armor"));
-		if(obj.has("Attack"))
-			template.setAttack(obj.getInt("Attack"));
+		if(obj.has("BasicAttackLow"))
+			template.setBasicAttackLow(obj.getInt("BasicAttackLow"));
+		if(obj.has("BasicAttackDiff"))
+			template.setBasicAttackDiff(obj.getInt("BasicAttackDiff"));
 		if(obj.has("Piercing"))
 			template.setPiercingAttack(obj.getInt("Piercing"));
 		if(obj.has("Range"))

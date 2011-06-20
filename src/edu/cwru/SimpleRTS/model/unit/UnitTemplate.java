@@ -16,7 +16,8 @@ public class UnitTemplate extends Template<Unit>
 {
 	protected String unitName;
 	protected int baseHealth;
-	protected int attack;
+	protected int basicAttackLow;
+	protected int basicAttackDiff;
 	protected int piercingAttack;
 	protected int range;
 	protected int armor;
@@ -50,11 +51,17 @@ public class UnitTemplate extends Template<Unit>
 	public void setBaseHealth(int baseHealth) {
 		this.baseHealth = baseHealth;
 	}
-	public int getAttack() {
-		return attack;
+	public int getBasicAttackLow() {
+		return basicAttackLow;
 	}
-	public void setAttack(int attack) {
-		this.attack = attack;
+	public int getBasicAttackDiff() {
+		return basicAttackDiff;
+	}
+	public void setBasicAttackLow(int basicAttackLow) {
+		this.basicAttackLow = basicAttackLow;
+	}
+	public void setBasicAttackDiff(int basicAttackDiff) {
+		this.basicAttackDiff = basicAttackDiff;
 	}
 	public int getPiercingAttack() {
 		return piercingAttack;
@@ -105,7 +112,7 @@ public class UnitTemplate extends Template<Unit>
 		this.foodCost = foodCost;
 	}
 	public boolean canAttack() {
-		return attack > 0 || piercingAttack > 0;
+		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
 	}
 	public boolean canGather() { return canGather; }
 	public void setCanGather(boolean canGather) { this.canGather = canGather; } 
