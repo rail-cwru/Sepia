@@ -15,6 +15,7 @@ public class State implements Serializable{
 	private Map<Pair<Integer,Resource.Type>,Integer> currentResources;
 	private int xextent;
 	private int yextent;
+	private StateView view;
 	public State() {
 		allUnits = new ArrayList<Unit>();
 		unitsByAgent = new HashMap<Integer,List<Unit>>();
@@ -130,5 +131,36 @@ public class State implements Serializable{
 		public boolean closed() {
 			return built;
 		}
+	}
+	public StateView getView() {
+		if(view == null)
+			view = new StateView(this);
+		return view;
+	}
+	/**
+	 * Provides a read-only view of class values
+	 * @author Tim
+	 *
+	 */
+	public static class StateView {
+		private State state;
+		private StateView(State state) {
+			this.state = state;
+		}
+		public List<Integer> getAllUnitIds() {
+			List<Integer> i = new ArrayList<Integer>();
+			for(Unit u : state.allUnits)
+				i.add(u.hashCode());
+			return i;
+		}
+		public List<Integer> getUnitIds(int agent) {
+			List<Integer> i = new ArrayList<Integer>();
+			List<Unit> units = state.getUnits(agent);
+			if(units != null)
+				for(Unit u : units)
+					i.add(u.hashCode());
+			return i;
+		}
+		//TODO: Make a method that returns a UnitView once the UnitView class is created
 	}
 }
