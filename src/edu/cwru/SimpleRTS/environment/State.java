@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.environment;
 import java.io.Serializable;
 import java.util.*;
 
+import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.util.Pair;
@@ -15,6 +16,8 @@ public class State implements Serializable{
 	private Map<Pair<Integer,Resource.Type>,Integer> currentResources;
 	private int xextent;
 	private int yextent;
+	private Map<Integer, List<Template>> templatesByAgent;
+	private List<Template> allTemplates;
 	private StateView view;
 	public State() {
 		allUnits = new ArrayList<Unit>();
@@ -34,14 +37,27 @@ public class State implements Serializable{
 		}
 		return null;
 	}
+	public Template getTemplate(int templateId) {
+		for(Template t : allTemplates)
+		{
+			if(templateId == t.hashCode())
+				return t;
+		}
+		return null;
+	}
+	public List<Template> getTemplates(int player) {
+		if(templatesByAgent.get(player) == null)
+			return null;
+		return Collections.unmodifiableList(templatesByAgent.get(player));
+	}
 	public void setSize(int x, int y) {
 		xextent = x;
 		yextent = y;
 	}
-	public List<Unit> getUnits(int agent) {
-		if(unitsByAgent.get(agent) == null)
+	public List<Unit> getUnits(int player) {
+		if(unitsByAgent.get(player) == null)
 			return null;
-		return Collections.unmodifiableList(unitsByAgent.get(agent));
+		return Collections.unmodifiableList(unitsByAgent.get(player));
 	}
 	public void addUnit(Unit u) {
 		int player = u.getPlayer();
@@ -76,14 +92,6 @@ public class State implements Serializable{
 				return r;
 		}
 		return null;
-	}
-	/**
-	 * Provide a referenceless state for 
-	 * @return
-	 */
-	public ReferencelessState getStateData()
-	{
-		return new ReferencelessState();
 	}
 	
 	/**
@@ -161,6 +169,25 @@ public class State implements Serializable{
 					i.add(u.hashCode());
 			return i;
 		}
-		//TODO: Make a method that returns a UnitView once the UnitView class is created
+		public Unit.UnitView getUnit(int unitID) {
+			return state.getUnit(unitID).getView();
+		}
+		public List<Integer> getAllTemplateIds() {
+			List<Integer> i = new ArrayList<Integer>();
+			for(Template t : state.allTemplates)
+				i.add(t.hashCode());
+			return i;
+		}
+		public List<Integer> getTemplateIds(int agent) {
+			List<Integer> i = new ArrayList<Integer>();
+			List<Template> templates = state.getTemplates(agent);
+			if(templates != null)
+				for(Template t : templates)
+					i.add(t.hashCode());
+			return i;
+		}
+		public Template.TemplateView getTemplate(int templateID) {
+			return state.getTemplate(templateID).getView();
+		}
 	}
 }

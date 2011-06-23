@@ -22,10 +22,6 @@ public class UnitTemplate extends Template<Unit>
 	protected int range;
 	protected int armor;
 	protected int sightRange;
-	protected int timeCost;
-	protected int goldCost;
-	protected int woodCost;
-	protected int foodCost;
 	protected boolean canGather;
 	protected boolean canBuild;
 	protected boolean canMove;
@@ -87,30 +83,7 @@ public class UnitTemplate extends Template<Unit>
 	public void setSightRange(int sightRange) {
 		this.sightRange = sightRange;
 	}
-	public int getTimeCost() {
-		return timeCost;
-	}
-	public void setTimeCost(int timeCost) {
-		this.timeCost = timeCost;
-	}
-	public int getGoldCost() {
-		return goldCost;
-	}
-	public void setGoldCost(int goldCost) {
-		this.goldCost = goldCost;
-	}
-	public int getWoodCost() {
-		return woodCost;
-	}
-	public void setWoodCost(int woodCost) {
-		this.woodCost = woodCost;
-	}
-	public int getFoodCost() {
-		return foodCost;
-	}
-	public void setFoodCost(int foodCost) {
-		this.foodCost = foodCost;
-	}
+	
 	public boolean canAttack() {
 		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
 	}

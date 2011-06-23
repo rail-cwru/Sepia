@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.model;
 
+import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 
 /**
@@ -10,6 +11,11 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
  * @param <T>
  */
 public abstract class Template<T> {
+	private TemplateView<T> view;
+	protected int timeCost;
+	protected int goldCost;
+	protected int woodCost;
+	protected int foodCost;
 	/**
 	 * A factory method that produces copies of a "default" object
 	 * @return
@@ -19,6 +25,31 @@ public abstract class Template<T> {
 	public Template()
 	{
 		ID = nextID++;
+	}
+
+	public int getTimeCost() {
+		return timeCost;
+	}
+	public void setTimeCost(int timeCost) {
+		this.timeCost = timeCost;
+	}
+	public int getGoldCost() {
+		return goldCost;
+	}
+	public void setGoldCost(int goldCost) {
+		this.goldCost = goldCost;
+	}
+	public int getWoodCost() {
+		return woodCost;
+	}
+	public void setWoodCost(int woodCost) {
+		this.woodCost = woodCost;
+	}
+	public int getFoodCost() {
+		return foodCost;
+	}
+	public void setFoodCost(int foodCost) {
+		this.foodCost = foodCost;
 	}
 	protected int ID;
 	@Override
@@ -30,5 +61,28 @@ public abstract class Template<T> {
 		if(!(o instanceof Template))
 			return false;
 		return ((Template)o).ID == ID;
+	}
+	public TemplateView<T> getView() {
+		if(view == null)
+			view = new TemplateView(this);
+		return view;
+	}
+	public class TemplateView<T> {
+		Template<T> template;
+		public TemplateView(Template<T> template){
+			this.template = template;
+		}
+		public int getTimeCost() {
+			return template.timeCost;
+		}
+		public int getGoldCost() {
+			return template.goldCost;
+		}
+		public int getWoodCost() {
+			return template.woodCost;
+		}
+		public int getFoodCost() {
+			return template.foodCost;
+		}
 	}
 }

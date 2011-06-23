@@ -1,10 +1,12 @@
 package edu.cwru.SimpleRTS.model.unit;
 
+import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 
 public class Unit extends Target {
 	
+	private UnitView view;
 	protected Target target;
 	protected int currentHealth;
 	protected int player;
@@ -103,5 +105,27 @@ public class Unit extends Target {
 		cargoType = type;
 		cargoAmount = amount;
 		return true;
+	}
+	public UnitView getView() {
+		if(view == null)
+			view = new UnitView(this);
+		return view;
+	}
+	public class UnitView {
+		Unit unit;
+		public UnitView(Unit unit) {
+			this.unit = unit;
+		}
+		public int getHP() {
+			return unit.currentHealth;
+		}
+		public int getBasicAttack() {
+			return unit.template.basicAttackLow;
+		}
+		public int getPierceAttack() {
+			return unit.template.piercingAttack;
+		}
+		
+		
 	}
 }

@@ -48,12 +48,12 @@ public abstract class Environment
 				CountDownLatch latch = new CountDownLatch(1);
 				if (first)
 				{
-					connectedagents[i].acceptInitialState(model.getState(), latch);
+					connectedagents[i].acceptInitialState(model.getState().getView(), latch);
 					first = false;
 				}
 				else
 				{
-					connectedagents[i].acceptMiddleState(model.getState(), latch);
+					connectedagents[i].acceptMiddleState(model.getState().getView(), latch);
 				}
 				try
 				{
@@ -70,7 +70,7 @@ public abstract class Environment
 		}
 		for (int i = 0; i<connectedagents.length;i++)
 		{
-			connectedagents[i].terminalStep(model.getState());
+			connectedagents[i].terminalStep(model.getState().getView());
 		}
 		
 	}
