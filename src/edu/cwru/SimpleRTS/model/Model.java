@@ -3,6 +3,7 @@ import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.environment.*;
+import edu.cwru.SimpleRTS.environment.State.StateView;
 public interface Model extends Serializable{
 	void createNewWorld();
 	boolean isTerminated();
@@ -15,5 +16,5 @@ public interface Model extends Serializable{
 	 * Execute actions and do anything else that needs to be done
 	 */
 	void executeStep();
-	State getState();
+	StateView getState();
 }

@@ -172,8 +172,8 @@ public class SimpleModel implements Model {
 		return state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
 	}
 	@Override
-	public State getState() {
-		return state;//TODO: make read-only version of the state
+	public State.StateView getState() {
+		return state.getView();
 	}
 
 }
