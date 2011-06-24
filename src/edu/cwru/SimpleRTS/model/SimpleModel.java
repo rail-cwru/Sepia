@@ -19,17 +19,18 @@ public class SimpleModel implements Model {
 	private Random rand;
 	private State state;
 	private HashMap<Unit, ActionQueue> queuedPrimitives;
+	private SimplePlanner planner;
 	public SimpleModel(State init, int seed) {
 		state = init;
 		rand = new Random(seed);
+		planner = new SimplePlanner(init);
+		queuedPrimitives = new HashMap<Unit, ActionQueue>();
 	}
 	
 	
 	@Override
 	public void createNewWorld() {
 		// TODO Auto-generated method stub
-		queuedPrimitives = new HashMap<Unit, ActionQueue>();
-		
 
 	}
 	
@@ -43,13 +44,13 @@ public class SimpleModel implements Model {
 	public void setActions(Action[] action) {
 		for (Action a : action) {
 			//NOTE: maybe make this not recalculate actions automatically
-			Unit acter = state.getUnit(a.getUnitId());
+			Unit actor = state.getUnit(a.getUnitId());
 			ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
-			queuedPrimitives.put(acter, queue);
+			queuedPrimitives.put(actor, queue);
 		}
 	}
 	private LinkedList<Action> calculatePrimitives(Action action) {
-		LinkedList<Action> primitives;
+		LinkedList<Action> primitives = null;
 		//TODO: add additional actions to complete this
 		switch (action.getType()) {
 			case PRIMITIVEMOVE:
@@ -60,29 +61,17 @@ public class SimpleModel implements Model {
 			case PRIMITIVEUPGRADE:
 				primitives = new LinkedList<Action>();
 				primitives.add(action);
+				break;
 			case COMPOUNDMOVE:
 				Unit acter = state.getUnit(action.getUnitId());
 				LocatedAction a = (LocatedAction)action;
-				primitives = calculatePrimitiveMoves(acter.getxPosition(), acter.getyPosition(),a.getX(),a.getY(),0);
+				primitives = planner.planMove(acter.getxPosition(), acter.getyPosition(),a.getX(),a.getY(),0);
+				break;
 			default:
 				primitives = null;
 			
 		}
 		return primitives;
-	}
-	/**
-	 * Use A* to calculate the primitive moves to 
-	 * @param startingx
-	 * @param startingy
-	 * @param endingx
-	 * @param endingy
-	 * @param distance The distance at which to stop trying to seek (IE, either next to it, or the range
-	 * @return Some primitive (IE, based on directions) moves that bring you within distance of the ending x and y
-	 */
-	private LinkedList<Action> calculatePrimitiveMoves(int startingx, int startingy, int endingx, int endingy, int distance)
-	{
-		//TODO: make this calculate the primitive moves with A*
-		return null;
 	}
 	@Override
 	public void executeStep() {
