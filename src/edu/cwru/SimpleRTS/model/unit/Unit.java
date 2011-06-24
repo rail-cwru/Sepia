@@ -1,13 +1,12 @@
 package edu.cwru.SimpleRTS.model.unit;
 
-import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 
 public class Unit extends Target {
 	
 	private UnitView view;
-	protected Target target;
 	protected int currentHealth;
 	protected int player;
 	protected int xPosition;
@@ -20,14 +19,6 @@ public class Unit extends Target {
 		
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
-	}
-
-	public Target getTarget() {
-		return target;
-	}
-
-	public void setTarget(Target target) {
-		this.target = target;
 	}
 
 	public int getPlayer() {
@@ -93,7 +84,7 @@ public class Unit extends Target {
 	}
 	@Override
 	public String toString() {
-		return "Unit [target=" + target + ", ID=" + ID + ", currentHealth="
+		return "Unit [ID=" + ID + ", currentHealth="
 				+ currentHealth + ", player=" + player + ", xPosition="
 				+ xPosition + ", yPosition=" + yPosition + ", template="
 				+ template + ", cargoType=" + cargoType + ", cargoAmount="
@@ -111,21 +102,31 @@ public class Unit extends Target {
 			view = new UnitView(this);
 		return view;
 	}
-	public class UnitView {
-		Unit unit;
+	public static class UnitView {
+		private Unit unit;
 		public UnitView(Unit unit) {
 			this.unit = unit;
 		}
 		public int getHP() {
 			return unit.currentHealth;
 		}
-		public int getBasicAttack() {
-			return unit.template.basicAttackLow;
+		public int getPlayer() {
+			return unit.player;
 		}
-		public int getPierceAttack() {
-			return unit.template.piercingAttack;
+		public int getCargoAmount() {
+			return unit.cargoAmount;
 		}
-		
-		
+		public Resource.Type getCargoType() {
+			return unit.cargoType;
+		}
+		public int getXPosition() {
+			return unit.xPosition;
+		}
+		public int getYPosition() {
+			return unit.yPosition;
+		}
+		public UnitTemplateView getTemplateView() {
+			return new UnitTemplateView(unit.template);
+		}
 	}
 }

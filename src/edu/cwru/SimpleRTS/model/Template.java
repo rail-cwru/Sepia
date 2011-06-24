@@ -64,11 +64,11 @@ public abstract class Template<T> {
 	}
 	public TemplateView<T> getView() {
 		if(view == null)
-			view = new TemplateView(this);
+			view = new TemplateView<T>(this);
 		return view;
 	}
-	public class TemplateView<T> {
-		Template<T> template;
+	public static class TemplateView<T> {
+		protected Template<T> template;
 		public TemplateView(Template<T> template){
 			this.template = template;
 		}

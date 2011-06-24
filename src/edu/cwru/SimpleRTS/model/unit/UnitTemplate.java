@@ -99,4 +99,22 @@ public class UnitTemplate extends Template<Unit>
 	public List<String> getProduces() {
 		return produces;
 	}
+	public static class UnitTemplateView extends TemplateView<Unit> {
+
+		public UnitTemplateView(UnitTemplate template) {
+			super(template);
+		}
+		public boolean canGather() { return ((UnitTemplate)template).canGather(); }
+		public boolean canBuild() { return ((UnitTemplate)template).canBuild(); }
+		public boolean canMove() { return ((UnitTemplate)template).canMove(); }
+		public boolean canAttack() { return ((UnitTemplate)template).canAttack(); }
+		public String getUnitName() { return ((UnitTemplate)template).getUnitName(); }
+		public int getBaseHealth() { return ((UnitTemplate)template).getBaseHealth();	}
+		public int getBasicAttackLow() { return ((UnitTemplate)template).getBasicAttackLow(); }
+		public int getBasicAttackDiff() { return ((UnitTemplate)template).getBasicAttackDiff(); }
+		public int getPiercingAttack() { return ((UnitTemplate)template).getPiercingAttack();	}
+		public int getRange() {	return ((UnitTemplate)template).getRange(); }
+		public int getArmor() {	return ((UnitTemplate)template).getArmor(); }
+		public int getSightRange() { return ((UnitTemplate)template).getSightRange();	}
+	}
 }
