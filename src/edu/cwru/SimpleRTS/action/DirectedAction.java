@@ -14,4 +14,9 @@ public class DirectedAction extends Action {
 	{
 		return direction;
 	}
+	@Override
+	public String toString() {
+		return "DirectedAction [direction=" + direction + ", type=" + type
+				+ ", unitId=" + unitId + "]";
+	}
 }

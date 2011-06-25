@@ -35,7 +35,7 @@ public class GameUnitTest {
 		State.StateBuilder builder = new StateBuilder();
 		int x = 0;
 		int y = 0;
-		builder.setSize(30,30);
+		builder.setSize(64,64);
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))

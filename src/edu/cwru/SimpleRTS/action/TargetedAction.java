@@ -13,8 +13,8 @@ public class TargetedAction extends Action
 		return targetid;
 	}
 	@Override
-	public String toString()
-	{
-		return super.toString() + ", At Unit " + targetid;
+	public String toString() {
+		return "TargetedAction [targetid=" + targetid + ", type=" + type
+				+ ", unitId=" + unitId + "]";
 	}
 }

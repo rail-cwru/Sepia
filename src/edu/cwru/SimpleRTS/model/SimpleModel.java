@@ -56,6 +56,7 @@ public class SimpleModel implements Model {
 			case PRIMITIVEMOVE:
 			case PRIMITIVEATTACK:
 			case PRIMITIVEGATHER:
+			case PRIMITIVEDEPOSIT:
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
 			case PRIMITIVEUPGRADE:
@@ -132,6 +133,18 @@ public class SimpleModel implements Model {
 						if (failed) {
 							queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 						}
+						break;
+					case PRIMITIVEDEPOSIT:
+						Unit actor = state.getUnit(a.getUnitId());
+						Unit townHall = state.unitAt(xPrime, yPrime);
+						if(townHall == null || !"TownHall".equals(townHall.getTemplate().getUnitName()))
+						{
+							queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+							break;
+						}
+						int agent = actor.getPlayer();
+						state.addResourceAmount(agent, actor.getCurrentCargoType(), actor.getCurrentCargoAmount());
+						actor.clearCargo();
 						break;
 					case PRIMITIVEATTACK:
 						Unit target = state.getUnit(((TargetedAction)a).getTargetId());

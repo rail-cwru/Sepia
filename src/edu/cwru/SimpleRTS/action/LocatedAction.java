@@ -19,8 +19,8 @@ public class LocatedAction extends Action
 		return x;
 	}
 	@Override
-	public String toString()
-	{
-		return super.toString() + ", To {" +x+","+y+ "}";
+	public String toString() {
+		return "LocatedAction [x=" + x + ", y=" + y + ", type=" + type
+				+ ", unitId=" + unitId + "]";
 	}
 }

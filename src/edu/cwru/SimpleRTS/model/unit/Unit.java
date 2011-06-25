@@ -97,6 +97,16 @@ public class Unit extends Target {
 		cargoAmount = amount;
 		return true;
 	}
+	public void clearCargo() {
+		cargoType = null;
+		cargoAmount = 0;
+	}
+	public Resource.Type getCurrentCargoType() {
+		return cargoType;
+	}
+	public int getCurrentCargoAmount() {
+		return cargoAmount;
+	}
 	public UnitView getView() {
 		if(view == null)
 			view = new UnitView(this);

@@ -13,8 +13,8 @@ public class ProductionAction extends Action
 		return templateid;
 	}
 	@Override
-	public String toString()
-	{
-		return super.toString() + ", From templateid "+templateid;
+	public String toString() {
+		return "ProductionAction [templateid=" + templateid + ", type=" + type
+				+ ", unitId=" + unitId + "]";
 	}
 }

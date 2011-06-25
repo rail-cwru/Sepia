@@ -93,7 +93,35 @@ public class State implements Serializable{
 		}
 		return null;
 	}
-	
+	/**
+	 * Adds an amount of a resource to a player's global amount.
+	 * @param player
+	 * @param type
+	 * @param amount
+	 */
+	public void addResourceAmount(int player, Resource.Type type, int amount) {
+		Pair<Integer,Resource.Type> pair = new Pair<Integer,Resource.Type>(player,type);
+		Integer i = currentResources.get(pair);
+		if(i == null)
+			i = 0;
+		currentResources.put(pair, i+amount);
+	}
+	/**
+	 * Attempts to reduce the player's amount of the given resource by an amount.
+	 * If the player does not have enough of that resource, the transaction fails.
+	 * @param player
+	 * @param type
+	 * @param amount
+	 * @return - whether or not the player had enough of the resource
+	 */
+	public boolean consumeResourceAmount(int player, Resource.Type type, int amount) {
+		Pair<Integer,Resource.Type> pair = new Pair<Integer,Resource.Type>(player,type);
+		Integer i = currentResources.get(pair);
+		if(i == null || i < amount)
+			return false;
+		currentResources.put(pair, i-amount);
+		return true;
+	}
 	/**
 	 * Builder class that allows one-time access to a new state for construction purposes.
 	 * @author Tim
@@ -188,6 +216,10 @@ public class State implements Serializable{
 		}
 		public Template.TemplateView getTemplate(int templateID) {
 			return state.getTemplate(templateID).getView();
+		}
+		public int getResourceAmount(int player, Resource.Type type) {
+			Integer amount = state.currentResources.get(new Pair<Integer,Resource.Type>(player,type));
+			return amount != null ? amount : 0;			
 		}
 	}
 }
