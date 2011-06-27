@@ -30,6 +30,7 @@ public class SimplePlanner {
 	public LinkedList<Action> planMove(int startingx, int startingy, int endingx, int endingy, int distance)
 	{
 		//TODO: put A* implementation here
+		
 		return null;
 	}
 	/**
@@ -68,4 +69,5 @@ public class SimplePlanner {
 		return null;
 		
 	}
+	
 }

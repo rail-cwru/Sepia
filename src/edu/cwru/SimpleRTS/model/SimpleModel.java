@@ -8,6 +8,8 @@ import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Configuration;
 
 public class SimpleModel implements Model {
@@ -51,7 +53,7 @@ public class SimpleModel implements Model {
 	}
 	private LinkedList<Action> calculatePrimitives(Action action) {
 		LinkedList<Action> primitives = null;
-		//TODO: add additional actions to complete this
+		Unit actor = state.getUnit(action.getUnitId());
 		switch (action.getType()) {
 			case PRIMITIVEMOVE:
 			case PRIMITIVEATTACK:
@@ -64,9 +66,34 @@ public class SimpleModel implements Model {
 				primitives.add(action);
 				break;
 			case COMPOUNDMOVE:
-				Unit acter = state.getUnit(action.getUnitId());
-				LocatedAction a = (LocatedAction)action;
-				primitives = planner.planMove(acter.getxPosition(), acter.getyPosition(),a.getX(),a.getY(),0);
+				LocatedAction aMove = (LocatedAction)action;
+				primitives = planner.planMove(actor.getxPosition(), actor.getyPosition(),aMove.getX(),aMove.getY(),0);
+				break;
+			case COMPOUNDGATHER:
+				TargetedAction aGather = (TargetedAction)action;
+				int resourceId = aGather.getTargetId();
+				primitives = planner.planGather(actor, state.getResource(resourceId), 0);
+				break;
+			case COMPOUNDATTACK:
+				TargetedAction aAttack = (TargetedAction)action;
+				int unitId = aAttack.getTargetId();
+				primitives = planner.planAttack(actor, state.getUnit(unitId), 0);
+				break;
+			case COMPOUNDPRODUCE:
+				ProductionAction aProduce = (ProductionAction)action;
+				int unitTemplateId = aProduce.getTemplateId();
+				primitives = planner.planProduce(actor, (UnitTemplate)state.getTemplate(unitTemplateId));
+				break;
+			case COMPOUNDUPGRADE:
+				ProductionAction aUpgrade = (ProductionAction)action;
+				int upgradeTemplateId = aUpgrade.getTemplateId();
+				primitives = planner.planUpgrade(actor, (UpgradeTemplate)state.getTemplate(upgradeTemplateId));
+				break;
+			case COMPOUNDBUILD:
+				ProductionAction aBuild = (ProductionAction)action;
+				int buildTemplateId = aBuild.getTemplateId();
+				// TODO: how to get targetX and targetY here? ---Feng
+				//primitives = planner.planBuild(actor, targetX, targetY, 0, (UnitTemplate)state.getTemplate(buildTemplateId));
 				break;
 			default:
 				primitives = null;
@@ -83,7 +110,11 @@ public class SimpleModel implements Model {
 		for(ActionQueue queuedact : queuedPrimitives.values()) 
 		{
 			//Pull out the primitive
-			if (queuedact.hasNext())
+			if (queuedact.hasNext())  
+				// should it be "while" instead of "if" ?? 
+				// well, do you mean that every round, only one primitive action can be taken by one agent?
+				// so, even the agent returns a compound action, only the first primitive action will be executed?
+				// ---Feng
 			{
 				Action a = queuedact.popPrimitive();
 				//Execute it

@@ -37,6 +37,14 @@ public class State implements Serializable{
 		}
 		return null;
 	}
+	public Resource getResource(int resourceId) {
+		for(Resource r : resources)
+		{
+			if(resourceId == r.hashCode())
+				return r;
+		}
+		return null;
+	}
 	public Template getTemplate(int templateId) {
 		for(Template t : allTemplates)
 		{
