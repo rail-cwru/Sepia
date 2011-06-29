@@ -30,9 +30,7 @@ public class Action {
 	public static Action createPrimitiveGather(int unitid, Direction d) {
 		return new DirectedAction(unitid, ActionType.PRIMITIVEGATHER, d);
 	}
-	public static Action createPrimitiveAttack(int unitid, Direction d) {
-		return new DirectedAction(unitid, ActionType.PRIMITIVEATTACK, d);
-	}
+
 	public static Action createCompoundMove(int unitid, int x, int y) {
 		return new LocatedAction(unitid, ActionType.COMPOUNDMOVE, x, y);
 	}
@@ -48,8 +46,8 @@ public class Action {
 	public static Action createPrimitiveUpgrade(int unitid, int templateID) {
 		return new ProductionAction(unitid, ActionType.PRIMITIVEUPGRADE, templateID);
 	}
-	public static Action createCompoundBuild(int unitid, int templateID) {
-		return new ProductionAction(unitid, ActionType.COMPOUNDBUILD, templateID);
+	public static Action createCompoundBuild(int unitid, int templateID, int x, int y) {
+		return new LocatedProductionAction(unitid, ActionType.COMPOUNDBUILD, templateID,x,y);
 	}
 	public static Action createPrimitiveBuild(int unitid, int templateID) {
 		return new ProductionAction(unitid, ActionType.PRIMITIVEBUILD, templateID);

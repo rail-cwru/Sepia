@@ -67,7 +67,7 @@ public class SimpleModel implements Model {
 				break;
 			case COMPOUNDMOVE:
 				LocatedAction aMove = (LocatedAction)action;
-				primitives = planner.planMove(actor.getxPosition(), actor.getyPosition(),aMove.getX(),aMove.getY(),0);
+				primitives = planner.planMove(actor, aMove.getX(), aMove.getY());
 				break;
 			case COMPOUNDGATHER:
 				TargetedAction aGather = (TargetedAction)action;
@@ -77,7 +77,7 @@ public class SimpleModel implements Model {
 			case COMPOUNDATTACK:
 				TargetedAction aAttack = (TargetedAction)action;
 				int unitId = aAttack.getTargetId();
-				primitives = planner.planAttack(actor, state.getUnit(unitId), 0);
+				primitives = planner.planAttack(actor, state.getUnit(unitId));
 				break;
 			case COMPOUNDPRODUCE:
 				ProductionAction aProduce = (ProductionAction)action;
@@ -90,10 +90,9 @@ public class SimpleModel implements Model {
 				primitives = planner.planUpgrade(actor, (UpgradeTemplate)state.getTemplate(upgradeTemplateId));
 				break;
 			case COMPOUNDBUILD:
-				ProductionAction aBuild = (ProductionAction)action;
+				LocatedProductionAction aBuild = (LocatedProductionAction)action;
 				int buildTemplateId = aBuild.getTemplateId();
-				// TODO: how to get targetX and targetY here? ---Feng
-				//primitives = planner.planBuild(actor, targetX, targetY, 0, (UnitTemplate)state.getTemplate(buildTemplateId));
+				primitives = planner.planBuild(actor, aBuild.getX(), aBuild.getY(), 0, (UnitTemplate)state.getTemplate(buildTemplateId));
 				break;
 			default:
 				primitives = null;
