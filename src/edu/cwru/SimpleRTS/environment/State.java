@@ -45,6 +45,51 @@ public class State implements Serializable{
 		}
 		return null;
 	}
+	/**
+	 * Find the closest unoccupied position using a spiraling out search pattern
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public int[] getClosestPosition(int x, int y)
+	{
+		//if the space in question is already open
+		if (positionAvailable(x,y))
+			return new int[]{x,y};
+		int maxradius = Math.max(Math.max(x, xextent-x), Math.max(y,yextent-y));
+		for (int r = 1; r<=maxradius;r++)
+		{
+			//go up/left diagonal
+			x = x-1;
+			y = y-1;
+			
+			//go down
+			for (int i = 0; i<2*r;i++) {
+				y = y + 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go right
+			for (int i = 0; i<2*r;i++) {
+				x = x + 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go up
+			for (int i = 0; i<2*r;i++) {
+				y = y - 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go left
+			for (int i = 0; i<2*r;i++) {
+				x = x - 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+		}
+		return new int[]{-1,-1};
+	}
 	public Template getTemplate(int templateId) {
 		for(Template t : allTemplates)
 		{
@@ -80,6 +125,10 @@ public class State implements Serializable{
 	}
 	public List<Resource> getResources() {
 		return Collections.unmodifiableList(resources);
+	}
+	public boolean positionAvailable(int x, int y)
+	{
+		return inBounds(x,y) && unitAt(x,y)==null && resourceAt(x,y)==null;
 	}
 	public Unit unitAt(int x, int y) {
 		//This could probably be replaced by a 2D boolean array, but then you would need to ensure that things can't move without changing that array 

@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * An implementation of basic planning methods 
  * @author Tim
@@ -140,19 +141,82 @@ public class SimplePlanner {
 		return plan;
 	}
 	
-	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, int distance, UnitTemplate target) {
+	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, UnitTemplate template) {
+		LinkedList<Action> plan = new LinkedList<Action>();
+		//it must be already in the same place for the production to count
+		if (actor.getxPosition() == targetX && actor.getyPosition() == targetY)
+		{//if it is in the same place
+			//needs to know how much building on the target template the unit already has done
+			if (actor.getProductionID() == template.hashCode())
+			{//if it is building the same thing
+				//then make it keep building it
+				int amountleft = template.hashCode() - actor.getAmountProduced();
+				for (int i = 0; i<amountleft; i++)
+				{
+					plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+				}
+			}
+			else
+			{//if it is making somthing else
+				for (int i = template.timeCost - 1; i>=0; i--)
+				{
+					plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+				}
+			}
+		}
+		else
+		{
+			plan = planMove(actor, getDirections(actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
+			for (int i = template.timeCost - 1; i>=0; i--)
+			{
+				plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+			}
+		}
+		return plan;
+	}
+	
+	public LinkedList<Action> planProduce(Unit actor, UnitTemplate template) {
+		LinkedList<Action> plan = new LinkedList<Action>();
 		//needs to know how much building on the target template the unit already has done
-		return null;
+		if (actor.getProductionID() == template.hashCode())
+		{//if it is building the same thing
+			//then make it keep building it
+			int amountleft = template.hashCode() - actor.getAmountProduced();
+			for (int i = 0; i<amountleft; i++)
+			{
+				plan.addLast(Action.createPrimitiveProduction(actor.hashCode(), template.hashCode()));
+			}
+		}
+		else
+		{//if it is making somthing else
+			for (int i = template.timeCost - 1; i>=0; i--)
+			{
+				plan.addLast(Action.createPrimitiveProduction(actor.hashCode(), template.hashCode()));
+			}
+		}
+		return plan;
 	}
 	
-	public LinkedList<Action> planProduce(Unit actor, UnitTemplate target) {
-		//needs to know how much producing on the target template the unit already has done
-		return null;		
-	}
-	
-	public LinkedList<Action> planUpgrade(Unit actor, Template<Upgrade> target) {
-		//needs to know how much producing on the target template the unit already has done
-		return null;
+	public LinkedList<Action> planUpgrade(Unit actor, UpgradeTemplate template) {
+		LinkedList<Action> plan = new LinkedList<Action>();
+		//needs to know how much building on the target template the unit already has done
+		if (actor.getProductionID() == template.hashCode())
+		{//if it is building the same thing
+			//then make it keep building it
+			int amountleft = template.hashCode() - actor.getAmountProduced();
+			for (int i = 0; i<amountleft; i++)
+			{
+				plan.addLast(Action.createPrimitiveUpgrade(actor.hashCode(), template.hashCode()));
+			}
+		}
+		else
+		{//if it is making somthing else
+			for (int i = template.timeCost - 1; i>=0; i--)
+			{
+				plan.addLast(Action.createPrimitiveUpgrade(actor.hashCode(), template.hashCode()));
+			}
+		}
+		return plan;
 		
 	}
 	

@@ -1,6 +1,7 @@
 package edu.cwru.SimpleRTS.model.unit;
 
 import edu.cwru.SimpleRTS.model.Target;
+import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 
@@ -14,11 +15,13 @@ public class Unit extends Target {
 	protected UnitTemplate template;
 	protected Resource.Type cargoType;
 	protected int cargoAmount;
-	
+	protected Template currentProduction;
+	protected int currentProductionAmount;
 	protected Unit(UnitTemplate template) {
 		
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
+		currentProductionAmount = 0;
 	}
 
 	public int getPlayer() {
@@ -55,6 +58,34 @@ public class Unit extends Target {
 			currentHealth = 0;
 		if (currentHealth > template.baseHealth)
 			currentHealth = template.baseHealth;
+	}
+	public int getAmountProduced()
+	{
+		return currentProductionAmount;
+	}
+	public int getProductionID()
+	{
+		return currentProduction.hashCode();
+	}
+	public void resetProduction() {
+		currentProduction = null;
+		currentProductionAmount = 0;
+	}
+	/**
+	 * Increment production amount
+	 * @param templateID
+	 */
+	public void incrementProduction(Template template) {
+		if (currentProduction.hashCode() == template.hashCode())
+		{
+			currentProductionAmount++;
+		}
+		else
+		{
+			resetProduction();
+			currentProduction = template;
+			currentProductionAmount++;
+		}
 	}
 	public boolean canGather()
 	{

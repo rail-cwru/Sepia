@@ -92,7 +92,7 @@ public class SimpleModel implements Model {
 			case COMPOUNDBUILD:
 				LocatedProductionAction aBuild = (LocatedProductionAction)action;
 				int buildTemplateId = aBuild.getTemplateId();
-				primitives = planner.planBuild(actor, aBuild.getX(), aBuild.getY(), 0, (UnitTemplate)state.getTemplate(buildTemplateId));
+				primitives = planner.planBuild(actor, aBuild.getX(), aBuild.getY(), (UnitTemplate)state.getTemplate(buildTemplateId));
 				break;
 			default:
 				primitives = null;
@@ -165,16 +165,15 @@ public class SimpleModel implements Model {
 						}
 						break;
 					case PRIMITIVEDEPOSIT:
-						Unit actor = state.getUnit(a.getUnitId());
 						Unit townHall = state.unitAt(xPrime, yPrime);
 						if(townHall == null || !"TownHall".equals(townHall.getTemplate().getUnitName()))
 						{
 							queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 							break;
 						}
-						int agent = actor.getPlayer();
-						state.addResourceAmount(agent, actor.getCurrentCargoType(), actor.getCurrentCargoAmount());
-						actor.clearCargo();
+						int agent = u.getPlayer();
+						state.addResourceAmount(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
+						u.clearCargo();
 						break;
 					case PRIMITIVEATTACK:
 						Unit target = state.getUnit(((TargetedAction)a).getTargetId());
@@ -187,6 +186,39 @@ public class SimpleModel implements Model {
 						else
 							queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 						break;
+					case PRIMITIVEBUILD:
+					{
+						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
+						u.incrementProduction(template);
+						if (template.timeCost == u.getAmountProduced())
+						{
+							Unit building = template.produceInstance();
+							building.setxPosition(x);
+							building.setyPosition(y);
+							
+							state.addUnit(building);
+						}
+						int[] newxy = state.getClosestPosition(x,y);
+						u.setxPosition(newxy[0]);
+						u.setyPosition(newxy[1]);
+						break;
+					}
+					case PRIMITIVEPRODUCE:
+					{
+						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
+						u.incrementProduction(template);
+						if (template.timeCost == u.getAmountProduced())
+						{
+							Unit produced = template.produceInstance();
+							int[] newxy = state.getClosestPosition(x,y);
+							produced.setxPosition(newxy[0]);
+							produced.setyPosition(newxy[1]);
+							state.addUnit(produced);
+						}
+						
+						break;
+					}
+					
 				}
 			}
 		}
