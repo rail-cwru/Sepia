@@ -142,6 +142,12 @@ public class State implements Serializable{
 	{
 		return x>=0 && y>=0 && x<xextent && y<yextent; 
 	}
+	public int getXExtent() {
+		return xextent;
+	}
+	public int getYExtent() {
+		return yextent;
+	}
 	public Resource resourceAt(int x, int y) {
 		for(Resource r : resources)
 		{
