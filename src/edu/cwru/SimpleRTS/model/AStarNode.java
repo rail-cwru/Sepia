@@ -47,7 +47,14 @@ public class AStarNode implements Comparable {
 		{
 			AStarNode o = (AStarNode)other;
 			if (o.value == value)
-				return 0;
+			{
+				if(directionfromprevious.toString().length() > o.directionfromprevious.toString().length())
+					return 1;
+				else if(directionfromprevious.toString().length() < o.directionfromprevious.toString().length())
+					return -1;
+				else
+					return 0;
+			}
 			else if (value > o.value)
 				return 1;
 			else
@@ -68,6 +75,11 @@ public class AStarNode implements Comparable {
 	public int hashCode()
 	{
 		return hashCode;
+	}
+	@Override
+	public String toString() {
+		return "AStarNode [x=" + x + ", y=" + y + ", g=" + g + 
+				", value=" + value + ", directionfromprevious=" + directionfromprevious + "]";
 	}
 
 }
