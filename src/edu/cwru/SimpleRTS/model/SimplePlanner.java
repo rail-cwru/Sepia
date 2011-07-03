@@ -13,8 +13,8 @@ import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * An implementation of basic planning methods 
+ * @author Scott
  * @author Tim
- *
  */
 public class SimplePlanner {
 	private State state;
@@ -37,7 +37,10 @@ public class SimplePlanner {
 	{
 		PriorityQueue<AStarNode> queue = new PriorityQueue<AStarNode>();
 		HashSet<AStarNode> checked = new HashSet<AStarNode>();
-		AStarNode bestnode=null;
+		AStarNode bestnode= null;
+		queue.offer(new AStarNode(startingx,startingy,Math.max(Math.abs(startingx-endingx), Math.abs(startingy-endingy))));
+		if(distance == 0)
+			distance = state.getXExtent()*state.getYExtent();
 		while (queue.size()>0&&bestnode==null)
 		{
 			AStarNode currentnode = queue.poll();
@@ -47,13 +50,22 @@ public class SimplePlanner {
 				int newy=currentnode.y + d.yComponent();
 				
 				int distfromgoal = Math.max(Math.abs(newx-endingx),Math.abs(newy-endingy));
-				//valid if the new state is in bounds and either there is no collision or it is at the target 
-				if (state.inBounds(newx, newy)&&(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null||cancollideonfinal&&distfromgoal==0))
+				//valid if the new state is within max distance and is in bounds and either there is no collision or it is at the target 
+				if (distfromgoal <= distance && state.inBounds(newx, newy) && 
+						(
+								(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null) || 
+								(cancollideonfinal && distfromgoal==0)
+						)
+					)
 				{
 					AStarNode newnode = new AStarNode(newx, newy, currentnode.g+1, currentnode.g+1+distfromgoal, currentnode, d);
+					if(!checked.contains(newnode))
+					{
+						queue.offer(newnode);
+						checked.add(newnode);
+					}
 					
-					
-					if (distfromgoal<=distance)
+					if (distfromgoal == 0)
 					{
 						bestnode = newnode;
 						break;
@@ -104,6 +116,9 @@ public class SimplePlanner {
 		}
 		return moves;
 	}
+	public LinkedList<Action> planMove(int i, int x, int y) {
+		return planMove(state.getUnit(i),x,y);
+	}
 	/**
 	 * Uses {@link #getDirections(int, int, int, int, int, boolean)} to get directions to the specified place and {@link #planMove(Unit, LinkedList<Direction>)} to follow them.
 	 * then adds an attack command.
@@ -119,7 +134,9 @@ public class SimplePlanner {
 		plan.addLast(Action.createCompoundAttack(actor.hashCode(), actor.hashCode()));
 		return plan;
 	}
-	
+	public LinkedList<Action> planAttack(int actor, int target) {
+		return planAttack(state.getUnit(actor),state.getUnit(target));
+	}
 	/**
 	 * Uses {@link #getDirections(int, int, int, int, int, boolean)} to get directions to the specified place and {@link #planMove(Unit, LinkedList<Direction>)} to move almost there.
 	 * then Then adds the final direction with a gather.
@@ -139,6 +156,9 @@ public class SimplePlanner {
 		LinkedList<Action> plan = planMove(actor, directions);
 		plan.addLast(Action.createPrimitiveGather(actor.ID, finaldirection));
 		return plan;
+	}
+	public LinkedList<Action> planGather(int actor, int target, int distance) {
+		return planGather(state.getUnit(actor),state.getResource(target),distance);
 	}
 	
 	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, UnitTemplate template) {
@@ -174,6 +194,9 @@ public class SimplePlanner {
 		}
 		return plan;
 	}
+	public LinkedList<Action> planBuild(int actor, int targetX, int targetY, int template) {
+		return planBuild(state.getUnit(actor),targetX,targetY,(UnitTemplate)state.getTemplate(template));
+	}
 	
 	public LinkedList<Action> planProduce(Unit actor, UnitTemplate template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
@@ -195,6 +218,9 @@ public class SimplePlanner {
 			}
 		}
 		return plan;
+	}
+	public LinkedList<Action> planProduce(int actor, int template) {
+		return planProduce(state.getUnit(actor),(UnitTemplate)state.getTemplate(template));
 	}
 	
 	public LinkedList<Action> planUpgrade(Unit actor, UpgradeTemplate template) {
@@ -219,6 +245,8 @@ public class SimplePlanner {
 		return plan;
 		
 	}
-	
+	public LinkedList<Action> planUpgrade(int actor, int template) {
+		return planUpgrade(state.getUnit(actor),(UpgradeTemplate)state.getTemplate(template));
+	}
 	
 }
