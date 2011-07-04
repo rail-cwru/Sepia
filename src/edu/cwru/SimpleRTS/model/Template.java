@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.model;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 
@@ -10,7 +12,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
  *
  * @param <T>
  */
-public abstract class Template<T> {
+public abstract class Template<T> implements Serializable{
 	private TemplateView<T> view;
 	protected int timeCost;
 	protected int goldCost;
@@ -67,7 +69,7 @@ public abstract class Template<T> {
 			view = new TemplateView<T>(this);
 		return view;
 	}
-	public static class TemplateView<T> {
+	public static class TemplateView<T> implements Serializable{
 		protected Template<T> template;
 		public TemplateView(Template<T> template){
 			this.template = template;

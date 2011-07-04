@@ -241,7 +241,7 @@ public class State implements Serializable{
 	 * @author Tim
 	 *
 	 */
-	public static class StateView {
+	public static class StateView implements Serializable{
 		private State state;
 		private StateView(State state) {
 			this.state = state;

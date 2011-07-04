@@ -5,8 +5,6 @@ edu.cwru.SimpleRTS.environment
 edu.cwru.SimpleRTS.model
 edu.cwru.SimpleRTS.model.resource
 edu.cwru.SimpleRTS.model.unit
-edu.cwru.SimpleRTS.model.unit.building
-edu.cwru.SimpleRTS.model.unit.mobile
 edu.cwru.SimpleRTS.model.upgrade
 edu.cwru.SimpleRTS.util
 org.json

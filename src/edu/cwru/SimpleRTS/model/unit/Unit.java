@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.model.unit;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.Resource;
@@ -143,7 +145,7 @@ public class Unit extends Target {
 			view = new UnitView(this);
 		return view;
 	}
-	public static class UnitView {
+	public static class UnitView implements Serializable{
 		private Unit unit;
 		public UnitView(Unit unit) {
 			this.unit = unit;

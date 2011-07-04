@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.model.unit;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import edu.cwru.SimpleRTS.model.Template;
  *
  */
 
-public class UnitTemplate extends Template<Unit>
+public class UnitTemplate extends Template<Unit> implements Serializable
 {
 	protected String unitName;
 	protected int baseHealth;
@@ -99,7 +100,7 @@ public class UnitTemplate extends Template<Unit>
 	public List<String> getProduces() {
 		return produces;
 	}
-	public static class UnitTemplateView extends TemplateView<Unit> {
+	public static class UnitTemplateView extends TemplateView<Unit> implements Serializable{
 
 		public UnitTemplateView(UnitTemplate template) {
 			super(template);

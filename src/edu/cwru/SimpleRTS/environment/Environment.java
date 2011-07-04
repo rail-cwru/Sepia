@@ -4,6 +4,8 @@ import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.model.*;
 import java.util.concurrent.*;
 import java.io.*;
+
+import javax.swing.SpringLayout.Constraints;
 public abstract class Environment
 {
 	public abstract void requestTermination();
@@ -17,6 +19,16 @@ public abstract class Environment
 		this.connectedagents = connectedagents;
 		this.model = model;
 	}
+	
+	public final Agent[] getAgents() {
+		return connectedagents;
+	}
+	
+	public final Model getModel() {
+		return model;
+	}
+	
+	
 	/**
 	 * A basic save
 	 * Feel free to change the argument
