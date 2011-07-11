@@ -26,6 +26,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected boolean canGather;
 	protected boolean canBuild;
 	protected boolean canMove;
+	protected char character;
 	private List<String> produces;
 	public UnitTemplate()
 	{
@@ -47,6 +48,12 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	}
 	public void setBaseHealth(int baseHealth) {
 		this.baseHealth = baseHealth;
+	}
+	public char getCharacter() {
+		return character;
+	}
+	public void setCharacter(char character) {
+		this.character = character;
 	}
 	public int getBasicAttackLow() {
 		return basicAttackLow;

@@ -19,7 +19,7 @@ public class Unit extends Target {
 	protected int cargoAmount;
 	protected Template currentProduction;
 	protected int currentProductionAmount;
-	protected Unit(UnitTemplate template) {
+	public Unit(UnitTemplate template) {
 		
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
@@ -33,7 +33,9 @@ public class Unit extends Target {
 	public void setPlayer(int player) {
 		this.player = player;
 	}
-
+	public char getCharacter() {
+		return template.getCharacter();
+	}
 	public int getCurrentHealth() {
 		return currentHealth;
 	}

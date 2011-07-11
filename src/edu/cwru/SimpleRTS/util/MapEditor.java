@@ -1,0 +1,117 @@
+package edu.cwru.SimpleRTS.util;
+
+import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.json.JSONException;
+
+import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+
+public class MapEditor {
+	public static void main(String[] args) throws IOException, JSONException {
+		 
+		System.out.println("Usage: MapEditor inputfile outputfile commands");
+		System.out.println("\tcommands is optional and semicolon seperated");
+		boolean usestdin = false;
+		String templatefile = args[0];
+		List<UnitTemplate> templates= UnitTypeLoader.loadUnitsFromFile(templatefile);
+		String outputfile = args[1];
+		String[] commands = null;
+		BufferedReader reader = null;
+		boolean alreadysetsize = false;
+		if (args.length <= 2) {
+			usestdin = true;
+			reader = new BufferedReader(new InputStreamReader(System.in));
+		}
+		else {
+			usestdin = false;
+			commands = args[2].split(";");
+		}
+		State.StateBuilder s = new State.StateBuilder();
+		boolean done = false;
+		int iterator = -1;
+		while (!done)
+		{
+			String[] nextcommand;
+			if (!usestdin && ++iterator < commands.length) {
+				nextcommand = commands[iterator].split(" ");
+			}
+			else {
+				nextcommand = reader.readLine().split(" ");
+			}
+			
+			if (nextcommand.length == 1 && (nextcommand[0].equals("q") || nextcommand[0].equals("quit"))) {
+				done=true;
+			}
+			else if (nextcommand.length == 1 && (nextcommand[0].equals("h") || nextcommand[0].equals("help"))) {
+				System.out.println("Help for MapEditor");
+				System.out.println("\tq or quit to quit");
+				System.out.println("\taddUnit unitname x y");
+				System.out.println("\taddResource resourcetype x y amount");
+				System.out.println("\tsetSize xsize ysize");
+				System.out.println();
+			}
+			else if (nextcommand.length == 4 && nextcommand[0].equals("addUnit")) {
+				if (alreadysetsize) {
+					int x = Integer.parseInt(nextcommand[2]);
+					int y = Integer.parseInt(nextcommand[3]);
+					if (s.positionAvailable(x,y))
+					{
+						String unitname = nextcommand[1];
+						
+						UnitTemplate template = null;
+						for (UnitTemplate ut : templates) {
+							if (unitname.equals(ut.getUnitName())) {
+								template = ut;
+								break;
+							}
+						}
+						if (template!=null)
+						{
+							
+							Unit u = new Unit(template);
+							u.setxPosition(x);
+							u.setyPosition(y);
+							s.addUnit(u);
+						}
+					}
+					else
+						System.out.println("Position {"+x +"," + y + "}already taken");
+				}
+				else
+					System.out.println("Must set size before placing objects");
+			}
+			else if (nextcommand.length == 3 && nextcommand[0].equals("setSize")){
+				if (!alreadysetsize)
+				{
+					s.setSize(Integer.parseInt(nextcommand[1]),Integer.parseInt(nextcommand[2]));
+					alreadysetsize=true;
+				}
+				else
+					System.out.println("Size already set, cannot reset it"); //Because it might otherwise strand units outside the map
+			}
+			else if (nextcommand.length == 5 && nextcommand[0].equals("addResource")) {
+				int x = Integer.parseInt(nextcommand[2]);
+				int y = Integer.parseInt(nextcommand[3]);
+				if (alreadysetsize){
+					if (s.positionAvailable(x,y)) {
+						Resource r = new Resource(Resource.Type.valueOf(nextcommand[1]),x,y,Integer.parseInt(nextcommand[4]));
+						s.addResource(r);
+					}
+					else
+						System.out.println("Position {"+x +"," + y + "}already taken");
+				}
+				else
+					System.out.println("Must set size before placing objects");
+			}
+			System.out.println(s.getTextString());
+		}
+		GameMap g = new GameMap(s.build());
+		GameMap.storeMap(outputfile, g);
+	}
+}

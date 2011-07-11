@@ -107,6 +107,37 @@ public class State implements Serializable{
 		xextent = x;
 		yextent = y;
 	}
+	public String getTextString() {
+		StringBuilder str = new StringBuilder();
+		for (int i = 0; i<xextent;i++)
+		{
+			str.append('|');
+			for (int j = 0; j < yextent; j++)
+			{
+				Unit u = unitAt(i,j);
+				if (u!=null)
+				{//if there is a unit there
+					str.append(u.getCharacter());
+				}
+				else
+				{
+					Resource r = resourceAt(i, j);
+					if (r != null)
+					{
+						str.append('0');
+					}
+					else
+					{
+						str.append(' ');
+					}
+					
+				}
+				str.append('|');
+			}
+			str.append('\n');
+		}
+		return str.toString();
+	}
 	public List<Unit> getUnits(int player) {
 		if(unitsByAgent.get(player) == null)
 			return null;
@@ -129,6 +160,7 @@ public class State implements Serializable{
 	public boolean positionAvailable(int x, int y)
 	{
 		return inBounds(x,y) && unitAt(x,y)==null && resourceAt(x,y)==null;
+		
 	}
 	public Unit unitAt(int x, int y) {
 		//This could probably be replaced by a 2D boolean array, but then you would need to ensure that things can't move without changing that array 
@@ -203,6 +235,9 @@ public class State implements Serializable{
 		public void setSize(int x, int y) {
 			state.setSize(x, y);
 		}
+		public boolean positionAvailable(int x, int y) {
+			return state.positionAvailable(x, y);
+		}
 		public void addResource(Resource r) {
 			if(!state.resources.contains(r))
 				state.resources.add(r);
@@ -212,6 +247,9 @@ public class State implements Serializable{
 		}
 		public void setResourceAmount(int player, Resource.Type resource, int amount) {
 			state.currentResources.put(new Pair<Integer,Resource.Type>(player,resource), amount);
+		}
+		public String getTextString() {
+			return state.getTextString();
 		}
 		/**
 		 * Completes construction of the state and returns a reference to the state.
