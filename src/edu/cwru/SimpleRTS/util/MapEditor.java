@@ -17,6 +17,8 @@ public class MapEditor {
 		 
 		System.out.println("Usage: MapEditor inputfile outputfile commands");
 		System.out.println("\tcommands is optional and semicolon seperated");
+		if(args.length < 2)
+			return;
 		boolean usestdin = false;
 		String templatefile = args[0];
 		List<UnitTemplate> templates= UnitTypeLoader.loadUnitsFromFile(templatefile);
@@ -51,15 +53,25 @@ public class MapEditor {
 			else if (nextcommand.length == 1 && (nextcommand[0].equals("h") || nextcommand[0].equals("help"))) {
 				System.out.println("Help for MapEditor");
 				System.out.println("\tq or quit to quit");
-				System.out.println("\taddUnit unitname x y");
+				System.out.println("\taddUnit unitname x y player");
 				System.out.println("\taddResource resourcetype x y amount");
 				System.out.println("\tsetSize xsize ysize");
 				System.out.println();
 			}
-			else if (nextcommand.length == 4 && nextcommand[0].equals("addUnit")) {
+			else if (nextcommand.length == 5 && nextcommand[0].equals("addUnit")) {
 				if (alreadysetsize) {
-					int x = Integer.parseInt(nextcommand[2]);
-					int y = Integer.parseInt(nextcommand[3]);
+					int x;
+					int y;
+					int player;
+					try {
+						x = Integer.parseInt(nextcommand[2]);
+						y = Integer.parseInt(nextcommand[3]);
+						player = Integer.parseInt(nextcommand[4]);
+					}
+					catch(Exception ex) {
+						System.out.println("Unable to parse command arguments.");
+						continue;
+					}
 					if (s.positionAvailable(x,y))
 					{
 						String unitname = nextcommand[1];
@@ -75,6 +87,7 @@ public class MapEditor {
 						{
 							
 							Unit u = new Unit(template);
+							u.setPlayer(player);
 							u.setxPosition(x);
 							u.setyPosition(y);
 							s.addUnit(u);
@@ -100,7 +113,7 @@ public class MapEditor {
 				int y = Integer.parseInt(nextcommand[3]);
 				if (alreadysetsize){
 					if (s.positionAvailable(x,y)) {
-						Resource r = new Resource(Resource.Type.valueOf(nextcommand[1]),x,y,Integer.parseInt(nextcommand[4]));
+						Resource r = new Resource(Resource.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
 						s.addResource(r);
 					}
 					else
