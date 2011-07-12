@@ -2,14 +2,22 @@ package edu.cwru.SimpleRTS.environment;
 import edu.cwru.SimpleRTS.agent.*;
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.model.*;
+
+import java.util.ArrayList;
 import java.util.concurrent.*;
 import java.io.*;
 
 import javax.swing.SpringLayout.Constraints;
-public abstract class Environment
+
+import com.google.common.collect.ImmutableMap;
+public class Environment
 {
-	public abstract void requestTermination();
-	public abstract void requestNewEpisode();
+	public void requestTermination() {
+		
+	}
+	public void requestNewEpisode() {
+		
+	}
 	
 	
 	private Agent[] connectedagents;
@@ -35,14 +43,18 @@ public abstract class Environment
 	 * @param w
 	 * @return
 	 */
-	public abstract boolean saveState(BufferedWriter w);
+	public boolean saveState(BufferedWriter w) {
+		return false;
+	}
 	/**
 	 * A basic load
 	 * Feel free to change the argument
 	 * @param r
 	 * @return
 	 */
-	public abstract boolean loadState(BufferedReader r);
+	public boolean loadState(BufferedReader r) {
+		return false;		
+	}
 	public final State.StateView getState()
 	{
 		return model.getState();
@@ -50,11 +62,10 @@ public abstract class Environment
 	public final void runEpisode()
 	{
 		boolean first = true;
-		Action[] actions;
+		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
 		model.createNewWorld();
 		while(!model.isTerminated())
 		{
-			actions = new Action[connectedagents.length];//Just to be safe, put it in a new pointer
 			for(int i = 0; i<connectedagents.length;i++)
 			{
 				CountDownLatch latch = new CountDownLatch(1);
@@ -75,10 +86,17 @@ public abstract class Environment
 				{
 					//TODO: handle this somehow
 				}
-				actions[i] = connectedagents[i].getAction();
+				ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
+				for(Integer unitId : actionMap.keySet())
+				{
+					if(model.getState().getUnit(unitId).getPlayer() != i)
+						continue;
+					Action a = actionMap.get(unitId);
+				}
 			}
-			model.setActions(actions);
+			model.setActions(actions.toArray(new Action[0]));
 			model.executeStep();
+			actions.clear();
 		}
 		for (int i = 0; i<connectedagents.length;i++)
 		{
