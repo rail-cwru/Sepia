@@ -16,12 +16,13 @@ public class Environment
 		
 	}
 	public void requestNewEpisode() {
-		
+		step = 0;
 	}
 	
 	
 	private Agent[] connectedagents;
 	private Model model;
+	private int step;
 	public Environment(Agent[] connectedagents, Model model)
 	{
 		this.connectedagents = connectedagents;
@@ -61,47 +62,56 @@ public class Environment
 	}
 	public final void runEpisode()
 	{
-		boolean first = true;
-		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
 		model.createNewWorld();
 		while(!model.isTerminated())
 		{
-			for(int i = 0; i<connectedagents.length;i++)
-			{
-				CountDownLatch latch = new CountDownLatch(1);
-				if (first)
-				{
-					connectedagents[i].acceptInitialState(model.getState(), latch);
-					first = false;
-				}
-				else
-				{
-					connectedagents[i].acceptMiddleState(model.getState(), latch);
-				}
-				try
-				{
-					latch.await();
-				}
-				catch(InterruptedException e)
-				{
-					//TODO: handle this somehow
-				}
-				ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
-				for(Integer unitId : actionMap.keySet())
-				{
-					if(model.getState().getUnit(unitId).getPlayer() != i)
-						continue;
-					Action a = actionMap.get(unitId);
-				}
-			}
-			model.setActions(actions.toArray(new Action[0]));
-			model.executeStep();
-			actions.clear();
+			step();
 		}
 		for (int i = 0; i<connectedagents.length;i++)
 		{
 			connectedagents[i].terminalStep(model.getState());
 		}
 		
+	}
+	public boolean isTerminated() {
+		return model.isTerminated();
+	}
+	public boolean step() {
+		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
+		for(int i = 0; i<connectedagents.length;i++)
+		{
+			CountDownLatch latch = new CountDownLatch(1);
+			if (step == 0)
+			{
+				connectedagents[i].acceptInitialState(model.getState(), latch);
+			}
+			else
+			{
+				connectedagents[i].acceptMiddleState(model.getState(), latch);
+			}
+			try
+			{
+				latch.await();
+			}
+			catch(InterruptedException e)
+			{
+				//TODO: handle this somehow
+			}
+			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
+			for(Integer unitId : actionMap.keySet())
+			{
+				if(model.getState().getUnit(unitId).getPlayer() != i)
+					continue;
+				Action a = actionMap.get(unitId);
+				actions.add(a);
+			}
+		}
+		model.setActions(actions.toArray(new Action[0]));
+		model.executeStep();
+		step++;
+		return model.isTerminated();
+	}
+	public int getStepNumber() {
+		return step;
 	}
 }
