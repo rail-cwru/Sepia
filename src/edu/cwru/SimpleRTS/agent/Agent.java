@@ -2,8 +2,13 @@ package edu.cwru.SimpleRTS.agent;
 import edu.cwru.SimpleRTS.environment.*;
 import edu.cwru.SimpleRTS.action.*;
 import java.util.concurrent.*;
+
+import com.google.common.collect.ImmutableMap;
 public abstract class Agent {
 	private static int nextID = 0;
+	public static int maxId() {
+		return nextID - 1;
+	}
 	protected final int ID;
 	
 	protected Agent() {
@@ -23,7 +28,7 @@ public abstract class Agent {
 	
 	
 	//Action selection and such
-	private Action chosenaction;
+	private ImmutableMap.Builder<Integer,Action> chosenActions;
 	
 	/**
 	 * Request the action that the agent will take at this timestep.
@@ -31,9 +36,9 @@ public abstract class Agent {
 	 * Must not be called until calculation is done.  You will know that it is done by the latch being passed to acceptState()
 	 * @return
 	 */
-	public final Action getAction()
+	public final ImmutableMap<Integer,Action> getAction()
 	{
-		return chosenaction;
+		return chosenActions.build();
 	}
 	/**
 	 * Accept the first state of an episode and begin calculating a response for it
@@ -42,7 +47,7 @@ public abstract class Agent {
 	 */
 	public final void acceptInitialState(State.StateView newstate, CountDownLatch onofflatch)
 	{
-		chosenaction = initialStep(newstate);
+		chosenActions = initialStep(newstate);
 		onofflatch.countDown();
 	}
 	/**
@@ -52,7 +57,7 @@ public abstract class Agent {
 	 */
 	public final void acceptMiddleState(State.StateView newstate, CountDownLatch onofflatch)
 	{
-		chosenaction = middleStep(newstate);
+		chosenActions = middleStep(newstate);
 		onofflatch.countDown();
 	}
 	/**
@@ -66,7 +71,7 @@ public abstract class Agent {
 		onofflatch.countDown();
 	}
 	
-	public abstract Action initialStep(State.StateView newstate);
-	public abstract Action middleStep(State.StateView newstate);
+	public abstract ImmutableMap.Builder<Integer,Action> initialStep(State.StateView newstate);
+	public abstract ImmutableMap.Builder<Integer,Action> middleStep(State.StateView newstate);
 	public abstract void terminalStep(State.StateView newstate);
 }
