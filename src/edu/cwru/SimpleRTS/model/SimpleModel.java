@@ -51,7 +51,7 @@ public class SimpleModel implements Model {
 				}
 			}
 		}
-		return numLivePlayers > 1;
+		return numLivePlayers <= 1;
 	}
 
 	@Override
