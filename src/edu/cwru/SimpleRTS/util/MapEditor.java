@@ -109,18 +109,23 @@ public class MapEditor {
 					System.out.println("Size already set, cannot reset it"); //Because it might otherwise strand units outside the map
 			}
 			else if (nextcommand.length == 5 && nextcommand[0].equals("addResource")) {
-				int x = Integer.parseInt(nextcommand[2]);
-				int y = Integer.parseInt(nextcommand[3]);
-				if (alreadysetsize){
-					if (s.positionAvailable(x,y)) {
-						Resource r = new Resource(Resource.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
-						s.addResource(r);
+				try {
+					int x = Integer.parseInt(nextcommand[2]);
+					int y = Integer.parseInt(nextcommand[3]);
+					if (alreadysetsize){
+						if (s.positionAvailable(x,y)) {
+							Resource r = new Resource(Resource.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
+							s.addResource(r);
+						}
+						else
+							System.out.println("Position {"+x +"," + y + "}already taken");
 					}
 					else
-						System.out.println("Position {"+x +"," + y + "}already taken");
+						System.out.println("Must set size before placing objects");
 				}
-				else
-					System.out.println("Must set size before placing objects");
+				catch(Exception ex) {
+					System.out.println(ex.getMessage());
+				}
 			}
 			System.out.println(s.getTextString());
 		}
