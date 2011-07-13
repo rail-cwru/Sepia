@@ -66,6 +66,7 @@ public class SimpleAgent1Test {
 			System.out.println("---"+env.getStepNumber()+"---");
 			System.out.printf("Unit 1: x=%d y=%d hp=%d\n",u1.getxPosition(),u1.getyPosition(),u1.getCurrentHealth());
 			System.out.printf("Unit 2: x=%d y=%d hp=%d\n",u2.getxPosition(),u2.getyPosition(),u2.getCurrentHealth());
+			System.out.println(state.getTextString());
 			if(env.getStepNumber() > 100)
 				break;
 		}
