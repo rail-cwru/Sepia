@@ -5,6 +5,9 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionType;
+import edu.cwru.SimpleRTS.action.DirectedAction;
+import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -44,6 +47,12 @@ public class SimplePlanner {
 		while (queue.size()>0&&bestnode==null)
 		{
 			AStarNode currentnode = queue.poll();
+			int currentdistance = Math.max(Math.abs(currentnode.x-endingx),Math.abs(currentnode.y-endingy));
+			if ((cancollideonfinal && currentdistance == 0) || (!cancollideonfinal && currentdistance == 1))
+			{
+				bestnode = currentnode;
+				break;
+			}
 			for (Direction d : Direction.values())
 			{
 				int newx=currentnode.x + d.xComponent();
@@ -54,7 +63,7 @@ public class SimplePlanner {
 				if (distfromgoal <= distance && state.inBounds(newx, newy) && 
 						(
 								(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null) || 
-								(cancollideonfinal && distfromgoal==0)
+								(cancollideonfinal && distfromgoal==0) || (!cancollideonfinal && distfromgoal == 1)
 						)
 					)
 				{
@@ -65,7 +74,7 @@ public class SimplePlanner {
 						checked.add(newnode);
 					}
 					
-					if (distfromgoal == 0)
+					if ((cancollideonfinal && distfromgoal == 0) || (!cancollideonfinal && distfromgoal == 1))
 					{
 						bestnode = newnode;
 						break;
@@ -109,10 +118,9 @@ public class SimplePlanner {
 	 */
 	public LinkedList<Action> planMove(Unit actor, LinkedList<Direction> path) {
 		LinkedList<Action> moves = new LinkedList<Action>();
-		Direction nextDirection;
-		while ((nextDirection=path.pollFirst())!=null)
+		while (!path.isEmpty())
 		{
-			moves.addLast(Action.createPrimitiveMove(actor.hashCode(), nextDirection));
+			moves.addLast(Action.createPrimitiveMove(actor.hashCode(), path.removeFirst()));
 		}
 		return moves;
 	}
@@ -127,11 +135,12 @@ public class SimplePlanner {
 	 * @return A series of actions that move the actor to the target and attacks the target
 	 */
 	public LinkedList<Action> planAttack(Unit actor, Unit target) {
-		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),actor.getTemplate().getRange(),false);
+		//TODO: Fix this so that it only has to move to maximum range instead of next to target
+		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,false);
 		if (directions == null)
 			return null;
 		LinkedList<Action> plan = planMove(actor,directions);
-		plan.addLast(Action.createCompoundAttack(actor.hashCode(), actor.hashCode()));
+		plan.addLast(new TargetedAction(actor.hashCode(),ActionType.PRIMITIVEATTACK,target.hashCode()));
 		return plan;
 	}
 	public LinkedList<Action> planAttack(int actor, int target) {
