@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import edu.cwru.SimpleRTS.action.*;
+import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.Resource;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -38,8 +39,19 @@ public class SimpleModel implements Model {
 	
 	@Override
 	public boolean isTerminated() {
-		// TODO Auto-generated method stub
-		return false;
+		int numLivePlayers = 0;
+		for(int i = 0; i <= Agent.maxId() && numLivePlayers < 2; i++)
+		{
+			for(Unit u : state.getUnits(i))
+			{
+				if(u.getCurrentHealth() > 0)
+				{
+					numLivePlayers++;
+					break;
+				}
+			}
+		}
+		return numLivePlayers > 1;
 	}
 
 	@Override
