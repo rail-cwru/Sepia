@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
 /**
  * Contains information about default and invariant attributes of units. The class
  * itself contains some invariant attributes, but defaults, invariants and factory
@@ -27,9 +29,12 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected boolean canBuild;
 	protected boolean canMove;
 	protected char character;
+	protected Prerequisite prerequisite;
 	private List<String> produces;
+	private List<Integer> producesID;
 	public UnitTemplate()
 	{
+		producesID = new ArrayList<Integer>();
 		produces = new ArrayList<String>();
 	}
 	@Override
@@ -91,7 +96,12 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setSightRange(int sightRange) {
 		this.sightRange = sightRange;
 	}
-	
+	public void setPrerequisite(Prerequisite prerequisite) {
+		this.prerequisite = prerequisite;
+	}
+	public boolean canBeBuilt(State state) {
+		return prerequisite.isFulfilled(state);
+	}
 	public boolean canAttack() {
 		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
 	}
@@ -104,8 +114,23 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void addProductionItem(String item) {
 		this.produces.add(item);
 	}
-	public List<String> getProduces() {
-		return produces;
+	public boolean canProduce(Template t) {
+		for (Integer i : producesID)
+			if (t.hashCode() == i)
+				return true;
+		return false;
+	}
+	@Override
+	public void turnTemplatesToStrings(List<Template> controllerstemplates) {
+		producesID.clear();
+		for (String s : produces)
+			for (Template t : controllerstemplates) {
+				if (s.equals(t.getName())) {
+					producesID.add(t.hashCode());
+					break;
+				}
+				
+			}
 	}
 	public static class UnitTemplateView extends TemplateView<Unit> implements Serializable{
 
@@ -125,4 +150,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public int getArmor() {	return ((UnitTemplate)template).getArmor(); }
 		public int getSightRange() { return ((UnitTemplate)template).getSightRange();	}
 	}
+
+	
 }

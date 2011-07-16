@@ -20,6 +20,9 @@ public final class UnitTypeLoader {
 		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename);
 		for (Template t : untemplates)
 			templates.add(t);
+		for (Template t : templates) {
+			t.turnTemplatesToStrings(templates);
+		}
 		return templates;
 	}
 	public static List<UpgradeTemplate> loadUpgradesFromFile(String filename) throws FileNotFoundException, JSONException {
@@ -66,6 +69,7 @@ public final class UnitTypeLoader {
 	}
 	private static UnitTemplate handleUnit(JSONObject obj, String name) throws JSONException {
 		UnitTemplate template = new UnitTemplate();
+		template.setName(obj.getString("Name"));
 		if(obj.has("Mobile"))
 			template.setCanMove(obj.getBoolean("Mobile"));
 		if(obj.has("Builder"))
@@ -85,10 +89,11 @@ public final class UnitTypeLoader {
 			template.setRange(obj.getInt("Range"));
 		template.setSightRange(obj.getInt("SightRange"));
 		template.setTimeCost(obj.getInt("TimeCost"));
-		if(obj.has("FoodCode"))
+		if(obj.has("FoodCost"))
 			template.setFoodCost(obj.getInt("FoodCost"));
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
+		
 		if(obj.has("Produces"))
 		{
 			JSONArray produces = obj.getJSONArray("Produces");
@@ -98,7 +103,10 @@ public final class UnitTypeLoader {
 		template.setUnitName(name);
 		return template;
 	}
-	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name) {
+	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name) throws JSONException {
+		
+		UpgradeTemplate template = new UpgradeTemplate(false, null);
+		template.setName(obj.getString("Name"));
 		return null;
 	}
 }

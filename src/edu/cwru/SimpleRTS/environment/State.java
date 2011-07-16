@@ -103,6 +103,17 @@ public class State implements Serializable{
 			return null;
 		return Collections.unmodifiableList(templatesByAgent.get(player));
 	}
+	public boolean doesPlayerHaveUnit(int player, int templateid) {
+		List<Unit> units = unitsByAgent.get(player);
+		if (units != null) {
+			for (Unit u : units) {
+				if (u.getTemplate().hashCode() == templateid) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	public void setSize(int x, int y) {
 		xextent = x;
 		yextent = y;

@@ -79,16 +79,20 @@ public class Unit extends Target {
 	 * Increment production amount
 	 * @param templateID
 	 */
-	public void incrementProduction(Template template) {
-		if (currentProduction.hashCode() == template.hashCode())
+	public void incrementProduction(Template toproduce) {
+		//check if it is even capable of producing the
+		if (template.canProduce(toproduce))
 		{
-			currentProductionAmount++;
-		}
-		else
-		{
-			resetProduction();
-			currentProduction = template;
-			currentProductionAmount++;
+			if (currentProduction.hashCode() == template.hashCode())
+			{
+				currentProductionAmount++;
+			}
+			else
+			{
+				resetProduction();
+				currentProduction = template;
+				currentProductionAmount++;
+			}
 		}
 	}
 	public boolean canGather()

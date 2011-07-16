@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.model.upgrade;
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -25,6 +26,11 @@ public class UpgradeTemplate extends Template<Upgrade>
 	public int getUpgradeCount()
 	{
 		return upgradecount;
+	}
+	@Override
+	public void turnTemplatesToStrings(List<Template> allthetemplates) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

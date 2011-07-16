@@ -1,6 +1,7 @@
 package edu.cwru.SimpleRTS.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -18,6 +19,7 @@ public abstract class Template<T> implements Serializable{
 	protected int goldCost;
 	protected int woodCost;
 	protected int foodCost;
+	protected String name;
 	/**
 	 * A factory method that produces copies of a "default" object
 	 * @return
@@ -34,6 +36,12 @@ public abstract class Template<T> implements Serializable{
 	}
 	public void setTimeCost(int timeCost) {
 		this.timeCost = timeCost;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getName() {
+		return name;
 	}
 	public int getGoldCost() {
 		return goldCost;
@@ -53,6 +61,11 @@ public abstract class Template<T> implements Serializable{
 	public void setFoodCost(int foodCost) {
 		this.foodCost = foodCost;
 	}
+	/**
+	 * Turn this template's list of prerequisites and things it produces into their ids
+	 * @param allthetemplates
+	 */
+	public abstract void turnTemplatesToStrings(List<Template> allthetemplates);
 	protected int ID;
 	@Override
 	public int hashCode() {
