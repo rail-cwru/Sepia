@@ -6,13 +6,15 @@ import java.util.concurrent.*;
 import com.google.common.collect.ImmutableMap;
 public abstract class Agent {
 	private static int nextID = 0;
+	protected final int playernum;
 	public static int maxId() {
 		return nextID - 1;
 	}
 	protected final int ID;
 	
-	protected Agent() {
+	protected Agent(int playernum) {
 		ID = nextID++;
+		this.playernum=playernum;
 	}
 	
 	@Override

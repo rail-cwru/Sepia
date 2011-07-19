@@ -20,6 +20,11 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
  */
 public class SimpleAgent1 extends Agent {
 
+	protected SimpleAgent1(int playernum) {
+		super(playernum);
+		// TODO Auto-generated constructor stub
+	}
+
 	StateView currentState;
 	
 	@Override

@@ -2,12 +2,13 @@ package edu.cwru.SimpleRTS.action;
 
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 public class Action {
 
 	protected ActionType type;
 	protected int unitId;
-	public Action(int untId, ActionType type)
+	protected Action(int untId, ActionType type)
 	{
 		this.type = type;
 		this.unitId = untId;
@@ -19,8 +20,7 @@ public class Action {
 	{
 		return type;
 	}
-	@Override
-	public String toString()
+	@Override public String toString()
 	{
 		return "Action: Unit "+unitId + ", Type " + type.toString();
 	}
@@ -37,14 +37,8 @@ public class Action {
 	public static Action createCompoundProduction(int unitid, int templateID) {
 		return new ProductionAction(unitid, ActionType.COMPOUNDPRODUCE, templateID);
 	}
-	public static Action createCompoundUpgrade(int unitid, int templateID) {
-		return new ProductionAction(unitid, ActionType.COMPOUNDUPGRADE, templateID);
-	}
 	public static Action createPrimitiveProduction(int unitid, int templateID) {
 		return new ProductionAction(unitid, ActionType.PRIMITIVEPRODUCE, templateID);
-	}
-	public static Action createPrimitiveUpgrade(int unitid, int templateID) {
-		return new ProductionAction(unitid, ActionType.PRIMITIVEUPGRADE, templateID);
 	}
 	public static Action createCompoundBuild(int unitid, int templateID, int x, int y) {
 		return new LocatedProductionAction(unitid, ActionType.COMPOUNDBUILD, templateID,x,y);

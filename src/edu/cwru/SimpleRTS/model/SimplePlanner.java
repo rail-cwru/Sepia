@@ -9,7 +9,7 @@ import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
@@ -154,7 +154,7 @@ public class SimplePlanner {
 	 * @param distance
 	 * @return A series of actions that move the actor to the target and gathers from the target
 	 */
-	public LinkedList<Action> planGather(Unit actor, Resource target, int distance) {
+	public LinkedList<Action> planGather(Unit actor, ResourceNode target, int distance) {
 		//plan a route to onto the resource
 		//This requires that planmove handle a 0 distance move as having the final primative move not be affected by collisions
 		//if the above requirement is violated, this will not work
@@ -232,30 +232,5 @@ public class SimplePlanner {
 		return planProduce(state.getUnit(actor),(UnitTemplate)state.getTemplate(template));
 	}
 	
-	public LinkedList<Action> planUpgrade(Unit actor, UpgradeTemplate template) {
-		LinkedList<Action> plan = new LinkedList<Action>();
-		//needs to know how much building on the target template the unit already has done
-		if (actor.getProductionID() == template.hashCode())
-		{//if it is building the same thing
-			//then make it keep building it
-			int amountleft = template.hashCode() - actor.getAmountProduced();
-			for (int i = 0; i<amountleft; i++)
-			{
-				plan.addLast(Action.createPrimitiveUpgrade(actor.hashCode(), template.hashCode()));
-			}
-		}
-		else
-		{//if it is making somthing else
-			for (int i = template.timeCost - 1; i>=0; i--)
-			{
-				plan.addLast(Action.createPrimitiveUpgrade(actor.hashCode(), template.hashCode()));
-			}
-		}
-		return plan;
-		
-	}
-	public LinkedList<Action> planUpgrade(int actor, int template) {
-		return planUpgrade(state.getUnit(actor),(UpgradeTemplate)state.getTemplate(template));
-	}
 	
 }

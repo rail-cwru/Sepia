@@ -7,8 +7,10 @@ import java.util.Random;
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Configuration;
@@ -42,7 +44,7 @@ public class SimpleModel implements Model {
 		int numLivePlayers = 0;
 		for(int i = 0; i <= Agent.maxId() && numLivePlayers < 2; i++)
 		{
-			for(Unit u : state.getUnits(i))
+			for(Unit u : state.getUnits(i).values())
 			{
 				if(u.getCurrentHealth() > 0)
 				{
@@ -73,10 +75,6 @@ public class SimpleModel implements Model {
 			case PRIMITIVEDEPOSIT:
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
-			case PRIMITIVEUPGRADE:
-				primitives = new LinkedList<Action>();
-				primitives.add(action);
-				break;
 			case COMPOUNDMOVE:
 				LocatedAction aMove = (LocatedAction)action;
 				primitives = planner.planMove(actor, aMove.getX(), aMove.getY());
@@ -96,11 +94,6 @@ public class SimpleModel implements Model {
 				int unitTemplateId = aProduce.getTemplateId();
 				primitives = planner.planProduce(actor, (UnitTemplate)state.getTemplate(unitTemplateId));
 				break;
-			case COMPOUNDUPGRADE:
-				ProductionAction aUpgrade = (ProductionAction)action;
-				int upgradeTemplateId = aUpgrade.getTemplateId();
-				primitives = planner.planUpgrade(actor, (UpgradeTemplate)state.getTemplate(upgradeTemplateId));
-				break;
 			case COMPOUNDBUILD:
 				LocatedProductionAction aBuild = (LocatedProductionAction)action;
 				int buildTemplateId = aBuild.getTemplateId();
@@ -114,6 +107,10 @@ public class SimpleModel implements Model {
 	}
 	@Override
 	public void executeStep() {
+		//Set each agent to have no task
+		for (Unit u : state.getUnits().values()) {
+			u.setTask(UnitTask.Idle);
+		}
 		
 		//Run the Action
 		//TODO: make things happen appropriately in the case of dead unit, dead target, etc
@@ -128,12 +125,79 @@ public class SimpleModel implements Model {
 				// ---Feng
 			{
 				Action a = queuedact.popPrimitive();
+				
 				//Execute it
 				Unit u = state.getUnit(a.getUnitId());
 				int x = u.getxPosition();
 				int y = u.getyPosition();
 				int xPrime = 0;
 				int yPrime = 0;
+				Action fullact = queuedact.getFullAction();
+				switch (fullact.getType()) {
+				case PRIMITIVEMOVE:
+				{
+					u.setTask(UnitTask.Move);
+					break;
+				}
+				case PRIMITIVEGATHER:
+				{
+					LocatedAction thisact = ((LocatedAction)fullact);
+					ResourceNode r = state.resourceAt(thisact.getX(),thisact.getY());
+					if (r!=null)
+						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+				case COMPOUNDMOVE:
+				{
+					u.setTask(UnitTask.Move);
+					break;
+				}
+				case COMPOUNDPRODUCE:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case PRIMITIVEPRODUCE:
+				{
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case COMPOUNDBUILD:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case PRIMITIVEBUILD:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case COMPOUNDATTACK:
+				{
+					u.setTask(UnitTask.Attack);
+					break;
+				}
+				case PRIMITIVEDEPOSIT:
+				{
+					if (u.getCurrentCargoAmount() > 0)
+						u.setTask(u.getCurrentCargoType()==ResourceType.Gold?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+				case COMPOUNDGATHER:
+				{
+					TargetedAction thisact = ((TargetedAction)fullact);
+					ResourceNode r = state.getResource(thisact.getTargetId());
+					if (r != null)
+						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+				}
 				if(a instanceof DirectedAction)
 				{
 					Direction d = ((DirectedAction)a).getDirection();
@@ -158,7 +222,7 @@ public class SimpleModel implements Model {
 						break;
 					case PRIMITIVEGATHER:
 						boolean failed=false;
-						Resource resource = state.resourceAt(xPrime, yPrime);
+						ResourceNode resource = state.resourceAt(xPrime, yPrime);
 						if(resource == null) {
 							failed=true;
 						}
@@ -169,7 +233,7 @@ public class SimpleModel implements Model {
 							int amountToExtract = Integer.parseInt(Configuration.getInstance().get(
 																			resource.getType()+"GatherRate"));
 							amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
-							u.pickUpResource(resource.getType(), amountToExtract);
+							u.pickUpResource(resource.getResourceType(), amountToExtract);
 							resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
 						}
 						if (failed) {

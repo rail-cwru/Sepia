@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 
 public class Unit extends Target {
@@ -15,7 +16,8 @@ public class Unit extends Target {
 	protected int xPosition;
 	protected int yPosition;
 	protected UnitTemplate template;
-	protected Resource.Type cargoType;
+	protected ResourceType cargoType;
+	protected UnitTask task;
 	protected int cargoAmount;
 	protected Template currentProduction;
 	protected int currentProductionAmount;
@@ -129,7 +131,7 @@ public class Unit extends Target {
 				+ template + ", cargoType=" + cargoType + ", cargoAmount="
 				+ cargoAmount + "]";
 	}
-	public boolean pickUpResource(Resource.Type type, int amount) {
+	public boolean pickUpResource(ResourceType type, int amount) {
 		if(!(template).canGather())
 			return false;
 		cargoType = type;
@@ -140,11 +142,17 @@ public class Unit extends Target {
 		cargoType = null;
 		cargoAmount = 0;
 	}
-	public Resource.Type getCurrentCargoType() {
+	public ResourceType getCurrentCargoType() {
 		return cargoType;
 	}
 	public int getCurrentCargoAmount() {
 		return cargoAmount;
+	}
+	public void setTask(UnitTask task) {
+		this.task = task;
+	}
+	public UnitTask getTask() {
+		return task;
 	}
 	public UnitView getView() {
 		if(view == null)
@@ -165,7 +173,7 @@ public class Unit extends Target {
 		public int getCargoAmount() {
 			return unit.cargoAmount;
 		}
-		public Resource.Type getCargoType() {
+		public ResourceType getCargoType() {
 			return unit.cargoType;
 		}
 		public int getXPosition() {
@@ -177,5 +185,12 @@ public class Unit extends Target {
 		public UnitTemplateView getTemplateView() {
 			return new UnitTemplateView(unit.template);
 		}
+		public UnitTask getTask() {
+			return unit.task;
+		}
+		public int getID() {
+			return unit.ID;
+		}
+		
 	}
 }

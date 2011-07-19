@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import org.json.JSONException;
 
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
@@ -114,7 +114,7 @@ public class MapEditor {
 					int y = Integer.parseInt(nextcommand[3]);
 					if (alreadysetsize){
 						if (s.positionAvailable(x,y)) {
-							Resource r = new Resource(Resource.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
+							ResourceNode r = new ResourceNode(ResourceNode.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
 							s.addResource(r);
 						}
 						else

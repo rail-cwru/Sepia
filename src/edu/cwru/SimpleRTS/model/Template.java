@@ -99,5 +99,8 @@ public abstract class Template<T> implements Serializable{
 		public int getFoodCost() {
 			return template.foodCost;
 		}
+		public int getID() {
+			return template.ID;
+		}
 	}
 }

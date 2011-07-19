@@ -23,7 +23,8 @@ public class SimpleAgent2 extends Agent {
 	private Map<Integer,Integer> targetsOfUnits;
 	private Map<Integer,Integer> targetCounts;
 	
-	public SimpleAgent2() {
+	public SimpleAgent2(int playernum) {
+		super(playernum);
 		targetsOfUnits = new HashMap<Integer,Integer>();
 		targetCounts = new HashMap<Integer,Integer>();
 	}

@@ -16,7 +16,7 @@ import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 
 

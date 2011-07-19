@@ -4,41 +4,44 @@ import java.io.Serializable;
 import java.util.*;
 
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.util.Pair;
 
 public class State implements Serializable{
-	private List<Unit> allUnits;//TODO - find a more efficient way of storing these (maybe HashMap of IDs to units?)s
-	private Map<Integer,List<Unit>> unitsByAgent;
-	private List<Resource> resources;
+	//TODO: move this constant somewhere
+	private final int MAXSUPPLY = 50;
+	
+	private Map<Integer,Unit> allUnits;//TODO - find a more efficient way of storing these (maybe HashMap of IDs to units?)s
+	private Map<Integer,Map<Integer, Unit>> unitsByAgent;
+	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
-	private Map<Pair<Integer,Resource.Type>,Integer> currentResources;
+	private Map<Pair<Integer,ResourceType>,Integer> currentResources;
+	private Map<Integer,Integer> currentSupply;
+	private Map<Integer,Integer> currentSupplyCap;
 	private int xextent;
 	private int yextent;
-	private Map<Integer, List<Template>> templatesByAgent;
-	private List<Template> allTemplates;
+	private Map<Integer, Map<Integer,Template>> templatesByAgent;
+	private Map<Integer,Template> allTemplates;
 	private StateView view;
 	public State() {
-		allUnits = new ArrayList<Unit>();
-		unitsByAgent = new HashMap<Integer,List<Unit>>();
-		resources = new ArrayList<Resource>();
-		currentResources = new HashMap<Pair<Integer,Resource.Type>,Integer>();
+		allUnits = new HashMap<Integer,Unit>();
+		unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
+		resourceNodes = new ArrayList<ResourceNode>();
+		currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
+		currentSupply = new HashMap<Integer,Integer>();
+		currentSupplyCap = new HashMap<Integer,Integer>();
 	}
 	public int getTurnNumber() { return turnNumber; }
-	public List<Unit> getUnits() {
-		return Collections.unmodifiableList(allUnits);
+	public Map<Integer, Unit> getUnits() {
+		return Collections.unmodifiableMap(allUnits);
 	}
 	public Unit getUnit(int unitId) {
-		for(Unit u : allUnits)
-		{
-			if(unitId == u.hashCode())
-				return u;
-		}
-		return null;
+		return allUnits.get(unitId);
 	}
-	public Resource getResource(int resourceId) {
-		for(Resource r : resources)
+	public ResourceNode getResource(int resourceId) {
+		for(ResourceNode r : resourceNodes)
 		{
 			if(resourceId == r.hashCode())
 				return r;
@@ -91,27 +94,19 @@ public class State implements Serializable{
 		return new int[]{-1,-1};
 	}
 	public Template getTemplate(int templateId) {
-		for(Template t : allTemplates)
-		{
-			if(templateId == t.hashCode())
-				return t;
-		}
-		return null;
+		return allTemplates.get(templateId);
 	}
-	public List<Template> getTemplates(int player) {
+	public Map<Integer,Template> getTemplates(int player) {
 		if(templatesByAgent.get(player) == null)
 			return null;
-		return Collections.unmodifiableList(templatesByAgent.get(player));
+		return Collections.unmodifiableMap(templatesByAgent.get(player));
 	}
 	public boolean doesPlayerHaveUnit(int player, int templateid) {
-		List<Unit> units = unitsByAgent.get(player);
+		Map<Integer, Unit> units = unitsByAgent.get(player);
 		if (units != null) {
-			for (Unit u : units) {
-				if (u.getTemplate().hashCode() == templateid) {
-					return true;
-				}
-			}
+			if (units.containsKey(templateid));
 		}
+		
 		return false;
 	}
 	public void setSize(int x, int y) {
@@ -132,7 +127,7 @@ public class State implements Serializable{
 				}
 				else
 				{
-					Resource r = resourceAt(i, j);
+					ResourceNode r = resourceAt(i, j);
 					if (r != null)
 					{
 						str.append('0');
@@ -149,24 +144,24 @@ public class State implements Serializable{
 		}
 		return str.toString();
 	}
-	public List<Unit> getUnits(int player) {
+	public Map<Integer,Unit> getUnits(int player) {
 		if(unitsByAgent.get(player) == null)
 			return null;
-		return Collections.unmodifiableList(unitsByAgent.get(player));
+		return Collections.unmodifiableMap(unitsByAgent.get(player));
 	}
 	public void addUnit(Unit u) {
 		int player = u.getPlayer();
-		if(!allUnits.contains(u))
+		if(!allUnits.containsKey(u))
 		{
-			List<Unit> list = unitsByAgent.get(player);
-			if(list == null)
-				unitsByAgent.put(player, list = new ArrayList<Unit>());
-			allUnits.add(u);
-			list.add(u);
+			Map<Integer, Unit> map = unitsByAgent.get(player);
+			if(map == null)
+				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
+			allUnits.put(u.hashCode(),u);
+			map.put(u.getPlayer(), u);
 		}
 	}
-	public List<Resource> getResources() {
-		return Collections.unmodifiableList(resources);
+	public List<ResourceNode> getResources() {
+		return Collections.unmodifiableList(resourceNodes);
 	}
 	public boolean positionAvailable(int x, int y)
 	{
@@ -175,7 +170,7 @@ public class State implements Serializable{
 	}
 	public Unit unitAt(int x, int y) {
 		//This could probably be replaced by a 2D boolean array, but then you would need to ensure that things can't move without changing that array 
-		for(Unit u : allUnits) {
+		for(Unit u : allUnits.values()) {
 			if(u.getxPosition() == x && u.getyPosition() == y)
 				return u;
 		}
@@ -191,8 +186,8 @@ public class State implements Serializable{
 	public int getYExtent() {
 		return yextent;
 	}
-	public Resource resourceAt(int x, int y) {
-		for(Resource r : resources)
+	public ResourceNode resourceAt(int x, int y) {
+		for(ResourceNode r : resourceNodes)
 		{
 			if(r.getxPosition() == x && r.getyPosition() == y)
 				return r;
@@ -205,8 +200,8 @@ public class State implements Serializable{
 	 * @param type
 	 * @param amount
 	 */
-	public void addResourceAmount(int player, Resource.Type type, int amount) {
-		Pair<Integer,Resource.Type> pair = new Pair<Integer,Resource.Type>(player,type);
+	public void addResourceAmount(int player, ResourceType type, int amount) {
+		Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
 		Integer i = currentResources.get(pair);
 		if(i == null)
 			i = 0;
@@ -220,14 +215,71 @@ public class State implements Serializable{
 	 * @param amount
 	 * @return - whether or not the player had enough of the resource
 	 */
-	public boolean consumeResourceAmount(int player, Resource.Type type, int amount) {
-		Pair<Integer,Resource.Type> pair = new Pair<Integer,Resource.Type>(player,type);
+	public boolean consumeResourceAmount(int player, ResourceType type, int amount) {
+		Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
 		Integer i = currentResources.get(pair);
 		if(i == null || i < amount)
 			return false;
 		currentResources.put(pair, i-amount);
 		return true;
 	}
+	/**
+	 * Adds some supply to the current amount.  It tracks the full value, but won't return any more than the maximum cap
+	 * @param player
+	 * @param amount
+	 */
+	public void addSupplyCapAmount(int player, int amount) {
+		
+		Integer i = currentSupplyCap.get(player);
+		if(i == null)
+			i = 0;
+		currentSupplyCap.put(player, i+amount);
+	}
+	/**
+	 * Reduce the supply cap of a player (EG: when a farm dies)
+	 * @param player
+	 * @param amount
+	 */
+	public void reduceSupplyCapAmount(int player, int amount) {
+		Integer i = currentSupplyCap.get(player);
+		if(i == null) //this should never happen
+			i=0;
+		currentSupplyCap.put(player, i-amount);
+	}
+	/**
+	 * Consume some of the supply
+	 * @param player
+	 * @param amount
+	 * @return Whether there is enough of the resource to consume
+	 */
+	public boolean consumeSupplyAmount(int player, int amount) {
+		
+		Integer currentsupply = currentSupply.get(player);
+		if (currentsupply == null)
+			currentsupply = 0;
+		Integer currentcap = currentSupplyCap.get(player);
+		if (currentcap == null)
+			currentcap = 0; //just set it to zero if it isn't set, this way it functions right if for some reason we make it possible to be using a negative amount of supply 
+		if (Math.min(currentcap, MAXSUPPLY) < currentsupply + amount) {
+			return false;
+		}
+		else {
+			currentSupplyCap.put(player, currentsupply+amount);
+			return true;
+		}
+	}
+	/**
+	 * Return the supply that was being used by a unit
+	 * @param player
+	 * @param amount
+	 */
+	public void returnSupplyAmount(int player, int amount) {
+		Integer i = currentSupplyCap.get(player);
+		if(i == null) //this should never happen
+			i=0;
+		currentSupplyCap.put(player, i-amount);
+	}
+	
 	/**
 	 * Builder class that allows one-time access to a new state for construction purposes.
 	 * @author Tim
@@ -249,15 +301,15 @@ public class State implements Serializable{
 		public boolean positionAvailable(int x, int y) {
 			return state.positionAvailable(x, y);
 		}
-		public void addResource(Resource r) {
-			if(!state.resources.contains(r))
-				state.resources.add(r);
+		public void addResource(ResourceNode r) {
+			if(!state.resourceNodes.contains(r))
+				state.resourceNodes.add(r);
 		}
 		public void setTurn(int turn) {
 			state.turnNumber = turn;
 		}
-		public void setResourceAmount(int player, Resource.Type resource, int amount) {
-			state.currentResources.put(new Pair<Integer,Resource.Type>(player,resource), amount);
+		public void setResourceAmount(int player, ResourceType resource, int amount) {
+			state.currentResources.put(new Pair<Integer,ResourceType>(player,resource), amount);
 		}
 		public String getTextString() {
 			return state.getTextString();
@@ -296,42 +348,85 @@ public class State implements Serializable{
 			this.state = state;
 		}
 		public List<Integer> getAllUnitIds() {
-			List<Integer> i = new ArrayList<Integer>();
-			for(Unit u : state.allUnits)
-				i.add(u.hashCode());
-			return i;
+			List<Integer> ids = new ArrayList<Integer>();
+			for(Integer i : state.allUnits.keySet())
+				ids.add(i);
+			return ids;
 		}
 		public List<Integer> getUnitIds(int agent) {
-			List<Integer> i = new ArrayList<Integer>();
-			List<Unit> units = state.getUnits(agent);
+			List<Integer> ids = new ArrayList<Integer>();
+			Map<Integer, Unit> units = state.getUnits(agent);
 			if(units != null)
-				for(Unit u : units)
-					i.add(u.hashCode());
-			return i;
+				for(Integer i : units.keySet())
+					ids.add(i);
+			return ids;
 		}
 		public Unit.UnitView getUnit(int unitID) {
 			return state.getUnit(unitID).getView();
 		}
-		public List<Integer> getAllTemplateIds() {
+		public List<Integer> getAllResourceIds() {
 			List<Integer> i = new ArrayList<Integer>();
-			for(Template t : state.allTemplates)
-				i.add(t.hashCode());
+			for(ResourceNode r : state.resourceNodes)
+				i.add(r.hashCode());
 			return i;
 		}
-		public List<Integer> getTemplateIds(int agent) {
+		public List<Integer> getResourceNodeIds(ResourceNode.Type type) {
 			List<Integer> i = new ArrayList<Integer>();
-			List<Template> templates = state.getTemplates(agent);
-			if(templates != null)
-				for(Template t : templates)
-					i.add(t.hashCode());
+			for(ResourceNode r : state.resourceNodes)
+				if (r.getType() == type)
+					i.add(r.hashCode());
 			return i;
+		}
+		public ResourceNode.ResourceView getResourceNode(int resourceID) {
+			return state.getResource(resourceID).getView();
+		}
+		public List<Integer> getAllTemplateIds() {
+			List<Integer> ids = new ArrayList<Integer>();
+			for(Integer i : state.allTemplates.keySet())
+				ids.add(i);
+			return ids;
+		}
+		public List<Integer> getTemplateIds(int agent) {
+			List<Integer> ids = new ArrayList<Integer>();
+			Map<Integer, Template> templates = state.getTemplates(agent);
+			if(templates != null)
+				for(Integer i : templates.keySet())
+					ids.add(i);
+			return ids;
 		}
 		public Template.TemplateView getTemplate(int templateID) {
 			return state.getTemplate(templateID).getView();
 		}
-		public int getResourceAmount(int player, Resource.Type type) {
-			Integer amount = state.currentResources.get(new Pair<Integer,Resource.Type>(player,type));
+		/**
+		 * Get a template with that name owned by that player 
+		 * @param player
+		 * @param name
+		 * @return The view of the first (and what should be the only) template that has the specified name, or null if that player does not have a template by that name
+		 */
+		public Template.TemplateView getTemplate(int player, String name) {
+			Map<Integer,Template> playerstemplates = state.templatesByAgent.get(player);
+			if (playerstemplates == null)
+				return null;
+			for (Template t : playerstemplates.values()) {
+				if (t.getName().equals(name))
+					return t.getView();
+			}
+			return null;
+		}
+		public int getResourceAmount(int player, ResourceType type) {
+			Integer amount = state.currentResources.get(new Pair<Integer,ResourceType>(player,type));
 			return amount != null ? amount : 0;			
+		}
+		public int getSupplyAmount(int player) {
+			Integer amount = state.currentSupply.get(player);
+			return amount != null ? amount : 0;
+		}
+		public int getSupplyCap(int player) {
+			Integer amount = state.currentSupplyCap.get(player);
+			return Math.min(amount != null ? amount : 0,state.MAXSUPPLY);
+		}
+		public int[] getClosestOpenPosition(int x, int y) {
+			return state.getClosestPosition(x, y);
 		}
 	}
 }
