@@ -1,6 +1,6 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -12,7 +12,8 @@ import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -53,13 +54,13 @@ public class ResourceGatheringTest {
 				builder.addUnit(u);
 			}
 		}
-		Resource t = new Resource(Resource.Type.TREE, 11, 8, 100);
-		Resource g = new Resource(Resource.Type.GOLD_MINE, 11, 12, 5000);
+		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 11, 8, 100);
+		ResourceNode g = new ResourceNode(ResourceNode.Type.GOLD_MINE, 11, 12, 5000);
 		builder.addResource(t);
 		builder.addResource(g);
 		model = new SimpleModel(builder.build(), 5336);
-		(configuration = Configuration.getInstance()).put(Resource.Type.TREE+"GatherRate", 20+"");
-		configuration.put(Resource.Type.GOLD_MINE+"GatherRate", 50+"");
+		(configuration = Configuration.getInstance()).put(ResourceNode.Type.TREE+"GatherRate", 20+"");
+		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");
 	}
 	@Test
 	public void test1() {
@@ -76,19 +77,19 @@ public class ResourceGatheringTest {
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		UnitView u = model.getState().getUnit(1);
-		assertEquals("Unit did not receive the correct resource!",Resource.Type.TREE,u.getCargoType());
+		assertEquals("Unit did not receive the correct resource!",ResourceNode.Type.TREE,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",20,u.getCargoAmount());
 	}
 	@Test
 	public void test2() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.SOUTHWEST);
 		UnitView u = model.getState().getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), Resource.Type.TREE);
+		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), ResourceType.WOOD);
 		int cargoAmount = u.getCargoAmount();
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						model.getState().getResourceAmount(u.getPlayer(), Resource.Type.TREE));
+						model.getState().getResourceAmount(u.getPlayer(), ResourceType.WOOD));
 	}
 	@Test
 	public void test3() {
@@ -102,18 +103,18 @@ public class ResourceGatheringTest {
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		UnitView u = model.getState().getUnit(1);
-		assertEquals("Unit did not receive the correct resource!",Resource.Type.GOLD_MINE,u.getCargoType());
+		assertEquals("Unit did not receive the correct resource!",ResourceType.GOLD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",50,u.getCargoAmount());
 	}
 	@Test
 	public void test4() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.NORTHWEST);
 		UnitView u = model.getState().getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), Resource.Type.GOLD_MINE);
+		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), ResourceType.GOLD);
 		int cargoAmount = u.getCargoAmount();
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						model.getState().getResourceAmount(u.getPlayer(), Resource.Type.GOLD_MINE));
+						model.getState().getResourceAmount(u.getPlayer(), ResourceType.GOLD));
 	}
 }

@@ -2,20 +2,16 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.*;
 
-import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.Resource;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.UnitTypeLoader;
@@ -50,20 +46,20 @@ public class SimplePlannerTest {
 		}
 		for(int i = 0; i <= 12; i++)
 		{
-			Resource t = new Resource(Resource.Type.TREE, i, 8, 100);
+			ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, i, 8, 100);
 			builder.addResource(t);
 		}
-		Resource t = new Resource(Resource.Type.TREE, 7, 2, 100);
+		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 7, 2, 100);
 		builder.addResource(t);
-		t = new Resource(Resource.Type.TREE, 7, 3, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 7, 3, 100);
 		builder.addResource(t);
-		t = new Resource(Resource.Type.TREE, 8, 3, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 8, 3, 100);
 		builder.addResource(t);
-		t = new Resource(Resource.Type.TREE, 8, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 8, 4, 100);
 		builder.addResource(t);
-		t = new Resource(Resource.Type.TREE, 9, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 9, 4, 100);
 		builder.addResource(t);
-		t = new Resource(Resource.Type.TREE, 10, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100);
 		builder.addResource(t);
 		model = new SimpleModel(state,5536);
 	}

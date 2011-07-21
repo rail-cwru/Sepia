@@ -29,7 +29,7 @@ public class SimpleAgent1Test {
 	
 	@BeforeClass
 	public static void setup() throws FileNotFoundException, JSONException {
-		agents = new Agent[]{new SimpleAgent1(),new SimpleAgent1()};
+		agents = new Agent[]{new SimpleAgent1(0),new SimpleAgent1(1)};
 		StateBuilder builder = new StateBuilder();
 		List<Template> templates = UnitTypeLoader.loadFromFile("data/unit_templates");
 		for(Template t : templates)
