@@ -56,11 +56,11 @@ public class ResourceNode extends Target {
 		return ((ResourceNode)o).ID == ID;
 	}
 	
-	public enum Type { TREE, GOLD_MINE ;
+	public static enum Type { TREE, GOLD_MINE ;
 		public static ResourceType getResourceType(Type t){
 			if (t == TREE)
-				return ResourceType.Wood;
-			return ResourceType.Gold;
+				return ResourceType.WOOD;
+			return ResourceType.GOLD;
 		}
 	};
 	public class ResourceView {
