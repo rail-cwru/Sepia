@@ -356,8 +356,8 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		List<Integer> myUnitIDs;
 		public RelevantStateView (int playernum, StateView state){
 			spacesoccupiedbynewbuildings = new LinkedList<int[]>();
-			ngold = state.getResourceAmount(playernum, ResourceType.Gold);
-			nwood = state.getResourceAmount(playernum, ResourceType.Wood);
+			ngold = state.getResourceAmount(playernum, ResourceType.GOLD);
+			nwood = state.getResourceAmount(playernum, ResourceType.WOOD);
 			nfoodremaining = state.getSupplyCap(playernum) - state.getSupplyAmount(playernum);
 			unitsWithTasks = new HashSet<Integer>();
 			idleworkers = new LinkedList<Integer>();
