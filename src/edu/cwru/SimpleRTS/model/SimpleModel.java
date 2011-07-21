@@ -182,7 +182,7 @@ public class SimpleModel implements Model {
 				case PRIMITIVEDEPOSIT:
 				{
 					if (u.getCurrentCargoAmount() > 0)
-						u.setTask(u.getCurrentCargoType()==ResourceType.Gold?UnitTask.Gold:UnitTask.Wood);
+						u.setTask(u.getCurrentCargoType()==ResourceType.GOLD?UnitTask.Gold:UnitTask.Wood);
 					else
 						u.setTask(UnitTask.Idle);
 					break;
