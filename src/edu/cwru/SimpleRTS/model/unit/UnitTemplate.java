@@ -132,6 +132,9 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 				
 			}
 	}
+	public String toString() {
+		return name;
+	}
 	public static class UnitTemplateView extends TemplateView<Unit> implements Serializable{
 
 		public UnitTemplateView(UnitTemplate template) {
