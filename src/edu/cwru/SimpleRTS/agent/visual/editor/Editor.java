@@ -126,7 +126,7 @@ public class Editor extends JFrame {
 				GameMap.storeMap(jfc.getSelectedFile().toString(), map);
 			}
 			
-		});
+		}.setState(state));
 		
 		add(templateSelector);
 		add(playerSelector);
@@ -196,9 +196,22 @@ public class Editor extends JFrame {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, JSONException {
-		StateBuilder builder = new StateBuilder();
-		builder.setSize(32, 32);
-		State state = builder.build();
+		State state = null;
+		if(args.length > 0)
+		{
+			try {
+			state = GameMap.loadMap(args[0]).getState();
+			}
+			catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if(state == null)
+		{
+			StateBuilder builder = new StateBuilder();
+			builder.setSize(32, 32);
+			state = builder.build();
+		}
 		GameScreen screen = new GameScreen(null);
 		screen.updateState(state.getView());
 		List<Template> templates = UnitTypeLoader.loadFromFile("data/unit_templates");
