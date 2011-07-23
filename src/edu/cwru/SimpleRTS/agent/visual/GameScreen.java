@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.agent.visual;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
@@ -27,7 +28,8 @@ public class GameScreen extends JFrame implements KeyListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setSize(800,600);
-		this.addKeyListener(this);
+		setTitle("SimpleRTS");
+		addKeyListener(this);
 		
 		canvas = this.new PaintPanel();
 		JScrollPane scroll = new JScrollPane(canvas);
@@ -74,7 +76,24 @@ public class GameScreen extends JFrame implements KeyListener{
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
-	
+
+	public int scaleX(int x) {
+		return (x-tlx)*SCALING_FACTOR;
+	}
+	public int scaleY(int y) {
+		return (y-tly)*(SCALING_FACTOR);
+	}
+	public int unscaleX(int x) {
+		return x/SCALING_FACTOR+tlx;
+	}
+	public int unscaleY(int y) {
+		return y/SCALING_FACTOR+tly;
+	}
+	@Override
+	public void addMouseListener(MouseListener listener) {
+		super.addMouseListener(listener);
+		canvas.addMouseListener(listener);
+	}
 	private class PaintPanel extends JPanel {
 		
 		public void PaintPanel() {
@@ -121,12 +140,6 @@ public class GameScreen extends JFrame implements KeyListener{
 			}
 			g.setColor(new Color(255,128,127));
 			g.drawString(tlx+","+tly, getWidth()-32, getHeight()-1);
-		}
-		private int scaleX(int x) {
-			return (x-tlx)*SCALING_FACTOR;
-		}
-		private int scaleY(int y) {
-			return (y-tly)*(SCALING_FACTOR);
 		}
 	}
 	public static final Color[] playerColors = new Color[] { new Color(255,0,0), new Color(0,255,0), new Color(0,0,255),
