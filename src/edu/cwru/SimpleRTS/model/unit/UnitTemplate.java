@@ -150,6 +150,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public int getArmor() {	return ((UnitTemplate)template).getArmor(); }
 		public int getSightRange() { return ((UnitTemplate)template).getSightRange();	}
 		public boolean canProduce(Integer templateID) { return ((UnitTemplate)template).producesID.contains(templateID);};
+		public char getCharacter() { return ((UnitTemplate)template).getCharacter(); }
 	}
 
 	
