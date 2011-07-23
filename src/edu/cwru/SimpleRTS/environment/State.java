@@ -428,5 +428,11 @@ public class State implements Serializable{
 		public int[] getClosestOpenPosition(int x, int y) {
 			return state.getClosestPosition(x, y);
 		}
+		public int getXExtent() {
+			return state.getXExtent();
+		}
+		public int getYExtent() {
+			return state.getYExtent();
+		}
 	}
 }
