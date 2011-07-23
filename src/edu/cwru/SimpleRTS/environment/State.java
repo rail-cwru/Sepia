@@ -48,6 +48,9 @@ public class State implements Serializable{
 		}
 		return null;
 	}
+	public void addResource(ResourceNode resource) {
+		resourceNodes.add(resource);
+	}
 	/**
 	 * Find the closest unoccupied position using a spiraling out search pattern
 	 * @param x
