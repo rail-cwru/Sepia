@@ -44,10 +44,18 @@ public class GameMap implements Serializable{
 	}
 	
 	public GameMap(State state) {
-		this.state = state;
+		this.setState(state);
 	}
 	
 	
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
 	public static void storeMap(String filename, GameMap gameMap) {
 		try {
 			ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename));
