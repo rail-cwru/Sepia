@@ -69,7 +69,7 @@ public final class UnitTypeLoader {
 	}
 	private static UnitTemplate handleUnit(JSONObject obj, String name) throws JSONException {
 		UnitTemplate template = new UnitTemplate();
-		template.setName(obj.getString("Name"));
+		template.setName(name);
 		if(obj.has("Mobile"))
 			template.setCanMove(obj.getBoolean("Mobile"));
 		if(obj.has("Builder"))
@@ -106,7 +106,7 @@ public final class UnitTypeLoader {
 	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name) throws JSONException {
 		
 		UpgradeTemplate template = new UpgradeTemplate(false, null);
-		template.setName(obj.getString("Name"));
+		template.setName(name);
 		return null;
 	}
 }
