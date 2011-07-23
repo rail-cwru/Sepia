@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.model.resource;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 
@@ -63,7 +65,7 @@ public class ResourceNode extends Target {
 			return ResourceType.GOLD;
 		}
 	};
-	public class ResourceView {
+	public class ResourceView implements Serializable {
 		ResourceNode node;
 		public ResourceView(ResourceNode node) {
 			this.node = node;
