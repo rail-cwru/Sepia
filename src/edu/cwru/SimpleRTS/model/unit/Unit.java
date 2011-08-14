@@ -69,8 +69,10 @@ public class Unit extends Target {
 	{
 		return currentProductionAmount;
 	}
-	public int getProductionID()
+	public int getCurrentProductionID()
 	{
+		if (currentProduction==null)
+			return Integer.MIN_VALUE;
 		return currentProduction.hashCode();
 	}
 	public void resetProduction() {
@@ -85,7 +87,7 @@ public class Unit extends Target {
 		//check if it is even capable of producing the
 		if (template.canProduce(toproduce))
 		{
-			if (currentProduction.hashCode() == template.hashCode())
+			if (getCurrentProductionID() == template.hashCode())
 			{
 				currentProductionAmount++;
 			}

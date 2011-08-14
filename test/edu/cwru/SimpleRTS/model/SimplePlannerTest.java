@@ -14,7 +14,7 @@ import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class SimplePlannerTest {
 
@@ -23,14 +23,16 @@ public class SimplePlannerTest {
 	static List<Template> templates;
 	static State state;
 	
+	
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = UnitTypeLoader.loadFromFile("data/unit_templates");		
-		
+		templates = TypeLoader.loadFromFile("data/unit_templates");		
+		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
-		builder.setSize(64,64);
+		builder.setSize(15,15);
 		state = builder.build();
 		planner = new SimplePlanner(state);
+		
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
@@ -44,6 +46,22 @@ public class SimplePlannerTest {
 				builder.addUnit(u);
 			}
 		}
+		{
+		Unit u = ((UnitTemplate)state.getTemplate(0, "Barracks")).produceInstance();
+		u.setxPosition(0);
+		u.setyPosition(0);
+		}
+		{
+			Unit u = ((UnitTemplate)state.getTemplate(0, "Blacksmith")).produceInstance();
+			u.setxPosition(0);
+			u.setyPosition(1);
+			}
+		{
+			Unit u = ((UnitTemplate)state.getTemplate(0, "Blacksmith")).produceInstance();
+			u.setxPosition(0);
+			u.setyPosition(2);
+			}
+		
 		for(int i = 0; i <= 12; i++)
 		{
 			ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, i, 8, 100);
@@ -82,7 +100,7 @@ public class SimplePlannerTest {
 		}
 	}
 	@Test
-	public void textPlanAndExecuteMove() {
+	public void testPlanAndExecuteMove() {
 		LinkedList<Action> plan = planner.planMove(0, 1, 10);
 		for(Action a : plan)
 		{
@@ -105,16 +123,22 @@ public class SimplePlannerTest {
 	}
 	@Test
 	public void testPlanAndExecuteMoveObstructed() {
+		System.out.println("Planning to move to 10,1");
 		LinkedList<Action> plan = planner.planMove(0, 10, 1);
 		System.out.println("\n\n");
+		System.out.println(state.getTextString());
+		System.out.println("Plan is: \n" + plan);
 		for(Action a : plan)
 		{
 			model.setActions(new Action[]{a});
 			model.executeStep();
 		}
+		System.out.println(state.getTextString());
 		Unit u = state.getUnit(0);
-		assertEquals("Unit's x position did not match the expected value!",10,u.getxPosition());
+		System.out.println("Unit position is now: " + u.getxPosition() + "," + u.getyPosition());
 		assertEquals("Unit's y position did not match the expected value!",1,u.getyPosition());
+		assertEquals("Unit's x position did not match the expected value!",10,u.getxPosition());
+		
 	}
 	@Test
 	public void testPlanFollowsShortestPath() {
@@ -125,5 +149,9 @@ public class SimplePlannerTest {
 			System.out.println(a);
 		}
 		assertEquals("Planner did not take shortest path!",8,plan.size());
+	}
+	@Test
+	public void testProduceUnit() {
+		
 	}
 }

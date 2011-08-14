@@ -9,23 +9,29 @@ import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
-public final class UnitTypeLoader {
-	private UnitTypeLoader(){}
+public final class TypeLoader {
+	private TypeLoader(){}
 	
 	public static List<Template> loadFromFile(String filename) throws FileNotFoundException, JSONException {
 		List<Template> templates = new ArrayList<Template>();
+		System.err.println("Getting upgrade templates");
 		List<UpgradeTemplate> uptemplates  = loadUpgradesFromFile(filename);
 		for (Template t : uptemplates)
 			templates.add(t);
+		System.err.println("Getting unit templates");
 		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename);
 		for (Template t : untemplates)
 			templates.add(t);
+		System.err.println("Putting templates into other templates");
 		for (Template t : templates) {
-			t.turnTemplatesToStrings(templates);
+			
+			System.out.println(t + " " + t);
+			t.turnTemplatesToStrings(untemplates, uptemplates);
 		}
 		return templates;
 	}
 	public static List<UpgradeTemplate> loadUpgradesFromFile(String filename) throws FileNotFoundException, JSONException {
+		System.out.println("Loading upgrade");
 		List<UpgradeTemplate> list = new ArrayList<UpgradeTemplate>();
 		StringBuilder sb = new StringBuilder();
 		Scanner in = new Scanner(new File(filename));
@@ -39,6 +45,7 @@ public final class UnitTypeLoader {
 		String[] keys = JSONObject.getNames(templateFile);
 		for(String key : keys)
 		{
+			System.out.println("upgradehi");
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
 			if(templateType.equals("Upgrade"))
@@ -60,6 +67,7 @@ public final class UnitTypeLoader {
 		String[] keys = JSONObject.getNames(templateFile);
 		for(String key : keys)
 		{
+			System.err.println("unithi");
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
 			if(templateType.equals("Unit"))
@@ -69,7 +77,7 @@ public final class UnitTypeLoader {
 	}
 	private static UnitTemplate handleUnit(JSONObject obj, String name) throws JSONException {
 		UnitTemplate template = new UnitTemplate();
-		template.setName(name);
+		template.setName(obj.getString("Name"));
 		if(obj.has("Mobile"))
 			template.setCanMove(obj.getBoolean("Mobile"));
 		if(obj.has("Builder"))
@@ -104,9 +112,29 @@ public final class UnitTypeLoader {
 		return template;
 	}
 	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name) throws JSONException {
-		
-		UpgradeTemplate template = new UpgradeTemplate(false, null);
-		template.setName(name);
-		return null;
+		String[] affectslist = null;
+		if(obj.has("Affects"))
+		{
+			JSONArray affects = obj.getJSONArray("Affects");
+			affectslist=new String[affects.length()];
+			for(int i = 0; i < affects.length(); i++)
+				affectslist[i]=affects.getString(i);
+		}
+		int attackchange = 0;
+		int defensechange = 0;
+		if (obj.has("DamageIncrease"))
+		{
+			attackchange = obj.getInt("DamageIncrease");
+		}
+		if (obj.has("ArmorIncrease"))
+		{
+			defensechange = obj.getInt("ArmorIncrease");
+		}
+		UpgradeTemplate template = new UpgradeTemplate(attackchange, defensechange, affectslist);
+		template.setName(obj.getString("Name"));
+		template.setTimeCost(obj.getInt("TimeCost"));
+		template.setGoldCost(obj.getInt("GoldCost"));
+		template.setWoodCost(obj.getInt("WoodCost"));
+		return template;
 	}
 }

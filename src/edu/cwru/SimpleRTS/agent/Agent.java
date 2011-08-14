@@ -1,10 +1,13 @@
 package edu.cwru.SimpleRTS.agent;
 import edu.cwru.SimpleRTS.environment.*;
 import edu.cwru.SimpleRTS.action.*;
+
+import java.util.Set;
 import java.util.concurrent.*;
 
 import com.google.common.collect.ImmutableMap;
 public abstract class Agent {
+	protected boolean verbose; 
 	private static int nextID = 0;
 	protected final int playernum;
 	public static int maxId() {
@@ -15,6 +18,10 @@ public abstract class Agent {
 	protected Agent(int playernum) {
 		ID = nextID++;
 		this.playernum=playernum;
+		verbose = false;
+	}
+	public void setVerbose(boolean verbosity) {
+		verbose = verbosity;
 	}
 	
 	@Override
@@ -40,7 +47,15 @@ public abstract class Agent {
 	 */
 	public final ImmutableMap<Integer,Action> getAction()
 	{
-		return chosenActions.build();
+		ImmutableMap<Integer, Action> actions = chosenActions.build();
+		System.out.println("Agent "+playernum+" is performing actions:");
+		if (verbose) {
+			Set<Integer> units = actions.keySet();
+			for (Integer i : units) {
+				System.out.println("\t" + i + " " + actions.get(i));
+			}
+		}
+		return actions;
 	}
 	/**
 	 * Accept the first state of an episode and begin calculating a response for it

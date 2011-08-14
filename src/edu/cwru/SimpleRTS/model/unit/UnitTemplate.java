@@ -7,6 +7,7 @@ import java.util.List;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * Contains information about default and invariant attributes of units. The class
  * itself contains some invariant attributes, but defaults, invariants and factory
@@ -121,16 +122,24 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		return false;
 	}
 	@Override
-	public void turnTemplatesToStrings(List<Template> controllerstemplates) {
+	public void turnTemplatesToStrings(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
 		producesID.clear();
-		for (String s : produces)
-			for (Template t : controllerstemplates) {
+		for (String s : produces) {
+			for (Template t : unittemplates) {
 				if (s.equals(t.getName())) {
 					producesID.add(t.hashCode());
 					break;
 				}
 				
 			}
+			for (Template t : upgradetemplates) {
+				if (s.equals(t.getName())) {
+					producesID.add(t.hashCode());
+					break;
+				}
+				
+			}
+		}
 	}
 	public String toString() {
 		return name;

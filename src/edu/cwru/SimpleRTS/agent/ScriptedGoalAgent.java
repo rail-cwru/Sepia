@@ -181,6 +181,8 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 						break;
 					}
 				}
+				
+				break;
 			case Produce:
 				//Find a unit that isn't busy and can produce it, then produce it from that one
 				for (Integer id : relstate.myUnitIDs) {

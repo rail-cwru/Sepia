@@ -21,7 +21,7 @@ public class MapEditor {
 			return;
 		boolean usestdin = false;
 		String templatefile = args[0];
-		List<UnitTemplate> templates= UnitTypeLoader.loadUnitsFromFile(templatefile);
+		List<UnitTemplate> templates= TypeLoader.loadUnitsFromFile(templatefile);
 		String outputfile = args[1];
 		String[] commands = null;
 		BufferedReader reader = null;

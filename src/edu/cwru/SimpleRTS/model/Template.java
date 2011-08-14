@@ -5,6 +5,8 @@ import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
 /**
  * Signifies that an implementing class provides generic details about a specific object.
@@ -65,7 +67,7 @@ public abstract class Template<T> implements Serializable{
 	 * Turn this template's list of prerequisites and things it produces into their ids
 	 * @param allthetemplates
 	 */
-	public abstract void turnTemplatesToStrings(List<Template> allthetemplates);
+	public abstract void turnTemplatesToStrings(List<UnitTemplate> untemplates, List<UpgradeTemplate> uptemplates);
 	protected int ID;
 	@Override
 	public int hashCode() {

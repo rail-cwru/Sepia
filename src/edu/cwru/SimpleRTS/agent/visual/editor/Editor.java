@@ -35,7 +35,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.GameMap;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class Editor extends JFrame {
 	
@@ -214,7 +214,7 @@ public class Editor extends JFrame {
 		}
 		GameScreen screen = new GameScreen(null);
 		screen.updateState(state.getView());
-		List<Template> templates = UnitTypeLoader.loadFromFile("data/unit_templates");
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates");
 		ListIterator<Template> li = templates.listIterator();
 		while(li.hasNext())
 		{

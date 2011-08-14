@@ -40,6 +40,7 @@ public class SimplePlanner {
 	{
 		PriorityQueue<AStarNode> queue = new PriorityQueue<AStarNode>();
 		HashSet<AStarNode> checked = new HashSet<AStarNode>();
+		boolean collidesatend = !state.inBounds(endingx, endingy) || (state.unitAt(endingx, endingy)!=null || state.resourceAt(endingx, endingy)!=null);
 		AStarNode bestnode= null;
 		queue.offer(new AStarNode(startingx,startingy,Math.max(Math.abs(startingx-endingx), Math.abs(startingy-endingy))));
 		if(distance == 0)
@@ -48,7 +49,7 @@ public class SimplePlanner {
 		{
 			AStarNode currentnode = queue.poll();
 			int currentdistance = Math.max(Math.abs(currentnode.x-endingx),Math.abs(currentnode.y-endingy));
-			if ((cancollideonfinal && currentdistance == 0) || (!cancollideonfinal && currentdistance == 1))
+			if (distance == 0 && (currentdistance == 0) || (!cancollideonfinal && currentdistance == 1 &&collidesatend))
 			{
 				bestnode = currentnode;
 				break;
@@ -63,7 +64,7 @@ public class SimplePlanner {
 				if (distfromgoal <= distance && state.inBounds(newx, newy) && 
 						(
 								(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null) || 
-								(cancollideonfinal && distfromgoal==0) || (!cancollideonfinal && distfromgoal == 1)
+								(cancollideonfinal && distfromgoal==0)
 						)
 					)
 				{
@@ -74,7 +75,7 @@ public class SimplePlanner {
 						checked.add(newnode);
 					}
 					
-					if ((cancollideonfinal && distfromgoal == 0) || (!cancollideonfinal && distfromgoal == 1))
+					if ((distfromgoal == 0) || (!cancollideonfinal && distfromgoal == 1 && collidesatend))
 					{
 						bestnode = newnode;
 						break;
@@ -87,6 +88,7 @@ public class SimplePlanner {
 			return null;
 		else
 		{
+			System.out.println("Found best at:" + bestnode.x + "," + bestnode.y);
 			LinkedList<Direction> toreturn=new LinkedList<Direction>();
 			while(bestnode.previous!=null)
 			{
@@ -176,7 +178,7 @@ public class SimplePlanner {
 		if (actor.getxPosition() == targetX && actor.getyPosition() == targetY)
 		{//if it is in the same place
 			//needs to know how much building on the target template the unit already has done
-			if (actor.getProductionID() == template.hashCode())
+			if (actor.getCurrentProductionID() == template.hashCode())
 			{//if it is building the same thing
 				//then make it keep building it
 				int amountleft = template.hashCode() - actor.getAmountProduced();
@@ -207,10 +209,10 @@ public class SimplePlanner {
 		return planBuild(state.getUnit(actor),targetX,targetY,(UnitTemplate)state.getTemplate(template));
 	}
 	
-	public LinkedList<Action> planProduce(Unit actor, UnitTemplate template) {
+	public LinkedList<Action> planProduce(Unit actor, Template template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
 		//needs to know how much building on the target template the unit already has done
-		if (actor.getProductionID() == template.hashCode())
+		if (actor.getCurrentProductionID() == template.hashCode())
 		{//if it is building the same thing
 			//then make it keep building it
 			int amountleft = template.hashCode() - actor.getAmountProduced();
@@ -229,7 +231,7 @@ public class SimplePlanner {
 		return plan;
 	}
 	public LinkedList<Action> planProduce(int actor, int template) {
-		return planProduce(state.getUnit(actor),(UnitTemplate)state.getTemplate(template));
+		return planProduce(state.getUnit(actor),state.getTemplate(template));
 	}
 	
 	

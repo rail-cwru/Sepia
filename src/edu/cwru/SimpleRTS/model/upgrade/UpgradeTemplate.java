@@ -1,23 +1,27 @@
 package edu.cwru.SimpleRTS.model.upgrade;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 public class UpgradeTemplate extends Template<Upgrade>
 {
-	private boolean isattackupgrade;
-	private UnitTemplate[] unittemplatesaffected;
+	private int attackchange;
+	private int defensechange;
+	private List<UnitTemplate> unittemplatesaffected;
+	private String[] stringunitsaffected;
 	private int timetoproduce;
 	private int upgradecount; //A count of the number of times this upgrade has been completed
-	public UpgradeTemplate(boolean isattackupgrade, UnitTemplate[] affectedunits)
+	public UpgradeTemplate(int attackchange, int defensechange, String[] affectedunits)
 	{
-		this.isattackupgrade = isattackupgrade;
-		this.unittemplatesaffected = affectedunits;
+		this.attackchange = attackchange;
+		this.defensechange = defensechange;
+		this.stringunitsaffected = affectedunits;
 	}
 	public Upgrade produceInstance()
 	{
-		return new Upgrade(isattackupgrade, unittemplatesaffected, upgradecount);
+		return new Upgrade(attackchange, defensechange, unittemplatesaffected, upgradecount,this);
 	}
 	public void incrementUpgradeCount()
 	{
@@ -28,8 +32,17 @@ public class UpgradeTemplate extends Template<Upgrade>
 		return upgradecount;
 	}
 	@Override
-	public void turnTemplatesToStrings(List<Template> allthetemplates) {
-		// TODO Auto-generated method stub
+	public void turnTemplatesToStrings(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
+		unittemplatesaffected = new LinkedList<UnitTemplate>();
+		if (stringunitsaffected != null) {
+			for (int i = 0; i<stringunitsaffected.length;i++) {
+				for (UnitTemplate t : unittemplates) {
+					if (stringunitsaffected[i].equals(t.getName()) && t instanceof UnitTemplate) {
+						unittemplatesaffected.add((UnitTemplate)t);
+					}
+				}
+			}
+		}
 		
 	}
 	

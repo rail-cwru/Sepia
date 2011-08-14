@@ -28,6 +28,8 @@ public class State implements Serializable{
 	public State() {
 		allUnits = new HashMap<Integer,Unit>();
 		unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
+		allTemplates = new HashMap<Integer,Template>();
+		templatesByAgent = new HashMap<Integer,Map<Integer,Template>>();
 		resourceNodes = new ArrayList<ResourceNode>();
 		currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
 		currentSupply = new HashMap<Integer,Integer>();
@@ -99,6 +101,19 @@ public class State implements Serializable{
 	public Template getTemplate(int templateId) {
 		return allTemplates.get(templateId);
 	}
+	public Template getTemplate(int player, String name) {
+		Map<Integer,Template> playerstemplates = templatesByAgent.get(player);
+		if (playerstemplates == null)
+		{
+			return null;
+		}
+		for (Template t : playerstemplates.values()) {
+			System.out.println("Checking name of template:"+t.getName());
+			if (t.getName().equals(name))
+				return t;
+		}
+		return null;
+	}
 	public Map<Integer,Template> getTemplates(int player) {
 		if(templatesByAgent.get(player) == null)
 			return null;
@@ -154,13 +169,25 @@ public class State implements Serializable{
 	}
 	public void addUnit(Unit u) {
 		int player = u.getPlayer();
-		if(!allUnits.containsKey(u))
-		{
+		if(!allUnits.containsKey(u)) {
 			Map<Integer, Unit> map = unitsByAgent.get(player);
 			if(map == null)
 				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
 			allUnits.put(u.hashCode(),u);
 			map.put(u.getPlayer(), u);
+		}
+	}
+	public void addTemplate(Template t, int player) {
+		System.out.println("Trying to add template:"+t.getName());
+		if(!allTemplates.containsKey(t)) {
+			Map<Integer, Template> map = templatesByAgent.get(player);
+			if(map == null)
+			{
+				System.out.println("Resetting template");
+				templatesByAgent.put(player, map = new HashMap<Integer, Template>());
+			}
+			allTemplates.put(t.hashCode(),t);
+			map.put(t.hashCode(), t);
 		}
 	}
 	public List<ResourceNode> getResources() {
@@ -298,6 +325,9 @@ public class State implements Serializable{
 		public void addUnit(Unit u) {
 			state.addUnit(u);
 		}
+		public void addTemplate(Template t, int player) {
+			state.addTemplate(t, player);
+		}
 		public void setSize(int x, int y) {
 			state.setSize(x, y);
 		}
@@ -407,14 +437,11 @@ public class State implements Serializable{
 		 * @return The view of the first (and what should be the only) template that has the specified name, or null if that player does not have a template by that name
 		 */
 		public Template.TemplateView getTemplate(int player, String name) {
-			Map<Integer,Template> playerstemplates = state.templatesByAgent.get(player);
-			if (playerstemplates == null)
+			Template t = state.getTemplate(player,name);
+			if (t!=null)
+				return t.getView();
+			else //if it is null
 				return null;
-			for (Template t : playerstemplates.values()) {
-				if (t.getName().equals(name))
-					return t.getView();
-			}
-			return null;
 		}
 		public int getResourceAmount(int player, ResourceType type) {
 			Integer amount = state.currentResources.get(new Pair<Integer,ResourceType>(player,type));

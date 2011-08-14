@@ -16,7 +16,7 @@ import edu.cwru.SimpleRTS.environment.*;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 /**
  * Contains tests relating to the creation and manipulation of units
  * @author Tim
@@ -31,7 +31,7 @@ public class GameUnitTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = UnitTypeLoader.loadFromFile("data/unit_templates");
+		templates = TypeLoader.loadFromFile("data/unit_templates");
 		State.StateBuilder builder = new StateBuilder();
 		int x = 0;
 		int y = 0;

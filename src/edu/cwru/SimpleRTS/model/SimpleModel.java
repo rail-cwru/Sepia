@@ -75,6 +75,10 @@ public class SimpleModel implements Model {
 			case PRIMITIVEDEPOSIT:
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
+				//The only primitive action needed to execute a primitive action is itself
+				primitives = new LinkedList<Action>();
+				primitives.add(action);
+				break;
 			case COMPOUNDMOVE:
 				LocatedAction aMove = (LocatedAction)action;
 				primitives = planner.planMove(actor, aMove.getX(), aMove.getY());
@@ -281,15 +285,26 @@ public class SimpleModel implements Model {
 					}
 					case PRIMITIVEPRODUCE:
 					{
-						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
+						System.out.println("HELLOOOOO");
+						Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
 						u.incrementProduction(template);
+						System.out.println(template.getName() + " takes "+template.timeCost);
+						System.out.println("Produced"+u.getAmountProduced());
 						if (template.timeCost == u.getAmountProduced())
 						{
-							Unit produced = template.produceInstance();
-							int[] newxy = state.getClosestPosition(x,y);
-							produced.setxPosition(newxy[0]);
-							produced.setyPosition(newxy[1]);
-							state.addUnit(produced);
+							if (template instanceof UnitTemplate)
+							{
+								Unit produced = ((UnitTemplate)template).produceInstance();
+								int[] newxy = state.getClosestPosition(x,y);
+								produced.setxPosition(newxy[0]);
+								produced.setyPosition(newxy[1]);
+								state.addUnit(produced);
+							}
+							else if (template instanceof UpgradeTemplate) {
+								System.out.println("Just upgraded to:"+template.getName());
+								((UpgradeTemplate)template).produceInstance().execute();
+							}
+							
 						}
 						
 						break;

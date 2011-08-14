@@ -1,5 +1,6 @@
 {
 	"Footman" : {
+		"Name" : "Footman",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 600,
@@ -18,6 +19,7 @@
 		"Builder" : false
 	},
 	"Archer" : {
+		"Name" : "Archer",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 500,
@@ -36,6 +38,7 @@
 		"Builder" : false
 	},
 	"Peasant" : {
+		"Name" : "Peasant",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 400,
@@ -54,6 +57,7 @@
 		"Builder" : true
 	},
 	"Knight" : {
+		"Name" : "Knight",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 800,
@@ -72,6 +76,7 @@
 		"Builder" : false
 	},
 	"TownHall" : {
+		"Name" : "TownHall",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 1200,
@@ -90,6 +95,7 @@
 		"Produces" : ["Peasant"]
 	},
 	"Farm" : {
+		"Name" : "Farm",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 500,
@@ -105,10 +111,11 @@
 		"FoodGiven" : 5
 	},
 	"Barracks" : {
+		"Name" : "Barracks",
 		"TemplateType" : "Unit",
 		"TimeCost" : 1,
 		"GoldCost" : 700,
-		"WoodCost" : 450,
+		"WoodCost" : 400,
 		"HitPoints" : 800,
 		"Armor" : 20,
 		"Character" : "B",
@@ -119,5 +126,52 @@
 		"SightRange" : 1,
 		"FoodGiven" : 0,
 		"Produces" : ["Footman"]
-	}
+	},
+		"Blacksmith" : {
+		"Name" : "Blacksmith",
+		"TemplateType" : "Unit",
+		"TimeCost" : 1,
+		"GoldCost" : 800,
+		"WoodCost" : 450,
+		"HitPoints" : 775,
+		"Armor" : 20,
+		"Character" : "L",
+		"BasicAttackLow" : 0,
+		"BasicAttackDiff" : 0,
+		"Piercing" : 0,
+		"Range" : 0,
+		"SightRange" : 1,
+		"FoodGiven" : 0,
+		"Produces" : ["WeaponOne","WeaponTwo","ArmorOne"]
+	},
+	"WeaponOne" : {
+		"Name" : "WeaponOne",
+		"TemplateType" : "Upgrade",
+		"TimeCost" : 1,
+		"DamageIncrease" : 1,
+		"ArmorIncrease" : 0,
+		"GoldCost" : 100,
+		"WoodCost" : 50,
+		"Affects" : ["Footman"]
+	},
+	"WeaponTwo" : {
+		"Name" : "WeaponTwo",
+		"TemplateType" : "Upgrade",
+		"TimeCost" : 1,
+		"DamageIncrease" : 1,
+		"ArmorIncrease" : 0,
+		"GoldCost" : 200,
+		"WoodCost" : 100,
+		"Affects" : ["Footman"]
+	},
+		"ArmorOne" : {
+		"Name" : "ArmorOne",
+		"TemplateType" : "Upgrade",
+		"TimeCost" : 1,
+		"DamageIncrease" : 0,
+		"ArmorIncrease" : 1,
+		"GoldCost" : 100,
+		"WoodCost" : 50,
+		"Affects" : ["Footman"]
+	},
 }

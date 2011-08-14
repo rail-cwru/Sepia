@@ -1,17 +1,23 @@
 package edu.cwru.SimpleRTS.model.upgrade;
 
+import java.util.List;
+
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 public class Upgrade 
 {
-	private UnitTemplate[] affectedunits;
+	private List<UnitTemplate> affectedunits;
 	private int numpriorupgrades;
-	private boolean isattackupgrade;
-	public Upgrade(boolean isattackupgrade, UnitTemplate[] affectedunits, int numpriorupgrades)
+	private int attackchange;
+	private int defensechange;
+	private UpgradeTemplate template;
+	public Upgrade(int attackchange, int defensechange, List<UnitTemplate> affectedunits, int numpriorupgrades, UpgradeTemplate template)
 	{
 		this.affectedunits = affectedunits;
 		this.numpriorupgrades = numpriorupgrades;
-		this.isattackupgrade = isattackupgrade;
+		this.attackchange = attackchange;
+		this.defensechange = defensechange;
+		this.template = template;
 	}
 	
 	/**
@@ -23,13 +29,24 @@ public class Upgrade
 	{
 		return numpriorupgrades;
 	}
-	public UnitTemplate[] getAffectedUnits()
+	public List<UnitTemplate> getAffectedUnits()
 	{
 		return affectedunits;
 	}
-	public boolean isAttackUpgrade()
-	{
-		return isattackupgrade;
+	public void execute() {
+		//make sure no other building completed it first
+		if (template.getUpgradeCount() == numpriorupgrades) {
+			//upgrade all of the affected units
+			for (UnitTemplate toupgrade : affectedunits) {
+				toupgrade.setBasicAttackLow(toupgrade.getBasicAttackLow() + attackchange);
+				toupgrade.setArmor(toupgrade.getArmor() + defensechange);
+				
+			}
+			//and make the number right
+			template.incrementUpgradeCount();
+		}
+		
+		
 	}
 	
 }
