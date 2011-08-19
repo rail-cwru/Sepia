@@ -18,7 +18,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.Configuration;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class ResourceGatheringTest {
 	
@@ -31,7 +31,7 @@ public class ResourceGatheringTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = UnitTypeLoader.loadFromFile("data/unit_templates");
+		templates = TypeLoader.loadFromFile("data/unit_templates");
 		State.StateBuilder builder = new StateBuilder();
 		builder.setSize(64,64);
 		for(Template t : templates)

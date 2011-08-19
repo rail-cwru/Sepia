@@ -1,15 +1,14 @@
 package edu.cwru.SimpleRTS.agent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.json.JSONException;
-import org.junit.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.agent.SimpleAgent1;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
@@ -18,7 +17,7 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class SimpleAgent1Test {
 	
@@ -31,7 +30,7 @@ public class SimpleAgent1Test {
 	public static void setup() throws FileNotFoundException, JSONException {
 		agents = new Agent[]{new SimpleAgent1(0),new SimpleAgent1(1)};
 		StateBuilder builder = new StateBuilder();
-		List<Template> templates = UnitTypeLoader.loadFromFile("data/unit_templates");
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates");
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))

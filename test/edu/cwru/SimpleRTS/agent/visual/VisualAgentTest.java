@@ -17,7 +17,7 @@ import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.UnitTypeLoader;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class VisualAgentTest {
 
@@ -32,7 +32,7 @@ public class VisualAgentTest {
 	public static void setup() throws FileNotFoundException, JSONException {
 		StateBuilder builder = new StateBuilder();
 		builder.setSize(32, 32);
-		List<Template> templates = UnitTypeLoader.loadFromFile("data/unit_templates");
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates");
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
