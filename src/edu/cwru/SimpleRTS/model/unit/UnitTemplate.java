@@ -100,9 +100,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setPrerequisite(Prerequisite prerequisite) {
 		this.prerequisite = prerequisite;
 	}
-	public boolean canBeBuilt(State state) {
-		return prerequisite.isFulfilled(state);
-	}
 	public boolean canAttack() {
 		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
 	}
@@ -122,7 +119,8 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		return false;
 	}
 	@Override
-	public void turnTemplatesToStrings(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
+	public void namesToIds(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
+		super.namesToIds(unittemplates, upgradetemplates);
 		producesID.clear();
 		for (String s : produces) {
 			for (Template t : unittemplates) {

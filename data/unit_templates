@@ -142,7 +142,8 @@
 		"Range" : 0,
 		"SightRange" : 1,
 		"FoodGiven" : 0,
-		"Produces" : ["WeaponOne","WeaponTwo","ArmorOne"]
+		"Produces" : ["WeaponOne","WeaponTwo","ArmorOne"],
+		"BuildPrereq" : ["Barracks"]
 	},
 	"WeaponOne" : {
 		"Name" : "WeaponOne",
@@ -162,9 +163,10 @@
 		"ArmorIncrease" : 0,
 		"GoldCost" : 200,
 		"WoodCost" : 100,
-		"Affects" : ["Footman"]
+		"Affects" : ["Footman"],
+		"UpgradePrereq" : ["WeaponOne"]
 	},
-		"ArmorOne" : {
+	"ArmorOne" : {
 		"Name" : "ArmorOne",
 		"TemplateType" : "Upgrade",
 		"TimeCost" : 1,

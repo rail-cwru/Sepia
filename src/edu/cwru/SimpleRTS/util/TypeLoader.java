@@ -12,25 +12,25 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 public final class TypeLoader {
 	private TypeLoader(){}
 	
-	public static List<Template> loadFromFile(String filename) throws FileNotFoundException, JSONException {
+	public static List<Template> loadFromFile(String filename, int player) throws FileNotFoundException, JSONException {
 		List<Template> templates = new ArrayList<Template>();
 		System.err.println("Getting upgrade templates");
-		List<UpgradeTemplate> uptemplates  = loadUpgradesFromFile(filename);
+		List<UpgradeTemplate> uptemplates  = loadUpgradesFromFile(filename, player);
 		for (Template t : uptemplates)
 			templates.add(t);
 		System.err.println("Getting unit templates");
-		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename);
+		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename, player);
 		for (Template t : untemplates)
 			templates.add(t);
 		System.err.println("Putting templates into other templates");
 		for (Template t : templates) {
 			
 			System.out.println(t + " " + t);
-			t.turnTemplatesToStrings(untemplates, uptemplates);
+			t.namesToIds(untemplates, uptemplates);
 		}
 		return templates;
 	}
-	public static List<UpgradeTemplate> loadUpgradesFromFile(String filename) throws FileNotFoundException, JSONException {
+	public static List<UpgradeTemplate> loadUpgradesFromFile(String filename, int player) throws FileNotFoundException, JSONException {
 		System.out.println("Loading upgrade");
 		List<UpgradeTemplate> list = new ArrayList<UpgradeTemplate>();
 		StringBuilder sb = new StringBuilder();
@@ -45,15 +45,14 @@ public final class TypeLoader {
 		String[] keys = JSONObject.getNames(templateFile);
 		for(String key : keys)
 		{
-			System.out.println("upgradehi");
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
 			if(templateType.equals("Upgrade"))
-				list.add(handleUpgrade(template,key));
+				list.add(handleUpgrade(template,key,player));
 		}
 		return list;
 	}
-	public static List<UnitTemplate> loadUnitsFromFile(String filename) throws FileNotFoundException, JSONException {
+	public static List<UnitTemplate> loadUnitsFromFile(String filename, int player) throws FileNotFoundException, JSONException {
 		List<UnitTemplate> list = new ArrayList<UnitTemplate>();
 		StringBuilder sb = new StringBuilder();
 		Scanner in = new Scanner(new File(filename));
@@ -67,15 +66,14 @@ public final class TypeLoader {
 		String[] keys = JSONObject.getNames(templateFile);
 		for(String key : keys)
 		{
-			System.err.println("unithi");
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
 			if(templateType.equals("Unit"))
-				list.add(handleUnit(template,key));
+				list.add(handleUnit(template,key,player));
 		}
 		return list;
 	}
-	private static UnitTemplate handleUnit(JSONObject obj, String name) throws JSONException {
+	private static UnitTemplate handleUnit(JSONObject obj, String name, int player) throws JSONException {
 		UnitTemplate template = new UnitTemplate();
 		template.setName(obj.getString("Name"));
 		if(obj.has("Mobile"))
@@ -101,17 +99,36 @@ public final class TypeLoader {
 			template.setFoodCost(obj.getInt("FoodCost"));
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
-		
+		template.setPlayer(player);
 		if(obj.has("Produces"))
 		{
 			JSONArray produces = obj.getJSONArray("Produces");
 			for(int i = 0; i < produces.length(); i++)
 				template.addProductionItem(produces.getString(i));		
 		}
+		if(obj.has("BuildPrereq"))
+		{
+			JSONArray reqs = obj.getJSONArray("BuildPrereq");
+			for(int i = 0; i < reqs.length(); i++) {
+				template.addBuildPrereqItem(reqs.getString(i));
+				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
+			}
+				
+			
+		}
+		if(obj.has("UpgradePrereq"))
+		{
+			JSONArray reqs = obj.getJSONArray("UpgradePrereq");
+			for(int i = 0; i < reqs.length(); i++)
+			{
+				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
+				template.addUpgradePrereqItem(reqs.getString(i));		
+			}
+		}
 		template.setUnitName(name);
 		return template;
 	}
-	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name) throws JSONException {
+	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name, int player) throws JSONException {
 		String[] affectslist = null;
 		if(obj.has("Affects"))
 		{
@@ -130,11 +147,32 @@ public final class TypeLoader {
 		{
 			defensechange = obj.getInt("ArmorIncrease");
 		}
+		
 		UpgradeTemplate template = new UpgradeTemplate(attackchange, defensechange, affectslist);
 		template.setName(obj.getString("Name"));
 		template.setTimeCost(obj.getInt("TimeCost"));
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
+		template.setPlayer(player);
+		if(obj.has("BuildPrereq"))
+		{
+			JSONArray reqs = obj.getJSONArray("BuildPrereq");
+			for(int i = 0; i < reqs.length(); i++) {
+				template.addBuildPrereqItem(reqs.getString(i));
+				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
+			}
+				
+			
+		}
+		if(obj.has("UpgradePrereq"))
+		{
+			JSONArray reqs = obj.getJSONArray("UpgradePrereq");
+			for(int i = 0; i < reqs.length(); i++)
+			{
+				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
+				template.addUpgradePrereqItem(reqs.getString(i));		
+			}
+		}
 		return template;
 	}
 }

@@ -269,7 +269,7 @@ public class SimpleModel implements Model {
 					case PRIMITIVEBUILD:
 					{
 						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-						u.incrementProduction(template);
+						u.incrementProduction(template, state.getView());
 						if (template.timeCost == u.getAmountProduced())
 						{
 							Unit building = template.produceInstance();
@@ -285,9 +285,8 @@ public class SimpleModel implements Model {
 					}
 					case PRIMITIVEPRODUCE:
 					{
-						System.out.println("HELLOOOOO");
 						Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-						u.incrementProduction(template);
+						u.incrementProduction(template,state.getView());
 						System.out.println(template.getName() + " takes "+template.timeCost);
 						System.out.println("Produced"+u.getAmountProduced());
 						if (template.timeCost == u.getAmountProduced())
@@ -301,8 +300,7 @@ public class SimpleModel implements Model {
 								state.addUnit(produced);
 							}
 							else if (template instanceof UpgradeTemplate) {
-								System.out.println("Just upgraded to:"+template.getName());
-								((UpgradeTemplate)template).produceInstance().execute();
+								((UpgradeTemplate)template).produceInstance().execute(state);
 							}
 							
 						}

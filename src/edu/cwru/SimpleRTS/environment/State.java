@@ -20,6 +20,7 @@ public class State implements Serializable{
 	private Map<Pair<Integer,ResourceType>,Integer> currentResources;
 	private Map<Integer,Integer> currentSupply;
 	private Map<Integer,Integer> currentSupplyCap;
+	private Map<Integer, Set<Integer>> upgradesByAgent;
 	private int xextent;
 	private int yextent;
 	private Map<Integer, Map<Integer,Template>> templatesByAgent;
@@ -30,6 +31,7 @@ public class State implements Serializable{
 		unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
 		allTemplates = new HashMap<Integer,Template>();
 		templatesByAgent = new HashMap<Integer,Map<Integer,Template>>();
+		upgradesByAgent = new HashMap<Integer, Set<Integer>>();
 		resourceNodes = new ArrayList<ResourceNode>();
 		currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
 		currentSupply = new HashMap<Integer,Integer>();
@@ -178,17 +180,31 @@ public class State implements Serializable{
 		}
 	}
 	public void addTemplate(Template t, int player) {
-		System.out.println("Trying to add template:"+t.getName());
 		if(!allTemplates.containsKey(t)) {
 			Map<Integer, Template> map = templatesByAgent.get(player);
 			if(map == null)
 			{
-				System.out.println("Resetting template");
 				templatesByAgent.put(player, map = new HashMap<Integer, Template>());
 			}
 			allTemplates.put(t.hashCode(),t);
 			map.put(t.hashCode(), t);
 		}
+	}
+	public void addUpgrade(Integer upgradetemplateid, int player) {
+			Set<Integer> list = upgradesByAgent.get(player);
+			if(list == null)
+			{
+				upgradesByAgent.put(player, list = new HashSet<Integer>());
+			}
+			list.add(upgradetemplateid);
+	}
+	public boolean hasUpgrade(Integer upgradetemplateid, int player) {
+		Set<Integer> set = upgradesByAgent.get(player);
+		if(set == null)
+		{
+			return false;
+		}
+		return set.contains(upgradetemplateid);
 	}
 	public List<ResourceNode> getResources() {
 		return Collections.unmodifiableList(resourceNodes);
@@ -463,6 +479,12 @@ public class State implements Serializable{
 		}
 		public int getYExtent() {
 			return state.getYExtent();
+		}
+		public boolean doesPlayerHaveUnit(int player, int buildingtemplateid) {
+			return state.doesPlayerHaveUnit(player, buildingtemplateid);
+		}
+		public boolean hasUpgrade(int upgradeid, int playerid) {
+			return state.hasUpgrade(upgradeid, playerid);
 		}
 	}
 }

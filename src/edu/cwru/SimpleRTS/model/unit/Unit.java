@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
 
+import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -83,20 +84,24 @@ public class Unit extends Target {
 	 * Increment production amount
 	 * @param templateID
 	 */
-	public void incrementProduction(Template toproduce) {
+	public void incrementProduction(Template toproduce, StateView state) {
 		//check if it is even capable of producing the
-		if (template.canProduce(toproduce))
+		if (template.canProduce(toproduce)&&toproduce.canProduce(state))
 		{
-			if (getCurrentProductionID() == template.hashCode())
+			if (getCurrentProductionID() == toproduce.hashCode())
 			{
 				currentProductionAmount++;
 			}
 			else
 			{
 				resetProduction();
-				currentProduction = template;
+				currentProduction = toproduce;
 				currentProductionAmount++;
 			}
+		}
+		else
+		{
+			resetProduction();
 		}
 	}
 	public boolean canGather()

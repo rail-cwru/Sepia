@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.model.upgrade;
 
 import java.util.List;
 
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 public class Upgrade 
@@ -33,7 +34,7 @@ public class Upgrade
 	{
 		return affectedunits;
 	}
-	public void execute() {
+	public void execute(State state) {
 		//make sure no other building completed it first
 		if (template.getUpgradeCount() == numpriorupgrades) {
 			//upgrade all of the affected units
@@ -44,6 +45,7 @@ public class Upgrade
 			}
 			//and make the number right
 			template.incrementUpgradeCount();
+			state.addUpgrade(template.hashCode(), template.getPlayer());
 		}
 		
 		

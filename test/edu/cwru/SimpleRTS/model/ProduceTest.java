@@ -32,7 +32,7 @@ public class ProduceTest {
 	static int upgradeproducedtemplate2;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates");		
+		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
 		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
