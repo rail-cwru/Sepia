@@ -58,13 +58,20 @@ public class Unit extends Target {
 	public UnitTemplate getTemplate() {
 		return template;
 	}
+	/**
+	 * 
+	 * @param amount
+	 * @return
+	 */
 	public void takeDamage(int amount)
 	{
 		currentHealth -= amount;
-		if (currentHealth < 0)
-			currentHealth = 0;
 		if (currentHealth > template.baseHealth)
 			currentHealth = template.baseHealth;
+		if (currentHealth < 0)
+		{
+			currentHealth = 0;
+		}
 	}
 	public int getAmountProduced()
 	{

@@ -100,9 +100,17 @@ public class Environment
 			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
 			for(Integer unitId : actionMap.keySet())
 			{
+				Action a = actionMap.get(unitId);
+				//If the unit is not the same as in the action, ignore the action
+				if (a.getUnitId() != unitId)
+					continue;
+				//If the unit does not exist, ignore the action
+				if (model.getState().getUnit(unitId) == null)
+					continue;
+				//If the unit is not the player's, ignore the action
 				if(model.getState().getUnit(unitId).getPlayer() != i)
 					continue;
-				Action a = actionMap.get(unitId);
+				
 				actions.add(a);
 			}
 		}

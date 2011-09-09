@@ -179,6 +179,13 @@ public class State implements Serializable{
 			map.put(u.getPlayer(), u);
 		}
 	}
+	public void removeUnit(int unitID) {
+		if (allUnits.containsKey(unitID))
+		{
+			Unit u = allUnits.remove(unitID);
+			unitsByAgent.get(u.getPlayer()).remove(unitID);
+		}
+	}
 	public void addTemplate(Template t, int player) {
 		if(!allTemplates.containsKey(t)) {
 			Map<Integer, Template> map = templatesByAgent.get(player);
@@ -411,7 +418,10 @@ public class State implements Serializable{
 			return ids;
 		}
 		public Unit.UnitView getUnit(int unitID) {
-			return state.getUnit(unitID).getView();
+			Unit u = state.getUnit(unitID);
+			if (u==null)
+				return null;
+			return u.getView();
 		}
 		public List<Integer> getAllResourceIds() {
 			List<Integer> i = new ArrayList<Integer>();

@@ -75,7 +75,7 @@ public class SimplePlanner {
 						checked.add(newnode);
 					}
 					
-					if ((distfromgoal == 0) || (!cancollideonfinal && distfromgoal == 1 && collidesatend))
+					if ((distfromgoal == distance) || (!cancollideonfinal && distance == 0 && distfromgoal == 1 && collidesatend))
 					{
 						bestnode = newnode;
 						break;
@@ -137,8 +137,7 @@ public class SimplePlanner {
 	 * @return A series of actions that move the actor to the target and attacks the target
 	 */
 	public LinkedList<Action> planAttack(Unit actor, Unit target) {
-		//TODO: Fix this so that it only has to move to maximum range instead of next to target
-		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,false);
+		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),actor.getTemplate().getRange(),false);
 		if (directions == null)
 			return null;
 		LinkedList<Action> plan = planMove(actor,directions);

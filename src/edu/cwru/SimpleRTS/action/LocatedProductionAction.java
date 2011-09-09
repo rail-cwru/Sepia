@@ -1,9 +1,9 @@
 package edu.cwru.SimpleRTS.action;
 
 public class LocatedProductionAction extends Action{
-	int templateid;
-	int x;
-	int y;
+	private int templateid;
+	private int x;
+	private int y;
 	public LocatedProductionAction(int unitid, ActionType type, int templateid, int x, int y)
 	{
 		super(unitid, type);
