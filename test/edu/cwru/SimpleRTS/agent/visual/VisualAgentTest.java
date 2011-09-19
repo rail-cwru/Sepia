@@ -32,7 +32,7 @@ public class VisualAgentTest {
 	public static void setup() throws FileNotFoundException, JSONException {
 		StateBuilder builder = new StateBuilder();
 		builder.setSize(32, 32);
-		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates");
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0);
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))

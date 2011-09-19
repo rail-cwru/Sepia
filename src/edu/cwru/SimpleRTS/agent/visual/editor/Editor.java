@@ -214,7 +214,7 @@ public class Editor extends JFrame {
 		}
 		GameScreen screen = new GameScreen(null);
 		screen.updateState(state.getView());
-		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates"); //needs to have seperate templates by player
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0); //needs to have seperate templates by player
 		ListIterator<Template> li = templates.listIterator();
 		while(li.hasNext())
 		{

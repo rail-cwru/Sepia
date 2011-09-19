@@ -26,7 +26,7 @@ public class SimplePlannerTest {
 	
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates");		
+		templates = TypeLoader.loadFromFile("data/unit_templates",0);		
 		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);

@@ -30,7 +30,7 @@ public class SimpleAgent1Test {
 	public static void setup() throws FileNotFoundException, JSONException {
 		agents = new Agent[]{new SimpleAgent1(0),new SimpleAgent1(1)};
 		StateBuilder builder = new StateBuilder();
-		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates");
+		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0);
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))

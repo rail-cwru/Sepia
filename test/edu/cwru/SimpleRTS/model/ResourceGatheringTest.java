@@ -31,7 +31,7 @@ public class ResourceGatheringTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates");
+		templates = TypeLoader.loadFromFile("data/unit_templates",0);
 		State.StateBuilder builder = new StateBuilder();
 		builder.setSize(64,64);
 		for(Template t : templates)

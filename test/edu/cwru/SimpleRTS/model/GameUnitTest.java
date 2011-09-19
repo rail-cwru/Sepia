@@ -31,7 +31,7 @@ public class GameUnitTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates");
+		templates = TypeLoader.loadFromFile("data/unit_templates",0);
 		State.StateBuilder builder = new StateBuilder();
 		int x = 0;
 		int y = 0;
