@@ -54,7 +54,8 @@
 		"Range" : 1,
 		"Mobile" : true,
 		"Gatherer" : true,
-		"Builder" : true
+		"Builder" : true,
+		"Produces" : ["Peasant","TownHall","Barracks","Blacksmith","Farm"]
 	},
 	"Knight" : {
 		"Name" : "Knight",
@@ -108,7 +109,7 @@
 		"Piercing" : 0,
 		"Range" : 0,
 		"SightRange" : 1,
-		"FoodGiven" : 5
+		"FoodGiven" : 4
 	},
 	"Barracks" : {
 		"Name" : "Barracks",
