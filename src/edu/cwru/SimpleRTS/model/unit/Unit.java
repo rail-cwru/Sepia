@@ -27,6 +27,7 @@ public class Unit extends Target {
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
 		currentProductionAmount = 0;
+		task = UnitTask.Idle;
 	}
 
 	public int getPlayer() {
@@ -81,7 +82,7 @@ public class Unit extends Target {
 	{
 		if (currentProduction==null)
 			return Integer.MIN_VALUE;
-		return currentProduction.hashCode();
+		return currentProduction.ID;
 	}
 	public void resetProduction() {
 		currentProduction = null;
@@ -95,7 +96,7 @@ public class Unit extends Target {
 		//check if it is even capable of producing the
 		if (template.canProduce(toproduce)&&toproduce.canProduce(state))
 		{
-			if (getCurrentProductionID() == toproduce.hashCode())
+			if (getCurrentProductionID() == toproduce.ID)
 			{
 				currentProductionAmount++;
 			}

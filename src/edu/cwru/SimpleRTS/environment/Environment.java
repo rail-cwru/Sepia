@@ -96,6 +96,8 @@ public class Environment
 			catch(InterruptedException e)
 			{
 				//TODO: handle this somehow
+				e.printStackTrace();
+				System.exit(-1);
 			}
 			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
 			for(Integer unitId : actionMap.keySet())

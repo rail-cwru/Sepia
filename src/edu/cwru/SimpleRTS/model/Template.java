@@ -22,7 +22,7 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
  * @param <T>
  */
 public abstract class Template<T> implements Serializable{
-	private TemplateView<T> view;
+	private TemplateView view;
 	protected int timeCost;
 	protected int goldCost;
 	protected int woodCost;
@@ -98,7 +98,7 @@ public abstract class Template<T> implements Serializable{
 			for (UnitTemplate template : untemplates) {
 				if (template.getName().equals(s)) {
 					System.out.println(getName()+" requires building " + s);
-					prereqs.addPrerequisite(new BuildingPrerequisite(getPlayer(), template.hashCode()));
+					prereqs.addPrerequisite(new BuildingPrerequisite(getPlayer(), template.ID));
 					break;
 				}
 			}
@@ -113,7 +113,7 @@ public abstract class Template<T> implements Serializable{
 			}
 		}
 	}
-	protected int ID;
+	public final int ID;
 	@Override
 	public int hashCode() {
 		return ID;
@@ -124,14 +124,14 @@ public abstract class Template<T> implements Serializable{
 			return false;
 		return ((Template)o).ID == ID;
 	}
-	public TemplateView<T> getView() {
+	public TemplateView getView() {
 		if(view == null)
-			view = new TemplateView<T>(this);
+			view = new TemplateView(this);
 		return view;
 	}
-	public static class TemplateView<T> implements Serializable{
-		protected Template<T> template;
-		public TemplateView(Template<T> template){
+	public static class TemplateView implements Serializable{
+		protected Template template;
+		public TemplateView(Template template){
 			this.template = template;
 		}
 		public int getTimeCost() {

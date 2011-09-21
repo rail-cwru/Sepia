@@ -97,6 +97,14 @@ public final class TypeLoader {
 		template.setTimeCost(obj.getInt("TimeCost"));
 		if(obj.has("FoodCost"))
 			template.setFoodCost(obj.getInt("FoodCost"));
+		if(obj.has("AcceptsGold"))
+			template.setCanAcceptGold(obj.getBoolean("AcceptsGold"));
+		else
+			template.setCanAcceptGold(false);
+		if(obj.has("AcceptsWood"))
+			template.setCanAcceptWood(obj.getBoolean("AcceptsWood"));
+		else
+			template.setCanAcceptWood(false);
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
 		template.setPlayer(player);

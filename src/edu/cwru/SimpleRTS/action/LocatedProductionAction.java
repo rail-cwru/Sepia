@@ -26,6 +26,6 @@ public class LocatedProductionAction extends Action{
 	@Override
 	public String toString() {
 		return "ProductionAction [x="+x+", y="+y+", templateid=" + templateid + ", type=" + type
-				+ ", unitId=" + unitId + "]";
+				+ ", unitIdOfBuilder=" + unitId + "]";
 	}
 }

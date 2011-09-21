@@ -52,5 +52,11 @@ public class Action {
 	public static Action createCompoundGather(int unitid, int targetid) {
 		return new TargetedAction(unitid, ActionType.COMPOUNDGATHER, targetid);
 	}
+	public static Action createCompoundDeposit(int unitid, int targetid) {
+		return new TargetedAction(unitid, ActionType.COMPOUNDDEPOSIT, targetid);
+	}
+	public static Action createPrimitiveDeposit(int unitid, Direction d) {
+		return new DirectedAction(unitid, ActionType.PRIMITIVEDEPOSIT, d);
+	}
 	
 }

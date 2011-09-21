@@ -7,6 +7,7 @@ import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.Pair;
 
 public class State implements Serializable{
@@ -169,14 +170,42 @@ public class State implements Serializable{
 			return null;
 		return Collections.unmodifiableMap(unitsByAgent.get(player));
 	}
-	public void addUnit(Unit u) {
+	public boolean tryProduceUnit(Unit u) {
+			UnitTemplate ut = u.getTemplate();
+			Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
+			Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
+			Integer currentgold = currentResources.get(goldpair);
+			Integer currentwood = currentResources.get(woodpair);
+			if (currentgold == null)
+				currentgold = 0;
+			if (currentwood == null)
+				currentwood = 0;
+			if (currentgold >= ut.getGoldCost() && currentwood >= ut.getWoodCost() && checkValidSupplyAddition(ut.getPlayer(), ut.getFoodCost(),ut.getFoodProvided()))
+			{
+				reduceResourceAmount(ut.getPlayer(), ResourceType.GOLD, u.getTemplate().getGoldCost());
+				reduceResourceAmount(ut.getPlayer(), ResourceType.WOOD, u.getTemplate().getWoodCost());
+				addUnit(u);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+	}
+	private void addUnit(Unit u) {
 		int player = u.getPlayer();
+		System.out.println("Making a unit with ID: "+u.ID);
 		if(!allUnits.containsKey(u)) {
 			Map<Integer, Unit> map = unitsByAgent.get(player);
 			if(map == null)
+			{
+				System.out.println("map for player "+player + " is gone, replacing it with blank");
 				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
-			allUnits.put(u.hashCode(),u);
-			map.put(u.getPlayer(), u);
+			}
+			allUnits.put(u.ID,u);
+			map.put(u.ID, u);
+			alterSupplyCapAmount(player,u.getTemplate().getFoodProvided());
+			alterSupplyAmount(player, u.getTemplate().getFoodCost());
 		}
 	}
 	public void removeUnit(int unitID) {
@@ -184,6 +213,8 @@ public class State implements Serializable{
 		{
 			Unit u = allUnits.remove(unitID);
 			unitsByAgent.get(u.getPlayer()).remove(unitID);
+			alterSupplyCapAmount(u.getPlayer(),-u.getTemplate().getFoodProvided());
+			alterSupplyAmount(u.getPlayer(), -u.getTemplate().getFoodCost());
 		}
 	}
 	public void addTemplate(Template t, int player) {
@@ -193,8 +224,8 @@ public class State implements Serializable{
 			{
 				templatesByAgent.put(player, map = new HashMap<Integer, Template>());
 			}
-			allTemplates.put(t.hashCode(),t);
-			map.put(t.hashCode(), t);
+			allTemplates.put(t.ID,t);
+			map.put(t.ID, t);
 		}
 	}
 	public void addUpgrade(Integer upgradetemplateid, int player) {
@@ -247,18 +278,29 @@ public class State implements Serializable{
 		}
 		return null;
 	}
+	public int getResourceAmount(int player, ResourceType type) {
+		Integer amount = currentResources.get(new Pair<Integer,ResourceType>(player,type));
+		return amount != null ? amount : 0;			
+	}
+	public void depositResources(int player, ResourceType type, int amount)
+	{
+		if (amount > 0)
+		{
+			addResourceAmount(player, type, amount);
+		}
+	}
 	/**
 	 * Adds an amount of a resource to a player's global amount.
 	 * @param player
 	 * @param type
 	 * @param amount
 	 */
-	public void addResourceAmount(int player, ResourceType type, int amount) {
+	private void addResourceAmount(int player, ResourceType type, int amount) {
 		Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
-		Integer i = currentResources.get(pair);
-		if(i == null)
-			i = 0;
-		currentResources.put(pair, i+amount);
+		Integer previous = currentResources.get(pair);
+		if(previous == null)
+			previous = 0;
+		currentResources.put(pair, previous+amount);
 	}
 	/**
 	 * Attempts to reduce the player's amount of the given resource by an amount.
@@ -266,22 +308,30 @@ public class State implements Serializable{
 	 * @param player
 	 * @param type
 	 * @param amount
-	 * @return - whether or not the player had enough of the resource
 	 */
-	public boolean consumeResourceAmount(int player, ResourceType type, int amount) {
+	private void reduceResourceAmount(int player, ResourceType type, int amount) {
 		Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
 		Integer i = currentResources.get(pair);
-		if(i == null || i < amount)
-			return false;
+		if (i == null) {
+			i = 0;
+		}
 		currentResources.put(pair, i-amount);
-		return true;
 	}
+	public int getSupplyAmount(int player) {
+		Integer amount = currentSupply.get(player);
+		return amount != null ? amount : 0;
+	}
+	public int getSupplyCap(int player) {
+		Integer amount = currentSupplyCap.get(player);
+		return Math.min(amount != null ? amount : 0,MAXSUPPLY);
+	}
+	
 	/**
 	 * Adds some supply to the current amount.  It tracks the full value, but won't return any more than the maximum cap
 	 * @param player
 	 * @param amount
 	 */
-	public void addSupplyCapAmount(int player, int amount) {
+	private void addSupplyCapAmount(int player, int amount) {
 		
 		Integer i = currentSupplyCap.get(player);
 		if(i == null)
@@ -293,7 +343,7 @@ public class State implements Serializable{
 	 * @param player
 	 * @param amount
 	 */
-	public void reduceSupplyCapAmount(int player, int amount) {
+	private void alterSupplyCapAmount(int player, int amount) {
 		Integer i = currentSupplyCap.get(player);
 		if(i == null) //this should never happen
 			i=0;
@@ -303,34 +353,39 @@ public class State implements Serializable{
 	 * Consume some of the supply
 	 * @param player
 	 * @param amount
-	 * @return Whether there is enough of the resource to consume
 	 */
-	public boolean consumeSupplyAmount(int player, int amount) {
+	private void alterSupplyAmount(int player, int amount) {
 		
 		Integer currentsupply = currentSupply.get(player);
 		if (currentsupply == null)
 			currentsupply = 0;
-		Integer currentcap = currentSupplyCap.get(player);
-		if (currentcap == null)
-			currentcap = 0; //just set it to zero if it isn't set, this way it functions right if for some reason we make it possible to be using a negative amount of supply 
-		if (Math.min(currentcap, MAXSUPPLY) < currentsupply + amount) {
-			return false;
-		}
-		else {
-			currentSupplyCap.put(player, currentsupply+amount);
+		
+		currentSupply.put(player, currentsupply+amount);
+	}
+	public boolean checkValidSupplyAddition(int player, int amounttoadd, int offsettingcapgain) {
+		if (amounttoadd<=0)
+		{
+			//it is always valid to make something that takes no or negative supply
 			return true;
 		}
-	}
-	/**
-	 * Return the supply that was being used by a unit
-	 * @param player
-	 * @param amount
-	 */
-	public void returnSupplyAmount(int player, int amount) {
-		Integer i = currentSupplyCap.get(player);
-		if(i == null) //this should never happen
-			i=0;
-		currentSupplyCap.put(player, i-amount);
+		else
+		{
+			Integer currentcap = currentSupplyCap.get(player);
+			if (currentcap == null)
+			{
+				currentcap = 0; //just set it to zero if it isn't set, this way it functions right if for some reason we make it possible to be using a negative amount of supply
+				//set it, because why not
+				currentSupplyCap.put(player, 0);
+			}
+			Integer currentsupply = currentSupply.get(player);
+			if (currentsupply == null)
+			{
+				currentsupply = 0;
+				//set it, because why not
+				currentSupply.put(player, 0);
+			}
+			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) < currentsupply + amounttoadd;
+		}
 	}
 	
 	/**
@@ -350,6 +405,10 @@ public class State implements Serializable{
 		}
 		public void addTemplate(Template t, int player) {
 			state.addTemplate(t, player);
+		}
+		public Template getTemplate(int player, String name)
+		{
+			return state.getTemplate(player, name);
 		}
 		public void setSize(int x, int y) {
 			state.setSize(x, y);
@@ -409,9 +468,9 @@ public class State implements Serializable{
 				ids.add(i);
 			return ids;
 		}
-		public List<Integer> getUnitIds(int agent) {
+		public List<Integer> getUnitIds(int player) {
 			List<Integer> ids = new ArrayList<Integer>();
-			Map<Integer, Unit> units = state.getUnits(agent);
+			Map<Integer, Unit> units = state.getUnits(player);
 			if(units != null)
 				for(Integer i : units.keySet())
 					ids.add(i);
@@ -470,16 +529,13 @@ public class State implements Serializable{
 				return null;
 		}
 		public int getResourceAmount(int player, ResourceType type) {
-			Integer amount = state.currentResources.get(new Pair<Integer,ResourceType>(player,type));
-			return amount != null ? amount : 0;			
+			return state.getResourceAmount(player, type);	
 		}
 		public int getSupplyAmount(int player) {
-			Integer amount = state.currentSupply.get(player);
-			return amount != null ? amount : 0;
+			return state.getSupplyAmount(player);
 		}
 		public int getSupplyCap(int player) {
-			Integer amount = state.currentSupplyCap.get(player);
-			return Math.min(amount != null ? amount : 0,state.MAXSUPPLY);
+			return state.getSupplyCap(player);
 		}
 		public int[] getClosestOpenPosition(int x, int y) {
 			return state.getClosestPosition(x, y);

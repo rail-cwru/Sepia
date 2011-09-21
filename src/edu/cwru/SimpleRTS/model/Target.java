@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Target implements Serializable {
 	
 	protected static int nextID = 0;
-	protected int ID;
+	public final int ID;
 	public Target()
 	{
 		ID = nextID++;

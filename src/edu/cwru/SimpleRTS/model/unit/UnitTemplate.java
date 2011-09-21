@@ -18,6 +18,10 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
 public class UnitTemplate extends Template<Unit> implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected String unitName;
 	protected int baseHealth;
 	protected int basicAttackLow;
@@ -29,6 +33,9 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected boolean canGather;
 	protected boolean canBuild;
 	protected boolean canMove;
+	protected boolean canAcceptGold;
+	protected boolean canAcceptWood;
+	protected int foodProvided;
 	protected char character;
 	protected Prerequisite prerequisite;
 	private List<String> produces;
@@ -46,6 +53,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public String getUnitName() {
 		return unitName;
 	}
+	
 	public void setUnitName(String unitName) {
 		this.unitName = unitName;
 	}
@@ -103,6 +111,25 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public boolean canAttack() {
 		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
 	}
+	public boolean canAcceptGold() {
+		return canAcceptGold;
+	}
+	public boolean canAcceptWood() {
+		return canAcceptWood;
+	}
+	public void setCanAcceptGold(boolean canAcceptGold) {
+		this.canAcceptGold=canAcceptGold;
+	}
+	public void setCanAcceptWood(boolean canAcceptWood) {
+		this.canAcceptWood=canAcceptWood;
+	}
+	public int getFoodProvided() {
+		return foodProvided;
+	}
+	public void setFoodProvided(int numFoodProvided) {
+		this.foodProvided = numFoodProvided;
+	}
+	
 	public boolean canGather() { return canGather; }
 	public void setCanGather(boolean canGather) { this.canGather = canGather; } 
 	public boolean canBuild() { return canBuild; }
@@ -114,7 +141,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	}
 	public boolean canProduce(Template t) {
 		for (Integer i : producesID)
-			if (t.hashCode() == i)
+			if (t.ID == i)
 				return true;
 		return false;
 	}
@@ -125,7 +152,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		for (String s : produces) {
 			for (Template t : unittemplates) {
 				if (s.equals(t.getName())) {
-					producesID.add(t.hashCode());
+					producesID.add(t.ID);
 					break;
 				}
 				
@@ -142,25 +169,35 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public String toString() {
 		return name;
 	}
-	public static class UnitTemplateView extends TemplateView<Unit> implements Serializable{
-
+	/**
+	 * 
+	 */
+	public static class UnitTemplateView extends TemplateView implements Serializable{
+		//BE CAREFUL EDITING THIS CLASS OR IT'S SUPERCLASS, IT HAS A template THAT IS NOT THE SAME AS THE VARIABLE OF THE SAME NAME IN IT'S SUPERCLASS 
+		
+		private static final long serialVersionUID = 1L;
+		UnitTemplate template;
 		public UnitTemplateView(UnitTemplate template) {
 			super(template);
+			this.template=template;
 		}
-		public boolean canGather() { return ((UnitTemplate)template).canGather(); }
-		public boolean canBuild() { return ((UnitTemplate)template).canBuild(); }
-		public boolean canMove() { return ((UnitTemplate)template).canMove(); }
-		public boolean canAttack() { return ((UnitTemplate)template).canAttack(); }
-		public String getUnitName() { return ((UnitTemplate)template).getUnitName(); }
-		public int getBaseHealth() { return ((UnitTemplate)template).getBaseHealth();	}
-		public int getBasicAttackLow() { return ((UnitTemplate)template).getBasicAttackLow(); }
-		public int getBasicAttackDiff() { return ((UnitTemplate)template).getBasicAttackDiff(); }
-		public int getPiercingAttack() { return ((UnitTemplate)template).getPiercingAttack();	}
-		public int getRange() {	return ((UnitTemplate)template).getRange(); }
-		public int getArmor() {	return ((UnitTemplate)template).getArmor(); }
-		public int getSightRange() { return ((UnitTemplate)template).getSightRange();	}
-		public boolean canProduce(Integer templateID) { return ((UnitTemplate)template).producesID.contains(templateID);};
-		public char getCharacter() { return ((UnitTemplate)template).getCharacter(); }
+		public boolean canGather() { return (template).canGather(); }
+		public boolean canBuild() { return (template).canBuild(); }
+		public boolean canMove() { return (template).canMove(); }
+		public boolean canAttack() { return (template).canAttack(); }
+		public String getUnitName() { return (template).getUnitName(); }
+		public int getBaseHealth() { return (template).getBaseHealth();	}
+		public int getBasicAttackLow() { return (template).getBasicAttackLow(); }
+		public int getBasicAttackDiff() { return (template).getBasicAttackDiff(); }
+		public int getPiercingAttack() { return (template).getPiercingAttack();	}
+		public int getRange() {	return (template).getRange(); }
+		public int getArmor() {	return (template).getArmor(); }
+		public int getSightRange() { return (template).getSightRange();	}
+		public boolean canProduce(Integer templateID) { return (template).producesID.contains(templateID);};
+		public char getCharacter() { return (template).getCharacter(); }
+		public boolean canAcceptGold() {return (template).canAcceptGold(); }
+		public boolean canAcceptWood() {return (template).canAcceptWood(); }
+		public int getFoodProvided() {return template.getFoodProvided(); }
 	}
 
 	

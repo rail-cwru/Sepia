@@ -43,11 +43,14 @@ public class SimplePlanner {
 		boolean collidesatend = !state.inBounds(endingx, endingy) || (state.unitAt(endingx, endingy)!=null || state.resourceAt(endingx, endingy)!=null);
 		AStarNode bestnode= null;
 		queue.offer(new AStarNode(startingx,startingy,Math.max(Math.abs(startingx-endingx), Math.abs(startingy-endingy))));
-		if(distance == 0)
-			distance = state.getXExtent()*state.getYExtent();
+//		I haven't the foggiest idea why this used to have these next two lines
+//		if(distance == 0)
+//			distance = state.getXExtent()*state.getYExtent();
 		while (queue.size()>0&&bestnode==null)
 		{
 			AStarNode currentnode = queue.poll();
+			
+				
 			int currentdistance = Math.max(Math.abs(currentnode.x-endingx),Math.abs(currentnode.y-endingy));
 			if (distance == 0 && (currentdistance == 0) || (!cancollideonfinal && currentdistance == 1 &&collidesatend))
 			{
@@ -88,7 +91,7 @@ public class SimplePlanner {
 			return null;
 		else
 		{
-			System.out.println("Found best at:" + bestnode.x + "," + bestnode.y);
+//			System.out.println("Found best at:" + bestnode.x + "," + bestnode.y);
 			LinkedList<Direction> toreturn=new LinkedList<Direction>();
 			while(bestnode.previous!=null)
 			{
@@ -177,7 +180,7 @@ public class SimplePlanner {
 		if (actor.getxPosition() == targetX && actor.getyPosition() == targetY)
 		{//if it is in the same place
 			//needs to know how much building on the target template the unit already has done
-			if (actor.getCurrentProductionID() == template.hashCode())
+			if (actor.getCurrentProductionID() == template.ID)
 			{//if it is building the same thing
 				//then make it keep building it
 				int amountleft = template.hashCode() - actor.getAmountProduced();
@@ -196,6 +199,7 @@ public class SimplePlanner {
 		}
 		else
 		{
+			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
 			plan = planMove(actor, getDirections(actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
 			for (int i = template.timeCost - 1; i>=0; i--)
 			{
@@ -211,7 +215,7 @@ public class SimplePlanner {
 	public LinkedList<Action> planProduce(Unit actor, Template template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
 		//needs to know how much building on the target template the unit already has done
-		if (actor.getCurrentProductionID() == template.hashCode())
+		if (actor.getCurrentProductionID() == template.ID)
 		{//if it is building the same thing
 			//then make it keep building it
 			int amountleft = template.hashCode() - actor.getAmountProduced();

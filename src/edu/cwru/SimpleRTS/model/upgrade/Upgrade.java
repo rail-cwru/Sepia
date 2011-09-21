@@ -45,7 +45,7 @@ public class Upgrade
 			}
 			//and make the number right
 			template.incrementUpgradeCount();
-			state.addUpgrade(template.hashCode(), template.getPlayer());
+			state.addUpgrade(template.ID, template.getPlayer());
 		}
 		
 		

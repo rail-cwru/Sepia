@@ -44,8 +44,10 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	private boolean outofcommands;
 	private PrimativeAttackCoordinator attackcoordinator;
 	private int[] centeroftown;
-	public ScriptedGoalAgent(int playernumber, BufferedReader commandSource) {
+	private boolean verbose;
+	public ScriptedGoalAgent(int playernumber, BufferedReader commandSource, boolean verbose) {
 		super(playernumber);
+		this.verbose = verbose;
 		this.commandSource = commandSource;
 		outofcommands = false;
 		nextgoal=null;
@@ -55,9 +57,6 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	
 	/**
 	 * The goal and the means for achieving it.
-	 * TODO: This should probably be severed into subclasses with a static build method
-	 * @author The Condor
-	 *
 	 */
 	public class Goal {
 		GoalType type;
@@ -70,9 +69,14 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		int xoffset;
 		int yoffset;
 		int waitvalue;
+		String commandstring;
 		public Goal(String command, StateView state) {
 			//Split it into arguments and such
 			String[] split = command.split(":");
+			commandstring = command;
+			System.out.println("Command: \""+command+"\"");
+			for (String s : split)
+				System.out.println(s);
 			if (GoalType.Attack.toString().equals(split[0])) {
 				assert split.length == 1 || split.length ==2;
 				type = GoalType.Attack;
@@ -89,8 +93,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			else if (GoalType.Transfer.toString().equals(split[0])) {
 				assert split.length == 3;
 				type = GoalType.Transfer;
-				starttype = GathererTask.valueOf(split[1]);
-				endtype = GathererTask.valueOf(split[2]);
+				numgatherers=Integer.parseInt(split[1]);
+				starttype = GathererTask.valueOf(split[2]);
+				endtype = GathererTask.valueOf(split[3]);
 			}
 			else if (GoalType.Build.toString().equals(split[0])) {
 				assert split.length == 4;
@@ -115,6 +120,12 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				assert false : "Invalid Goal";
 			}
 		}
+		/**
+		 * Query whether the goal can be accomplished given the state and modifications to it.
+		 * @param state The state, bringing the units and other such things
+		 * @param relstate Relevant parameters
+		 * @return
+		 */
 		private boolean canExecute(StateView state, RelevantStateView relstate) {
 			switch (type) {
 			case Wait:
@@ -122,16 +133,32 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				//get the right resource
 				int currentval = (waittype == WaitType.Gold)?relstate.ngold:(waittype == WaitType.Wood?relstate.nwood:-1);
 				if (currentval < waitvalue)
+				{
+					System.out.println("Need to keep waiting: have " + currentval + " but need "+waitvalue);
 					return false;
+				}
 				return true;
 			}
 			case Faulty:
 				return true;
 			case Build:
 				//check resources
-				if (relstate.ngold >= template.getGoldCost() && relstate.nwood >= template.getWoodCost() && relstate.nfoodremaining >= template.getFoodCost())
-					return true;
-				return false;
+				if (relstate.ngold < template.getGoldCost())
+				{
+					System.out.println("Cannot build, not enough gold: have " + relstate.ngold + " but need "+template.getGoldCost());
+					return false;
+				}
+				if (relstate.nwood < template.getWoodCost())
+				{
+					System.out.println("Cannot build, not enough wood: have " + relstate.nwood + " but need "+template.getWoodCost());
+					return false;
+				}
+				if (template.getFoodCost() > 0 && relstate.nfoodremaining < template.getFoodCost())
+				{
+					System.out.println("Cannot build, not enough food: have " + relstate.nfoodremaining + " open but need "+template.getFoodCost());
+					return false;
+				}
+				return true;
 			case Attack:
 				//You can always attack
 				return true;
@@ -155,10 +182,22 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 					return true;
 				}
 				else
+				{
+					System.out.println("Cannot perform transfer, not enough workers on that resource");
 					return false;
+				}
 			}
 			return false;
 		}
+		/**
+		 * See if those actions can be done.
+		 * This is not a final test, merely the best that can be done without fully simulating it.
+		 * This method alters this map by adding actions.
+		 * @param state
+		 * @param relstate
+		 * @param actions A map builder of actions.
+		 * @return Assign actions
+		 */
 		public boolean tryExecute(StateView state, RelevantStateView relstate, Builder<Integer,Action> actions) {
 			//See if it can execute it
 			if (!canExecute(state, relstate))
@@ -174,10 +213,22 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				//Find a place to build it
 				
 				int[] placetobuild = state.getClosestOpenPosition(centeroftown[0]+xoffset,centeroftown[1]+xoffset);
-				
+				System.err.println("Going to build something");
 				for (Integer id : relstate.myUnitIDs) {
 					if (!relstate.unitsWithTasks.contains(id)&&state.getUnit(id).getTemplateView().canProduce(template.getID())) {
-						actions.put(id,Action.createCompoundBuild(id, template.getID(),placetobuild[0],placetobuild[1]));
+						Action newact = Action.createCompoundBuild(id, template.getID(),placetobuild[0],placetobuild[1]);
+						actions.put(id,newact);
+						System.err.println(newact);
+						relstate.unitsWithTasks.add(id);
+						if (relstate.idleworkers.contains(id))
+						{
+							relstate.idleworkers.remove(id);
+						}
+						else
+						{
+							new Exception("Programming error: Tried to build a building with a non idle worker");
+							System.exit(-1);
+						}
 						break;
 					}
 				}
@@ -309,13 +360,16 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		
 	}
 	public Builder<Integer, Action> act(StateView state) throws IOException {
-		
+		if (verbose)
+			System.out.println("ScriptedGoalAgent starting another action");
 		RelevantStateView rsv = new RelevantStateView(playernum, state);
 		ImmutableMap.Builder<Integer,Action> actions = new ImmutableMap.Builder<Integer,Action>();
 		//while there are still commands to be found
 		boolean done = outofcommands;
+		
 		while (!done) {
 			//if you have no next goal, get one
+			
 			if (nextgoal==null) {
 				String nextCommand = commandSource.readLine();
 				if (nextCommand == null || nextCommand.equals("")) {
@@ -329,9 +383,18 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			//if you now have a goal, execute it
 			if (nextgoal != null) {
 				//See if you can do it now
-				nextgoal.tryExecute(state, rsv, actions);
+				if (nextgoal.tryExecute(state, rsv, actions))
+				{
+					System.out.println("Was able to do "+nextgoal.commandstring);
+					nextgoal=null;
+				}
+				else
+				{
+					System.out.println("Can't do "+nextgoal.commandstring);
+					done=true;
+				}
+				
 			}
-			done = true;
 		}
 		attackcoordinator.coordinate(state, actions);
 		
@@ -368,7 +431,6 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			myUnitIDs = state.getUnitIds(playernum);
 			for (Integer id : myUnitIDs) {
 				UnitView u = state.getUnit(id);
-				
 					switch (u.getTask()) {
 					case Gold:
 						if (u.getTemplateView().canGather()) 
