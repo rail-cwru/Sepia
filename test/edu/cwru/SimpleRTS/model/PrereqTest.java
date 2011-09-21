@@ -37,22 +37,22 @@ public class PrereqTest {
 			builder.addTemplate(t, player);
 		}
 		
-		state = builder.build();
-		planner = new SimplePlanner(state);
 		
 		
-		upgradetemplate = ((UpgradeTemplate)state.getTemplate(player, "WeaponOne")).hashCode();
-		dependingupgradetemplate = ((UpgradeTemplate)state.getTemplate(player, "WeaponTwo")).hashCode();
+		
+		upgradetemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponOne")).ID;
+		dependingupgradetemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponTwo")).hashCode();
 		{
-		Unit u = ((UnitTemplate)state.getTemplate(player, "Blacksmith")).produceInstance();
+		Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
 		u.setxPosition(0);
 		u.setyPosition(0);
 		upgradeproducerid = u.ID;
-		state.addUnit(u);
+		builder.addUnit(u);
 		
 		}
-		
-		model = new SimpleModel(state,5536);
+		state = builder.build();
+		planner = new SimplePlanner(state);
+		model = new SimpleModel(state, 5536);
 	}
 	
 	public void setUp() throws Exception {

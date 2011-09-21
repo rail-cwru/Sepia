@@ -40,36 +40,38 @@ public class ProduceTest {
 			builder.addTemplate(t, player);
 		}
 		
-		state = builder.build();
-		planner = new SimplePlanner(state);
 		
 		
-		unitproducedtemplate = ((UnitTemplate)state.getTemplate(player, "Footman")).hashCode();
-		upgradeproducedtemplate = ((UpgradeTemplate)state.getTemplate(player, "WeaponOne")).hashCode();
-		upgradeproducedtemplate2 = ((UpgradeTemplate)state.getTemplate(player, "ArmorOne")).hashCode();
+		
+		unitproducedtemplate = ((UnitTemplate)builder.getTemplate(player, "Footman")).ID;
+		upgradeproducedtemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponOne")).hashCode();
+		upgradeproducedtemplate2 = ((UpgradeTemplate)builder.getTemplate(player, "ArmorOne")).hashCode();
 		{
-		Unit u = ((UnitTemplate)state.getTemplate(player, "Barracks")).produceInstance();
+		Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance();
 		u.setxPosition(0);
 		u.setyPosition(0);
 		unitproducerid = u.ID;
-		state.addUnit(u);
+		builder.addUnit(u);
 		
 		}
 		{
-			Unit u = ((UnitTemplate)state.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(1);
 			upgradeproducer1id = u.ID;
-			state.addUnit(u);
+			builder.addUnit(u);
 		}
 		{
-			Unit u = ((UnitTemplate)state.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(2);
 			upgradeproducer2id = u.ID;
-			state.addUnit(u);
+			builder.addUnit(u);
 		}
-		model = new SimpleModel(state,5536);
+		
+		state = builder.build();
+		planner = new SimplePlanner(state);
+		model = new SimpleModel(state, 5536);
 	}
 	
 	public void setUp() throws Exception {

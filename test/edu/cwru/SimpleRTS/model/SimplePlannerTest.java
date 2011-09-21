@@ -22,7 +22,7 @@ public class SimplePlannerTest {
 	static SimplePlanner planner;
 	static List<Template> templates;
 	static State state;
-	
+	static int player=0;
 	
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
@@ -47,17 +47,17 @@ public class SimplePlannerTest {
 			}
 		}
 		{
-		Unit u = ((UnitTemplate)state.getTemplate(0, "Barracks")).produceInstance();
+		Unit u = ((UnitTemplate)builder.getTemplate(0, "Barracks")).produceInstance();
 		u.setxPosition(0);
 		u.setyPosition(0);
 		}
 		{
-			Unit u = ((UnitTemplate)state.getTemplate(0, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(1);
 			}
 		{
-			Unit u = ((UnitTemplate)state.getTemplate(0, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(2);
 			}
