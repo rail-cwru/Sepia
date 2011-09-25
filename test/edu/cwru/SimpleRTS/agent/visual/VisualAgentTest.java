@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -90,8 +92,21 @@ public class VisualAgentTest {
 		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model);
 	}
 	@Test
-	public void display() {
-		while(true);
+	public void display() throws InterruptedException {
+		final Object semaphore = new Object();
+		while(visualAgent.screen == null)
+			Thread.sleep(100);
+		visualAgent.screen.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				synchronized(semaphore) {
+					semaphore.notifyAll();
+				}
+			}
+		});
+		synchronized(semaphore) {
+			semaphore.wait();
+		}
 	}
 	public static void main(String args[]) {
 	      org.junit.runner.JUnitCore.main("edu.cwru.SimpleRTS.agent.visual.VisualAgentTest");
