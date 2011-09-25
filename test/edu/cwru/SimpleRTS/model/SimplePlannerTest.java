@@ -37,30 +37,32 @@ public class SimplePlannerTest {
 		{
 			if(!(t instanceof UnitTemplate))
 				continue;
-			UnitTemplate template = (UnitTemplate)t;
-			if(template.getUnitName().equals("Peasant"))
-			{
-				Unit u = template.produceInstance();
-				u.setxPosition(10);
-				u.setyPosition(10);
-				builder.addUnit(u);
-			}
+			builder.addTemplate(t, 0);
 		}
 		{
-		Unit u = ((UnitTemplate)builder.getTemplate(0, "Barracks")).produceInstance();
-		u.setxPosition(0);
-		u.setyPosition(0);
+			Unit u = ((UnitTemplate)builder.getTemplate(0, "Peasant")).produceInstance();
+			u.setxPosition(10);
+			u.setyPosition(10);
+			builder.addUnit(u);
+		}
+		{
+			Unit u = ((UnitTemplate)builder.getTemplate(0, "Barracks")).produceInstance();
+			u.setxPosition(0);
+			u.setyPosition(0);
+			builder.addUnit(u);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(1);
-			}
+			builder.addUnit(u);
+		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
 			u.setxPosition(0);
 			u.setyPosition(2);
-			}
+			builder.addUnit(u);
+		}
 		
 		for(int i = 0; i <= 12; i++)
 		{
