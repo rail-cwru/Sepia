@@ -192,7 +192,7 @@ public class State implements Serializable{
 				return false;
 			}
 	}
-	private void addUnit(Unit u) {
+	public void addUnit(Unit u) {
 		int player = u.getPlayer();
 		System.out.println("Making a unit with ID: "+u.ID);
 		if(!allUnits.containsKey(u)) {
