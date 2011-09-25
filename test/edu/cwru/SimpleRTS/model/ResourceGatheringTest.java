@@ -77,7 +77,7 @@ public class ResourceGatheringTest {
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		UnitView u = model.getState().getUnit(1);
-		assertEquals("Unit did not receive the correct resource!",ResourceNode.Type.TREE,u.getCargoType());
+		assertEquals("Unit did not receive the correct resource!",ResourceType.WOOD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",20,u.getCargoAmount());
 	}
 	@Test
