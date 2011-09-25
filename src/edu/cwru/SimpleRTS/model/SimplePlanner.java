@@ -64,7 +64,7 @@ public class SimplePlanner {
 				
 				int distfromgoal = Math.max(Math.abs(newx-endingx),Math.abs(newy-endingy));
 				//valid if the new state is within max distance and is in bounds and either there is no collision or it is at the target 
-				if (distfromgoal <= distance && state.inBounds(newx, newy) && 
+				if ((distance == 0 || distfromgoal <= distance) && state.inBounds(newx, newy) && 
 						(
 								(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null) || 
 								(cancollideonfinal && distfromgoal==0)
@@ -109,7 +109,7 @@ public class SimplePlanner {
 	 * @return
 	 */
 	public LinkedList<Action> planMove(Unit actor, int x, int y) {
-		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),x,y,0,false);
+		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),x,y,0,true);
 		if (directions == null)
 			return null;
 		else
