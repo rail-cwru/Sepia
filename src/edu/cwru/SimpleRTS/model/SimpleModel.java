@@ -164,8 +164,10 @@ public class SimpleModel implements Model {
 					}
 					case PRIMITIVEGATHER:
 					{
-						LocatedAction thisact = ((LocatedAction)fullact);
-						ResourceNode r = state.resourceAt(thisact.getX(),thisact.getY());
+						Direction d = ((DirectedAction)a).getDirection();
+						xPrime = x + d.xComponent();
+						yPrime = y + d.yComponent();				
+						ResourceNode r = state.resourceAt(xPrime,yPrime);
 						if (r!=null)
 							u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
 						else
