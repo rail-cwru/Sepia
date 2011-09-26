@@ -32,12 +32,13 @@ public class SimplePlanner {
 	 * @param startingy
 	 * @param endingx
 	 * @param endingy
-	 * @param distance The distance at which to stop trying to seek (IE, 0 is on top of it, 1 is next to it, etc) Note that the distance should count diagonals as 1 dist
+	 * @param tolerancedistance The distance at which to stop trying to seek (IE, 0 is on top of it, 1 is next to it, etc) Note that the distance should count diagonals as 1 dist
 	 * @param cancollideonfinal Whether or not to allow a collision on the final move (allowing it to be used for gathering by telling it the last direction)
 	 * @return Some primitive (IE, based on directions) moves that bring you within distance of the ending x and y
 	 */
-	public LinkedList<Direction> getDirections(int startingx, int startingy, int endingx, int endingy, int distance, boolean cancollideonfinal)
+	public LinkedList<Direction> getDirections(int startingx, int startingy, int endingx, int endingy, int tolerancedistance, boolean cancollideonfinal)
 	{
+		System.out.println("Getting Directions from " + startingx + "," + startingy + " to " + endingx + "," + endingy);
 		PriorityQueue<AStarNode> queue = new PriorityQueue<AStarNode>();
 		HashSet<AStarNode> checked = new HashSet<AStarNode>();
 		boolean collidesatend = !state.inBounds(endingx, endingy) || (state.unitAt(endingx, endingy)!=null || state.resourceAt(endingx, endingy)!=null);
@@ -52,7 +53,7 @@ public class SimplePlanner {
 			
 				
 			int currentdistance = Math.max(Math.abs(currentnode.x-endingx),Math.abs(currentnode.y-endingy));
-			if (distance == 0 && (currentdistance == 0) || (!cancollideonfinal && currentdistance == 1 &&collidesatend))
+			if (tolerancedistance == 0 && (currentdistance == 0) || (!cancollideonfinal && currentdistance == 1 &&collidesatend))
 			{
 				bestnode = currentnode;
 				break;
@@ -64,10 +65,10 @@ public class SimplePlanner {
 				
 				int distfromgoal = Math.max(Math.abs(newx-endingx),Math.abs(newy-endingy));
 				//valid if the new state is within max distance and is in bounds and either there is no collision or it is at the target 
-				if ((distance == 0 || distfromgoal <= distance) && state.inBounds(newx, newy) && 
+				if (state.inBounds(newx, newy) && 
 						(
 								(state.unitAt(newx, newy)==null && state.resourceAt(newx, newy)==null) || 
-								(cancollideonfinal && distfromgoal==0)
+								(cancollideonfinal && distfromgoal==tolerancedistance)
 						)
 					)
 				{
@@ -78,8 +79,9 @@ public class SimplePlanner {
 						checked.add(newnode);
 					}
 					
-					if ((distfromgoal == distance) || (!cancollideonfinal && distance == 0 && distfromgoal == 1 && collidesatend))
+					if ((distfromgoal == tolerancedistance))//|| (cancollideonfinal && distance == 0 && distfromgoal == 1 && collidesatend))
 					{
+						System.out.println("Found it at " + newnode.x + "," + newnode.y);
 						bestnode = newnode;
 						break;
 					}
@@ -109,12 +111,21 @@ public class SimplePlanner {
 	 * @return
 	 */
 	public LinkedList<Action> planMove(Unit actor, int x, int y) {
-		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),x,y,0,true);
+		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),x,y,0,false);
 		if (directions == null)
-			return null;
+		{
+			return planFail(actor);
+		}
 		else
 			return planMove(actor,directions);
 	}
+	
+	public LinkedList<Action> planFail(Unit actor) {
+		LinkedList<Action> failact= new LinkedList<Action>();
+		failact.add(Action.createFail(actor.ID));
+		return failact;
+	}
+	
 	/**
 	 * Build primitive moves following the path made by the directions
 	 * @param actor
@@ -142,7 +153,7 @@ public class SimplePlanner {
 	public LinkedList<Action> planAttack(Unit actor, Unit target) {
 		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),actor.getTemplate().getRange(),false);
 		if (directions == null)
-			return null;
+			return planFail(actor);
 		LinkedList<Action> plan = planMove(actor,directions);
 		plan.addLast(new TargetedAction(actor.hashCode(),ActionType.PRIMITIVEATTACK,target.hashCode()));
 		return plan;
@@ -150,6 +161,40 @@ public class SimplePlanner {
 	public LinkedList<Action> planAttack(int actor, int target) {
 		return planAttack(state.getUnit(actor),state.getUnit(target));
 	}
+	
+	
+	
+	/**
+	 * Uses {@link #getDirections(int, int, int, int, int, boolean)} to get directions to the specified place and {@link #planMove(Unit, LinkedList<Direction>)} to move almost there.
+	 * then Then adds the final direction with a gather.
+	 * @param actor
+	 * @param target
+	 * @param distance
+	 * @return 
+	 */
+	public LinkedList<Action> planDeposit(Unit actor, Unit target, int distance) {
+		//plan a route to onto the resource
+		//This requires that planmove handle a 0 distance move as having the final primative move not be affected by collisions
+		//if the above requirement is violated, this will not work
+		System.out.println("Depositor: "+actor.getTemplate().getName()+" ("+actor.ID+")");
+		System.out.println("Building: ("+target.ID+")");
+		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
+		System.out.println("Directions: " + directions);
+		if (directions==null || directions.size()<1)
+		{
+			planFail(actor);
+		}
+		Direction finaldirection = directions.pollLast();
+		LinkedList<Action> plan = planMove(actor, directions);
+		plan.addLast(Action.createPrimitiveDeposit(actor.ID, finaldirection));
+		return plan;
+	}
+	public LinkedList<Action> planDeposit(int actor, int target, int distance) {
+		return planDeposit(state.getUnit(actor),state.getUnit(target),distance);
+	}
+	
+	
+	
 	/**
 	 * Uses {@link #getDirections(int, int, int, int, int, boolean)} to get directions to the specified place and {@link #planMove(Unit, LinkedList<Direction>)} to move almost there.
 	 * then Then adds the final direction with a gather.
@@ -162,9 +207,14 @@ public class SimplePlanner {
 		//plan a route to onto the resource
 		//This requires that planmove handle a 0 distance move as having the final primative move not be affected by collisions
 		//if the above requirement is violated, this will not work
+		System.out.println("Gatherer: "+actor.getTemplate().getName()+" ("+actor.ID+")");
+		System.out.println("Node: ("+target.ID+")");
 		LinkedList<Direction> directions = getDirections(actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
+		System.out.println("Directions: " + directions);
 		if (directions==null || directions.size()<1)
-			return null;
+		{
+			planFail(actor);
+		}
 		Direction finaldirection = directions.pollLast();
 		LinkedList<Action> plan = planMove(actor, directions);
 		plan.addLast(Action.createPrimitiveGather(actor.ID, finaldirection));

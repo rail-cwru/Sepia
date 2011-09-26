@@ -3,11 +3,15 @@ package edu.cwru.SimpleRTS.environment;
 import java.io.Serializable;
 import java.util.*;
 
+import edu.cwru.SimpleRTS.Log.ActionLogger;
+import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Pair;
 
 public class State implements Serializable{
@@ -27,6 +31,8 @@ public class State implements Serializable{
 	private Map<Integer, Map<Integer,Template>> templatesByAgent;
 	private Map<Integer,Template> allTemplates;
 	private StateView view;
+	private EventLogger eventlog;
+	private ActionLogger actionlog;
 	public State() {
 		allUnits = new HashMap<Integer,Unit>();
 		unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
@@ -37,6 +43,14 @@ public class State implements Serializable{
 		currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
 		currentSupply = new HashMap<Integer,Integer>();
 		currentSupplyCap = new HashMap<Integer,Integer>();
+		eventlog = new EventLogger();
+		actionlog = new ActionLogger();
+	}
+	public ActionLogger getActionLog() {
+		return actionlog;
+	}
+	public EventLogger getEventLog() {
+		return eventlog;
 	}
 	public int getTurnNumber() { return turnNumber; }
 	public Map<Integer, Unit> getUnits() {
@@ -194,12 +208,10 @@ public class State implements Serializable{
 	}
 	public void addUnit(Unit u) {
 		int player = u.getPlayer();
-		System.out.println("Making a unit with ID: "+u.ID);
 		if(!allUnits.containsKey(u)) {
 			Map<Integer, Unit> map = unitsByAgent.get(player);
 			if(map == null)
 			{
-				System.out.println("map for player "+player + " is gone, replacing it with blank");
 				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
 			}
 			allUnits.put(u.ID,u);
@@ -228,13 +240,46 @@ public class State implements Serializable{
 			map.put(t.ID, t);
 		}
 	}
-	public void addUpgrade(Integer upgradetemplateid, int player) {
+	public boolean tryProduceUpgrade(Upgrade upgrade) {
+		UpgradeTemplate ut = upgrade.getTemplate();
+		Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
+		Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
+		Integer currentgold = currentResources.get(goldpair);
+		Integer currentwood = currentResources.get(woodpair);
+		if (currentgold == null)
+			currentgold = 0;
+		if (currentwood == null)
+			currentwood = 0;
+		if (currentgold >= ut.getGoldCost() && currentwood >= ut.getWoodCost())
+		{
+			reduceResourceAmount(ut.getPlayer(), ResourceType.GOLD, ut.getGoldCost());
+			reduceResourceAmount(ut.getPlayer(), ResourceType.WOOD, ut.getWoodCost());
+			addUpgrade(upgrade);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	private void addUpgrade(Upgrade upgrade) {
+			UpgradeTemplate upgradetemplate = upgrade.getTemplate();
+			int player = upgradetemplate.getPlayer();
 			Set<Integer> list = upgradesByAgent.get(player);
 			if(list == null)
 			{
 				upgradesByAgent.put(player, list = new HashSet<Integer>());
 			}
-			list.add(upgradetemplateid);
+			if (!list.contains(upgradetemplate.ID))
+			{
+				//upgrade all of the affected units
+				for (UnitTemplate toupgrade : upgradetemplate.getAffectedUnits()) {
+					toupgrade.setBasicAttackLow(toupgrade.getBasicAttackLow() + upgradetemplate.getAttackChange());
+					toupgrade.setArmor(toupgrade.getArmor() + upgradetemplate.getDefenseChange());
+					
+				}
+			}
+			list.add(upgradetemplate.ID);
 	}
 	public boolean hasUpgrade(Integer upgradetemplateid, int player) {
 		Set<Integer> set = upgradesByAgent.get(player);
@@ -347,7 +392,7 @@ public class State implements Serializable{
 		Integer i = currentSupplyCap.get(player);
 		if(i == null) //this should never happen
 			i=0;
-		currentSupplyCap.put(player, i-amount);
+		currentSupplyCap.put(player, i+amount);
 	}
 	/**
 	 * Consume some of the supply
@@ -384,7 +429,7 @@ public class State implements Serializable{
 				//set it, because why not
 				currentSupply.put(player, 0);
 			}
-			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) < currentsupply + amounttoadd;
+			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) >= currentsupply + amounttoadd;
 		}
 	}
 	
@@ -461,6 +506,9 @@ public class State implements Serializable{
 		private State state;
 		private StateView(State state) {
 			this.state = state;
+		}
+		public EventLogger.EventLoggerView getEventLog() {
+			return state.eventlog.getView();
 		}
 		public List<Integer> getAllUnitIds() {
 			List<Integer> ids = new ArrayList<Integer>();

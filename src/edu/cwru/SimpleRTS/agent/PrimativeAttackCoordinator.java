@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.agent;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableMap.Builder;
 
@@ -36,7 +37,7 @@ public class PrimativeAttackCoordinator {
 	 * @param state
 	 * @param actions
 	 */
-	public void coordinate(StateView state, Builder<Integer, Action> actions) {
+	public void coordinate(StateView state, Map<Integer, Action> actions) {
 		
 		if (primarytargetID == NOTARGET || state.getUnit(primarytargetID) == null) {
 			getNewTarget(state);

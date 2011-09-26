@@ -35,15 +35,13 @@ public class SimpleModel implements Model {
 	private State state;
 	private HashMap<Unit, ActionQueue> queuedPrimitives;
 	private SimplePlanner planner;
-	private EventLogger eventlog;
-	private ActionLogger actionlog;
+
 	public SimpleModel(State init, int seed) {
 		state = init;
 		rand = new Random(seed);
 		planner = new SimplePlanner(init);
 		queuedPrimitives = new HashMap<Unit, ActionQueue>();
-		eventlog = new EventLogger();
-		actionlog = new ActionLogger();
+
 	}
 	
 	
@@ -89,6 +87,7 @@ public class SimpleModel implements Model {
 			case PRIMITIVEDEPOSIT:
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
+			case FAILED:
 				//The only primitive action needed to execute a primitive action is itself
 				primitives = new LinkedList<Action>();
 				primitives.add(action);
@@ -104,8 +103,8 @@ public class SimpleModel implements Model {
 				break;
 			case COMPOUNDATTACK:
 				TargetedAction aAttack = (TargetedAction)action;
-				int unitId = aAttack.getTargetId();
-				primitives = planner.planAttack(actor, state.getUnit(unitId));
+				int targetId = aAttack.getTargetId();
+				primitives = planner.planAttack(actor, state.getUnit(targetId));
 				break;
 			case COMPOUNDPRODUCE:
 				ProductionAction aProduce = (ProductionAction)action;
@@ -117,6 +116,11 @@ public class SimpleModel implements Model {
 				int buildTemplateId = aBuild.getTemplateId();
 				primitives = planner.planBuild(actor, aBuild.getX(), aBuild.getY(), (UnitTemplate)state.getTemplate(buildTemplateId));
 				break;
+			case COMPOUNDDEPOSIT:
+				TargetedAction aDeposit = (TargetedAction)action;
+				int depotId = aDeposit.getTargetId();
+				primitives = planner.planDeposit(actor, state.getUnit(depotId), 0);
+				break;
 			default:
 				primitives = null;
 			
@@ -125,6 +129,8 @@ public class SimpleModel implements Model {
 	}
 	@Override
 	public void executeStep() {
+		state.getActionLog().nextRound();
+		state.getEventLog().nextRound();
 		//Set each agent to have no task
 		for (Unit u : state.getUnits().values()) {
 			u.setTask(UnitTask.Idle);
@@ -148,7 +154,7 @@ public class SimpleModel implements Model {
 				System.err.println("Doing primative action: "+a);
 				//Execute it
 				Unit u = state.getUnit(a.getUnitId());
-				actionlog.addAction(u.getPlayer(), a);
+				state.getActionLog().addAction(u.getPlayer(), a);
 				if (u != null)
 				{
 					int x = u.getxPosition();
@@ -234,135 +240,151 @@ public class SimpleModel implements Model {
 						xPrime = x + ((LocatedAction)a).getX();
 						yPrime = y + ((LocatedAction)a).getY();
 					}
-					switch(a.getType())
+					int timestried=0;
+					while (timestried<2)
 					{
-						case PRIMITIVEMOVE:
-							if (!(a instanceof DirectedAction))
-								break;
-							if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
-								u.setxPosition(xPrime);
-								u.setyPosition(yPrime);
-							}
-							else {
-								queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-							}
-							break;
-						case PRIMITIVEGATHER:
-							if (!(a instanceof DirectedAction))
-								break;
-							boolean failed=false;
-							ResourceNode resource = state.resourceAt(xPrime, yPrime);
-							if(resource == null) {
-								failed=true;
-							}
-							else if(!u.canGather()) {
-								failed=true;
-							}
-							else {
-								int amountToExtract = Integer.parseInt(Configuration.getInstance().get(
-																				resource.getType()+"GatherRate"));
-								amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
-								u.pickUpResource(resource.getResourceType(), amountToExtract);
-								resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
-							}
-							if (failed) {
-								queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-							}
-							break;
-						case PRIMITIVEDEPOSIT:
-							if (!(a instanceof DirectedAction))
-								break;
-							//only can do a primative if you are in the right position
-								Unit townHall = state.unitAt(xPrime, yPrime);
-								boolean canAccept=false;
-								if (townHall!=null)
-								{
-									if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
-										canAccept=true;
-									else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
-										canAccept=true;
-								}
-								if(!canAccept)
-								{
-									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+						timestried++;
+						switch(a.getType())
+						{
+							case PRIMITIVEMOVE:
+								if (!(a instanceof DirectedAction))
 									break;
+								if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
+									u.setxPosition(xPrime);
+									u.setyPosition(yPrime);
 								}
 								else {
-									int agent = u.getPlayer();
-									state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
-									u.clearCargo();
-									break;
-								}
-						case PRIMITIVEATTACK:
-							if (!(a instanceof TargetedAction))
-								break;
-							Unit target = state.getUnit(((TargetedAction)a).getTargetId());
-							if (target!=null)
-							{
-								if (u.getTemplate().getRange() >= getRange(u, target))
-								{
-									int damage = calculateDamage(u,target);
-									eventlog.recordDamage(u.ID, target.ID, damage);
-									target.takeDamage(damage);
-								}
-								else
 									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-							}
-							break;
-						case PRIMITIVEBUILD:
-						{
-							if (!(a instanceof ProductionAction))
-								break;
-							UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-							u.incrementProduction(template, state.getView());
-							if (template.timeCost == u.getAmountProduced())
-							{
-								Unit building = template.produceInstance();
-								building.setxPosition(x);
-								building.setyPosition(y);
-								System.out.println("Checking on bug: unit with id "+u.ID);
-								System.out.println(state.getUnit(u.ID));
-								state.tryProduceUnit(building);
-								System.out.println(state.getUnit(u.ID));
-//								state.getEventLog().logProductionDone(u.ID, building.getTemplate().ID, building.ID);
-								int[] newxy = state.getClosestPosition(x,y);
-								u.setxPosition(newxy[0]);
-								u.setyPosition(newxy[1]);
-								System.out.println(state.getUnit(u.ID));
-							}
-							
-							break;
-						}
-						case PRIMITIVEPRODUCE:
-						{
-							if (!(a instanceof ProductionAction))
-								break;
-							Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-							u.incrementProduction(template,state.getView());
-							System.out.println(template.getName() + " takes "+template.timeCost);
-							System.out.println("Produced"+u.getAmountProduced());
-							if (template.timeCost == u.getAmountProduced())
-							{
-								if (template instanceof UnitTemplate)
-								{
-									Unit produced = ((UnitTemplate)template).produceInstance();
-									int[] newxy = state.getClosestPosition(x,y);
-									produced.setxPosition(newxy[0]);
-									produced.setyPosition(newxy[1]);
-									state.tryProduceUnit(produced);
-//									state.getEventLog().logProductionDone(u.ID, produced.getTemplate().ID, produced.ID);
 								}
-								else if (template instanceof UpgradeTemplate) {
-									UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-									upgradetemplate.produceInstance().execute(state);
-//									state.getEventLog().logProductionDone(u.ID, upgradetemplate.ID);
+								break;
+							case PRIMITIVEGATHER:
+								if (!(a instanceof DirectedAction))
+									break;
+								boolean failed=false;
+								ResourceNode resource = state.resourceAt(xPrime, yPrime);
+								if(resource == null) {
+									failed=true;
+								}
+								else if(!u.canGather()) {
+									failed=true;
+								}
+								else {
+									int amountToExtract = u.getTemplate().getGatherRate(resource.getType());
+									amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
+									u.pickUpResource(resource.getResourceType(), amountToExtract);
+									resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
+								}
+								if (failed) {
+									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+								}
+								break;
+							case PRIMITIVEDEPOSIT:
+								if (!(a instanceof DirectedAction))
+									break;
+								//only can do a primative if you are in the right position
+									Unit townHall = state.unitAt(xPrime, yPrime);
+									boolean canAccept=false;
+									if (townHall!=null)
+									{
+										if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
+											canAccept=true;
+										else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
+											canAccept=true;
+									}
+									if(!canAccept)
+									{
+										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+										break;
+									}
+									else {
+										int agent = u.getPlayer();
+										state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
+										u.clearCargo();
+										break;
+									}
+							case PRIMITIVEATTACK:
+								if (!(a instanceof TargetedAction))
+									break;
+								Unit target = state.getUnit(((TargetedAction)a).getTargetId());
+								if (target!=null)
+								{
+									if (u.getTemplate().getRange() >= getRange(u, target))
+									{
+										int damage = calculateDamage(u,target);
+										state.getEventLog().recordDamage(u.ID, target.ID, damage);
+										target.takeDamage(damage);
+									}
+									else
+										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+								}
+								break;
+							case PRIMITIVEBUILD:
+							{
+								if (!(a instanceof ProductionAction))
+									break;
+								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
+								u.incrementProduction(template, state.getView());
+								if (template.timeCost == u.getAmountProduced())
+								{
+									Unit building = template.produceInstance();
+									building.setxPosition(x);
+									building.setyPosition(y);
+									System.out.println("Checking on bug: unit with id "+u.ID);
+									System.out.println(state.getUnit(u.ID));
+									if (state.tryProduceUnit(building))
+									{
+									System.out.println(state.getUnit(u.ID));
+									state.getEventLog().recordBirth(building.ID, u.ID, building.getPlayer());
+									int[] newxy = state.getClosestPosition(x,y);
+									u.setxPosition(newxy[0]);
+									u.setyPosition(newxy[1]);
+									System.out.println(state.getUnit(u.ID));
+									}
+									u.incrementProduction(null, state.getView());
 								}
 								
+								break;
 							}
-							
-							break;
+							case PRIMITIVEPRODUCE:
+							{
+								if (!(a instanceof ProductionAction))
+									break;
+								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
+								u.incrementProduction(template,state.getView());
+								System.out.println(template.getName() + " takes "+template.timeCost);
+								System.out.println("Produced"+u.getAmountProduced());
+								if (template.timeCost == u.getAmountProduced())
+								{
+									if (template instanceof UnitTemplate)
+									{
+										Unit produced = ((UnitTemplate)template).produceInstance();
+										int[] newxy = state.getClosestPosition(x,y);
+										produced.setxPosition(newxy[0]);
+										produced.setyPosition(newxy[1]);
+										if (state.tryProduceUnit(produced))
+										{
+											state.getEventLog().recordBirth(produced.ID, u.ID, produced.getPlayer());
+										}
+									}
+									else if (template instanceof UpgradeTemplate) {
+										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
+										if (state.tryProduceUpgrade(upgradetemplate.produceInstance()))
+										{
+											state.getEventLog().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
+										}
+									}
+									u.incrementProduction(null, state.getView());
+									
+								}
+								
+								break;
+							}
+							case FAILED:
+							{
+								calculatePrimitives(a);
+								break;
+							}
 						}
-						
 					}
 				}
 			}
@@ -376,7 +398,7 @@ public class SimpleModel implements Model {
 		for (Unit u : allunits.values()) {
 			if (u.getCurrentHealth() <= 0)
 			{
-				eventlog.recordDeath(u.ID);
+				state.getEventLog().recordDeath(u.ID,u.getPlayer());
 				dead.add(u.ID);
 			}
 		}

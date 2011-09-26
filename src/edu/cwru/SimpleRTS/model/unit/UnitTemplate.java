@@ -7,6 +7,7 @@ import java.util.List;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * Contains information about default and invariant attributes of units. The class
@@ -38,6 +39,8 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected int foodProvided;
 	protected char character;
 	protected Prerequisite prerequisite;
+	protected int goldGatherRate;
+	protected int woodGatherRate;
 	private List<String> produces;
 	private List<Integer> producesID;
 	public UnitTemplate()
@@ -129,7 +132,22 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setFoodProvided(int numFoodProvided) {
 		this.foodProvided = numFoodProvided;
 	}
-	
+	public void setGoldGatherRate(int goldpertrip) {
+		this.goldGatherRate = goldpertrip;
+	}
+	public void setWoodGatherRate(int woodpertrip) {
+		this.woodGatherRate = woodpertrip;
+	}
+	public int getGatherRate(ResourceNode.Type type) {
+		if (type == ResourceNode.Type.GOLD_MINE) {
+			return goldGatherRate;
+		}
+		else if (type == ResourceNode.Type.TREE) {
+			return woodGatherRate;
+		}
+			
+		return 0;
+	}
 	public boolean canGather() { return canGather; }
 	public void setCanGather(boolean canGather) { this.canGather = canGather; } 
 	public boolean canBuild() { return canBuild; }
@@ -140,6 +158,8 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		this.produces.add(item);
 	}
 	public boolean canProduce(Template t) {
+		if (t==null)
+			return false;
 		for (Integer i : producesID)
 			if (t.ID == i)
 				return true;
@@ -159,7 +179,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			}
 			for (Template t : upgradetemplates) {
 				if (s.equals(t.getName())) {
-					producesID.add(t.hashCode());
+					producesID.add(t.ID);
 					break;
 				}
 				
@@ -193,7 +213,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public int getRange() {	return (template).getRange(); }
 		public int getArmor() {	return (template).getArmor(); }
 		public int getSightRange() { return (template).getSightRange();	}
-		public boolean canProduce(Integer templateID) { return (template).producesID.contains(templateID);};
+		public boolean canProduce(Integer templateID) {/*System.out.println(getUnitName() + "("+template.ID+") produces " + template.producesID);*/ return (template).producesID.contains(templateID);};
 		public char getCharacter() { return (template).getCharacter(); }
 		public boolean canAcceptGold() {return (template).canAcceptGold(); }
 		public boolean canAcceptWood() {return (template).canAcceptWood(); }

@@ -7,10 +7,15 @@ package edu.cwru.SimpleRTS.Log;
  */
 public class DeathLog {
 	private int unitid;
-	public DeathLog(int deadunitid) {
+	private int player;
+	public DeathLog(int deadunitid, int player) {
 		unitid=deadunitid;
+		this.player = player;
 	}
 	public int getDeadUnitID() {
 		return unitid;
+	}
+	public int getPlayer() {
+		return player;
 	}
 }

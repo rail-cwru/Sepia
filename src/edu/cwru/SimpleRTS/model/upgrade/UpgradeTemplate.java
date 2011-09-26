@@ -14,7 +14,6 @@ public class UpgradeTemplate extends Template<Upgrade>
 	private List<UnitTemplate> unittemplatesaffected;
 	private String[] stringunitsaffected;
 	private int timetoproduce;
-	private int upgradecount; //A count of the number of times this upgrade has been completed
 
 	public UpgradeTemplate(int attackchange, int defensechange, String[] affectedunits)
 	{
@@ -24,15 +23,17 @@ public class UpgradeTemplate extends Template<Upgrade>
 	}
 	public Upgrade produceInstance()
 	{
-		return new Upgrade(attackchange, defensechange, unittemplatesaffected, upgradecount,this);
+		return new Upgrade(attackchange, defensechange, unittemplatesaffected, this);
 	}
-	public void incrementUpgradeCount()
+	public List<UnitTemplate> getAffectedUnits()
 	{
-		upgradecount++;
+		return unittemplatesaffected;
 	}
-	public int getUpgradeCount()
-	{
-		return upgradecount;
+	public int getAttackChange() {
+		return attackchange;
+	}
+	public int getDefenseChange() {
+		return defensechange;
 	}
 	@Override
 	public void namesToIds(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {

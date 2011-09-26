@@ -97,6 +97,12 @@ public final class TypeLoader {
 		template.setTimeCost(obj.getInt("TimeCost"));
 		if(obj.has("FoodCost"))
 			template.setFoodCost(obj.getInt("FoodCost"));
+		
+		if(obj.has("FoodGiven"))
+			template.setFoodProvided(obj.getInt("FoodGiven"));
+		else
+			template.setFoodProvided(0);
+		
 		if(obj.has("AcceptsGold"))
 			template.setCanAcceptGold(obj.getBoolean("AcceptsGold"));
 		else
@@ -105,14 +111,29 @@ public final class TypeLoader {
 			template.setCanAcceptWood(obj.getBoolean("AcceptsWood"));
 		else
 			template.setCanAcceptWood(false);
+		
+		if(obj.has("WoodPerTrip"))
+			template.setWoodGatherRate(obj.getInt("WoodPerTrip"));
+		else
+			template.setWoodGatherRate(0);
+		if(obj.has("GoldPerTrip"))
+			template.setGoldGatherRate(obj.getInt("GoldPerTrip"));
+		else
+			template.setGoldGatherRate(0);
+		
+		
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
+		
 		template.setPlayer(player);
 		if(obj.has("Produces"))
 		{
 			JSONArray produces = obj.getJSONArray("Produces");
 			for(int i = 0; i < produces.length(); i++)
-				template.addProductionItem(produces.getString(i));		
+			{
+				template.addProductionItem(produces.getString(i));
+			}
+			
 		}
 		if(obj.has("BuildPrereq"))
 		{

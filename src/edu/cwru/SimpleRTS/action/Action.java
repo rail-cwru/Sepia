@@ -58,5 +58,13 @@ public class Action {
 	public static Action createPrimitiveDeposit(int unitid, Direction d) {
 		return new DirectedAction(unitid, ActionType.PRIMITIVEDEPOSIT, d);
 	}
+	/**
+	 * Used to indicate that a compound action failed, and it should be redone
+	 * @param unitid
+	 * @return
+	 */
+	public static Action createFail(int unitid) {
+		return new Action(unitid, ActionType.FAILED);
+	}
 	
 }
