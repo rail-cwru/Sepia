@@ -54,6 +54,8 @@
 		"Range" : 1,
 		"Mobile" : true,
 		"Gatherer" : true,
+		"GoldPerTrip" : 50,
+		"WoodPerTrip" : 20,
 		"Builder" : true,
 		"Produces" : ["Peasant","TownHall","Barracks","Blacksmith","Farm"]
 	},
