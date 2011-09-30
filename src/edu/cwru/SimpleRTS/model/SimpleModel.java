@@ -99,7 +99,7 @@ public class SimpleModel implements Model {
 			case COMPOUNDGATHER:
 				TargetedAction aGather = (TargetedAction)action;
 				int resourceId = aGather.getTargetId();
-				primitives = planner.planGather(actor, state.getResource(resourceId), 0);
+				primitives = planner.planGather(actor, state.getResource(resourceId));
 				break;
 			case COMPOUNDATTACK:
 				TargetedAction aAttack = (TargetedAction)action;
@@ -119,7 +119,7 @@ public class SimpleModel implements Model {
 			case COMPOUNDDEPOSIT:
 				TargetedAction aDeposit = (TargetedAction)action;
 				int depotId = aDeposit.getTargetId();
-				primitives = planner.planDeposit(actor, state.getUnit(depotId), 0);
+				primitives = planner.planDeposit(actor, state.getUnit(depotId));
 				break;
 			default:
 				primitives = null;
@@ -154,7 +154,7 @@ public class SimpleModel implements Model {
 				System.err.println("Doing primative action: "+a);
 				//Execute it
 				Unit u = state.getUnit(a.getUnitId());
-				state.getActionLog().addAction(u.getPlayer(), a);
+				
 				if (u != null)
 				{
 					int x = u.getxPosition();
@@ -241,9 +241,11 @@ public class SimpleModel implements Model {
 						yPrime = y + ((LocatedAction)a).getY();
 					}
 					int timestried=0;
-					while (timestried<1)
+					boolean failedtry=true;
+					while (timestried<2&&failedtry)
 					{
 						timestried++;
+						failedtry = false;
 						switch(a.getType())
 						{
 							case PRIMITIVEMOVE:
@@ -254,6 +256,7 @@ public class SimpleModel implements Model {
 									u.setyPosition(yPrime);
 								}
 								else {
+									failedtry=true;
 									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 								}
 								break;
@@ -274,6 +277,7 @@ public class SimpleModel implements Model {
 									state.getEventLog().recordPickupResource(u.ID, u.getPlayer(), resource.getResourceType(), amountPickedUp, resource.ID, resource.getType());
 								}
 								if (failed) {
+									failedtry=true;
 									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 								}
 								break;
@@ -292,6 +296,7 @@ public class SimpleModel implements Model {
 									}
 									if(!canAccept)
 									{
+										failedtry=true;
 										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 										break;
 									}
@@ -316,13 +321,26 @@ public class SimpleModel implements Model {
 										target.takeDamage(damage);
 									}
 									else
+									{
+										failedtry=true;
 										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+									}
 								}
 								break;
 							case PRIMITIVEBUILD:
 							{
 								if (!(a instanceof ProductionAction))
 									break;
+								if (queuedact.getFullAction().getType() == ActionType.COMPOUNDBUILD && queuedact.getFullAction() instanceof LocatedProductionAction)
+								{
+									LocatedProductionAction fullbuild = (LocatedProductionAction) queuedact.getFullAction();
+									if (fullbuild.getX() != u.getxPosition() || fullbuild.getY() != u.getyPosition())
+									{
+										failedtry=true;
+										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+										break;
+									}
+								}
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
 								u.incrementProduction(template, state.getView());
 								if (template.timeCost == u.getAmountProduced())
@@ -352,8 +370,8 @@ public class SimpleModel implements Model {
 									break;
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
 								u.incrementProduction(template,state.getView());
-								System.out.println(template.getName() + " takes "+template.timeCost);
-								System.out.println("Produced"+u.getAmountProduced());
+//								System.out.println(template.getName() + " takes "+template.timeCost);
+//								System.out.println("Produced"+u.getAmountProduced());
 								if (template.timeCost == u.getAmountProduced())
 								{
 									if (template instanceof UnitTemplate)
@@ -382,7 +400,8 @@ public class SimpleModel implements Model {
 							}
 							case FAILED:
 							{
-								calculatePrimitives(a);
+								failedtry=true;
+								queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 								break;
 							}
 						}

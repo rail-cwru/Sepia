@@ -66,5 +66,12 @@ public class Action {
 	public static Action createFail(int unitid) {
 		return new Action(unitid, ActionType.FAILED);
 	}
-	
+	/**
+	 * Used to indicate that a compound action failed permanently, and it should be aborted
+	 * @param unitid
+	 * @return
+	 */
+	public static Action createPermanentFail(int unitid) {
+		return new Action(unitid, ActionType.FAILEDPERMANENTLY);
+	}
 }

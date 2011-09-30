@@ -610,5 +610,14 @@ public class State implements Serializable{
 		public boolean hasUpgrade(int upgradeid, int playerid) {
 			return state.hasUpgrade(upgradeid, playerid);
 		}
+		public boolean inBounds(int x, int y) {
+			return state.inBounds(x, y);
+		}
+		public boolean isUnitAt(int x, int y) {
+			return state.unitAt(x, y) != null;
+		}
+		public boolean isResourceAt(int x, int y) {
+			return state.resourceAt(x, y) != null;
+		}
 	}
 }
