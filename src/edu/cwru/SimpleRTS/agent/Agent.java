@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 
 import com.google.common.collect.ImmutableMap;
 
+
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
 public abstract class Agent implements Serializable {

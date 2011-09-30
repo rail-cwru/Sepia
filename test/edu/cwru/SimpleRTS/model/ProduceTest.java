@@ -69,6 +69,7 @@ public class ProduceTest {
 			upgradeproducer2id = u.ID;
 			builder.addUnit(u);
 		}
+
 		builder.setSupplyCap(player, 10);
 		builder.setResourceAmount(player, ResourceType.GOLD, 1200);
 		builder.setResourceAmount(player, ResourceType.WOOD, 800);

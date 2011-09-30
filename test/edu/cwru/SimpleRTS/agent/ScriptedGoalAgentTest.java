@@ -53,6 +53,10 @@ public class ScriptedGoalAgentTest {
 			ResourceNode rn = new ResourceNode(ResourceNode.Type.GOLD_MINE, 2, 2, 70000);
 			builder.addResource(rn);
 		}
+		{
+			ResourceNode rn = new ResourceNode(ResourceNode.Type.TREE, 1, 1, 70000);
+			builder.addResource(rn);
+		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
 		model=new SimpleModel(state, 1235);
@@ -66,22 +70,32 @@ public class ScriptedGoalAgentTest {
 		//Get the resources right
 		state.depositResources(player, ResourceType.GOLD, 1200);
 		state.depositResources(player, ResourceType.WOOD, 800);
-		String commands="Build:TownHall:0:0\n";/*+
+		String commands="Build:TownHall:0:0\n"+
 				"Transfer:1:Idle:Gold\n" +
+				"Wait:Gold:500\n" +
+				"Transfer:1:Gold:Wood\n" +
+				"Wait:Wood:250\n" +
+				"Transfer:1:Wood:Idle\n" +
+				"Build:Farm:-2:2\n" +
+				"Transfer:1:Idle:Gold\n" +
+				"Produce:Peasant\n" +
+				"Transfer:1:Idle:Wood\n" +
+				"Wait:Gold:400\n" +
 				"Produce:Peasant\n" +
 				"Transfer:1:Idle:Gold\n" +
 				"Produce:Peasant\n" +
 				"Transfer:1:Idle:Gold\n" +
-				"Produce:Peasant\n" +
-				"Transfer:1:Idle:Gold\n" +
-				"Wait:Gold:200\n" +
+				"Wait:Wood:400\n" +
+				"Transfer:1:Wood:Idle\n" +
 				"Build:Barracks:2:-2\n" +
-				"Attack:All\n";*/
+				"Transfer:1:Idle:Gold\n" +
+				"Produce:Footman\n" +
+				"Attack:All\n";
 		int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
-		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader,new Random(), true);
+		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);
 		
-		for (int step = 0; step<30; step++)
+		for (int step = 0; step<305; step++)
 		{
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
@@ -120,6 +134,7 @@ public class ScriptedGoalAgentTest {
 			Collection<Unit> units = state.getUnits(player).values();
 			for (Unit u : units) {
 				System.out.println(u.getTemplate().getName() + " (ID: "+u.ID+") at "+u.getxPosition() + "," + u.getyPosition());
+				System.out.println("Carrying: " + u.getCurrentCargoAmount() + " (" + u.getCurrentCargoType() + ")");
 			}
 			System.out.println("All agents control a combined " + state.getUnits().values().size() + " units");
 			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");

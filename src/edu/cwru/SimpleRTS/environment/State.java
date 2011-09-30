@@ -18,7 +18,7 @@ public class State implements Serializable{
 	//TODO: move this constant somewhere
 	private final int MAXSUPPLY = 50;
 	
-	private Map<Integer,Unit> allUnits;//TODO - find a more efficient way of storing these (maybe HashMap of IDs to units?)s
+	private Map<Integer,Unit> allUnits;
 	private Map<Integer,Map<Integer, Unit>> unitsByAgent;
 	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
@@ -125,7 +125,6 @@ public class State implements Serializable{
 			return null;
 		}
 		for (Template t : playerstemplates.values()) {
-			System.out.println("Checking name of template:"+t.getName());
 			if (t.getName().equals(name))
 				return t;
 		}
@@ -291,6 +290,14 @@ public class State implements Serializable{
 	}
 	public List<ResourceNode> getResources() {
 		return Collections.unmodifiableList(resourceNodes);
+	}
+	public void removeResourceNode(int resourceID) {
+		for (int i = 0; i<resourceNodes.size();i++) {
+			if (resourceNodes.get(i).ID == resourceID) {
+				resourceNodes.remove(i);
+				break;
+			}
+		}
 	}
 	public boolean positionAvailable(int x, int y)
 	{

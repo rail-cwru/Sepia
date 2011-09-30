@@ -1,18 +1,22 @@
 package edu.cwru.SimpleRTS.Log;
 
 /**
- * A read only class  
+ * A read only class logging damage.
  * @author The Condor
  *
  */
 public class DamageLog {
 	private int damager;
+	private int damagercontroller;
 	private int damagee;
+	private int damageecontroller;
 	private int amount;
-	public DamageLog(int attackerid, int defenderid, int damageamount) {
+	public DamageLog(int attackerid, int attackercontroller, int defenderid, int defendercontroller, int damageamount) {
 		damager = attackerid;
 		damagee = defenderid;
 		amount = damageamount;
+		this.damagercontroller = attackercontroller;
+		this.damageecontroller = defendercontroller;
 	}
 	public int getDamage() {
 		return amount;
@@ -23,4 +27,11 @@ public class DamageLog {
 	public int getDefenderID() {
 		return damagee;
 	}
+	public int getAttackerController() {
+		return damagercontroller;
+	}
+	public int getDefenderController() {
+		return damageecontroller;
+	}
 }
+

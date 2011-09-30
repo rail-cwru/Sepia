@@ -269,10 +269,9 @@ public class SimpleModel implements Model {
 									failed=true;
 								}
 								else {
-									int amountToExtract = u.getTemplate().getGatherRate(resource.getType());
-									amountToExtract = Math.min(amountToExtract, resource.getAmountRemaining());
-									u.pickUpResource(resource.getResourceType(), amountToExtract);
-									resource.setAmountRemaining(resource.getAmountRemaining()-amountToExtract);
+									int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
+									u.pickUpResource(resource.getResourceType(), amountPickedUp);
+									state.getEventLog().recordPickupResource(u.ID, u.getPlayer(), resource.getResourceType(), amountPickedUp, resource.ID, resource.getType());
 								}
 								if (failed) {
 									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
@@ -298,8 +297,10 @@ public class SimpleModel implements Model {
 									}
 									else {
 										int agent = u.getPlayer();
+										state.getEventLog().recordDropoffResource(u.ID, townHall.ID, agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 										state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 										u.clearCargo();
+										
 										break;
 									}
 							case PRIMITIVEATTACK:
@@ -311,7 +312,7 @@ public class SimpleModel implements Model {
 									if (u.getTemplate().getRange() >= getRange(u, target))
 									{
 										int damage = calculateDamage(u,target);
-										state.getEventLog().recordDamage(u.ID, target.ID, damage);
+										state.getEventLog().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
 										target.takeDamage(damage);
 									}
 									else
@@ -406,6 +407,22 @@ public class SimpleModel implements Model {
 		for (int uid : dead)
 		{
 			state.removeUnit(uid);
+		}
+		//Take all of the used up resources and get rid of them
+		List<ResourceNode> allnodes = state.getResources();
+		List<Integer> usedup= new ArrayList<Integer>(allnodes.size());
+		for (ResourceNode r : allnodes) {
+			if (r.getAmountRemaining() <= 0)
+			{
+				state.getEventLog().recordExhaustedResourceNode(r.ID, r.getType());
+				usedup.add(r.ID);
+			}
+		}
+		//Remove them
+		for (int rid : usedup)
+		{
+			
+			state.removeResourceNode(rid);
 		}
 		
 	}

@@ -13,7 +13,6 @@ public class Unit extends Target {
 	
 	private UnitView view;
 	protected int currentHealth;
-	protected int player;
 	protected int xPosition;
 	protected int yPosition;
 	protected UnitTemplate template;
@@ -31,12 +30,9 @@ public class Unit extends Target {
 	}
 
 	public int getPlayer() {
-		return player;
+		return template.getPlayer();
 	}
 
-	public void setPlayer(int player) {
-		this.player = player;
-	}
 	public char getCharacter() {
 		return template.getCharacter();
 	}
@@ -141,7 +137,7 @@ public class Unit extends Target {
 	@Override
 	public String toString() {
 		return "Unit [ID=" + ID + ", currentHealth="
-				+ currentHealth + ", player=" + player + ", xPosition="
+				+ currentHealth + ", player=" + template.getPlayer() + ", xPosition="
 				+ xPosition + ", yPosition=" + yPosition + ", template="
 				+ template + ", cargoType=" + cargoType + ", cargoAmount="
 				+ cargoAmount + "]";
@@ -183,7 +179,7 @@ public class Unit extends Target {
 			return unit.currentHealth;
 		}
 		public int getPlayer() {
-			return unit.player;
+			return unit.template.getPlayer();
 		}
 		public int getCargoAmount() {
 			return unit.cargoAmount;

@@ -44,8 +44,10 @@ public class ResourceNode extends Target {
 	public int getAmountRemaining() {
 		return amountRemaining;
 	}
-	public void setAmountRemaining(int amount) {
-		amountRemaining = amount;
+	public int reduceAmountRemaining(int amount) {
+		int prevAmount = amountRemaining;
+		amountRemaining = Math.max(0, amountRemaining - amount);
+		return prevAmount - amountRemaining;
 	}
 	@Override
 	public int hashCode() {

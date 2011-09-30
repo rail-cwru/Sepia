@@ -57,7 +57,7 @@
 		"GoldPerTrip" : 50,
 		"WoodPerTrip" : 20,
 		"Builder" : true,
-		"Produces" : ["Peasant","TownHall","Barracks","Blacksmith","Farm"]
+		"Produces" : ["TownHall","Barracks","Blacksmith","Farm"]
 	},
 	"Knight" : {
 		"Name" : "Knight",

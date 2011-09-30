@@ -396,7 +396,6 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	}
 	@Override
 	public void terminalStep(StateView newstate) {
-		// TODO Auto-generated method stub
 		
 	}
 	public Builder<Integer, Action> act(StateView state) throws IOException {
