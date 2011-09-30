@@ -15,22 +15,23 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
 	public static void main(String[] args) {
-		if(args.length < 4)
+		if(args.length < 4 || args.length > 0 && args[0].equals("--prefs") || args.length < 6)
 		{
 			printUsageAndExit("Not enough arguments");
 		}
-		State initState = readState(args[0]);
+		int i = 0;
+		if(args[i].equals("--prefs") && !loadPrefs(args[i+1]))
+		{
+			printUsageAndExit("Invalid filename for preferences "+args[i+1]);
+		}
+		i += 2;
+		State initState = readState(args[i]);
 		if(initState == null)
 		{
-			printUsageAndExit("Unable to read file " + args[0]);
+			printUsageAndExit("Unable to read file " + args[i]);
 		}
-		int numEpisodes = parseInt(args[1]);
-		if(numEpisodes < 1)
-		{
-			printUsageAndExit("Invalid number of episodes " + numEpisodes);
-		}
+		i++;
 		List<Agent> agents = new LinkedList<Agent>();
-		int i = 2;
 		while(i < args.length)
 		{
 			if(!args[i].equals("--agent"))
@@ -89,7 +90,7 @@ public class Main {
 	}
 	private static void printUsageAndExit(String error) {
 		System.out.println(error);
-		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--prefs preferencesFile] <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
 		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 10 --agent SimpleAgent1 --agent SimpleAgent1");
 		System.out.println("\tThis will load the map stored in the file data/map1 with two new instances of SimpleAgent1 and run 10 episodes");
 		System.out.println("Example: java -jar SimpleRTS.jar data/map1 1000 --agent ScriptedGoalAgent --loadfrom agents/script1 --agent SimpleAgent2");
@@ -140,6 +141,14 @@ public class Main {
 		}
 		catch(NumberFormatException ex) {
 			return -1;
+		}
+	}
+	private static boolean loadPrefs(String arg) {
+		try {
+			Preferences.importPreferences(new FileInputStream(arg));
+			return true;
+		} catch(Exception e) {
+			return false;
 		}
 	}
 }
