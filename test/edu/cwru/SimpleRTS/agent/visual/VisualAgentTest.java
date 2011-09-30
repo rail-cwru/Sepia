@@ -1,7 +1,5 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -28,48 +26,57 @@ public class VisualAgentTest {
 	static VisualAgent visualAgent;
 	static SimpleAgent1 simpleAgent;
 	static Environment env;
+	private static final int player1=0;
+	private static final int player2=1;
 	
 	@SuppressWarnings("rawtypes")
 	@BeforeClass
 	public static void setup() throws FileNotFoundException, JSONException {
 		StateBuilder builder = new StateBuilder();
 		builder.setSize(32, 32);
-		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0);
-		for(Template t : templates)
 		{
-			if(!(t instanceof UnitTemplate))
-				continue;
-			UnitTemplate ut = (UnitTemplate)t;
-			if("Peasant".equals(ut.getUnitName()))
+			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1);
+			for(Template t : templates)
 			{
+				builder.addTemplate(t, player1);
+			}
+		}
+		{
+			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2);
+			for(Template t : templates)
+			{
+				builder.addTemplate(t, player2);
+			}
+		}
+			
+			{
+				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player1, "Peasant");
 				Unit u1 = new Unit(ut);
-				u1.setPlayer(0);
 				u1.setxPosition(1);
 				u1.setyPosition(1);
 				builder.addUnit(u1);
 				Unit u2 = new Unit(ut);
-				u2.setPlayer(0);
 				u2.setxPosition(7);
 				u2.setyPosition(7);
 				builder.addUnit(u2);
 			}
-			else if("Footman".equals(ut.getUnitName()))
+			
 			{
+				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Footman");
 				Unit u1 = new Unit(ut);
-				u1.setPlayer(1);
 				u1.setxPosition(20);
 				u1.setyPosition(4);
 				builder.addUnit(u1);
 			}
-			else if("Archer".equals(ut.getUnitName()))
+			
 			{
+				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Archer");
 				Unit u1 = new Unit(ut);
-				u1.setPlayer(1);
 				u1.setxPosition(2);
 				u1.setyPosition(12);
 				builder.addUnit(u1);
 			}
-		}
+		
 		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 1, 100));
 		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 1, 2, 100));
 		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 2, 100));
@@ -87,26 +94,13 @@ public class VisualAgentTest {
 		builder.addResource(new ResourceNode(ResourceNode.Type.GOLD_MINE, 12, 2, 100));
 		state = builder.build();
 		model = new SimpleModel(state, 6);
-		visualAgent = new VisualAgent(0,state.getView());
-		simpleAgent = new SimpleAgent1(1);
+		visualAgent = new VisualAgent(player1,state.getView());
+		simpleAgent = new SimpleAgent1(player2);
 		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model);
 	}
 	@Test
-	public void display() throws InterruptedException {
-		final Object semaphore = new Object();
-		while(visualAgent.screen == null)
-			Thread.sleep(100);
-		visualAgent.screen.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				synchronized(semaphore) {
-					semaphore.notifyAll();
-				}
-			}
-		});
-		synchronized(semaphore) {
-			semaphore.wait();
-		}
+	public void display() {
+		while(true);
 	}
 	public static void main(String args[]) {
 	      org.junit.runner.JUnitCore.main("edu.cwru.SimpleRTS.agent.visual.VisualAgentTest");

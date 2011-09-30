@@ -41,7 +41,6 @@ public class Editor extends JFrame {
 	
 	GameScreen screen;
 	State state;
-	List<Template> templates;
 	JComboBox templateSelector;
 	JComboBox playerSelector;
 	JButton addPlayer;
@@ -54,10 +53,9 @@ public class Editor extends JFrame {
 	JButton save;
 	JTextArea error;
 	
-	public Editor(GameScreen screen, State state, List<Template> templates) {
+	public Editor(GameScreen screen, State state, String templatefilename) {
 		this.screen = screen;
 		this.state = state;
-		this.templates = templates;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(screen.getLocation().x+screen.getWidth()+1, screen.getLocation().y);
 		setSize(100,screen.getHeight());
@@ -66,21 +64,39 @@ public class Editor extends JFrame {
 		
 		screen.addMouseListener(this.new EditorMouseListener());
 		
-		DefaultComboBoxModel model = new DefaultComboBoxModel(new Object[]{"Player 0"});
+		DefaultComboBoxModel model = new DefaultComboBoxModel(new Object[]{});
 		playerSelector = new JComboBox(model);
 		addPlayer = new JButton("Add Player");
 		addPlayer.addActionListener(new ActionListener() {
 			DefaultComboBoxModel model;
-			public ActionListener setModel(DefaultComboBoxModel model) {
+			String templatefilename;
+			State state;
+			public ActionListener setOutsideInformationAndClick(DefaultComboBoxModel model, String templatefilename, State state) {
 				this.model = model;
+				this.templatefilename = templatefilename;
+				this.state = state;
+				actionPerformed(null); //click it once so it starts with one
 				return this;
 			}
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(model.getSize() < 8)
-					model.addElement("Player "+model.getSize());
+				{
+					int newPlayerNum = model.getSize();
+					try {
+						List<Template> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum);
+						for (Template t : newPlayerTemplates) {
+							state.addTemplate(t, newPlayerNum);
+						}
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					} catch (JSONException e1) {
+						e1.printStackTrace();
+					}
+					model.addElement("Player "+newPlayerNum);
+				}
 			}			
-		}.setModel(model));
+		}.setOutsideInformationAndClick(model,templatefilename,state));
 		cursorGroup = new ButtonGroup();
 		selectPointer = new JRadioButton("Pointer");
 		selectPointer.setSelected(true);
@@ -91,7 +107,20 @@ public class Editor extends JFrame {
 		cursorGroup.add(selectTree);
 		selectMine = new JRadioButton("Mine");
 		cursorGroup.add(selectMine);
-		templateSelector = new JComboBox(templates.toArray(new Template[0]));		
+		String[] unitnames;
+		List<UnitTemplate> tempunittemplates=null;
+		try {
+			tempunittemplates = TypeLoader.loadUnitsFromFile(templatefilename, -3);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (JSONException e1) {
+			e1.printStackTrace();
+		}
+		unitnames = new String[tempunittemplates.size()];
+		for (int i = 0; i<unitnames.length;i++) {
+			unitnames[i] = tempunittemplates.get(i).getName();
+		}
+		templateSelector = new JComboBox(unitnames);		
 		templateSelector.addActionListener(new ActionListener() {
 			JRadioButton button;
 			public ActionListener setButton(JRadioButton button) {
@@ -158,8 +187,8 @@ public class Editor extends JFrame {
 			}
 			if(selectUnit.isSelected())
 			{
-				Unit u = new Unit((UnitTemplate)templateSelector.getSelectedItem());
-				u.setPlayer(player);
+				String name = (String)templateSelector.getSelectedItem();
+				Unit u = ((UnitTemplate)state.getTemplate(player,name)).produceInstance();
 				u.setxPosition(x);
 				u.setyPosition(y);
 				state.addUnit(u);
@@ -214,14 +243,6 @@ public class Editor extends JFrame {
 		}
 		GameScreen screen = new GameScreen(null);
 		screen.updateState(state.getView());
-		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0); //needs to have seperate templates by player
-		ListIterator<Template> li = templates.listIterator();
-		while(li.hasNext())
-		{
-			Template t = li.next();
-			if(t instanceof UpgradeTemplate)
-				li.remove();
-		}
-		Editor editor = new Editor(screen,state,templates);
+		Editor editor = new Editor(screen,state,"data/unit_templates");
 	}
 }
