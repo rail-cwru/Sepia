@@ -97,7 +97,6 @@ public final class TypeLoader {
 		template.setTimeCost(obj.getInt("TimeCost"));
 		if(obj.has("FoodCost"))
 			template.setFoodCost(obj.getInt("FoodCost"));
-		
 		if(obj.has("FoodGiven"))
 			template.setFoodProvided(obj.getInt("FoodGiven"));
 		else

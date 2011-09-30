@@ -12,6 +12,7 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
@@ -50,6 +51,8 @@ public class PrereqTest {
 		builder.addUnit(u);
 		
 		}
+		builder.setResourceAmount(player, ResourceType.GOLD, 1000);
+		builder.setResourceAmount(player, ResourceType.WOOD, 1000);
 		state = builder.build();
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536);

@@ -241,7 +241,7 @@ public class SimpleModel implements Model {
 						yPrime = y + ((LocatedAction)a).getY();
 					}
 					int timestried=0;
-					while (timestried<2)
+					while (timestried<1)
 					{
 						timestried++;
 						switch(a.getType())

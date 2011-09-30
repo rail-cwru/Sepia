@@ -471,6 +471,9 @@ public class State implements Serializable{
 		public void setResourceAmount(int player, ResourceType resource, int amount) {
 			state.currentResources.put(new Pair<Integer,ResourceType>(player,resource), amount);
 		}
+		public void setSupplyCap(int player, int supply) {
+			state.currentSupplyCap.put(player, supply);
+		}
 		public String getTextString() {
 			return state.getTextString();
 		}

@@ -1,11 +1,9 @@
 package edu.cwru.SimpleRTS.agent;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.BeforeClass;
@@ -22,7 +20,6 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.TypeLoader;
 
 
@@ -82,7 +79,7 @@ public class ScriptedGoalAgentTest {
 				"Attack:All\n";*/
 		int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
-		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader,true);
+		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader,new Random(), true);
 		
 		for (int step = 0; step<30; step++)
 		{
