@@ -1,14 +1,11 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableMap.Builder;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.ScriptedGoalAgent.RelevantStateView;
@@ -25,7 +22,7 @@ import edu.cwru.SimpleRTS.model.unit.UnitTask;
  * UNABLE TO HANDLE UNITS THAT DO ONE OR THE OTHER OF BUILDING AND GATHERING
  *
  */
-public class BasicGatheringCoordinator
+public class BasicGatheringCoordinator implements Serializable
 {
 	private int playerID;
 	private List<Integer> miners;

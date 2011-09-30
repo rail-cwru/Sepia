@@ -1,14 +1,15 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
+import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
-public class BusynessCoordinator {
+public class BusynessCoordinator implements Serializable {
 	private List<Integer> busy;
 	private List<Integer> lazy;
 	private int player;

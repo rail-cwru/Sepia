@@ -1,10 +1,9 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap.Builder;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State.StateView;
@@ -17,7 +16,7 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  * @author The Condor
  *
  */
-public class PrimativeAttackCoordinator {
+public class PrimativeAttackCoordinator implements Serializable {
 	int playernum;
 	List<Integer> attackers;
 	private final static Integer NOTARGET = Integer.MIN_VALUE;

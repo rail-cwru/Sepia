@@ -1,12 +1,13 @@
 package edu.cwru.SimpleRTS.agent;
-import edu.cwru.SimpleRTS.environment.*;
-import edu.cwru.SimpleRTS.action.*;
-
+import java.io.Serializable;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
 
 import com.google.common.collect.ImmutableMap;
-public abstract class Agent {
+
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.State;
+public abstract class Agent implements Serializable {
 	protected boolean verbose; 
 	private static int nextID = 0;
 	protected final int playernum;
