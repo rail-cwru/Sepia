@@ -33,14 +33,14 @@ public class SimpleModel implements Model {
 	private static final long serialVersionUID = -8289868580233478749L;
 	private Random rand;
 	private State state;
-	private HashMap<Unit, ActionQueue> queuedPrimitives;
+	private HashMap<Unit, ActionQueue> queuedActions;
 	private SimplePlanner planner;
 
 	public SimpleModel(State init, int seed) {
 		state = init;
 		rand = new Random(seed);
 		planner = new SimplePlanner(init);
-		queuedPrimitives = new HashMap<Unit, ActionQueue>();
+		queuedActions = new HashMap<Unit, ActionQueue>();
 
 	}
 	
@@ -74,7 +74,7 @@ public class SimpleModel implements Model {
 			//NOTE: maybe make this not recalculate actions automatically
 			Unit actor = state.getUnit(a.getUnitId());
 			ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
-			queuedPrimitives.put(actor, queue);
+			queuedActions.put(actor, queue);
 		}
 	}
 	private LinkedList<Action> calculatePrimitives(Action action) {
@@ -137,9 +137,7 @@ public class SimpleModel implements Model {
 		}
 		
 		//Run the Action
-		//TODO: make things happen appropriately in the case of dead unit, dead target, etc
-		//TODO: add the remaining primitive actions
-		for(ActionQueue queuedact : queuedPrimitives.values()) 
+		for(ActionQueue queuedact : queuedActions.values()) 
 		{
 			System.err.println("Doing full action: "+queuedact.getFullAction());
 			//Pull out the primitive
@@ -404,7 +402,12 @@ public class SimpleModel implements Model {
 								queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 								break;
 							}
+							case FAILEDPERMANENTLY:
+								u.setTask(UnitTask.Idle);
+								break;
 						}
+						if (!failedtry && a.getType() != ActionType.FAILEDPERMANENTLY)
+							state.getActionLog().addAction(u.getPlayer(), a);
 					}
 				}
 			}
