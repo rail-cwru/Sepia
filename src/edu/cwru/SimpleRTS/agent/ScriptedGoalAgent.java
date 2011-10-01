@@ -48,7 +48,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	//	Build:Templatename:xoffset:yoffset
 		//template is a building
 	private Goal nextgoal;
-	private BufferedReader commandSource;
+	private transient BufferedReader commandSource;
 	private boolean outofcommands;
 	private PrimativeAttackCoordinator attackcoordinator;
 	private BasicGatheringCoordinator gathercoordinator;
@@ -70,7 +70,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	/**
 	 * The goal and the means for achieving it.
 	 */
-	public class Goal {
+	public class Goal implements Serializable {
 		GoalType type;
 		boolean attackwithall;
 		int numgatherers;

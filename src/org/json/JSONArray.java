@@ -86,14 +86,14 @@ public class JSONArray {
     /**
      * The arrayList where the JSONArray's properties are kept.
      */
-    private ArrayList myArrayList;
+    private ArrayList<Object> myArrayList;
 
 
     /**
      * Construct an empty JSONArray.
      */
     public JSONArray() {
-        this.myArrayList = new ArrayList();
+        this.myArrayList = new ArrayList<Object>();
     }
 
     /**
@@ -150,10 +150,10 @@ public class JSONArray {
      * Construct a JSONArray from a Collection.
      * @param collection     A Collection.
      */
-    public JSONArray(Collection collection) {
-		this.myArrayList = new ArrayList();
+    public JSONArray(Collection<Object> collection) {
+		this.myArrayList = new ArrayList<Object>();
 		if (collection != null) {
-			Iterator iter = collection.iterator();
+			Iterator<Object> iter = collection.iterator();
 			while (iter.hasNext()) {
                 this.myArrayList.add(JSONObject.wrap(iter.next()));  
 			}

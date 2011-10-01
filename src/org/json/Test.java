@@ -542,7 +542,7 @@ public class Test extends TestCase {
         assertEquals("[\n 2147483647,\n 2147483648,\n 9223372036854775807,\n \"9223372036854775808\"\n]", 
                 jsonarray.toString(1));
 
-        List expectedKeys = new ArrayList(6);
+        List<String> expectedKeys = new ArrayList<String>(6);
         expectedKeys.add("int");
         expectedKeys.add("string");
         expectedKeys.add("longer");

@@ -19,13 +19,17 @@ public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException {
 		if(args.length < 4 || (args.length > 0 && args[0].equals("--prefs") && args.length < 6))
 		{
-			printUsageAndExit("Not enough arguments");
+			printUsage("Not enough arguments");
+			return;
 		}
 		int i = 0;
 		if(args[i].equals("--config"))
 		{
 			if(!loadPrefs(args[i+1]))
-				printUsageAndExit("Invalid filename for preferences "+args[i+1]);
+			{
+				printUsage("Invalid filename for preferences "+args[i+1]);
+				return;
+			}
 			Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
 			i += 2;
 		}
@@ -37,7 +41,8 @@ public class Main {
 		State initState = new LoadingStateCreator(statefilename).createState();
 		if(initState == null)
 		{
-			printUsageAndExit("Unable to read file " + args[i]);
+			printUsage("Unable to read file " + args[i]);
+			return;
 		}
 		i++;
 		List<Agent> agents = new LinkedList<Agent>();
@@ -45,35 +50,43 @@ public class Main {
 		{
 			if(!args[i].equals("--agent"))
 			{
-				printUsageAndExit("Was expecting \"--agent\" as argument " + i + " but got " + args[i] + " instead");
+				printUsage("Was expecting \"--agent\" as argument " + i + " but got " + args[i] + " instead");
+				return;
 			}
 			i++;
 			if(i == args.length)
 			{
-				printUsageAndExit("Agent class name expected, but ran out of arguments");
+				printUsage("Agent class name expected, but ran out of arguments");
+				return;
 			}
 			Class<?> agentClass = null;
 			try {
 				agentClass = Class.forName(args[i]);
 			} catch (ClassNotFoundException e) {
-				printUsageAndExit("Agent class was not found in the classpath. Try using -cp <path to your agent's class file> before -jar");
+				printUsage("Agent class was not found in the classpath. Try using -cp <path to your agent's class file> before -jar");
+				return;
 			}
 			i++;
 			if(i == args.length)
 			{
-				printUsageAndExit("Agent's player number was expected, but ran out of arguments");
+				printUsage("Agent's player number was expected, but ran out of arguments");
+				return;
 			}
 			int playerNum = parseInt(args[i]);
 			if(playerNum < 0)
 			{
-				printUsageAndExit("Agent " + agentClass.getSimpleName() + "'s player number must be a non-negative integer");
+				printUsage("Agent " + agentClass.getSimpleName() + "'s player number must be a non-negative integer");
+				return;
 			}
 			i++;
 			if(i < args.length - 1 && args[i].equals("--loadfrom"))
 			{
 				Agent agent = readAgent(args[i+1]);
 				if(agent == null)
-					printUsageAndExit("Unable to read agent from file " + args[i+1]);
+				{
+					printUsage("Unable to read agent from file " + args[i+1]);
+					return;
+				}
 				i += 2;
 				agents.add(agent);
 			}
@@ -83,7 +96,8 @@ public class Main {
 					Agent agent = (Agent) agentClass.getConstructor(int.class).newInstance(playerNum);
 					agents.add(agent);
 				} catch (Exception e) {
-					printUsageAndExit("Unable to instantiate a new instance of "+agentClass.getSimpleName());
+					printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName());
+					return;
 				}
 			}			
 		}
@@ -97,7 +111,7 @@ public class Main {
 			env.requestNewEpisode();
 		}
 	}
-	private static void printUsageAndExit(String error) {
+	private static void printUsage(String error) {
 		System.out.println(error);
 		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--config configurationFile] <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
 		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 --agent SimpleAgent1 --agent SimpleAgent1");
@@ -106,7 +120,6 @@ public class Main {
 		System.out.println("\tThis will load the map stored in the file data/map with a the ScriptedGoalAgent stored in agents/script1 and a new instance of SimpleAgent2 and run 1000 episodes");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
-		System.exit(0);
 	}
 	private static Agent readAgent(String filename) {
 		Agent agent = null;
