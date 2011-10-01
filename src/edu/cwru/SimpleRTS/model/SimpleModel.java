@@ -14,6 +14,7 @@ import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.action.*;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -35,20 +36,21 @@ public class SimpleModel implements Model {
 	private State state;
 	private HashMap<Unit, ActionQueue> queuedActions;
 	private SimplePlanner planner;
-
-	public SimpleModel(State init, int seed) {
+	private StateCreator restartTactic;
+	public SimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		rand = new Random(seed);
 		planner = new SimplePlanner(init);
 		queuedActions = new HashMap<Unit, ActionQueue>();
-
+		this.restartTactic = restartTactic;
 	}
 	
 	
 	@Override
 	public void createNewWorld() {
-		// TODO Auto-generated method stub
-
+		state = restartTactic.createState();
+		queuedActions = new HashMap<Unit, ActionQueue>();
+		planner = new SimplePlanner(state);
 	}
 	
 	@Override

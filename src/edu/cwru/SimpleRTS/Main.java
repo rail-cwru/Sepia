@@ -9,6 +9,7 @@ import java.util.prefs.Preferences;
 
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.Environment;
+import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
@@ -25,7 +26,8 @@ public class Main {
 			printUsageAndExit("Invalid filename for preferences "+args[i+1]);
 		}
 		i += 2;
-		State initState = readState(args[i]);
+		String statefilename = args[i];
+		State initState = new LoadingStateCreator(statefilename).createState();
 		if(initState == null)
 		{
 			printUsageAndExit("Unable to read file " + args[i]);
@@ -80,7 +82,7 @@ public class Main {
 		}
 		Preferences prefs = Preferences.userRoot().node("eecs/cwru/edu/SimpleRTS/environment");
 		prefs.getInt("NumEpisodes", 1);
-		Model model = new SimpleModel(initState, 6);
+		Model model = new SimpleModel(initState, 6,new LoadingStateCreator(statefilename));
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < 100; episode++)
 		{
@@ -98,24 +100,6 @@ public class Main {
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
 		System.exit(0);
-	}
-	private static State readState(String filename) {
-		State state = null;
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(new FileInputStream(filename));
-			state = (State)ois.readObject();
-		}
-		catch(Exception ex) {
-			return null;
-		}
-		finally {
-			try {
-				ois.close();
-			} catch (IOException e) {
-			}
-		}
-		return state;
 	}
 	private static Agent readAgent(String filename) {
 		Agent agent = null;
