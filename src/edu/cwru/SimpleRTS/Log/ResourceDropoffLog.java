@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.Log;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 
 /**
@@ -7,7 +9,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  * @author The Condor
  *
  */
-public class ResourceDropoffLog {
+public class ResourceDropoffLog implements Serializable {
 	private int pickuperid;
 	private ResourceType resource;
 	private int amount;

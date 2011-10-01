@@ -1,11 +1,13 @@
 package edu.cwru.SimpleRTS.Log;
 
+import java.io.Serializable;
+
 /**
  * A read only class logging damage.
  * @author The Condor
  *
  */
-public class DamageLog {
+public class DamageLog implements Serializable {
 	private int damager;
 	private int damagercontroller;
 	private int damagee;

@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import edu.cwru.SimpleRTS.action.Action;
  * @author The Condor
  *
  */
-public class ActionLogger {
+public class ActionLogger implements Serializable {
 	Map<Integer, List<List<Action>>> actions; //Map of playernum -> (List by round number of (List of actions done by that player in that round))
 	int roundnumber;
 	public ActionLogger () {
@@ -58,4 +59,31 @@ public class ActionLogger {
 			return Collections.unmodifiableList(actions.get(playernum).get(roundnumber));
 		}
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((actions == null) ? 0 : actions.hashCode());
+		result = prime * result + roundnumber;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ActionLogger other = (ActionLogger) obj;
+		if (actions == null) {
+			if (other.actions != null)
+				return false;
+		} else if (!actions.equals(other.actions))
+			return false;
+		if (roundnumber != other.roundnumber)
+			return false;
+		return true;
+	}
+	
 }

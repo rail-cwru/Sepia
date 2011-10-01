@@ -1,10 +1,13 @@
 package edu.cwru.SimpleRTS.Log;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 
-public class EventLogger { 
+public class EventLogger implements Serializable { 
 	private List<List<DamageLog>> damagelog;
 	private List<List<DeathLog>> deathlog;
 	private List<List<BirthLog>> birthlog;
@@ -14,6 +17,7 @@ public class EventLogger {
 	private List<List<ResourceDropoffLog>> depositlog;
 	
 	private int currentroundnumber = -1;
+
 	private EventLoggerView view = null;
 	public EventLogger() {
 		damagelog = new ArrayList<List<DamageLog>>();
@@ -142,7 +146,76 @@ public class EventLogger {
 		else 
 			return Collections.unmodifiableList(gatherlog.get(roundnumber));
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((birthlog == null) ? 0 : birthlog.hashCode());
+		result = prime * result + currentroundnumber;
+		result = prime * result
+				+ ((damagelog == null) ? 0 : damagelog.hashCode());
+		result = prime * result
+				+ ((deathlog == null) ? 0 : deathlog.hashCode());
+		result = prime * result
+				+ ((depositlog == null) ? 0 : depositlog.hashCode());
+		result = prime * result
+				+ ((exhaustlog == null) ? 0 : exhaustlog.hashCode());
+		result = prime * result
+				+ ((gatherlog == null) ? 0 : gatherlog.hashCode());
+		result = prime * result
+				+ ((upgradelog == null) ? 0 : upgradelog.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EventLogger other = (EventLogger) obj;
+		if (birthlog == null) {
+			if (other.birthlog != null)
+				return false;
+		} else if (!birthlog.equals(other.birthlog))
+			return false;
+		if (currentroundnumber != other.currentroundnumber)
+			return false;
+		if (damagelog == null) {
+			if (other.damagelog != null)
+				return false;
+		} else if (!damagelog.equals(other.damagelog))
+			return false;
+		if (deathlog == null) {
+			if (other.deathlog != null)
+				return false;
+		} else if (!deathlog.equals(other.deathlog))
+			return false;
+		if (depositlog == null) {
+			if (other.depositlog != null)
+				return false;
+		} else if (!depositlog.equals(other.depositlog))
+			return false;
+		if (exhaustlog == null) {
+			if (other.exhaustlog != null)
+				return false;
+		} else if (!exhaustlog.equals(other.exhaustlog))
+			return false;
+		if (gatherlog == null) {
+			if (other.gatherlog != null)
+				return false;
+		} else if (!gatherlog.equals(other.gatherlog))
+			return false;
+		if (upgradelog == null) {
+			if (other.upgradelog != null)
+				return false;
+		} else if (!upgradelog.equals(other.upgradelog))
+			return false;
+		return true;
+	}
 	public class EventLoggerView {
 		EventLogger master;
 		public EventLoggerView(EventLogger master) {

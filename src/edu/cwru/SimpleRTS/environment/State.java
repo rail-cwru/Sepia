@@ -440,6 +440,116 @@ public class State implements Serializable{
 		}
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + MAXSUPPLY;
+		result = prime * result
+				+ ((actionlog == null) ? 0 : actionlog.hashCode());
+		result = prime * result
+				+ ((allTemplates == null) ? 0 : allTemplates.hashCode());
+		result = prime * result
+				+ ((allUnits == null) ? 0 : allUnits.hashCode());
+		result = prime
+				* result
+				+ ((currentResources == null) ? 0 : currentResources.hashCode());
+		result = prime * result
+				+ ((currentSupply == null) ? 0 : currentSupply.hashCode());
+		result = prime
+				* result
+				+ ((currentSupplyCap == null) ? 0 : currentSupplyCap.hashCode());
+		result = prime * result
+				+ ((eventlog == null) ? 0 : eventlog.hashCode());
+		result = prime * result
+				+ ((resourceNodes == null) ? 0 : resourceNodes.hashCode());
+		result = prime
+				* result
+				+ ((templatesByAgent == null) ? 0 : templatesByAgent.hashCode());
+		result = prime * result + turnNumber;
+		result = prime * result
+				+ ((unitsByAgent == null) ? 0 : unitsByAgent.hashCode());
+		result = prime * result
+				+ ((upgradesByAgent == null) ? 0 : upgradesByAgent.hashCode());
+		result = prime * result + xextent;
+		result = prime * result + yextent;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (MAXSUPPLY != other.MAXSUPPLY)
+			return false;
+		if (actionlog == null) {
+			if (other.actionlog != null)
+				return false;
+		} else if (!actionlog.equals(other.actionlog))
+			return false;
+		if (allTemplates == null) {
+			if (other.allTemplates != null)
+				return false;
+		} else if (!allTemplates.equals(other.allTemplates))
+			return false;
+		if (allUnits == null) {
+			if (other.allUnits != null)
+				return false;
+		} else if (!allUnits.equals(other.allUnits))
+			return false;
+		if (currentResources == null) {
+			if (other.currentResources != null)
+				return false;
+		} else if (!currentResources.equals(other.currentResources))
+			return false;
+		if (currentSupply == null) {
+			if (other.currentSupply != null)
+				return false;
+		} else if (!currentSupply.equals(other.currentSupply))
+			return false;
+		if (currentSupplyCap == null) {
+			if (other.currentSupplyCap != null)
+				return false;
+		} else if (!currentSupplyCap.equals(other.currentSupplyCap))
+			return false;
+		if (eventlog == null) {
+			if (other.eventlog != null)
+				return false;
+		} else if (!eventlog.equals(other.eventlog))
+			return false;
+		if (resourceNodes == null) {
+			if (other.resourceNodes != null)
+				return false;
+		} else if (!resourceNodes.equals(other.resourceNodes))
+			return false;
+		if (templatesByAgent == null) {
+			if (other.templatesByAgent != null)
+				return false;
+		} else if (!templatesByAgent.equals(other.templatesByAgent))
+			return false;
+		if (turnNumber != other.turnNumber)
+			return false;
+		if (unitsByAgent == null) {
+			if (other.unitsByAgent != null)
+				return false;
+		} else if (!unitsByAgent.equals(other.unitsByAgent))
+			return false;
+		if (upgradesByAgent == null) {
+			if (other.upgradesByAgent != null)
+				return false;
+		} else if (!upgradesByAgent.equals(other.upgradesByAgent))
+			return false;
+		if (xextent != other.xextent)
+			return false;
+		if (yextent != other.yextent)
+			return false;
+		return true;
+	}
+
 	/**
 	 * Builder class that allows one-time access to a new state for construction purposes.
 	 * @author Tim

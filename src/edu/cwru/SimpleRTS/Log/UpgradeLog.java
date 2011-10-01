@@ -1,6 +1,8 @@
 package edu.cwru.SimpleRTS.Log;
 
-public class UpgradeLog {
+import java.io.Serializable;
+
+public class UpgradeLog implements Serializable {
 	private int upgradetemplateid;
 	private int player;
 	public UpgradeLog(int upgradetemplateid, int player) {

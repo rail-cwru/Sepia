@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.Log;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 
 /**
@@ -7,7 +9,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
  * @author The Condor
  *
  */
-public class ResourceExhaustionLog {
+public class ResourceExhaustionLog implements Serializable {
 	private int nodeid;
 	private ResourceNode.Type nodetype;
 	public ResourceExhaustionLog(int exhaustednodeid, ResourceNode.Type resoucenodetype) {

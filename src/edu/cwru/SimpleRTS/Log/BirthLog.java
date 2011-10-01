@@ -1,6 +1,8 @@
 package edu.cwru.SimpleRTS.Log;
 
-public class BirthLog {
+import java.io.Serializable;
+
+public class BirthLog implements Serializable {
 	private int unitid;
 	private int player;
 	private int parent;

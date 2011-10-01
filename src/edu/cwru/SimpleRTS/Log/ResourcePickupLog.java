@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.Log;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 
@@ -8,7 +10,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  * @author The Condor
  *
  */
-public class ResourcePickupLog {
+public class ResourcePickupLog implements Serializable {
 	private int pickuper;
 	private ResourceType resource;
 	private int amount;
