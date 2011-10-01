@@ -481,7 +481,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	 * @author The Condor
 	 *
 	 */
-	class RelevantStateView {
+	static class RelevantStateView {
 //		public LinkedList<Integer> idleworkers;
 //		public LinkedList<Integer> woodworkers;
 //		public LinkedList<Integer> goldworkers;

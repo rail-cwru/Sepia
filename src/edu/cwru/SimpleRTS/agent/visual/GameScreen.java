@@ -19,6 +19,11 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
 public class GameScreen extends JFrame implements KeyListener, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int SCALING_FACTOR = 32;
 	
 	private VisualAgent agent;
@@ -101,6 +106,12 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 	}
 	private class PaintPanel extends JPanel implements Serializable {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@SuppressWarnings("unused")
 		public void PaintPanel() {
 			setSize(800,600);
 			this.addKeyListener(GameScreen.this);

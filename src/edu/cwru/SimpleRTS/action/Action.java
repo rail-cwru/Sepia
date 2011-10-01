@@ -1,8 +1,6 @@
 package edu.cwru.SimpleRTS.action;
 
 import edu.cwru.SimpleRTS.model.Direction;
-import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 public class Action {
 

@@ -213,7 +213,7 @@ public class State implements Serializable{
 	}
 	public void addUnit(Unit u) {
 		int player = u.getPlayer();
-		if(!allUnits.containsKey(u)) {
+		if(!allUnits.containsKey(u.ID)) {
 			Map<Integer, Unit> map = unitsByAgent.get(player);
 			if(map == null)
 			{

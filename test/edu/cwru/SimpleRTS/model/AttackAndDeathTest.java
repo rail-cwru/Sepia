@@ -1,6 +1,6 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -9,10 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.action.DirectedAction;
-import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
@@ -22,6 +19,7 @@ public class AttackAndDeathTest {
 
 	static SimpleModel model;
 	static SimplePlanner planner;
+	@SuppressWarnings("rawtypes")
 	static List<Template> templates;
 	static State state;
 	static int player=0;
@@ -37,7 +35,7 @@ public class AttackAndDeathTest {
 		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
-		for (Template t : templates) {
+		for (@SuppressWarnings("rawtypes") Template t : templates) {
 			builder.addTemplate(t, player);
 		}
 		

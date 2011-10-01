@@ -865,7 +865,7 @@ public class Test extends TestCase {
      * construct a JSONObject. It also demonstrates constructing
      * a JSONObject with an array of names.
      */
-    class Beany implements JSONString {
+    static class Beany implements JSONString {
         public String aString;
         public double aNumber;
         public boolean aBoolean;
