@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.agent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,7 +53,8 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	//	Build:Templatename:xoffset:yoffset
 		//template is a building
 	private Goal nextgoal;
-	private transient BufferedReader commandSource;
+	private String[] commandSource;
+	private int commandSourceIterator;
 	private boolean outofcommands;
 	private PrimativeAttackCoordinator attackcoordinator;
 	private BasicGatheringCoordinator gathercoordinator;
@@ -62,7 +64,23 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	public ScriptedGoalAgent(int playernumber, BufferedReader commandSource, Random r, boolean verbose) {
 		super(playernumber);
 		this.verbose = verbose;
-		this.commandSource = commandSource;
+		System.out.println("HUH?????!!!");
+		{
+			ArrayList<String> temp = new ArrayList<String>();
+			String t;
+			try {
+				System.out.println("Starting to read script");
+				while ((t=commandSource.readLine())!=null && !t.equals("")) {
+					temp.add(t);
+					System.out.println("HETY " + t);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.commandSource = temp.toArray(new String[]{});
+		}
+		commandSourceIterator = 0;
 		outofcommands = false;
 		nextgoal=null;
 		attackcoordinator = new PrimativeAttackCoordinator(playernumber);
@@ -438,7 +456,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			//if you have no next goal, get one
 			
 			if (nextgoal==null) {
-				String nextCommand = commandSource.readLine();
+				String nextCommand = commandSource[commandSourceIterator++];
 				if (nextCommand == null || nextCommand.equals("")) {
 					done = true;
 					outofcommands = true;

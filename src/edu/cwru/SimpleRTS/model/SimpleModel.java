@@ -53,11 +53,11 @@ public class SimpleModel implements Model {
 	}
 	
 	public SimpleModel(State init, int seed) throws IOException {
+		this(init, seed, new LoadingStateCreator("temp/initState"));
 		String tempFilename = "temp/initState";
 		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tempFilename));
 		oos.writeObject(init);
 		oos.close();
-		this.restartTactic = new LoadingStateCreator(tempFilename);
 	}
 	
 	@Override
