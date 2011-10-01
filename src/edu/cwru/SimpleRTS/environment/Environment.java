@@ -60,7 +60,7 @@ public class Environment
 	{
 		return model.getState();
 	}
-	public final void runEpisode()
+	public final void runEpisode() throws InterruptedException
 	{
 		model.createNewWorld();
 		while(!model.isTerminated())
@@ -76,7 +76,7 @@ public class Environment
 	public boolean isTerminated() {
 		return model.isTerminated();
 	}
-	public boolean step() {
+	public boolean step() throws InterruptedException {
 		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
 		for(int i = 0; i<connectedagents.length;i++)
 		{
@@ -89,16 +89,7 @@ public class Environment
 			{
 				connectedagents[i].acceptMiddleState(model.getState(), latch);
 			}
-			try
-			{
-				latch.await();
-			}
-			catch(InterruptedException e)
-			{
-				//TODO: handle this somehow
-				e.printStackTrace();
-				System.exit(-1);
-			}
+			latch.await();
 			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
 			for(Integer unitId : actionMap.keySet())
 			{

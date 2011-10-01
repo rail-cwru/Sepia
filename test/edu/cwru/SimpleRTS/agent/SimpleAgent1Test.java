@@ -57,7 +57,7 @@ public class SimpleAgent1Test {
 		env = new Environment(agents, model);
 	}
 	@Test
-	public void runEpisode() {
+	public void runEpisode() throws InterruptedException {
 		while(!env.isTerminated())
 		{
 			env.step();

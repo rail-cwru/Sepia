@@ -141,7 +141,8 @@ public class MapEditor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for (Template t : templates)
-			state.addTemplate(t, player);
+		if(templates != null)
+			for (Template t : templates)
+				state.addTemplate(t, player);
 	}
 }

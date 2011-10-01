@@ -66,7 +66,7 @@ public class ScriptedGoalAgentTest {
 	}
 	
 	@Test
-	public void test() {
+	public void test() throws InterruptedException {
 		//Get the resources right
 		state.depositResources(player, ResourceType.GOLD, 1200);
 		state.depositResources(player, ResourceType.WOOD, 800);
@@ -106,16 +106,7 @@ public class ScriptedGoalAgentTest {
 			{
 				agent.acceptMiddleState(model.getState(), latch);
 			}
-			try
-			{
-				latch.await();
-			}
-			catch(InterruptedException e)
-			{
-				//TODO: handle this somehow
-				e.printStackTrace();
-				System.exit(-1);
-			}
+			latch.await();
 			ImmutableCollection<Action> actionsimmut = agent.getAction().values();
 			Action[] actions = new Action[actionsimmut.size()];
 			{

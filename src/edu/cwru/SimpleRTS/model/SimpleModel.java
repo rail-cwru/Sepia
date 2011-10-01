@@ -521,7 +521,7 @@ public class SimpleModel implements Model {
 	{
 		int basic = attacker.getTemplate().getBasicAttackDiff() != 0 ?rand.nextInt(attacker.getTemplate().getBasicAttackDiff())+attacker.getTemplate().getBasicAttackLow():attacker.getTemplate().getBasicAttackLow();
 		int b = rand.nextBoolean()?basic:(int)Math.ceil(basic/2);
-		int p = rand.nextBoolean()?attacker.getTemplate().getPiercingAttack():(int)Math.ceil(attacker.getTemplate().getPiercingAttack()/2);
+		int p = rand.nextBoolean()?attacker.getTemplate().getPiercingAttack():(int)Math.ceil(attacker.getTemplate().getPiercingAttack()/2.0);
 		return Math.max(0, b-defender.getTemplate().getArmor())+p;
 	}
 	private boolean empty(int x, int y) {

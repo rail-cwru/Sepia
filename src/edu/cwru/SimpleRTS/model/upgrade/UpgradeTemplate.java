@@ -42,7 +42,7 @@ public class UpgradeTemplate extends Template<Upgrade>
 		if (stringunitsaffected != null) {
 			for (int i = 0; i<stringunitsaffected.length;i++) {
 				for (UnitTemplate t : unittemplates) {
-					if (stringunitsaffected[i].equals(t.getName()) && t instanceof UnitTemplate) {
+					if (stringunitsaffected[i].equals(t.getName())) {
 						unittemplatesaffected.add((UnitTemplate)t);
 					}
 				}

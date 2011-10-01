@@ -37,6 +37,10 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  *
  */
 public class ScriptedGoalAgent extends Agent implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//A scripted agent that pulls from a file 
 	//	Transfer:Oldresource:Newresource
 		//oldresource may be Food/Wood/Idle
@@ -70,7 +74,11 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	/**
 	 * The goal and the means for achieving it.
 	 */
-	public class Goal implements Serializable {
+	public static class Goal implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		GoalType type;
 		boolean attackwithall;
 		int numgatherers;
@@ -82,7 +90,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		int yoffset;
 		int waitvalue;
 		String commandstring;
-		public Goal(String command, StateView state) {
+		private ScriptedGoalAgent agent;
+		public Goal(String command, StateView state, ScriptedGoalAgent agent) {
+			this.agent = agent;
 			//Split it into arguments and such
 			String[] split = command.split(":");
 			commandstring = command;
@@ -112,14 +122,14 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			else if (GoalType.Build.toString().equals(split[0])) {
 				assert split.length == 4;
 				type = GoalType.Build;
-				template = state.getTemplate(playernum, split[1]);
+				template = state.getTemplate(agent.playernum, split[1]);
 				xoffset=Integer.parseInt(split[2]);
 				yoffset=Integer.parseInt(split[3]);
 			}
 			else if (GoalType.Produce.toString().equals(split[0])) {
 				assert split.length == 2;
 				type = GoalType.Produce;
-				template = state.getTemplate(playernum, split[1]);
+				template = state.getTemplate(agent.playernum, split[1]);
 			}
 			else if (GoalType.Wait.toString().equals(split[0])) {
 				assert split.length == 3;
@@ -146,7 +156,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				int currentval = (waittype == WaitType.Gold)?relstate.ngold:(waittype == WaitType.Wood?relstate.nwood:-1);
 				if (currentval < waitvalue)
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Need to keep waiting: have " + currentval + " but need "+waitvalue);
 					return false;
 				}
@@ -158,36 +168,38 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Produce:
 				boolean foundaproducer=false;
 				for (Integer id : relstate.myUnitIDs) {
-					if (busycoordinator.isIdle(id) && (type==GoalType.Produce||gathercoordinator.hasIdleWorker(id)) && state.getUnit(id).getTemplateView().canProduce(template.getID())) {
+					if (agent.busycoordinator.isIdle(id) && 
+							(type==GoalType.Produce||agent.gathercoordinator.hasIdleWorker(id)) && 
+							state.getUnit(id).getTemplateView().canProduce(template.getID())) {
 						foundaproducer=true;
 						break;
 					}
 				}
 				if (!foundaproducer)
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Cannot build/produce, unable to find a producer");
 					return false;
 				}
 					
 				//check resources
-				if (verbose)
+				if (agent.verbose)
 					System.out.println("Considering building or producing");
 				if (relstate.ngold < template.getGoldCost())
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Cannot build/produce, not enough gold: have " + relstate.ngold + " but need "+template.getGoldCost());
 					return false;
 				}
 				if (relstate.nwood < template.getWoodCost())
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Cannot build/produce, not enough wood: have " + relstate.nwood + " but need "+template.getWoodCost());
 					return false;
 				}
 				if (template.getFoodCost() > 0 && relstate.nfoodremaining < template.getFoodCost())
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Cannot build/produce, not enough food: have " + relstate.nfoodremaining + " open but need "+template.getFoodCost());
 					return false;
 				}
@@ -199,14 +211,14 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				int workersonsourceresource=-1;
 				if (starttype == GathererTask.Gold)
 				{
-					workersonsourceresource = gathercoordinator.numGoldWorkers();
+					workersonsourceresource = agent.gathercoordinator.numGoldWorkers();
 				}
 				else if (starttype == GathererTask.Wood)
 				{
-					workersonsourceresource = gathercoordinator.numWoodWorkers();
+					workersonsourceresource = agent.gathercoordinator.numWoodWorkers();
 				}
 				else if (starttype == GathererTask.Idle) {
-					workersonsourceresource = gathercoordinator.numIdleWorkers();
+					workersonsourceresource = agent.gathercoordinator.numIdleWorkers();
 				}
 				else //should never hit this
 					assert false:"Must have added a gatherer task without changing this";
@@ -216,7 +228,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				}
 				else
 				{
-					if (verbose)
+					if (agent.verbose)
 						System.out.println("Cannot perform transfer, not enough workers on that resource");
 					return false;
 				}
@@ -246,22 +258,21 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Build:
 				//Find a place to build it
 			{	
-				int[] placetobuild = state.getClosestOpenPosition(centeroftown[0]+xoffset,centeroftown[1]+xoffset);
-				Integer id = gathercoordinator.getIdleWorker();
+				int[] placetobuild = state.getClosestOpenPosition(agent.centeroftown[0]+xoffset,agent.centeroftown[1]+xoffset);
+				Integer id = agent.gathercoordinator.getIdleWorker();
 					if (state.getUnit(id).getTemplateView().canProduce(template.getID())) {
 						Action newact = Action.createCompoundBuild(id, template.getID(),placetobuild[0],placetobuild[1]);
 						actions.put(id,newact);
 						System.err.println(newact);
 						
-						if (gathercoordinator.hasIdleWorker(id) && busycoordinator.isIdle(id))
+						if (agent.gathercoordinator.hasIdleWorker(id) && agent.busycoordinator.isIdle(id))
 						{
-							gathercoordinator.assignOther(id);
-							busycoordinator.assignBusy(id);
+							agent.gathercoordinator.assignOther(id);
+							agent.busycoordinator.assignBusy(id);
 						}
 						else
 						{
-							new Exception("Programming error: Tried to build a building with a non idle worker").printStackTrace();
-							System.exit(-1);
+							new RuntimeException("Programming error: Tried to build a building with a non idle worker").printStackTrace();
 						}
 						break;
 					}
@@ -271,9 +282,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Produce:
 				//Find a unit that isn't busy and can produce it, then produce it from that one
 				for (Integer id : relstate.myUnitIDs) {
-					if (busycoordinator.isIdle(id) && state.getUnit(id).getTemplateView().canProduce(template.getID())) {
+					if (agent.busycoordinator.isIdle(id) && state.getUnit(id).getTemplateView().canProduce(template.getID())) {
 						actions.put(id,Action.createCompoundProduction(id, template.getID()));
-						busycoordinator.assignBusy(id);
+						agent.busycoordinator.assignBusy(id);
 						break;
 					}
 				}
@@ -281,13 +292,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Attack:
 				if (attackwithall) {
 					for (Integer i : relstate.myUnitIDs) {
-						attackcoordinator.addAttacker(i);
+						agent.attackcoordinator.addAttacker(i);
 					}
 				}
 				else {
 					for (Integer id : relstate.myUnitIDs) {
 						if (!state.getUnit(id).getTemplateView().canGather())
-							attackcoordinator.addAttacker(id);
+							agent.attackcoordinator.addAttacker(id);
 					}
 				}
 				break;
@@ -295,13 +306,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				//And move them from one to the other
 				Integer id=null;
 				if (starttype == GathererTask.Gold)	{
-					id = gathercoordinator.getGoldWorker();
+					id = agent.gathercoordinator.getGoldWorker();
 				}
 				else if (starttype == GathererTask.Wood) {
-					id = gathercoordinator.getWoodWorker();
+					id = agent.gathercoordinator.getWoodWorker();
 				}
 				else if (starttype == GathererTask.Idle) {
-					id = gathercoordinator.getIdleWorker();
+					id = agent.gathercoordinator.getIdleWorker();
 				}
 				else //should never hit this
 					assert false:"Must have added a GathererTask without changing this";
@@ -335,13 +346,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 						if (endtype == GathererTask.Idle || closest!=null) {
 							switch (endtype) {
 							case Idle:
-								gathercoordinator.assignIdle(id);
+								agent.gathercoordinator.assignIdle(id);
 								break;
 							case Gold:
-								gathercoordinator.assignGold(id);
+								agent.gathercoordinator.assignGold(id);
 								break;
 							case Wood:
-								gathercoordinator.assignWood(id);
+								agent.gathercoordinator.assignWood(id);
 								break;
 							}
 						}
@@ -433,7 +444,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 					outofcommands = true;
 				}
 				else {
-					nextgoal = new Goal(nextCommand,state);
+					nextgoal = new Goal(nextCommand,state,this);
 				}
 			}
 			//if you now have a goal, execute it

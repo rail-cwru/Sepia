@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -116,6 +117,8 @@ public class Editor extends JFrame {
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
+		if(tempunittemplates == null)
+			tempunittemplates = new ArrayList<UnitTemplate>(0);
 		unitnames = new String[tempunittemplates.size()];
 		for (int i = 0; i<unitnames.length;i++) {
 			unitnames[i] = tempunittemplates.get(i).getName();

@@ -220,7 +220,7 @@ public class EventLogger implements Serializable {
 			return false;
 		return true;
 	}
-	public class EventLoggerView implements Serializable {
+	public static class EventLoggerView implements Serializable {
 		/**
 		 * 
 		 */

@@ -22,6 +22,10 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
  * @param <T>
  */
 public abstract class Template<T> implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private TemplateView view;
 	protected int timeCost;
 	protected int goldCost;
@@ -32,12 +36,13 @@ public abstract class Template<T> implements Serializable{
 	private Set<String> buildPrereq;
 	private Set<String> upgradePrereq;
 	protected String name;
+	public final int ID;
 	/**
 	 * A factory method that produces copies of a "default" object
 	 * @return
 	 */
 	public abstract T produceInstance();
-	static int nextID=0;
+	private static int nextID=0;
 	public Template()
 	{
 		ID = nextID++;
@@ -113,7 +118,6 @@ public abstract class Template<T> implements Serializable{
 			}
 		}
 	}
-	public final int ID;
 	@Override
 	public int hashCode() {
 		return ID;

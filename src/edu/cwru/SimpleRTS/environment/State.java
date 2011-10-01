@@ -234,8 +234,9 @@ public class State implements Serializable{
 			alterSupplyAmount(u.getPlayer(), -u.getTemplate().getFoodCost());
 		}
 	}
+	@SuppressWarnings("rawtypes")
 	public void addTemplate(Template t, int player) {
-		if(!allTemplates.containsKey(t)) {
+		if(!allTemplates.containsKey(t.ID)) {
 			Map<Integer, Template> map = templatesByAgent.get(player);
 			if(map == null)
 			{

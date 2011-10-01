@@ -324,7 +324,7 @@ public class JSONObject {
 
 // Iterate through the keys in the bundle.
         
-        Enumeration keys = bundle.getKeys();
+        Enumeration<String> keys = bundle.getKeys();
         while (keys.hasMoreElements()) {
             Object key = keys.nextElement();
             if (key instanceof String) {

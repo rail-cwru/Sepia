@@ -67,7 +67,11 @@ public class ResourceNode extends Target {
 			return ResourceType.GOLD;
 		}
 	};
-	public class ResourceView implements Serializable {
+	public static class ResourceView implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		ResourceNode node;
 		public ResourceView(ResourceNode node) {
 			this.node = node;

@@ -134,7 +134,7 @@ public class ProduceTest {
 			else if (i<plan2.size())
 				action = new Action[]{plan2.get(i)};
 			else
-				action=null;//should never reach this
+				action= new Action[0];//should never reach this
 			model.setActions(action);
 			model.executeStep();
 		}

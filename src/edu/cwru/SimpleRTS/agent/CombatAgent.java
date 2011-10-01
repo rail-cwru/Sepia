@@ -16,9 +16,12 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
 public class CombatAgent extends Agent{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Map<Integer, Integer> unitOrders;
 	int[] enemies;
-	boolean verbose;
 	protected CombatAgent(int playernum, int[] enemies, boolean verbose) {
 		super(playernum);
 		//copy the list of enemies

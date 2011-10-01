@@ -625,8 +625,8 @@ public class Test extends TestCase {
         assertEquals("<book><chapter>Content of the first chapter</chapter><chapter>Content of the second chapter<chapter>Content of the first subchapter</chapter><chapter>Content of the second subchapter</chapter></chapter><chapter>Third Chapter</chapter></book>",
                 JSONML.toString(jsonarray));
 
-        Collection collection = null;
-        Map map = null;
+        Collection<Object> collection = null;
+        Map<Object,Object> map = null;
 
         jsonobject = new JSONObject(map);
         jsonarray = new JSONArray(collection);

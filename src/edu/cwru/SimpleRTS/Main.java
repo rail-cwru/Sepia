@@ -16,7 +16,7 @@ import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
-	public static void main(String[] args) throws BackingStoreException, IOException {
+	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		if(args.length < 4 || (args.length > 0 && args[0].equals("--prefs") && args.length < 6))
 		{
 			printUsage("Not enough arguments");
