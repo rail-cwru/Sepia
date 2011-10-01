@@ -244,5 +244,6 @@ public class Editor extends JFrame {
 		GameScreen screen = new GameScreen(null);
 		screen.updateState(state.getView());
 		Editor editor = new Editor(screen,state,"data/unit_templates");
+		editor.setVisible(true);
 	}
 }

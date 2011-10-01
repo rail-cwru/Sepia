@@ -8,6 +8,10 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 
 public class EventLogger implements Serializable { 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<List<DamageLog>> damagelog;
 	private List<List<DeathLog>> deathlog;
 	private List<List<BirthLog>> birthlog;
@@ -216,7 +220,11 @@ public class EventLogger implements Serializable {
 			return false;
 		return true;
 	}
-	public class EventLoggerView {
+	public class EventLoggerView implements Serializable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		EventLogger master;
 		public EventLoggerView(EventLogger master) {
 			this.master = master;

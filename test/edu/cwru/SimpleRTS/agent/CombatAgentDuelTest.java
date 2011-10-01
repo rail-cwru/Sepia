@@ -94,7 +94,7 @@ public class CombatAgentDuelTest {
 	}
 	
 	@Test
-	public void test() throws IOException {
+	public void test() throws IOException, InterruptedException {
 		CombatAgent agent1 = new CombatAgent(player1, new int[]{player2},false);
 		CombatAgent agent2 = new CombatAgent(player2, new int[]{player1},true);
 		for (int step = 0; step<305; step++)
@@ -111,17 +111,8 @@ public class CombatAgentDuelTest {
 				agent1.acceptMiddleState(model.getState(), latch1);
 				agent2.acceptMiddleState(model.getState(), latch2);
 			}
-			try
-			{
-				latch1.await();
-				latch2.await();
-			}
-			catch(InterruptedException e)
-			{
-				//TODO: handle this somehow
-				e.printStackTrace();
-				System.exit(-1);
-			}
+			latch1.await();
+			latch2.await();
 			ImmutableCollection<Action> actionsimmut1 = agent1.getAction().values();
 			ImmutableCollection<Action> actionsimmut2 = agent2.getAction().values();
 			Action[] actions = new Action[actionsimmut1.size() + actionsimmut2.size()];

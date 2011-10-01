@@ -286,7 +286,7 @@ public class JSONObject {
      */
     public JSONObject(Object object, String names[]) {
         this();
-        Class c = object.getClass();
+        Class<?> c = object.getClass();
         for (int i = 0; i < names.length; i += 1) {
             String name = names[i];
             try {
@@ -610,7 +610,7 @@ public class JSONObject {
         if (object == null) {
             return null;
         }
-        Class klass = object.getClass();
+        Class<?> klass = object.getClass();
         Field[] fields = klass.getFields();
         int length = fields.length;
         if (length == 0) {
@@ -951,7 +951,7 @@ public class JSONObject {
 
 
     private void populateMap(Object bean) {
-        Class klass = bean.getClass();
+        Class<?> klass = bean.getClass();
 
 // If klass is a System class then set includeSuperClass to false. 
 
@@ -1019,7 +1019,7 @@ public class JSONObject {
      * @return      this.
      * @throws JSONException
      */
-    public JSONObject put(String key, Collection value) throws JSONException {
+    public JSONObject put(String key, Collection<Object> value) throws JSONException {
         put(key, new JSONArray(value));
         return this;
     }
@@ -1075,7 +1075,7 @@ public class JSONObject {
      * @return      this.
      * @throws JSONException
      */
-    public JSONObject put(String key, Map value) throws JSONException {
+    public JSONObject put(String key, Map<?,?> value) throws JSONException {
         put(key, new JSONObject(value));
         return this;
     }
@@ -1446,7 +1446,8 @@ public class JSONObject {
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      * @throws JSONException If the value is or contains an invalid number.
      */
-    public static String valueToString(Object value) throws JSONException {
+    @SuppressWarnings("unchecked")
+	public static String valueToString(Object value) throws JSONException {
         if (value == null) {
             return "null";
         }
@@ -1470,10 +1471,10 @@ public class JSONObject {
             return value.toString();
         }
         if (value instanceof Map) {
-            return new JSONObject((Map)value).toString();
+            return new JSONObject((Map<?,?>)value).toString();
         }
         if (value instanceof Collection) {
-            return new JSONArray((Collection)value).toString();
+            return new JSONArray((Collection<Object>)value).toString();
         }
         if (value.getClass().isArray()) {
             return new JSONArray(value).toString();
@@ -1496,7 +1497,8 @@ public class JSONObject {
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      * @throws JSONException If the object contains an invalid number.
      */
-     static String valueToString(
+     @SuppressWarnings("unchecked")
+	static String valueToString(
          Object value, 
          int    indentFactor, 
          int    indent
@@ -1526,10 +1528,10 @@ public class JSONObject {
             return ((JSONArray)value).toString(indentFactor, indent);
         }
         if (value instanceof Map) {
-            return new JSONObject((Map)value).toString(indentFactor, indent);
+            return new JSONObject((Map<?,?>)value).toString(indentFactor, indent);
         }
         if (value instanceof Collection) {
-            return new JSONArray((Collection)value).toString(indentFactor, indent);
+            return new JSONArray((Collection<Object>)value).toString(indentFactor, indent);
         }
         if (value.getClass().isArray()) {
             return new JSONArray(value).toString(indentFactor, indent);
@@ -1550,7 +1552,8 @@ public class JSONObject {
       * @param object The object to wrap
       * @return The wrapped value
       */
-     public static Object wrap(Object object) {
+     @SuppressWarnings("unchecked")
+	public static Object wrap(Object object) {
          try {
              if (object == null) {
                  return NULL;
@@ -1566,7 +1569,7 @@ public class JSONObject {
              }
              
              if (object instanceof Collection) {
-                 return new JSONArray((Collection)object);
+                 return new JSONArray((Collection<Object>)object);
              }
              if (object.getClass().isArray()) {
                  return new JSONArray(object);

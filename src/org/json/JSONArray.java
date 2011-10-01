@@ -577,7 +577,7 @@ public class JSONArray {
      * @param value A Collection value.
      * @return      this.
      */
-    public JSONArray put(Collection value) {
+    public JSONArray put(Collection<Object> value) {
         put(new JSONArray(value));
         return this;
     }
@@ -671,7 +671,7 @@ public class JSONArray {
      * @throws JSONException If the index is negative or if the value is
      * not finite.
      */
-    public JSONArray put(int index, Collection value) throws JSONException {
+    public JSONArray put(int index, Collection<Object> value) throws JSONException {
         put(index, new JSONArray(value));
         return this;
     }

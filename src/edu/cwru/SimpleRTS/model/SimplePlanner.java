@@ -1,26 +1,28 @@
 package edu.cwru.SimpleRTS.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
-import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
-import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * An implementation of basic planning methods 
  * @author Scott
  * @author Tim
  */
-public class SimplePlanner {
+public class SimplePlanner implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private State state;
 	public SimplePlanner(State state) {
 		this.state = state;

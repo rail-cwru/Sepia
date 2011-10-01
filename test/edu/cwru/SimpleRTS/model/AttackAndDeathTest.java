@@ -156,7 +156,6 @@ public class AttackAndDeathTest {
 		unit1.setyPosition(0);
 		unit2.setxPosition(0);
 		unit2.setyPosition(1);
-		int starthp = unit2.getCurrentHealth();
 		unit1.takeDamage(unit1.getCurrentHealth()-1);
 		unit2.takeDamage(unit2.getCurrentHealth()-1);
 		LinkedList<Action> plan1 = planner.planAttack(unit1.ID, unit2.ID);

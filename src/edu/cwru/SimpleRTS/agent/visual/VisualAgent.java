@@ -10,7 +10,11 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 
 public class VisualAgent extends Agent {
 
-	ImmutableMap.Builder<Integer, Action> actions;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
 	
 	public VisualAgent(int playernum, final StateView initState) {

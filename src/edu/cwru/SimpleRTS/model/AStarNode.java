@@ -7,7 +7,7 @@ import java.util.Arrays;
  * equals checks xs and ys, but no other fields
  *
  */
-public class AStarNode implements Comparable {
+public class AStarNode implements Comparable<AStarNode> {
 	final int x;
 	final int y;
 	final int hashCode;
@@ -39,27 +39,22 @@ public class AStarNode implements Comparable {
 		directionfromprevious = null;
 		previous=null;
 	}
-	public int compareTo(Object other)
+	public int compareTo(AStarNode other)
 	{
-		if (!(other instanceof AStarNode))
-			return -1;//just because
-		else
+		AStarNode o = (AStarNode)other;
+		if (o.value == value)
 		{
-			AStarNode o = (AStarNode)other;
-			if (o.value == value)
-			{
-				if(directionfromprevious.toString().length() > o.directionfromprevious.toString().length())
-					return 1;
-				else if(directionfromprevious.toString().length() < o.directionfromprevious.toString().length())
-					return -1;
-				else
-					return 0;
-			}
-			else if (value > o.value)
+			if(directionfromprevious.toString().length() > o.directionfromprevious.toString().length())
 				return 1;
-			else
+			else if(directionfromprevious.toString().length() < o.directionfromprevious.toString().length())
 				return -1;
+			else
+				return 0;
 		}
+		else if (value > o.value)
+			return 1;
+		else
+			return -1;
 	}
 	@Override
 	public boolean equals(Object other)

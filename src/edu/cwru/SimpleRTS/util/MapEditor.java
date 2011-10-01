@@ -46,7 +46,8 @@ public class MapEditor {
 				nextcommand = commands[iterator].split(" ");
 			}
 			else {
-				nextcommand = reader.readLine().split(" ");
+				String line = reader.readLine();
+				nextcommand = line != null ? line.split(" ") : new String[]{""};
 			}
 			
 			if (nextcommand.length == 1 && (nextcommand[0].equals("q") || nextcommand[0].equals("quit"))) {

@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.environment;
 
-public interface StateCreator {
+import java.io.Serializable;
+
+public interface StateCreator extends Serializable {
 	State createState();
 }
