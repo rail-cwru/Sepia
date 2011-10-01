@@ -94,8 +94,10 @@ public class ScriptedGoalAgentTest {
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
 		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);
 		
-		for (int step = 0; step<335; step++)
+		for (int step = 0; step<390; step++)
 		{
+			System.out.println("--------------------------------------------------");
+			System.out.println("---------------------"+step+"------------------------");
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
 			{

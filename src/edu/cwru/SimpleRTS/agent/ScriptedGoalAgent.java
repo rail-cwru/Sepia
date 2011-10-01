@@ -64,15 +64,12 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	public ScriptedGoalAgent(int playernumber, BufferedReader commandSource, Random r, boolean verbose) {
 		super(playernumber);
 		this.verbose = verbose;
-		System.out.println("HUH?????!!!");
 		{
 			ArrayList<String> temp = new ArrayList<String>();
 			String t;
 			try {
-				System.out.println("Starting to read script");
 				while ((t=commandSource.readLine())!=null && !t.equals("")) {
 					temp.add(t);
-					System.out.println("HETY " + t);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -276,12 +273,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Build:
 				//Find a place to build it
 			{	
+				if (commandstring.contains("Barracks"))
+					System.out.println("Hi");
 				int[] placetobuild = state.getClosestOpenPosition(agent.centeroftown[0]+xoffset,agent.centeroftown[1]+xoffset);
 				Integer id = agent.gathercoordinator.getIdleWorker();
 					if (state.getUnit(id).getTemplateView().canProduce(template.getID())) {
 						Action newact = Action.createCompoundBuild(id, template.getID(),placetobuild[0],placetobuild[1]);
 						actions.put(id,newact);
-						System.err.println(newact);
 						
 						if (agent.gathercoordinator.hasIdleWorker(id) && agent.busycoordinator.isIdle(id))
 						{
@@ -292,6 +290,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 						{
 							new RuntimeException("Programming error: Tried to build a building with a non idle worker").printStackTrace();
 						}
+						System.out.println("hi?");
 						break;
 					}
 				
@@ -456,7 +455,8 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			//if you have no next goal, get one
 			
 			if (nextgoal==null) {
-				String nextCommand = commandSource[commandSourceIterator++];
+				String nextCommand = commandSourceIterator >= commandSource.length ? null:commandSource[commandSourceIterator];
+				commandSourceIterator++;
 				if (nextCommand == null || nextCommand.equals("")) {
 					done = true;
 					outofcommands = true;
