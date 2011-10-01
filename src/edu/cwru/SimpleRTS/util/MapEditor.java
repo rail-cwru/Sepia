@@ -126,8 +126,8 @@ public class MapEditor {
 			}
 			System.out.println(s.getTextString());
 		}
-		GameMap g = new GameMap(s.build());
-		GameMap.storeMap(outputfile, g);
+		State state = s.build();
+		GameMap.storeState(outputfile, state);
 	}
 	static void addPlayer(State.StateBuilder state, int player, String templatefile) {
 		List<Template> templates=null;

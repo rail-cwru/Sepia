@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import edu.cwru.SimpleRTS.agent.Agent;
@@ -15,17 +16,23 @@ import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
-	public static void main(String[] args) {
-		if(args.length < 4 || args.length > 0 && args[0].equals("--prefs") || args.length < 6)
+	public static void main(String[] args) throws BackingStoreException, IOException {
+		if(args.length < 4 || (args.length > 0 && args[0].equals("--prefs") && args.length < 6))
 		{
 			printUsageAndExit("Not enough arguments");
 		}
 		int i = 0;
-		if(args[i].equals("--prefs") && !loadPrefs(args[i+1]))
+		if(args[i].equals("--config"))
 		{
-			printUsageAndExit("Invalid filename for preferences "+args[i+1]);
+			if(!loadPrefs(args[i+1]))
+				printUsageAndExit("Invalid filename for preferences "+args[i+1]);
+			Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
+			i += 2;
 		}
-		i += 2;
+		else
+		{
+			clearPrefs();
+		}
 		String statefilename = args[i];
 		State initState = new LoadingStateCreator(statefilename).createState();
 		if(initState == null)
@@ -81,10 +88,10 @@ public class Main {
 			}			
 		}
 		Preferences prefs = Preferences.userRoot().node("eecs/cwru/edu/SimpleRTS/environment");
-		prefs.getInt("NumEpisodes", 1);
+		int numEpisodes = Math.max(1, prefs.getInt("NumEpisodes", 1));
 		Model model = new SimpleModel(initState, 6,new LoadingStateCreator(statefilename));
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
-		for(int episode = 0; episode < 100; episode++)
+		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			env.runEpisode();
 			env.requestNewEpisode();
@@ -92,10 +99,10 @@ public class Main {
 	}
 	private static void printUsageAndExit(String error) {
 		System.out.println(error);
-		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--prefs preferencesFile] <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
-		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 10 --agent SimpleAgent1 --agent SimpleAgent1");
+		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--config configurationFile] <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 --agent SimpleAgent1 --agent SimpleAgent1");
 		System.out.println("\tThis will load the map stored in the file data/map1 with two new instances of SimpleAgent1 and run 10 episodes");
-		System.out.println("Example: java -jar SimpleRTS.jar data/map1 1000 --agent ScriptedGoalAgent --loadfrom agents/script1 --agent SimpleAgent2");
+		System.out.println("Example: java -jar SimpleRTS.jar data/map1 --agent ScriptedGoalAgent --loadfrom agents/script1 --agent SimpleAgent2");
 		System.out.println("\tThis will load the map stored in the file data/map with a the ScriptedGoalAgent stored in agents/script1 and a new instance of SimpleAgent2 and run 1000 episodes");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
@@ -134,5 +141,11 @@ public class Main {
 		} catch(Exception e) {
 			return false;
 		}
+	}
+	private static void clearPrefs() throws BackingStoreException {
+		Preferences prefs = Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS");
+		prefs.clear();
+		prefs.node("environment").clear();
+		prefs.node("model").clear();
 	}
 }

@@ -26,40 +26,15 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
  * @author Feng
  *
  */
-public class GameMap implements Serializable{
-	
-	// information in state
-	//private List<Resource> resources;
-	//private List<Unit> units;
-	//private Map<Integer, List<Unit>> unitsByAgent;
-	//private List<Template> templates;
-	//private Map<Integer, List<Template>> templateByAgent;
-	
-	private State state;
-	
-	public GameMap() {
-		// TODO: create a new map from scratch here
-		//State.StateBuilder stateBuilder = new StateBuilder();
+public final class GameMap implements Serializable{
 		
-	}
+	private GameMap() {}
 	
-	public GameMap(State state) {
-		this.setState(state);
-	}
-	
-	
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	public static void storeMap(String filename, GameMap gameMap) {
+	public static void storeState(String filename, State state) {
 		try {
 			ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename));
-			outputStream.writeObject(gameMap);
+			outputStream.writeObject(state);
+			outputStream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -67,11 +42,12 @@ public class GameMap implements Serializable{
 		}
 	}
 	
-	public static GameMap loadMap(String filename) {
-		GameMap gameMap = null;
+	public static State loadState(String filename) {
+		State state = null;
 		try {
 			ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename));
-			gameMap = (GameMap) inputStream.readObject();
+			state = (State) inputStream.readObject();
+			inputStream.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -79,7 +55,7 @@ public class GameMap implements Serializable{
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return gameMap;
+		return state;
 	}
 }
 

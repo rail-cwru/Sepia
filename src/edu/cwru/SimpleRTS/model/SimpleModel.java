@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.prefs.Preferences;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionQueue;
@@ -68,6 +69,19 @@ public class SimpleModel implements Model {
 	
 	@Override
 	public boolean isTerminated() {
+		Preferences prefs = Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS").node("model");
+		boolean terminated = true;
+		if(prefs.getBoolean("Conquest", false))
+			terminated = conquestTerminated();
+		if(terminated && prefs.getBoolean("Midas", false))
+			terminated = resourceGatheringTerminated(prefs);
+		if(terminated && prefs.getBoolean("ManifestDestiny", false))
+			terminated = buildingTerminated(prefs);
+		if(terminated)
+			terminated = state.getTurnNumber() > prefs.getInt("TimeLimit", Integer.MAX_VALUE);
+		return terminated;
+	}
+	private boolean conquestTerminated() {
 		int numLivePlayers = 0;
 		for(int i = 0; i <= Agent.maxId() && numLivePlayers < 2; i++)
 		{
@@ -82,7 +96,37 @@ public class SimpleModel implements Model {
 		}
 		return numLivePlayers <= 1;
 	}
-
+	private boolean resourceGatheringTerminated(Preferences prefs) {
+		boolean resourcesGathered = true;
+		int gold = prefs.getInt("RequiredGold", 0);
+		int wood = prefs.getInt("RequiredWood", 0);
+		for(int i = 0; i <= Agent.maxId() && resourcesGathered; i++)
+		{
+			resourcesGathered = state.getResourceAmount(i, ResourceType.GOLD) >= gold &&
+								state.getResourceAmount(i, ResourceType.WOOD) >= wood;
+		}
+		return resourcesGathered;
+	}
+	private boolean buildingTerminated(Preferences prefs) {
+		boolean built = true;
+		for(int i = 0; i <= Agent.maxId() && built; i++)
+		{
+			for(Template template : state.getTemplates(i).values())
+			{
+				int required = prefs.getInt("Required"+template.getName()+"Player"+i, 0);
+				int actual = 0;
+				for(Unit u : state.getUnits(i).values())
+				{
+					if(u.getTemplate().equals(template))
+						actual++;
+					if(actual >= required)
+						break;
+				}
+				built = actual >= required;
+			}
+		}
+		return built;
+	}
 	@Override
 	public void setActions(Action[] action) {
 		for (Action a : action) {

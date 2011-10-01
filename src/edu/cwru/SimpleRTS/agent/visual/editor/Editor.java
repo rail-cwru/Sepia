@@ -141,9 +141,9 @@ public class Editor extends JFrame {
 		resourceAmount.setText("100");
 		save = new JButton("Save");
 		save.addActionListener(new ActionListener() {
-			GameMap map;
+			State state;
 			public ActionListener setState(State state) {
-				map = new GameMap(state);
+				this.state = state;
 				return this;
 			}
 			@Override
@@ -152,7 +152,7 @@ public class Editor extends JFrame {
 				int result = jfc.showSaveDialog(Editor.this);
 				if(result != JFileChooser.APPROVE_OPTION)
 					return;
-				GameMap.storeMap(jfc.getSelectedFile().toString(), map);
+				GameMap.storeState(jfc.getSelectedFile().toString(), state);
 			}
 			
 		}.setState(state));
@@ -229,7 +229,7 @@ public class Editor extends JFrame {
 		if(args.length > 0)
 		{
 			try {
-			state = GameMap.loadMap(args[0]).getState();
+			state = GameMap.loadState(args[0]);
 			}
 			catch(Exception e) {
 				e.printStackTrace();

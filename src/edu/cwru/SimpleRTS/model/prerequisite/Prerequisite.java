@@ -1,8 +1,9 @@
 package edu.cwru.SimpleRTS.model.prerequisite;
 
-import edu.cwru.SimpleRTS.environment.State;
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.environment.State.StateView;
 
-public interface Prerequisite {
+public interface Prerequisite extends Serializable {
 	boolean isFulfilled(StateView state);
 }

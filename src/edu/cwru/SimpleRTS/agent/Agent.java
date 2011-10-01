@@ -8,20 +8,36 @@ import com.google.common.collect.ImmutableMap;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
+/**
+ * The base type for any agent that can interact with the SimpleRTS environment.
+ * @author Tim
+ *
+ */
 public abstract class Agent implements Serializable {
 	protected boolean verbose; 
 	private static int nextID = 0;
 	protected final int playernum;
+	/**
+	 * The highest ID number that has been assigned to an agent
+	 * @return
+	 */
 	public static int maxId() {
 		return nextID - 1;
 	}
 	protected final int ID;
-	
+	/**
+	 * Assigns this Agent the next available auto-incrementing ID and sets the playernum to the argument.
+	 * @param playernum
+	 */
 	protected Agent(int playernum) {
 		ID = nextID++;
 		this.playernum=playernum;
 		verbose = false;
 	}
+	/**
+	 * Determines whether to print out the action list each time it is chosen by {@link #getAction()}
+	 * @param verbosity
+	 */
 	public void setVerbose(boolean verbosity) {
 		verbose = verbosity;
 	}
@@ -89,8 +105,23 @@ public abstract class Agent implements Serializable {
 		terminalStep(newstate);
 		onofflatch.countDown();
 	}
-	
+
+	/**
+	 * Accept the initial state of an episode
+	 * @param newstate The new state of the system
+	 * @param onofflatch A countdown latch used to synchonize completion
+	 */
 	public abstract ImmutableMap.Builder<Integer,Action> initialStep(State.StateView newstate);
+
+	/**
+	 * Accept an intermediate state of an episode
+	 * @param newstate The new state of the system
+	 * @param onofflatch A countdown latch used to synchonize completion
+	 */
 	public abstract ImmutableMap.Builder<Integer,Action> middleStep(State.StateView newstate);
+	/**
+	 * Receive notification that the episode has terminated.
+	 * @param newstate The final state of the system
+	 */
 	public abstract void terminalStep(State.StateView newstate);
 }

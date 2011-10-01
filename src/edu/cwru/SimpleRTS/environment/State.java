@@ -15,6 +15,11 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Pair;
 
 public class State implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	//TODO: move this constant somewhere
 	private final int MAXSUPPLY = 50;
 	
@@ -178,9 +183,10 @@ public class State implements Serializable{
 		}
 		return str.toString();
 	}
+	private static final Map<Integer,Unit> EMPTY_MAP = new HashMap<Integer,Unit>();
 	public Map<Integer,Unit> getUnits(int player) {
 		if(unitsByAgent.get(player) == null)
-			return null;
+			return EMPTY_MAP;
 		return Collections.unmodifiableMap(unitsByAgent.get(player));
 	}
 	public boolean tryProduceUnit(Unit u) {
@@ -630,6 +636,10 @@ public class State implements Serializable{
 	 *
 	 */
 	public static class StateView implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private State state;
 		private StateView(State state) {
 			this.state = state;

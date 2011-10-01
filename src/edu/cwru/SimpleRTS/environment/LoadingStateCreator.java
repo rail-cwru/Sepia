@@ -17,15 +17,10 @@ public class LoadingStateCreator implements StateCreator{
 		try {
 			ois = new ObjectInputStream(new FileInputStream(loadfilename));
 			state = (State)ois.readObject();
+			ois.close();
 		}
 		catch(Exception ex) {
 			return null;
-		}
-		finally {
-			try {
-				ois.close();
-			} catch (IOException e) {
-			}
 		}
 		return state;
 	}
