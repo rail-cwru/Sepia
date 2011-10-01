@@ -39,12 +39,12 @@ public class SimpleAgent1Test {
 			if(!"Footman".equals(ut.getUnitName()))
 				continue;
 			Unit u1 = new Unit(ut);
-			u1.setPlayer(0);
+			//u1.setPlayer(0);
 			u1.setxPosition(1);
 			u1.setyPosition(1);
 			builder.addUnit(u1);
 			Unit u2 = new Unit(ut);
-			u2.setPlayer(1);
+			//u2.setPlayer(1);
 			u2.setxPosition(7);
 			u2.setyPosition(7);
 			builder.addUnit(u2);

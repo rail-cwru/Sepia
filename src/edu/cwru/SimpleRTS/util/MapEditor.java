@@ -87,7 +87,7 @@ public class MapEditor {
 						{
 							
 							Unit u = new Unit(template);
-							u.setPlayer(player);
+							//u.setPlayer(player);
 							u.setxPosition(x);
 							u.setyPosition(y);
 							s.addUnit(u);
