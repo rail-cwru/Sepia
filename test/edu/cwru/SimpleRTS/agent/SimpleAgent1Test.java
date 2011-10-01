@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.agent;
 import static org.junit.Assert.assertFalse;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class SimpleAgent1Test {
 	static Environment env;
 	
 	@BeforeClass
-	public static void setup() throws FileNotFoundException, JSONException {
+	public static void setup() throws JSONException, IOException {
 		agents = new Agent[]{new SimpleAgent1(0),new SimpleAgent1(1)};
 		StateBuilder builder = new StateBuilder();
 		List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",0);

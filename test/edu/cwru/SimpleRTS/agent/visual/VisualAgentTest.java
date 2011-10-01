@@ -1,6 +1,7 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -31,7 +32,7 @@ public class VisualAgentTest {
 	
 	@SuppressWarnings("rawtypes")
 	@BeforeClass
-	public static void setup() throws FileNotFoundException, JSONException {
+	public static void setup() throws JSONException, IOException {
 		StateBuilder builder = new StateBuilder();
 		builder.setSize(32, 32);
 		{

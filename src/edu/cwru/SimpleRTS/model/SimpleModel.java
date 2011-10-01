@@ -1,18 +1,25 @@
 package edu.cwru.SimpleRTS.model;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
-import edu.cwru.SimpleRTS.Log.ActionLogger;
-import edu.cwru.SimpleRTS.Log.EventLogger;
-import edu.cwru.SimpleRTS.action.*;
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionQueue;
+import edu.cwru.SimpleRTS.action.ActionType;
+import edu.cwru.SimpleRTS.action.DirectedAction;
+import edu.cwru.SimpleRTS.action.LocatedAction;
+import edu.cwru.SimpleRTS.action.LocatedProductionAction;
+import edu.cwru.SimpleRTS.action.ProductionAction;
+import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -21,7 +28,6 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
-import edu.cwru.SimpleRTS.util.Configuration;
 /**
  * A "Simple" Model
  *
@@ -45,6 +51,13 @@ public class SimpleModel implements Model {
 		this.restartTactic = restartTactic;
 	}
 	
+	public SimpleModel(State init, int seed) throws IOException {
+		String tempFilename = "temp/initState";
+		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tempFilename));
+		oos.writeObject(init);
+		oos.close();
+		this.restartTactic = new LoadingStateCreator(tempFilename);
+	}
 	
 	@Override
 	public void createNewWorld() {
