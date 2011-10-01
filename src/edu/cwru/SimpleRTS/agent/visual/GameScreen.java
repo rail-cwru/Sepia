@@ -1,18 +1,23 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+import java.io.Serializable;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
-public class GameScreen extends JFrame implements KeyListener{
+public class GameScreen extends JFrame implements KeyListener, Serializable{
 
 	public static final int SCALING_FACTOR = 32;
 	
@@ -94,7 +99,7 @@ public class GameScreen extends JFrame implements KeyListener{
 		super.addMouseListener(listener);
 		canvas.addMouseListener(listener);
 	}
-	private class PaintPanel extends JPanel {
+	private class PaintPanel extends JPanel implements Serializable {
 		
 		public void PaintPanel() {
 			setSize(800,600);
