@@ -94,7 +94,7 @@ public class VisualAgentTest {
 		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 9, 5, 100));
 		builder.addResource(new ResourceNode(ResourceNode.Type.GOLD_MINE, 12, 2, 100));
 		state = builder.build();
-		model = new SimpleModel(state, 6);
+		model = new SimpleModel(state, 6,null);
 		visualAgent = new VisualAgent(player1,state.getView());
 		simpleAgent = new SimpleAgent1(player2);
 		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model);

@@ -47,7 +47,7 @@ public class GameUnitTest {
 			y += 5;
 			builder.addUnit(u);
 		}
-		model = new SimpleModel(builder.build(), 5336);
+		model = new SimpleModel(builder.build(), 5336,null);
 	}
 	/**
 	 * Move unit 1 Southeast

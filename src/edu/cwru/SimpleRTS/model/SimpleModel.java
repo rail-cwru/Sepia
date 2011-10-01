@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.model;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -52,13 +53,7 @@ public class SimpleModel implements Model {
 		this.restartTactic = restartTactic;
 	}
 	
-	public SimpleModel(State init, int seed) throws IOException {
-		this(init, seed, new LoadingStateCreator("temp/initState"));
-		String tempFilename = "temp/initState";
-		ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(tempFilename));
-		oos.writeObject(init);
-		oos.close();
-	}
+
 	
 	@Override
 	public void createNewWorld() {

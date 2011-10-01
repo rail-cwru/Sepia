@@ -87,7 +87,7 @@ public class CombatAgentDuelTest {
 		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
-		model=new SimpleModel(state, 1235);
+		model=new SimpleModel(state, 1235,null);
 	}
 	
 	public void setUp() throws Exception {
@@ -97,7 +97,7 @@ public class CombatAgentDuelTest {
 	public void test() throws IOException, InterruptedException {
 		CombatAgent agent1 = new CombatAgent(player1, new int[]{player2},false);
 		CombatAgent agent2 = new CombatAgent(player2, new int[]{player1},true);
-		for (int step = 0; step<305; step++)
+		for (int step = 0; step<30500; step++)
 		{
 			CountDownLatch latch1 = new CountDownLatch(1);
 			CountDownLatch latch2 = new CountDownLatch(1);

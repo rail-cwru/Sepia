@@ -73,7 +73,7 @@ public class AttackAndDeathTest {
 		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
-		model = new SimpleModel(state, 5536);
+		model = new SimpleModel(state, 5536,null);
 	}
 	
 	public void setUp() throws Exception {

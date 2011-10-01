@@ -59,7 +59,7 @@ public class ScriptedGoalAgentTest {
 		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
-		model=new SimpleModel(state, 1235);
+		model=new SimpleModel(state, 1235,null);
 	}
 	
 	public void setUp() throws Exception {
@@ -89,13 +89,12 @@ public class ScriptedGoalAgentTest {
 				"Transfer:1:Wood:Idle\n" +
 				"Build:Barracks:2:-2\n" +
 				"Transfer:1:Idle:Gold\n" +
-				"Produce:Footman\n" +
-				"Attack:All\n";
+				"Produce:Footman\n";
 		int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
 		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);
 		
-		for (int step = 0; step<305; step++)
+		for (int step = 0; step<335; step++)
 		{
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
@@ -126,6 +125,10 @@ public class ScriptedGoalAgentTest {
 			for (Unit u : units) {
 				System.out.println(u.getTemplate().getName() + " (ID: "+u.ID+") at "+u.getxPosition() + "," + u.getyPosition());
 				System.out.println("Carrying: " + u.getCurrentCargoAmount() + " (" + u.getCurrentCargoType() + ")");
+			}
+			System.out.println("Resources:");
+			for (ResourceNode r : state.getResources()) {
+				System.out.println(r.getType() + " " + r.getAmountRemaining());
 			}
 			System.out.println("All agents control a combined " + state.getUnits().values().size() + " units");
 			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");

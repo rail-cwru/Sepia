@@ -81,7 +81,7 @@ public class SimplePlannerTest {
 		builder.addResource(t);
 		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100);
 		builder.addResource(t);
-		model = new SimpleModel(state,5536);
+		model = new SimpleModel(state,5536,null);
 	}
 	
 	public void setUp() throws Exception {
