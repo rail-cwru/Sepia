@@ -2,12 +2,14 @@ package edu.cwru.SimpleRTS.util;
 
 import java.util.List;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.json.JSONException;
 
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -21,7 +23,7 @@ public class MapEditor {
 			return;
 		boolean usestdin = false;
 		String templatefile = args[0];
-		List<UnitTemplate> templates= TypeLoader.loadUnitsFromFile(templatefile,0);
+		
 		String outputfile = args[1];
 		String[] commands = null;
 		BufferedReader reader = null;
@@ -75,18 +77,13 @@ public class MapEditor {
 					if (s.positionAvailable(x,y))
 					{
 						String unitname = nextcommand[1];
-						
-						UnitTemplate template = null;
-						for (UnitTemplate ut : templates) {
-							if (unitname.equals(ut.getUnitName())) {
-								template = ut;
-								break;
-							}
-						}
-						if (template!=null)
+						if (!s.hasTemplates(player));
+							addPlayer(s, player, templatefile);
+						Template template =  s.getTemplate(player, unitname);
+						if (template!=null && template instanceof UnitTemplate)
 						{
 							
-							Unit u = new Unit(template);
+							Unit u = new Unit((UnitTemplate)template);
 							//u.setPlayer(player);
 							u.setxPosition(x);
 							u.setyPosition(y);
@@ -131,5 +128,19 @@ public class MapEditor {
 		}
 		GameMap g = new GameMap(s.build());
 		GameMap.storeMap(outputfile, g);
+	}
+	static void addPlayer(State.StateBuilder state, int player, String templatefile) {
+		List<Template> templates=null;
+		try {
+			templates = TypeLoader.loadFromFile(templatefile,player);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for (Template t : templates)
+			state.addTemplate(t, player);
 	}
 }

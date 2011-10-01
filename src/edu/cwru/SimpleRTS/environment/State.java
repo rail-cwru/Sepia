@@ -484,6 +484,13 @@ public class State implements Serializable{
 		public String getTextString() {
 			return state.getTextString();
 		}
+		public boolean hasTemplates(int player) {
+			Map<Integer,Template> templates = state.templatesByAgent.get(player);
+			if (templates == null) {
+				return false;
+			}
+			return templates.size() != 0;
+		}
 		/**
 		 * Completes construction of the state and returns a reference to the state.
 		 * Subsequent calls to this method will result in returning null.
@@ -619,5 +626,6 @@ public class State implements Serializable{
 		public boolean isResourceAt(int x, int y) {
 			return state.resourceAt(x, y) != null;
 		}
+		
 	}
 }
