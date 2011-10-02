@@ -1,9 +1,12 @@
 package edu.cwru.SimpleRTS;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.LinkedList;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -12,7 +15,6 @@ import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
@@ -45,7 +47,7 @@ public class Main {
 			return;
 		}
 		i++;
-		List<Agent> agents = new LinkedList<Agent>();
+		List<Agent> agents = new ArrayList<Agent>();
 		while(i < args.length)
 		{
 			if(!args[i].equals("--agent"))
@@ -103,11 +105,32 @@ public class Main {
 		}
 		Preferences prefs = Preferences.userRoot().node("eecs/cwru/edu/SimpleRTS/environment");
 		int numEpisodes = Math.max(1, prefs.getInt("NumEpisodes", 1));
-		Model model = new SimpleModel(initState, 6,new LoadingStateCreator(statefilename));
+		int episodesPerSave = prefs.getInt("EpisodesPerSave", 0);
+		boolean saveAgents = prefs.getBoolean("SaveAgents", false);
+		//just to make the directory
+		File firstFile = new File("saves/state0");
+		firstFile.mkdirs();
+		
+		SimpleModel model = new SimpleModel(initState, 6,new LoadingStateCreator(statefilename));
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			env.runEpisode();
+			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
+			{
+				model.save("saves/state"+episode);
+				for(int j = 0; j < agents.size(); j++)
+				{
+					try {
+						ObjectOutputStream agentOut = new ObjectOutputStream(new FileOutputStream("saves/agent"+j+"-"+episode));
+						agentOut.writeObject(agents.get(i));
+						agentOut.close();
+					}
+					catch(Exception ex) {
+						System.out.println("Unable to save agent "+j);
+					}
+				}
+			}
 			env.requestNewEpisode();
 		}
 	}

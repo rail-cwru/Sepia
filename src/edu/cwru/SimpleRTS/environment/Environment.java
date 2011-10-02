@@ -37,25 +37,6 @@ public class Environment
 		return model;
 	}
 	
-	
-	/**
-	 * A basic save
-	 * Feel free to change the argument
-	 * @param w
-	 * @return
-	 */
-	public boolean saveState(BufferedWriter w) {
-		return false;
-	}
-	/**
-	 * A basic load
-	 * Feel free to change the argument
-	 * @param r
-	 * @return
-	 */
-	public boolean loadState(BufferedReader r) {
-		return false;		
-	}
 	public final State.StateView getState()
 	{
 		return model.getState();

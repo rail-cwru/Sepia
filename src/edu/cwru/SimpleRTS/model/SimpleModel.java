@@ -30,6 +30,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.GameMap;
 /**
  * A "Simple" Model
  *
@@ -526,5 +527,7 @@ public class SimpleModel implements Model {
 	public State.StateView getState() {
 		return state.getView();
 	}
-
+	public void save(String filename) {
+		GameMap.storeState(filename, state);
+	}
 }
