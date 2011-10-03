@@ -19,7 +19,7 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
-		if(args.length < 4 || (args.length > 0 && args[0].equals("--prefs") && args.length < 6))
+		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
 		{
 			printUsage("Not enough arguments");
 			return;
@@ -32,7 +32,7 @@ public class Main {
 				printUsage("Invalid filename for preferences "+args[i+1]);
 				return;
 			}
-			Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
+			Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
 			i += 2;
 		}
 		else
@@ -103,7 +103,7 @@ public class Main {
 				}
 			}			
 		}
-		Preferences prefs = Preferences.userRoot().node("eecs/cwru/edu/SimpleRTS/environment");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
 		int numEpisodes = Math.max(1, prefs.getInt("NumEpisodes", 1));
 		int episodesPerSave = prefs.getInt("EpisodesPerSave", 0);
 		boolean saveAgents = prefs.getBoolean("SaveAgents", false);
@@ -136,7 +136,7 @@ public class Main {
 	}
 	private static void printUsage(String error) {
 		System.out.println(error);
-		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--config configurationFile] <model file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
 		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 --agent SimpleAgent1 --agent SimpleAgent1");
 		System.out.println("\tThis will load the map stored in the file data/map1 with two new instances of SimpleAgent1 and run 10 episodes");
 		System.out.println("Example: java -jar SimpleRTS.jar data/map1 --agent ScriptedGoalAgent --loadfrom agents/script1 --agent SimpleAgent2");
@@ -179,7 +179,7 @@ public class Main {
 		}
 	}
 	private static void clearPrefs() throws BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
 		prefs.clear();
 		prefs.node("environment").clear();
 		prefs.node("model").clear();

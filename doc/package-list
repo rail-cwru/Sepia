@@ -1,8 +1,12 @@
 edu.cwru.SimpleRTS
+edu.cwru.SimpleRTS.Log
 edu.cwru.SimpleRTS.action
 edu.cwru.SimpleRTS.agent
+edu.cwru.SimpleRTS.agent.visual
+edu.cwru.SimpleRTS.agent.visual.editor
 edu.cwru.SimpleRTS.environment
 edu.cwru.SimpleRTS.model
+edu.cwru.SimpleRTS.model.prerequisite
 edu.cwru.SimpleRTS.model.resource
 edu.cwru.SimpleRTS.model.unit
 edu.cwru.SimpleRTS.model.upgrade

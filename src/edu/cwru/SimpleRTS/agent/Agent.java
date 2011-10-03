@@ -55,7 +55,7 @@ public abstract class Agent implements Serializable {
 	
 	
 	//Action selection and such
-	private ImmutableMap.Builder<Integer,Action> chosenActions;
+	protected ImmutableMap.Builder<Integer,Action> chosenActions;
 	
 	/**
 	 * Request the action that the agent will take at this timestep.

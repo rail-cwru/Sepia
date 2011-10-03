@@ -1,0 +1,99 @@
+<html>
+	<head>
+		<title>SimpleRTS Manual</title>
+		<style>
+			.definition {
+				padding-left: 2em;
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>SimpleRTS Manual</h1>
+		<h4>version 1.0</h4>
+		<hr/>
+		<h2>Table of Contents</h2>
+		<ol>
+			<li><a href="#Introduction">Introduction</a></li>
+			<li><a href="#Revisions">Revision History</a></li>
+			<li><a href="#Run">How to Run</a></li>
+			<li><a href="#Config">Configuration</a>
+			<li><a href="#Contact">Contact Info</a></li>
+		</ol>
+		<h2 id="Introduction">1. Introduction</h2>
+		<p>SimpleRTS is an open source project developed by Tim Ernsberger, 
+		Scott Sosnowski, and Feng Cao, under the advisement of Soumya Ray.
+		The purpose of this project is to provide a simple but sophisticated
+		test bench for use in testing artificially intelligent agents. SimpleRTS
+		is based on <a href="http://stratagus.sourceforge.net/">Stratagus</a>,
+		but does not include sophisticated graphics or sound, making it an ideal
+		platform for running large numbers of simulations quickly.
+		</p>
+		<h2 id="Revisions">2. Revision History</h2>
+		<h4>1.0.0</h4>
+		<p>This is the first version of SimpleRTS. New versions will be published
+		   as bugs are resolved and as additional features are added.
+		</p>
+		<h2 id="Run">3. How to Run</h2>
+		<p>Note: this section describes how to run SimpleRTS from a Jar file. If you wish to
+		   use the source code, you will have to figure that out on your own. If you do choose
+		   to recompile from source you will need a copy of Google's 
+		   <a href="http://code.google.com/p/guava-libraries/">Guava library</a>.
+		</p>
+		<p>The basic command for running SimpleRTS is: 
+		</p>
+		<code>java -jar SimpleRTS.jar &lt;map file&gt; </code>
+		<p>This will invoke the main() method in edu.cwru.SimpleRTS.Main. In order to run
+		   a simulation, you will need to supply some arguments. Entering in insufficient
+		   or incorrect arguments will cause the program to print out usage info and
+		   terminate. Here are all the options that can be used:
+		</p>
+		<div><code>--config <i>&lt;XML configuration file&gt;</code></i>
+			<div class="definition">These two arguments specify that you want to import
+			    a configuration and which file to read to get it. This is an optional
+			    parameter. If not specified, the program will use the last configuration
+			    with which it was run or default values if no configuration data has been
+			    provided previously.
+			</div>
+		</div>
+		<div><code>--agent <i>&lt;agent class&gt; &lt;playernum&gt;</i></code>
+			<div class="definition">Indicates that the agent defined by 
+			    <i>&lt;agent class&gt;</i> should be used in this simulation. The full
+			    path to the class must be specified (e.g. edu.cwru.SimpleRTS.SimpleAgent1).
+			    By default, the program will use a single argument constructor that takes
+			    in an int that represents playernum. The <i>&lt;playernum&gt;</i> parameter 
+			    definies an ID with which the agent will be associated. 
+			    <strong>At least one instance of this option is required.</strong>
+			</div>
+		</div>
+		<div><code>--loadfrom <i>&lt;serialized agent file name&gt;</i></code>
+			<div class="definition">This option can only be used immediately following
+			    the previous option. If used, the agent specified by the preceeding 
+			    --agent option will be loaded from the file instead of being constructed.
+			    This option assumes that the data in the file is a serialized representation
+			    of an agent. 			    
+			</div>
+		</div>
+		<h2 id="Config">4. Configuration</h2>
+		<p>under construction
+		</p>
+		<h2 id="Agent">5. Writing an Agent</h2>
+		<p>All agents written to interact with SimpleRTS must extend the class
+		    <code>edu.cwru.SimpleRTS.agent.Agent</code>. Consult the javadoc for a
+			description of the methods in Agent. At the very least, you must implement
+			the initialStep(), middleStep(), and terminalStep() methods. These three
+			methods define the logic for the agent to receive a state update and return
+			a mapping of its units to actions for the next step.
+		</p>
+		<h2 id="Contact">Contact Info</h2>
+		<p>For questions about running simulations, contact Tim Ernsberger at 
+			<a href="maito:tse6@case.edu">tse6@case.edu</a>.
+		</p>
+		<p>For questions about game mechanics, contact Scott Sosnowski at
+			<a href="mailto:sts12@case.edu">sts12@case.edu</a>.
+		</p>private
+		<p>For questions about homework assignments involving SimpleRTS, contact
+			Feng Cao at <a href="mailto:fxc100@case.edu">fxc100@case.edu</a>.
+		</p>
+	</body>
+</html>

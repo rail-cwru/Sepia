@@ -65,7 +65,7 @@ public class SimpleModel implements Model {
 	
 	@Override
 	public boolean isTerminated() {
-		Preferences prefs = Preferences.userRoot().node("eecs").node("edu").node("cwru").node("SimpleRTS").node("model");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
 		boolean terminated = true;
 		if(prefs.getBoolean("Conquest", false))
 			terminated = conquestTerminated();

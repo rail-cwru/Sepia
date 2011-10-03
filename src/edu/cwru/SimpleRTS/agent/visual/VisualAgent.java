@@ -17,6 +17,23 @@ public class VisualAgent extends Agent {
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
 	
+	public VisualAgent(int playernum) {
+		super(playernum);
+		actions = new ImmutableMap.Builder<Integer, Action>();
+		Runnable runner = new Runnable() {
+			VisualAgent agent;
+			public Runnable setAgent(VisualAgent agent) {
+				this.agent = agent;
+				return this;
+			}
+			@Override
+			public void run() {
+				screen = new GameScreen(agent);
+			}					
+		}.setAgent(this);
+		SwingUtilities.invokeLater(runner);
+	}
+	
 	public VisualAgent(int playernum, final StateView initState) {
 		super(playernum);
 		actions = new ImmutableMap.Builder<Integer, Action>();
@@ -37,6 +54,8 @@ public class VisualAgent extends Agent {
 
 	@Override
 	public ImmutableMap.Builder<Integer, Action> initialStep(StateView newstate) {
+		if(screen != null)
+			screen.updateState(newstate);
 		ImmutableMap.Builder<Integer, Action> toReturn = actions;
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		return toReturn;
@@ -44,6 +63,8 @@ public class VisualAgent extends Agent {
 
 	@Override
 	public ImmutableMap.Builder<Integer, Action> middleStep(StateView newstate) {
+		if(screen != null)
+			screen.updateState(newstate);
 		ImmutableMap.Builder<Integer, Action> toReturn = actions;
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		return toReturn;
@@ -51,7 +72,8 @@ public class VisualAgent extends Agent {
 
 	@Override
 	public void terminalStep(StateView newstate) {
-		screen.close();
+		if(screen != null)
+			screen.updateState(newstate);
 	}
 	
 	public void addAction(Action action) {

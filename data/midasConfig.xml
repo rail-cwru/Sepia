@@ -3,8 +3,6 @@
 <preferences EXTERNAL_XML_VERSION="1.0">
   <root type="user">
     <map/>
-    <node name="eecs">
-      <map/>
       <node name="edu">
         <map/>
         <node name="cwru">
@@ -27,6 +25,5 @@
           </node>
         </node>
       </node>
-    </node>
   </root>
 </preferences>
