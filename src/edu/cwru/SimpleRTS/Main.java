@@ -137,9 +137,9 @@ public class Main {
 	private static void printUsage(String error) {
 		System.out.println(error);
 		System.out.println("Usage: java [-cp <path to your agent's class file>] -jar SimpleRTS.jar [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
-		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 --agent SimpleAgent1 --agent SimpleAgent1");
+		System.out.println("\nExample: java -jar SimpleRTS.jar data/map1 --agent SimpleAgent1 0 --agent SimpleAgent1 1");
 		System.out.println("\tThis will load the map stored in the file data/map1 with two new instances of SimpleAgent1 and run 10 episodes");
-		System.out.println("Example: java -jar SimpleRTS.jar data/map1 --agent ScriptedGoalAgent --loadfrom agents/script1 --agent SimpleAgent2");
+		System.out.println("Example: java -jar SimpleRTS.jar data/map1 --agent ScriptedGoalAgent 0 --loadfrom agents/script1 --agent SimpleAgent2 1");
 		System.out.println("\tThis will load the map stored in the file data/map with a the ScriptedGoalAgent stored in agents/script1 and a new instance of SimpleAgent2 and run 1000 episodes");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
