@@ -119,7 +119,7 @@ public class Main {
 			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
 			{
 				model.save("saves/state"+episode);
-				for(int j = 0; j < agents.size(); j++)
+				for(int j = 0; saveAgents && j < agents.size(); j++)
 				{
 					try {
 						ObjectOutputStream agentOut = new ObjectOutputStream(new FileOutputStream("saves/agent"+j+"-"+episode));
