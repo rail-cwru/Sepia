@@ -72,10 +72,57 @@
 			    --agent option will be loaded from the file instead of being constructed.
 			    This option assumes that the data in the file is a serialized representation
 			    of an agent. 			    
-			</div>
+			</div> 
 		</div>
 		<h2 id="Config">4. Configuration</h2>
-		<p>under construction
+		<p>The configuration file is an XML file that gets loaded into the user-specific
+		   instance of <a href="http://download.oracle.com/javase/6/docs/api/java/util/prefs/Preferences.html">
+		   java.util.Preferences</a>. Basically, the configuration file is a hierarchy of
+		   maps which store primitives as values. For an example of how to write a configuration
+		   file, see <a href="../data.defaultConfig.xml">data/defaultConfig.xml</a>. For an example
+		   of how to define and export preferences in Java code, see 
+		   edu.cwru.SimpleRTS.util.DefaultConfigurationGenerator.java. Here are the values that SimpleRTS
+		   uses and their defaults:
+		</p>
+		<ul>
+			<li>edu
+				<ul>
+					<li>cwru
+						<ul>
+							<li>SimpleRTS
+								<ul>
+									<li>environment
+										<ul>
+											<li><strong>NumEpisodes</strong> - the number of episodes to run (default 1)</li>
+											<li><strong>EpisodesPerSave</strong> - how often to save the terminal state and agents (default 0, i.e. never)</li>
+											<li><strong>SaveAgents</strong> - whether to save the agents periodically (only applies if EpisodesPerSave > 0; default false)</li>
+										</ul>
+									</li>
+									<li>model
+										<ul>
+											<li><strong>Conquest</strong> - agents must eliminate all other agents to win (default false)</li>
+											<li><strong>Midas</strong> - agents must gather RequiredGold and RequiredWood amounts of gold and wood to win (default false)</li>
+											<li><strong>ManifestDestiny</strong> - agents must build specified quantities of units to win (default false)</li>
+											<li><strong>TimeLimit</strong> - agents must complete other goals within this amount of turns to win (default Integer.MAX_VALUE)</li>
+											<li><strong>RequiredGold</strong> - amount of gold required for Midas victory (default 0)</li>
+											<li><strong>RequiredWood</strong> - amount of wood required for Midas victory (default 0)</li>
+											<li><strong>Required<i>unitTemplateName</i>Player<i>playerId</i></strong> - number of instances of <i>unitTemplateName</i> required for the <i>playerId</i>th agent to win by ManifestDestiny (default 0)</li>
+										</ul>	
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<p>You can use the configuration file to define	parameters for your own agent 
+			(e.g. learning rate, discount factor, etc.). Just define your own path, figure out 
+			how to use java.util.Preferences, and put your settings in the configuration file.
+		</p>
+		<p><strong>Note:</strong> preferences do not get cleared out automatically; they are
+			persisted to disk by Java and reloaded for every Java program run by the same
+			user on the same machine. SimpleRTS clears out the properties defined above
+			automatically, but you will have to clear out custom properties yourself.
 		</p>
 		<h2 id="Agent">5. Writing an Agent</h2>
 		<p>All agents written to interact with SimpleRTS must extend the class
