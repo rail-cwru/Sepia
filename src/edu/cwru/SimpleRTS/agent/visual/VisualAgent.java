@@ -1,5 +1,9 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.concurrent.Semaphore;
+
 import javax.swing.SwingUtilities;
 
 import com.google.common.collect.ImmutableMap;
@@ -16,6 +20,14 @@ public class VisualAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
+	VisualAgentControlWindow controlWindow;
+	private final Semaphore stepSignal = new Semaphore(1);
+	private final ActionListener stepperListener = new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			stepSignal.release();
+		}
+	};
 	
 	public VisualAgent(int playernum) {
 		super(playernum);
@@ -29,6 +41,8 @@ public class VisualAgent extends Agent {
 			@Override
 			public void run() {
 				screen = new GameScreen(agent);
+				controlWindow = new VisualAgentControlWindow();
+				controlWindow.addStepperListener(stepperListener);
 			}					
 		}.setAgent(this);
 		SwingUtilities.invokeLater(runner);
@@ -56,6 +70,11 @@ public class VisualAgent extends Agent {
 	public ImmutableMap.Builder<Integer, Action> initialStep(StateView newstate) {
 		if(screen != null)
 			screen.updateState(newstate);
+		try {
+			stepSignal.acquire();
+		} catch (InterruptedException e) {
+			System.err.println("Unable to wait for step button to be pressed.");
+		}
 		ImmutableMap.Builder<Integer, Action> toReturn = actions;
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		return toReturn;
@@ -65,6 +84,11 @@ public class VisualAgent extends Agent {
 	public ImmutableMap.Builder<Integer, Action> middleStep(StateView newstate) {
 		if(screen != null)
 			screen.updateState(newstate);
+		try {
+			stepSignal.acquire();
+		} catch (InterruptedException e) {
+			System.err.println("Unable to wait for step button to be pressed.");
+		}
 		ImmutableMap.Builder<Integer, Action> toReturn = actions;
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		return toReturn;

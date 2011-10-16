@@ -111,8 +111,7 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 		 */
 		private static final long serialVersionUID = 1L;
 
-		@SuppressWarnings("unused")
-		public void PaintPanel() {
+		public PaintPanel() {
 			setSize(800,600);
 			this.addKeyListener(GameScreen.this);
 		}
@@ -121,6 +120,9 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 		public void paintComponent(Graphics g) {
 			g.setColor(new Color(0x99,0x66,0x33));//medium green
 			g.fillRect(0, 0, getWidth(), getHeight());//background
+			
+			if(currentState == null)
+				return;
 			
 			//draw trees
 			DrawingStrategy tree = DrawingStrategy.treeGraphic();
