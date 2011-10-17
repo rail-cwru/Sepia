@@ -2,6 +2,8 @@ package edu.cwru.SimpleRTS.agent.visual;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.SwingUtilities;
@@ -21,11 +23,22 @@ public class VisualAgent extends Agent {
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
 	VisualAgentControlWindow controlWindow;
-	private final Semaphore stepSignal = new Semaphore(1);
+	private final Semaphore stepSignal = new Semaphore(0);
 	private final ActionListener stepperListener = new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			stepSignal.drainPermits();
 			stepSignal.release();
+		}
+	};
+	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
+		public void keyPressed(KeyEvent e) {
+			System.out.println(e.getKeyCode());
+			if(e.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				stepSignal.drainPermits();
+				stepSignal.release();
+			}
 		}
 	};
 	
@@ -41,6 +54,7 @@ public class VisualAgent extends Agent {
 			@Override
 			public void run() {
 				screen = new GameScreen(agent);
+				screen.addCanvasKeyListener(canvasKeyListener);
 				controlWindow = new VisualAgentControlWindow();
 				controlWindow.addStepperListener(stepperListener);
 			}					

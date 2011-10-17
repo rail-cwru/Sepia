@@ -26,15 +26,12 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 
 	public static final int SCALING_FACTOR = 32;
 	
-	private VisualAgent agent;
 	private PaintPanel canvas;
 	private StateView currentState;
 	private int tlx;
 	private int tly;
 	
 	public GameScreen(VisualAgent agent) {
-		this.agent = agent;
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setSize(800,600);
@@ -55,6 +52,16 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 	
 	public void close() {
 		dispose();
+	}
+	
+	public void addCanvasKeyListener(KeyListener l) {
+		addKeyListener(l);
+		canvas.addKeyListener(l);
+	}
+	
+	public void removeCanvasKeyListener(KeyListener l) {
+		removeKeyListener(l);
+		canvas.removeKeyListener(l);
 	}
 	
 	@Override
