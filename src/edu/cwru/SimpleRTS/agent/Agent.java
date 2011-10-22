@@ -16,6 +16,7 @@ import edu.cwru.SimpleRTS.environment.State;
 public abstract class Agent implements Serializable {
 	protected boolean verbose; 
 	private static int nextID = 0;
+//	private final int[] enemynums;
 	protected final int playernum;
 	/**
 	 * The highest ID number that has been assigned to an agent
@@ -32,6 +33,8 @@ public abstract class Agent implements Serializable {
 	protected Agent(int playernum) {
 		ID = nextID++;
 		this.playernum=playernum;
+//		this.enemynums = new int[enemynums.length];
+//		System.arraycopy(enemynums, 0, this.enemynums, 0, enemynums.length);
 		verbose = false;
 	}
 	/**
@@ -41,7 +44,13 @@ public abstract class Agent implements Serializable {
 	public void setVerbose(boolean verbosity) {
 		verbose = verbosity;
 	}
-	
+	/**
+	 * Get the player number that this agent controls
+	 * @return
+	 */
+	public int getPlayerNumber() {
+		return playernum;
+	}
 	@Override
 	public int hashCode() {
 		return ID;

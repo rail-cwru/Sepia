@@ -96,8 +96,8 @@ public class CombatAgentDuelTest {
 	
 	@Test
 	public void test() throws IOException, InterruptedException {
-		CombatAgent agent1 = new CombatAgent(player1, new int[]{player2},false);
-		CombatAgent agent2 = new CombatAgent(player2, new int[]{player1},true);
+		CombatAgent agent1 = new CombatAgent(player1, new int[]{player2},false,false);
+		CombatAgent agent2 = new CombatAgent(player2, new int[]{player1},false,true);
 		for (int step = 0; step<30500; step++)
 		{
 			CountDownLatch latch1 = new CountDownLatch(1);

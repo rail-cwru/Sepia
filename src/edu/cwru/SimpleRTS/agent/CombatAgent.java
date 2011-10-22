@@ -10,7 +10,10 @@ import edu.cwru.SimpleRTS.Log.BirthLog;
 import edu.cwru.SimpleRTS.Log.DamageLog;
 import edu.cwru.SimpleRTS.Log.DeathLog;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionType;
+import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
@@ -20,9 +23,10 @@ public class CombatAgent extends Agent{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Map<Integer, Integer> unitOrders;
-	int[] enemies;
-	protected CombatAgent(int playernum, int[] enemies, boolean verbose) {
+	private Map<Integer, Integer> unitOrders;
+	private int[] enemies;
+	private boolean wanderwhenidle;
+	protected CombatAgent(int playernum, int[] enemies, boolean wanderwhenidle, boolean verbose) {
 		super(playernum);
 		//copy the list of enemies
 		this.verbose = verbose;
@@ -30,6 +34,7 @@ public class CombatAgent extends Agent{
 		for (int i = 0; i<enemies.length;i++) {
 			this.enemies[i] = enemies[i];
 		}
+		this.wanderwhenidle = wanderwhenidle;
 	}
 
 	/**
@@ -109,6 +114,11 @@ public class CombatAgent extends Agent{
 			{
 				//Assign the unit an action where it attacks it's target
 				actions.put(order.getKey(),Action.createCompoundAttack(order.getKey(), order.getValue()));
+			}
+			else if (wanderwhenidle) {
+				int dir = (int)(Math.random()*8);
+				Action a = new DirectedAction(order.getKey(), ActionType.PRIMITIVEMOVE, Direction.values()[dir]);
+				actions.put(order.getKey(), a);
 			}
 		}
 		return actions;

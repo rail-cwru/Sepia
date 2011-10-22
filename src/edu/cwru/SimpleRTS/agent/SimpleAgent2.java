@@ -40,25 +40,22 @@ public class SimpleAgent2 extends Agent {
 		ImmutableMap.Builder<Integer,Action> builder = new ImmutableMap.Builder<Integer,Action>();
 		currentState = newState;
 		targetsOfUnits.clear();
-		List<Integer> unitIds = currentState.getUnitIds(ID);
+		List<Integer> unitIds = currentState.getUnitIds(playernum);
 		for(int unitId : unitIds)
 		{
 			UnitView u = currentState.getUnit(unitId);
 			int sightRange = u.getTemplateView().getSightRange();
 			List<Integer> targetsInRange = new ArrayList<Integer>();
-			for(int i = 0; i <= Agent.maxId(); i++)
+			for(int enemy : currentState.getAllUnitIds())
 			{
-				if(i == ID)
+				UnitView v = currentState.getUnit(enemy);
+				if (v.getPlayer() == playernum)
 					continue;
-				for(int enemy : currentState.getUnitIds(i))
+				int distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
+				if(distance <= sightRange)
 				{
-					UnitView v = currentState.getUnit(enemy);
-					int distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
-					if(distance <= sightRange)
-					{
-						targetsInRange.add(enemy);
-					}						
-				}
+					targetsInRange.add(enemy);
+				}						
 			}
 			if(targetsInRange.size() >= 0)
 			{

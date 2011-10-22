@@ -36,37 +36,37 @@ public class SimpleAgent1 extends Agent {
 	public ImmutableMap.Builder<Integer,Action> middleStep(StateView newState) {
 		ImmutableMap.Builder<Integer,Action> builder = new ImmutableMap.Builder<Integer,Action>();
 		currentState = newState;
-		List<Integer> unitIds = currentState.getUnitIds(ID);
+		List<Integer> unitIds = currentState.getUnitIds(playernum);
 		for(int unitId : unitIds)
 		{
 			UnitView u = currentState.getUnit(unitId);
+			System.out.println("Simple Agent 1 Checking unit " + unitId);
 			int sightRange = u.getTemplateView().getSightRange();
 			int target = -1;
-			for(int i = 0; i <= Agent.maxId() && target < 0; i++)
+			for(int enemy : currentState.getAllUnitIds())
 			{
-				if(i == ID)
+				UnitView v = currentState.getUnit(enemy);
+				if (v.getPlayer() == playernum)
 					continue;
-				for(int enemy : currentState.getUnitIds(i))
+				double distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
+				if(distance <= sightRange)
 				{
-					UnitView v = currentState.getUnit(enemy);
-					double distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
-					if(distance <= sightRange)
-					{
-						target = enemy;
-						break;
-					}						
-				}
+					target = enemy;
+					break;
+				}						
 			}
 			if(target >= 0)
 			{
 				Action a = new TargetedAction(unitId, ActionType.COMPOUNDATTACK, target);
 				builder.put(unitId, a);
+				System.out.println("Simple Agent 1 adding action " + a);
 			}
 			else
 			{
 				int dir = (int)(Math.random()*8);
 				Action a = new DirectedAction(unitId, ActionType.PRIMITIVEMOVE, Direction.values()[dir]);
 				builder.put(unitId, a);
+				System.out.println("Simple Agent 1 adding action " + a);
 			}
 		}
 		return builder;

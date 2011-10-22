@@ -82,7 +82,7 @@ public class Environment
 				if (model.getState().getUnit(unitId) == null)
 					continue;
 				//If the unit is not the player's, ignore the action
-				if(model.getState().getUnit(unitId).getPlayer() != i)
+				if(model.getState().getUnit(unitId).getPlayer() != connectedagents[i].getPlayerNumber())
 					continue;
 				
 				actions.add(a);
