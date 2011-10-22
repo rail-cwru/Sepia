@@ -88,12 +88,13 @@ public class CombatAgent extends Agent{
 				}
 			}
 		}
-		for (Integer i : toRemove) {
-			unitOrders.remove(i);
-		}
 		for (Integer i : toUnorder){
 			unitOrders.put(i,null);
 		}
+		for (Integer i : toRemove) {
+			unitOrders.remove(i);
+		}
+		
 		if (verbose)
 		{
 			//Report the damage dealt by and to your units
@@ -140,7 +141,6 @@ public class CombatAgent extends Agent{
 		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
 			if (order.getValue() == null) //if it has no orders  
 			{
-				System.out.println(order);
 				//check all of the other units to check for an enemy that is in sight range
 				UnitView u = state.getUnit(order.getKey());
 				int ux = u.getXPosition();

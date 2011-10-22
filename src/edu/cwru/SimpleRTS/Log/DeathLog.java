@@ -20,4 +20,7 @@ public class DeathLog implements Serializable {
 	public int getPlayer() {
 		return player;
 	}
+	public String toString() {
+		return unitid + " (owned by " + player+") has been tragically slain";
+	}
 }

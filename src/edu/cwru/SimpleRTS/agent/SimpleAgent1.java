@@ -21,7 +21,7 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  */
 public class SimpleAgent1 extends Agent {
 
-	public SimpleAgent1(int playernum,String[] stuff) {
+	public SimpleAgent1(int playernum) {
 		super(playernum);
 		
 	}
