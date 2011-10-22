@@ -59,6 +59,7 @@ public class ResourceGatheringTest {
 		builder.addResource(t);
 		builder.addResource(g);
 		model = new SimpleModel(builder.build(), 5336,null);
+		model.setVerbosity(true);
 		(configuration = Configuration.getInstance()).put(ResourceNode.Type.TREE+"GatherRate", 20+"");
 		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");
 	}

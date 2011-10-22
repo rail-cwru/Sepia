@@ -46,12 +46,17 @@ public class SimpleModel implements Model {
 	private HashMap<Unit, ActionQueue> queuedActions;
 	private SimplePlanner planner;
 	private StateCreator restartTactic;
+	private boolean verbose;
 	public SimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		rand = new Random(seed);
 		planner = new SimplePlanner(init);
 		queuedActions = new HashMap<Unit, ActionQueue>();
 		this.restartTactic = restartTactic;
+		verbose = false;
+	}
+	public void setVerbosity(boolean verbose) {
+		this.verbose = verbose;
 	}
 	
 
@@ -194,7 +199,8 @@ public class SimpleModel implements Model {
 		//Run the Action
 		for(ActionQueue queuedact : queuedActions.values()) 
 		{
-			System.err.println("Doing full action: "+queuedact.getFullAction());
+			if (verbose)
+				System.out.println("Doing full action: "+queuedact.getFullAction());
 			//Pull out the primitive
 			if (queuedact.hasNext()) 
 				// should it be "while" instead of "if" ?? 
@@ -204,7 +210,8 @@ public class SimpleModel implements Model {
 				//if is right, it pops the first each time -Scott
 			{
 				Action a = queuedact.popPrimitive();
-				System.err.println("Doing primative action: "+a);
+				if (verbose)
+					System.out.println("Doing primative action: "+a);
 				//Execute it
 				Unit u = state.getUnit(a.getUnitId());
 				
@@ -401,16 +408,16 @@ public class SimpleModel implements Model {
 									Unit building = template.produceInstance();
 									building.setxPosition(x);
 									building.setyPosition(y);
-									System.out.println("Checking on bug: unit with id "+u.ID);
-									System.out.println(state.getUnit(u.ID));
+//									System.out.println("Checking on bug: unit with id "+u.ID);
+//									System.out.println(state.getUnit(u.ID));
 									if (state.tryProduceUnit(building))
 									{
-									System.out.println(state.getUnit(u.ID));
+//									System.out.println(state.getUnit(u.ID));
 									state.getEventLog().recordBirth(building.ID, u.ID, building.getPlayer());
 									int[] newxy = state.getClosestPosition(x,y);
 									u.setxPosition(newxy[0]);
 									u.setyPosition(newxy[1]);
-									System.out.println(state.getUnit(u.ID));
+//									System.out.println(state.getUnit(u.ID));
 									}
 									u.incrementProduction(null, state.getView());
 								}

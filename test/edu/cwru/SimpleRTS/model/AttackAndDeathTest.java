@@ -74,6 +74,7 @@ public class AttackAndDeathTest {
 		state = builder.build();
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536,null);
+		model.setVerbosity(true);
 	}
 	
 	public void setUp() throws Exception {

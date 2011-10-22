@@ -48,6 +48,7 @@ public class GameUnitTest {
 			builder.addUnit(u);
 		}
 		model = new SimpleModel(builder.build(), 5336,null);
+		model.setVerbosity(true);
 	}
 	/**
 	 * Move unit 1 Southeast

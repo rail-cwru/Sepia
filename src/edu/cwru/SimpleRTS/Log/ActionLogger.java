@@ -41,7 +41,6 @@ public class ActionLogger implements Serializable {
 		if (!actions.containsKey(playernum))
 		{
 			addPlayer(playernum);
-			System.out.println("Lists for player number"+actions.get(playernum));
 		}
 		actions.get(playernum).get(roundnumber).add(action);
 	}

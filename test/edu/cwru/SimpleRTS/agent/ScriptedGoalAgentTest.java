@@ -60,6 +60,7 @@ public class ScriptedGoalAgentTest {
 		state = builder.build();
 		planner = new SimplePlanner(state);
 		model=new SimpleModel(state, 1235,null);
+		model.setVerbosity(true);
 	}
 	
 	public void setUp() throws Exception {
@@ -70,26 +71,26 @@ public class ScriptedGoalAgentTest {
 		//Get the resources right
 		state.depositResources(player, ResourceType.GOLD, 1200);
 		state.depositResources(player, ResourceType.WOOD, 800);
-		String commands="Build:TownHall:0:0\n"+
-				"Transfer:1:Idle:Gold\n" +
-				"Wait:Gold:500\n" +
-				"Transfer:1:Gold:Wood\n" +
-				"Wait:Wood:250\n" +
-				"Transfer:1:Wood:Idle\n" +
-				"Build:Farm:-2:2\n" +
-				"Transfer:1:Idle:Gold\n" +
-				"Produce:Peasant\n" +
-				"Transfer:1:Idle:Wood\n" +
-				"Wait:Gold:400\n" +
-				"Produce:Peasant\n" +
-				"Transfer:1:Idle:Gold\n" +
-				"Produce:Peasant\n" +
-				"Transfer:1:Idle:Gold\n" +
-				"Wait:Wood:400\n" +
-				"Transfer:1:Wood:Idle\n" +
-				"Build:Barracks:2:-2\n" +
-				"Transfer:1:Idle:Gold\n" +
-				"Produce:Footman\n";
+		String commands="Build:TownHall:0:0//use your starting peasant to build a town hall\n"+
+				"Transfer:1:Idle:Gold//make the builder gather gold\n" +
+				"Wait:Gold:500//wait until you have enough gold for a farm\n" +
+				"Transfer:1:Gold:Wood//make him gather wood\n" +
+				"Wait:Wood:250//until you have enough wood too\n" +
+				"Transfer:1:Wood:Idle//then free him up\n" +
+				"Build:Farm:-2:2//make him build a farm\n" +
+				"Transfer:1:Idle:Gold//make him go back to gold\n" +
+				"Produce:Peasant//make a peasant when you can\n" +
+				"Transfer:1:Idle:Wood//and put the new guy on woodcutting\n" +
+				"Produce:Peasant//make another peasant when you can\n" +
+				"Transfer:1:Idle:Gold//and put the new guy on gold\n" +
+				"Produce:Peasant//and make another\n" +
+				"Transfer:1:Idle:Gold//and put that one on gold too\n" +
+				"Wait:Wood:400//when you have enough wood for a barracks\n" +
+				"Transfer:1:Wood:Idle//free up the woodcutter to build\n" +
+				"Build:Barracks:2:-2//build a barracks\n" +
+				"Transfer:1:Idle:Gold//make the builder go to gold\n" +
+				"Produce:Footman//make a footman\n"+
+				"Attack:All";
 		int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
 		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);

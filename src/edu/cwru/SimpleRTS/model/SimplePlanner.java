@@ -41,7 +41,7 @@ public class SimplePlanner implements Serializable {
 	 */
 	public static LinkedList<Direction> getDirections(StateView state, int startingx, int startingy, int endingx, int endingy, int tolerancedistance, boolean cancollideonfinal)
 	{
-		System.out.println("Getting Directions from " + startingx + "," + startingy + " to " + endingx + "," + endingy);
+//		System.out.println("Getting Directions from " + startingx + "," + startingy + " to " + endingx + "," + endingy);
 		PriorityQueue<AStarNode> queue = new PriorityQueue<AStarNode>();
 		HashSet<AStarNode> checked = new HashSet<AStarNode>();
 		boolean collidesatend = !state.inBounds(endingx, endingy) || (state.isUnitAt(endingx, endingy) || state.isResourceAt(endingx, endingy));
@@ -265,7 +265,7 @@ public class SimplePlanner implements Serializable {
 		}
 		else
 		{
-			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
+//			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
 			plan = planMove(actor, getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
 			for (int i = template.timeCost - 1; i>=0; i--)
 			{

@@ -102,7 +102,7 @@ public abstract class Template<T> implements Serializable{
 		for (String s : buildPrereq) {
 			for (UnitTemplate template : untemplates) {
 				if (template.getName().equals(s)) {
-					System.out.println(getName()+" requires building " + s);
+//					System.out.println(getName()+" requires building " + s);
 					prereqs.addPrerequisite(new BuildingPrerequisite(getPlayer(), template.ID));
 					break;
 				}
@@ -111,7 +111,7 @@ public abstract class Template<T> implements Serializable{
 		for (String s : upgradePrereq) {
 			for (UpgradeTemplate template : uptemplates) {
 				if (template.getName().equals(s)) {
-					System.out.println(getName()+" requires upgrade " + s);
+//					System.out.println(getName()+" requires upgrade " + s);
 					prereqs.addPrerequisite(new UpgradePrerequisite(getPlayer(), template.hashCode()));
 					break;
 				}

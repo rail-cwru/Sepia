@@ -111,7 +111,7 @@ public class Main {
 		File firstFile = new File("saves/state0");
 		firstFile.mkdirs();
 		
-		SimpleModel model = new SimpleModel(initState, 6,new LoadingStateCreator(statefilename));
+		SimpleModel model = new SimpleModel(initState, 7,new LoadingStateCreator(statefilename));
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{

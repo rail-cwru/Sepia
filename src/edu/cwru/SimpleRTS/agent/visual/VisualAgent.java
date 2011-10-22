@@ -33,7 +33,7 @@ public class VisualAgent extends Agent {
 	};
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
-			System.out.println(e.getKeyCode());
+//			System.out.println(e.getKeyCode());
 			if(e.getKeyCode() == KeyEvent.VK_ENTER)
 			{
 				stepSignal.drainPermits();

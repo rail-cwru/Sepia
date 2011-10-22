@@ -66,8 +66,9 @@ public abstract class Agent implements Serializable {
 	public final ImmutableMap<Integer,Action> getAction()
 	{
 		ImmutableMap<Integer, Action> actions = chosenActions.build();
-		System.out.println("Agent "+playernum+" is performing actions:");
+		
 		if (verbose) {
+			System.out.println("Agent "+playernum+" is performing actions:");
 			Set<Integer> units = actions.keySet();
 			for (Integer i : units) {
 				System.out.println("\t" + i + " " + actions.get(i));

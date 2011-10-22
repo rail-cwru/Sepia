@@ -14,24 +14,24 @@ public final class TypeLoader {
 	
 	public static List<Template> loadFromFile(String filename, int player) throws FileNotFoundException, JSONException {
 		List<Template> templates = new ArrayList<Template>();
-		System.err.println("Getting upgrade templates");
+//		System.err.println("Getting upgrade templates");
 		List<UpgradeTemplate> uptemplates  = loadUpgradesFromFile(filename, player);
 		for (Template t : uptemplates)
 			templates.add(t);
-		System.err.println("Getting unit templates");
+//		System.err.println("Getting unit templates");
 		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename, player);
 		for (Template t : untemplates)
 			templates.add(t);
-		System.err.println("Putting templates into other templates");
+//		System.err.println("Putting templates into other templates");
 		for (Template t : templates) {
 			
-			System.out.println(t + " " + t);
+//			System.out.println(t + " " + t);
 			t.namesToIds(untemplates, uptemplates);
 		}
 		return templates;
 	}
 	public static List<UpgradeTemplate> loadUpgradesFromFile(String filename, int player) throws FileNotFoundException, JSONException {
-		System.out.println("Loading upgrade");
+//		System.out.println("Loading upgrade");
 		List<UpgradeTemplate> list = new ArrayList<UpgradeTemplate>();
 		StringBuilder sb = new StringBuilder();
 		Scanner in = new Scanner(new File(filename));
@@ -139,7 +139,7 @@ public final class TypeLoader {
 			JSONArray reqs = obj.getJSONArray("BuildPrereq");
 			for(int i = 0; i < reqs.length(); i++) {
 				template.addBuildPrereqItem(reqs.getString(i));
-				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
+//				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
 			}
 				
 			
@@ -149,7 +149,7 @@ public final class TypeLoader {
 			JSONArray reqs = obj.getJSONArray("UpgradePrereq");
 			for(int i = 0; i < reqs.length(); i++)
 			{
-				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
+//				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
 				template.addUpgradePrereqItem(reqs.getString(i));		
 			}
 		}
@@ -187,7 +187,7 @@ public final class TypeLoader {
 			JSONArray reqs = obj.getJSONArray("BuildPrereq");
 			for(int i = 0; i < reqs.length(); i++) {
 				template.addBuildPrereqItem(reqs.getString(i));
-				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
+//				System.out.println(template.getName() + " requires building: " + reqs.getString(i));
 			}
 				
 			
@@ -197,7 +197,7 @@ public final class TypeLoader {
 			JSONArray reqs = obj.getJSONArray("UpgradePrereq");
 			for(int i = 0; i < reqs.length(); i++)
 			{
-				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
+//				System.out.println(template.getName() + " requires upgrade: " + reqs.getString(i));
 				template.addUpgradePrereqItem(reqs.getString(i));		
 			}
 		}

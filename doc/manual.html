@@ -18,6 +18,9 @@
 			<li><a href="#Revisions">Revision History</a></li>
 			<li><a href="#Run">How to Run</a></li>
 			<li><a href="#Config">Configuration</a>
+			<li><a href="#Agent">Writing An Agent</a>
+			<li><a href="#ScripAgent">Using The Scripted Agent</a>
+			<li><a href="#Engine">The Engine</a>
 			<li><a href="#Contact">Contact Info</a></li>
 		</ol>
 		<h2 id="Introduction">1. Introduction</h2>
@@ -131,6 +134,78 @@
 			the initialStep(), middleStep(), and terminalStep() methods. These three
 			methods define the logic for the agent to receive a state update and return
 			a mapping of its units to actions for the next step.
+		</p>
+		<h2 id="Agent">6. Using the Scripted Agent</h2>
+		<p>The scripted agent may be found at <code>edu.cwru.SimpleRTS.agent.ScriptedGoalAgent</code>.
+			It's constructor requires a BufferedReader, which may be connected to a file, the standard in, or a string (via calling <code>java.io.BufferedReader</code>'s constructor with an argument of a <code>java.io.FileReader</code>, <code>java.io.InputStreamReader</code>, or <code>java.io.StringReader</code>, respectively).
+			The input must be in the form of a series of commands separated by new lines.
+			The commands are executed sequentially, with execution waiting on any command 
+			whose preconditions are not met.  If multiple commands can be executed during
+			the same time step, they will be.  Commands may be suffixed by // followed by 
+			a comment, but there should be no spaces before the //.	The command sequence
+			 may be terminated with a line saying containing only "END" (but not including
+			 the quotation marks).  This is not necessary unless the command sequence comes
+			  from standard in.
+			<br> <br>
+			The script may take actions of Transfer, Build, Produce, Wait, and Attack.  These 
+			commands are put in with their arguments separated by colons. <br>
+			Transfer changes the jobs of a selected number of peasants from one selected task to
+			another selected task. The tasks available are Wood, Gold, and Idle<br>
+			As an example, "Transfer:1:Idle:Gold" takes 1 peasant and reassigns it to gold mining.
+			<br>
+			Build uses an idle peasant to build a selected building type in roughly a selected 
+			position.  This position is relative to the average position of units at the start
+			of each episode.  If that position is occupied, it will find the closest unoccupied
+			position and build there.  If no peasant that can build the building is idle and not
+			doing other building, then the command will not be executed until there is one, so it is
+			advised that Transfer be used first to make a peasant idle.<br>
+			As an example, "Build:Farm:-2:2" builds a farm at a position offset from the starting point
+			by -2 in the x direction and +2 in the y direction.<br>
+			<br>
+			Produce uses a building able to produce a selected unit type.  If no building is both capable
+			of producing that unit and is not already producing something, then the command will not be executed
+			until one is available.<br>
+			As an example, "Produce:Peasant" orders that a town hall make a peasant. <br>
+			<br>
+			Wait allows execution to wait a selected resources reaches a selected amount.  While
+			Produce and Build do this automatically, it can be useful to wait until resources accrue
+			before Transferring a peasant from that resource to Idle, so that it can be used to build. <br>
+			As an example, "Wait:Gold:400" waits until you have a total of 400 gold.<br>
+			<br>
+			Attack sends all military units to attack the enemy.  The attack walks toward the enemy town hall 
+			(or lacking a town hall, some other enemy unit) and attacks that gets in range on the way. Attack:All
+			does the same thing with everything, including peasants. 
+			As an example, "Attack" attacks with military units, "Attack:All" does the same with every unit.<br>
+			<br>
+			Note on usage: Many commands have preconditions that are difficult to satisfy, so take
+			care choosing commands in your script and note that the scripted agent is not robust in
+			the face of interference (such as destroying production buildings).<br>
+			<br>
+			Finally, as a full example of a working script:<br>
+			Build:TownHall:0:0//use your starting peasant to build a town hall<br>
+			Transfer:1:Idle:Gold//make the builder gather gold<br>
+			Wait:Gold:500//wait until you have enough gold for a farm<br>
+			Transfer:1:Gold:Wood//make him gather wood<br>
+			Wait:Wood:250//until you have enough wood too<br>
+			Transfer:1:Wood:Idle//then free him up<br>
+			Build:Farm:-2:2//make him build a farm<br>
+			Transfer:1:Idle:Gold//make him go back to gold<br>
+			Produce:Peasant//make a peasant when you can<br>
+			Transfer:1:Idle:Wood//and put the new guy on woodcutting<br>
+			Produce:Peasant//make another peasant when you can<br>
+			Transfer:1:Idle:Gold//and put the new guy on gold<br>
+			Produce:Peasant//and make another<br>
+			Transfer:1:Idle:Gold//and put that one on gold too<br>
+			Wait:Wood:400//when you have enough wood for a barracks<br>
+			Transfer:1:Wood:Idle//free up the woodcutter to build<br>
+			Build:Barracks:2:-2//build a barracks<br>
+			Transfer:1:Idle:Gold//make the builder go to gold<br>
+			Produce:Footman//make a footman<br>
+			Attack:All<br>
+			
+		</p>
+		<h2 id="Engine">The Engine</h2>
+		<p>The following is a simple overview of the engine.
 		</p>
 		<h2 id="Contact">Contact Info</h2>
 		<p>For questions about running simulations, contact Tim Ernsberger at 

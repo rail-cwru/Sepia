@@ -88,6 +88,7 @@ public class CombatAgentDuelTest {
 		state = builder.build();
 		planner = new SimplePlanner(state);
 		model=new SimpleModel(state, 1235,null);
+		model.setVerbosity(true);
 	}
 	
 	public void setUp() throws Exception {
