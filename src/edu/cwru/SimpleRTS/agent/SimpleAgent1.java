@@ -12,6 +12,7 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
+import edu.cwru.SimpleRTS.util.DistanceMetrics;
 /**
  * A simple agent that makes all its units move in random directions if they are not attacking.
  * Will attack any enemy within sight range.
@@ -48,8 +49,7 @@ public class SimpleAgent1 extends Agent {
 				for(int enemy : currentState.getUnitIds(i))
 				{
 					UnitView v = currentState.getUnit(enemy);
-					double distance = Math.sqrt((u.getXPosition()-v.getXPosition())*(u.getXPosition()-v.getXPosition()) + 
-							(u.getYPosition()-v.getYPosition())*(u.getYPosition()-v.getYPosition()));
+					double distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
 					if(distance <= sightRange)
 					{
 						target = enemy;

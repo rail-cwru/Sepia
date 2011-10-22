@@ -20,6 +20,7 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
 public class SimpleAgent2 extends Agent {
 	
 	private StateView currentState;
+	//Maps unit to it's target
 	private Map<Integer,Integer> targetsOfUnits;
 	private Map<Integer,Integer> targetCounts;
 	
@@ -52,7 +53,7 @@ public class SimpleAgent2 extends Agent {
 				for(int enemy : currentState.getUnitIds(i))
 				{
 					UnitView v = currentState.getUnit(enemy);
-					double distance = DistanceMetrics.euclideanDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
+					int distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
 					if(distance <= sightRange)
 					{
 						targetsInRange.add(enemy);
@@ -82,7 +83,7 @@ public class SimpleAgent2 extends Agent {
 				for(int enemy : targetCounts.keySet())
 				{
 					UnitView v = currentState.getUnit(enemy);
-					double distance = DistanceMetrics.euclideanDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
+					double distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
 					if(distance < minDist)
 					{
 						target = enemy;
