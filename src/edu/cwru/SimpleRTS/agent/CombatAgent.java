@@ -1,6 +1,8 @@
 package edu.cwru.SimpleRTS.agent;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
@@ -26,16 +28,18 @@ public class CombatAgent extends Agent{
 	private Map<Integer, Integer> unitOrders;
 	private int[] enemies;
 	private boolean wanderwhenidle;
-	protected CombatAgent(int playernum, int[] enemies, boolean wanderwhenidle, boolean verbose) {
+	public CombatAgent(int playernum, String[] otherargs) {
 		super(playernum);
 		//copy the list of enemies
-		this.verbose = verbose;
-		this.enemies = new int[enemies.length];
+		this.verbose = Boolean.parseBoolean(otherargs[2]);
+		String[] enemystrs = otherargs[0].split(" ");
+		this.enemies = new int[enemystrs.length];
 		for (int i = 0; i<enemies.length;i++) {
-			this.enemies[i] = enemies[i];
+			this.enemies[i] = Integer.parseInt(enemystrs[i]);
 		}
-		this.wanderwhenidle = wanderwhenidle;
+		this.wanderwhenidle = Boolean.parseBoolean(otherargs[1]);
 	}
+
 
 	/**
 	 * Start a new trial.
@@ -69,17 +73,26 @@ public class CombatAgent extends Agent{
 				unitOrders.put(birth.getNewUnitID(), null);
 			}
 		}
+		List<Integer> toRemove = new LinkedList<Integer>();
+		List<Integer> toUnorder = new LinkedList<Integer>();
 		for (DeathLog death : newstate.getEventLog().getDeaths(newstate.getEventLog().getCurrentRound())) {
 			if (playernum == death.getPlayer()) {
-				unitOrders.remove(death.getDeadUnitID());
+				toRemove.add(death.getDeadUnitID());
 			}
 			if (unitOrders.containsValue(death.getDeadUnitID())) {
 				for (Map.Entry<Integer, Integer> order: unitOrders.entrySet()) {
-					if (order.getValue() == death.getDeadUnitID()) {
-						unitOrders.put(order.getKey(),null);
+					if (order.getValue() != null && death.getDeadUnitID() == order.getValue()) {
+						toUnorder.add(order.getKey());
+						
 					}
 				}
 			}
+		}
+		for (Integer i : toRemove) {
+			unitOrders.remove(i);
+		}
+		for (Integer i : toUnorder){
+			unitOrders.put(i,null);
 		}
 		if (verbose)
 		{
@@ -127,6 +140,7 @@ public class CombatAgent extends Agent{
 		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
 			if (order.getValue() == null) //if it has no orders  
 			{
+				System.out.println(order);
 				//check all of the other units to check for an enemy that is in sight range
 				UnitView u = state.getUnit(order.getKey());
 				int ux = u.getXPosition();
@@ -149,6 +163,12 @@ public class CombatAgent extends Agent{
 				}
 			}
 		}
+	}
+
+
+	public static String getUsage() {
+		
+		return "It takes three parameters (--param): a space seperated array of enemy player numbers, a boolean for whether it should wander, and a boolean for verbosity";
 	}
 	
 }

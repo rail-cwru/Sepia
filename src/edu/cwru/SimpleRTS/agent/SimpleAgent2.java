@@ -24,7 +24,7 @@ public class SimpleAgent2 extends Agent {
 	private Map<Integer,Integer> targetsOfUnits;
 	private Map<Integer,Integer> targetCounts;
 	
-	public SimpleAgent2(int playernum) {
+	public SimpleAgent2(int playernum, String[] notused) {
 		super(playernum);
 		targetsOfUnits = new HashMap<Integer,Integer>();
 		targetCounts = new HashMap<Integer,Integer>();
@@ -102,6 +102,9 @@ public class SimpleAgent2 extends Agent {
 
 	@Override
 	public void terminalStep(StateView newstate) {
+	}
+	public static String getUsage() {
+		return "None";
 	}
 
 }

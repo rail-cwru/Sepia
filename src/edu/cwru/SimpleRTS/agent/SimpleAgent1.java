@@ -21,8 +21,9 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  */
 public class SimpleAgent1 extends Agent {
 
-	public SimpleAgent1(int playernum) {
+	public SimpleAgent1(int playernum,String[] stuff) {
 		super(playernum);
+		
 	}
 
 	StateView currentState;
@@ -40,7 +41,6 @@ public class SimpleAgent1 extends Agent {
 		for(int unitId : unitIds)
 		{
 			UnitView u = currentState.getUnit(unitId);
-			System.out.println("Simple Agent 1 Checking unit " + unitId);
 			int sightRange = u.getTemplateView().getSightRange();
 			int target = -1;
 			for(int enemy : currentState.getAllUnitIds())
@@ -59,14 +59,12 @@ public class SimpleAgent1 extends Agent {
 			{
 				Action a = new TargetedAction(unitId, ActionType.COMPOUNDATTACK, target);
 				builder.put(unitId, a);
-				System.out.println("Simple Agent 1 adding action " + a);
 			}
 			else
 			{
 				int dir = (int)(Math.random()*8);
 				Action a = new DirectedAction(unitId, ActionType.PRIMITIVEMOVE, Direction.values()[dir]);
 				builder.put(unitId, a);
-				System.out.println("Simple Agent 1 adding action " + a);
 			}
 		}
 		return builder;
@@ -74,6 +72,10 @@ public class SimpleAgent1 extends Agent {
 
 	@Override
 	public void terminalStep(StateView newstate) {
+	}
+
+	public static String getUsage() {
+		return "None";
 	}
 
 }

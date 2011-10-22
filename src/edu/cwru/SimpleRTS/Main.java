@@ -12,6 +12,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.agent.SimpleAgent1;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
@@ -55,6 +56,7 @@ public class Main {
 				printUsage("Was expecting \"--agent\" as argument " + i + " but got " + args[i] + " instead");
 				return;
 			}
+			String[] extraparams=new String[0];
 			i++;
 			if(i == args.length)
 			{
@@ -81,6 +83,16 @@ public class Main {
 				return;
 			}
 			i++;
+			while (i < args.length - 1 && args[i].equals("--agentparam"))
+			{
+				String[] newextraparams = new String[extraparams.length+1];
+				for (int itr = 0; itr < extraparams.length; itr++) {
+					newextraparams[itr] = extraparams[itr];
+				}
+				newextraparams[newextraparams.length-1]=args[i+1];
+				extraparams = newextraparams;
+				i += 2;
+			}
 			if(i < args.length - 1 && args[i].equals("--loadfrom"))
 			{
 				Agent agent = readAgent(args[i+1]);
@@ -95,11 +107,30 @@ public class Main {
 			else
 			{
 				try {
-					Agent agent = (Agent) agentClass.getConstructor(int.class).newInstance(playerNum);
+					Agent agent = (Agent) agentClass.getConstructor(int.class, String[].class).newInstance(playerNum,extraparams);
 					agents.add(agent);
 				} catch (Exception e) {
-					printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName());
+					try {
+//						e.printStackTrace();
+						Agent agent = (Agent) agentClass.getConstructor(int.class).newInstance(playerNum);
+						agents.add(agent);
+					}
+					catch (Exception e1)
+					{
+					try
+					{
+//						e1.printStackTrace();
+					printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName() + "\n"+"It requires the following additional parameters: " + (String)agentClass.getMethod("getUsage").invoke(null));
+					}
+					catch (Exception e2)
+					{
+						e.printStackTrace();
+						e1.printStackTrace();
+						printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName());
+						return;
+					}
 					return;
+					}
 				}
 			}			
 		}

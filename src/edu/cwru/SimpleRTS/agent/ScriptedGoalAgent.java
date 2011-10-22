@@ -546,4 +546,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 //			}
 		}
 	}
+
+	public static String getUsage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

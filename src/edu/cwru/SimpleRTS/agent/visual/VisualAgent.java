@@ -118,4 +118,7 @@ public class VisualAgent extends Agent {
 		actions.put(action.getUnitId(),action);
 	}
 	
+	public static String getUsage() {
+		return "None";
+	}
 }

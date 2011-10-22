@@ -38,6 +38,13 @@ public abstract class Agent implements Serializable {
 		verbose = false;
 	}
 	/**
+	 * Return the usage of any additional parameters
+	 * @return
+	 */
+	public static String getUsage() {
+		return "Unknown, it was not defined";
+	}
+	/**
 	 * Determines whether to print out the action list each time it is chosen by {@link #getAction()}
 	 * @param verbosity
 	 */
