@@ -162,7 +162,6 @@ public class Main {
 					}
 				}
 			}
-			env.requestNewEpisode();
 		}
 	}
 	private static void printUsage(String error) {

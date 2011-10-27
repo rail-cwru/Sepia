@@ -12,11 +12,9 @@ import javax.swing.SpringLayout.Constraints;
 import com.google.common.collect.ImmutableMap;
 public class Environment
 {
-	public void requestTermination() {
-		
-	}
-	public void requestNewEpisode() {
+	public void forceNewEpisode() {
 		step = 0;
+		model.createNewWorld();
 	}
 	
 	
@@ -44,6 +42,7 @@ public class Environment
 	public final void runEpisode() throws InterruptedException
 	{
 		model.createNewWorld();
+		step = 0;
 		while(!model.isTerminated())
 		{
 			step();
@@ -57,6 +56,11 @@ public class Environment
 	public boolean isTerminated() {
 		return model.isTerminated();
 	}
+	/**
+	 * Step through an episode
+	 * @return Return whether it has terminated.
+	 * @throws InterruptedException
+	 */
 	public boolean step() throws InterruptedException {
 		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
 		for(int i = 0; i<connectedagents.length;i++)
