@@ -741,11 +741,31 @@ public class State implements Serializable{
 		public boolean inBounds(int x, int y) {
 			return state.inBounds(x, y);
 		}
+		/**
+		 * Get the unit at a position
+		 * @param x
+		 * @param y
+		 * @return The unit's ID, or null if there is no unit
+		 */
 		public boolean isUnitAt(int x, int y) {
 			return state.unitAt(x, y) != null;
 		}
+		public Integer unitAt(int x, int y) {
+			Unit unit = state.unitAt(x,y);
+			return unit==null?null:unit.ID;
+		}
 		public boolean isResourceAt(int x, int y) {
 			return state.resourceAt(x, y) != null;
+		}
+		/**
+		 * Get the resource at a position
+		 * @param x
+		 * @param y
+		 * @return The resource's ID, or null if there is no resource
+		 */
+		public Integer resourceAt(int x, int y) {
+			ResourceNode resource = state.resourceAt(x,y);
+			return resource==null?null:resource.ID;
 		}
 		
 	}
