@@ -92,7 +92,7 @@
 		"Range" : 0,
 		"SightRange" : 1,
 		"Character" : "H",
-		"FoodGiven" : 1,
+		"FoodGiven" : 5,
 		"AcceptsGold" : true,
 		"AcceptsWood" : true,
 		"Produces" : ["Peasant"]
