@@ -15,6 +15,7 @@ public class VisualAgentControlWindow extends JFrame {
 	
 	public VisualAgentControlWindow() {
 		setSize(150,100);
+		this.setLocation(800, 50);
 		
 		stepper = new JButton("step");
 		add(stepper);
