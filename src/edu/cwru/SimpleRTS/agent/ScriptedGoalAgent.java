@@ -435,7 +435,6 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			if (state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
 				gathercoordinator.assignIdle(birth.getNewUnitID());
 			}
-			
 			busycoordinator.assignIdle(birth.getNewUnitID());
 		}
 		for (DeathLog death : deaths) {

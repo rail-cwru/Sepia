@@ -13,6 +13,7 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.util.DistanceMetrics;
 /**
  * An implementation of basic planning methods 
  * @author Scott
@@ -52,11 +53,11 @@ public class SimplePlanner implements Serializable {
 //			distance = state.getXExtent()*state.getYExtent();
 		while (queue.size()>0&&bestnode==null)
 		{
+			//Grab a node
 			AStarNode currentnode = queue.poll();
-			
-				
-			int currentdistance = Math.max(Math.abs(currentnode.x-endingx),Math.abs(currentnode.y-endingy));
-			if (tolerancedistance == 0 && (currentdistance == 0) || (!cancollideonfinal && currentdistance == 1 &&collidesatend))
+			int currentdistancetogoal = DistanceMetrics.chebyshevDistance(currentnode.x, currentnode.y, endingx, endingy);
+			//Check if you are done
+			if (tolerancedistance >= currentdistancetogoal || (!cancollideonfinal && currentdistancetogoal == 1 &&collidesatend))
 			{
 				bestnode = currentnode;
 				break;
@@ -66,27 +67,20 @@ public class SimplePlanner implements Serializable {
 				int newx=currentnode.x + d.xComponent();
 				int newy=currentnode.y + d.yComponent();
 				
-				int distfromgoal = Math.max(Math.abs(newx-endingx),Math.abs(newy-endingy));
+				int newdisttogoal = Math.max(Math.abs(newx-endingx),Math.abs(newy-endingy));
 				//valid if the new state is within max distance and is in bounds and either there is no collision or it is at the target 
 				if (state.inBounds(newx, newy) && 
 						(
 								(!state.isUnitAt(newx, newy) && !state.isResourceAt(newx, newy)) || 
-								(cancollideonfinal && distfromgoal==tolerancedistance)
+								(cancollideonfinal && newdisttogoal==0)
 						)
 					)
 				{
-					AStarNode newnode = new AStarNode(newx, newy, currentnode.g+1, currentnode.g+1+distfromgoal, currentnode, d);
+					AStarNode newnode = new AStarNode(newx, newy, currentnode.g+1, currentnode.g+1+newdisttogoal, currentnode, d);
 					if(!checked.contains(newnode))
 					{
 						queue.offer(newnode);
 						checked.add(newnode);
-					}
-					
-					if ((distfromgoal == tolerancedistance))//|| (cancollideonfinal && distance == 0 && distfromgoal == 1 && collidesatend))
-					{
-//						System.out.println("Found it at " + newnode.x + "," + newnode.y);
-						bestnode = newnode;
-						break;
 					}
 				}
 				

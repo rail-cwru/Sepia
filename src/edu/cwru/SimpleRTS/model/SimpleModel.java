@@ -78,7 +78,7 @@ public class SimpleModel implements Model {
 			terminated = resourceGatheringTerminated(prefs);
 		if(terminated && prefs.getBoolean("ManifestDestiny", false))
 			terminated = buildingTerminated(prefs);
-		if(terminated)
+		if(!terminated)
 			terminated = state.getTurnNumber() > prefs.getInt("TimeLimit", Integer.MAX_VALUE);
 		return terminated;
 	}
