@@ -658,6 +658,10 @@ public class State implements Serializable{
 				ids.add(i);
 			return ids;
 		}
+		public int getTurnNumber()
+		{
+			return state.getTurnNumber();
+		}
 		public List<Integer> getUnitIds(int player) {
 			List<Integer> ids = new ArrayList<Integer>();
 			Map<Integer, Unit> units = state.getUnits(player);
