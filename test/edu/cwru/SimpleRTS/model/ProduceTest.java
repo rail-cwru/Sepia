@@ -109,14 +109,14 @@ public class ProduceTest {
 	@Test
 	public void testUpgrade() {
 		UnitTemplate t = (UnitTemplate)state.getTemplate(player, "Footman");
-		int oldattack = t.getBasicAttackLow();
+		int oldattack = t.getBasicAttack();
 		LinkedList<Action> plan = planner.planProduce(upgradeproducer1id, upgradeproducedtemplate);
 		for(Action a : plan)
 		{
 			model.setActions(new Action[]{a});
 			model.executeStep();
 		}
-		int newattack = t.getBasicAttackLow();
+		int newattack = t.getBasicAttack();
 		assertEquals("Did not increase the attack by one",oldattack+1, newattack);
 	}
 	@Test

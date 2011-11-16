@@ -85,10 +85,8 @@ public final class TypeLoader {
 		template.setBaseHealth(obj.getInt("HitPoints"));
 		template.setArmor(obj.getInt("Armor"));
 		template.setCharacter(obj.getString("Character").charAt(0));
-		if(obj.has("BasicAttackLow"))
-			template.setBasicAttackLow(obj.getInt("BasicAttackLow"));
-		if(obj.has("BasicAttackDiff"))
-			template.setBasicAttackDiff(obj.getInt("BasicAttackDiff"));
+		if(obj.has("BasicAttack"))
+			template.setBasicAttack(obj.getInt("BasicAttack"));
 		if(obj.has("Piercing"))
 			template.setPiercingAttack(obj.getInt("Piercing"));
 		if(obj.has("Range"))

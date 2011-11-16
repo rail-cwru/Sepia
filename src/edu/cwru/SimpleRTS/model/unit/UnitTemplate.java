@@ -25,8 +25,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	private static final long serialVersionUID = 1L;
 	protected String unitName;
 	protected int baseHealth;
-	protected int basicAttackLow;
-	protected int basicAttackDiff;
+	protected int basicAttack;
 	protected int piercingAttack;
 	protected int range;
 	protected int armor;
@@ -72,17 +71,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setCharacter(char character) {
 		this.character = character;
 	}
-	public int getBasicAttackLow() {
-		return basicAttackLow;
+	public int getBasicAttack() {
+		return basicAttack;
 	}
-	public int getBasicAttackDiff() {
-		return basicAttackDiff;
-	}
-	public void setBasicAttackLow(int basicAttackLow) {
-		this.basicAttackLow = basicAttackLow;
-	}
-	public void setBasicAttackDiff(int basicAttackDiff) {
-		this.basicAttackDiff = basicAttackDiff;
+	public void setBasicAttack(int basicAttack) {
+		this.basicAttack = basicAttack;
 	}
 	public int getPiercingAttack() {
 		return piercingAttack;
@@ -112,7 +105,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		this.prerequisite = prerequisite;
 	}
 	public boolean canAttack() {
-		return basicAttackLow+basicAttackDiff > 0 || piercingAttack > 0;
+		return basicAttack > 0 || piercingAttack > 0;
 	}
 	public boolean canAcceptGold() {
 		return canAcceptGold;
@@ -207,8 +200,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public boolean canAttack() { return (template).canAttack(); }
 		public String getUnitName() { return (template).getUnitName(); }
 		public int getBaseHealth() { return (template).getBaseHealth();	}
-		public int getBasicAttackLow() { return (template).getBasicAttackLow(); }
-		public int getBasicAttackDiff() { return (template).getBasicAttackDiff(); }
+		public int getBasicAttack() { return (template).getBasicAttack(); }
 		public int getPiercingAttack() { return (template).getPiercingAttack();	}
 		public int getRange() {	return (template).getRange(); }
 		public int getArmor() {	return (template).getArmor(); }

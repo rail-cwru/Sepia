@@ -280,7 +280,7 @@ public class State implements Serializable{
 			{
 				//upgrade all of the affected units
 				for (UnitTemplate toupgrade : upgradetemplate.getAffectedUnits()) {
-					toupgrade.setBasicAttackLow(toupgrade.getBasicAttackLow() + upgradetemplate.getAttackChange());
+					toupgrade.setBasicAttack(toupgrade.getBasicAttack() + upgradetemplate.getAttackChange());
 					toupgrade.setArmor(toupgrade.getArmor() + upgradetemplate.getDefenseChange());
 					
 				}

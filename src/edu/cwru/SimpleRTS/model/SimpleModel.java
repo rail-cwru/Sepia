@@ -522,10 +522,24 @@ public class SimpleModel implements Model {
 
 	private int calculateDamage(Unit attacker, Unit defender)
 	{
-		int basic = attacker.getTemplate().getBasicAttackDiff() != 0 ?rand.nextInt(attacker.getTemplate().getBasicAttackDiff())+attacker.getTemplate().getBasicAttackLow():attacker.getTemplate().getBasicAttackLow();
-		int b = rand.nextBoolean()?basic:(int)Math.ceil(basic/2);
-		int p = rand.nextBoolean()?attacker.getTemplate().getPiercingAttack():(int)Math.ceil(attacker.getTemplate().getPiercingAttack()/2.0);
-		return Math.max(0, b-defender.getTemplate().getArmor())+p;
+		int armor = defender.getTemplate().getArmor();
+		int damage;
+		int basic_damage;
+		int piercing_damage;
+
+		basic_damage = attacker.getTemplate().getBasicAttack();
+		piercing_damage = attacker.getTemplate().getPiercingAttack();
+//		if (bloodlust) {
+//			basic_damage *= 2;
+//			piercing_damage *= 2;
+//		}
+
+		damage = (basic_damage - armor) > 1 ?
+			(basic_damage - armor) : 1;
+		damage += piercing_damage;
+		damage -= rand.nextInt() % ((damage + 2) / 2);
+
+		return damage;
 	}
 	private boolean empty(int x, int y) {
 		return state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
