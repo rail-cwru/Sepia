@@ -16,7 +16,7 @@ public class LocatedAction extends Action
 	}
 	public int getY()
 	{
-		return x;
+		return y;
 	}
 	@Override
 	public String toString() {
