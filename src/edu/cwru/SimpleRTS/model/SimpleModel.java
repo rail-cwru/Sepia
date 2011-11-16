@@ -508,6 +508,7 @@ public class SimpleModel implements Model {
 			state.removeResourceNode(rid);
 		}
 		
+		state.incrementTurn();
 	}
 	/**
 	 * Get the range between two units, which is a chebyshev distance (IE, like manhattan, but with diagonals too)

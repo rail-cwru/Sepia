@@ -447,6 +447,10 @@ public class State implements Serializable{
 		}
 	}
 	
+	public void incrementTurn() {
+		turnNumber++;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
