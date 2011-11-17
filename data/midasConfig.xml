@@ -11,13 +11,13 @@
             <map/>
             <node name="environment">
               <map>
-                <entry key="NumEpisodes" value="10"/>
+                <entry key="NumEpisodes" value="1"/>
               </map>
             </node>
             <node name="model">
             	<map>
-            		<entry key="RequiredGold" value="2000"/>
-            		<entry key="RequiredWood" value="1000" />
+            		<entry key="RequiredGold" value="200"/>
+            		<entry key="RequiredWood" value="200" />
             		<entry key="Midas" value="true" />
             		<entry key="TimeLimit" value="1000" />
             	</map>

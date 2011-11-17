@@ -26,12 +26,12 @@ public class PrerequisiteHolder implements Prerequisite {
 			System.out.println("Checking: " + p);
 			if (!p.isFulfilled(state)) {
 				//Any not being fulfilled is a lack of fulfillment for all
-				System.out.println("Prerequisite Not Fulfilled");
+				//System.out.println("Prerequisite Not Fulfilled");
 				return false;
 			}
-			System.out.println("Prerequisite is fulfilled");
+			//System.out.println("Prerequisite is fulfilled");
 		}
-		System.out.println("All prereqs fulfilled");
+		//System.out.println("All prereqs fulfilled");
 		return true;
 	}
 	/**
