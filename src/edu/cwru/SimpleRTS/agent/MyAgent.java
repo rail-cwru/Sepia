@@ -82,7 +82,7 @@ public class MyAgent extends Agent {
 				}
 				builder.put(peasantId, b);
 			}
-			if(currentGold<goldRequired) {
+			else if(currentGold<goldRequired) {
 				int peasantId = peasantIds.get(0);
 				Unit.UnitView peasant = currentState.getUnit(peasantId);
 				int townhallId = 0;
@@ -122,6 +122,11 @@ public class MyAgent extends Agent {
 
 	@Override
 	public void terminalStep(StateView newstate) {
+		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
+		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
+		System.out.println("Current Gold: " + currentGold);
+		System.out.println("Current Wood: " + currentWood);
+		System.out.println("Congratulations! You finish the task!");
 	}
 	
 	public static String getUsage() {
