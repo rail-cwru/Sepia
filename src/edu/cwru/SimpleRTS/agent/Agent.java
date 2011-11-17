@@ -16,6 +16,10 @@ import edu.cwru.SimpleRTS.environment.State;
 public abstract class Agent implements Serializable {
 	protected boolean verbose; 
 	private static int nextID = 0;
+	/**
+	 * Doesn't really need to be called usually, as you construct agents when you run the main method, and they are not part of the state
+	 * @param minID
+	 */
 	public static void reserveIDsUpTo(int minID)
 	{
 		if (nextID <= minID)

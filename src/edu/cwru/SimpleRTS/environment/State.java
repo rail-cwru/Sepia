@@ -28,12 +28,12 @@ public class State implements Serializable{
 		 for (Unit u : allUnits.values())
 		 {
 			 Target.reserveIDsUpTo(u.ID);
-			 Agent.reserveIDsUpTo(u.getPlayer());
+			 
 		 }
 		 for (Template t : allTemplates.values())
 		 {
 			 Template.reserveIDsUpTo(t.ID);
-			 Agent.reserveIDsUpTo(t.getPlayer());
+			 
 		 }
 		 for (ResourceNode r : resourceNodes)
 		 {
