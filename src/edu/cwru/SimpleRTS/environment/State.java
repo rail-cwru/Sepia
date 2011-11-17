@@ -1,10 +1,13 @@
 package edu.cwru.SimpleRTS.environment;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
 import edu.cwru.SimpleRTS.Log.ActionLogger;
 import edu.cwru.SimpleRTS.Log.EventLogger;
+import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
@@ -19,9 +22,27 @@ public class State implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	 private void readObject(java.io.ObjectInputStream in)
+     throws IOException, ClassNotFoundException {
+		 in.defaultReadObject();
+		 for (Unit u : allUnits.values())
+		 {
+			 Target.reserveIDsUpTo(u.ID);
+			 Agent.reserveIDsUpTo(u.getPlayer());
+		 }
+		 for (Template t : allTemplates.values())
+		 {
+			 Template.reserveIDsUpTo(t.ID);
+			 Agent.reserveIDsUpTo(t.getPlayer());
+		 }
+		 for (ResourceNode r : resourceNodes)
+		 {
+			 Target.reserveIDsUpTo(r.ID);
+		 }
+	 }
 	//TODO: move this constant somewhere
 	private final int MAXSUPPLY = 50;
+	
 	
 	private Map<Integer,Unit> allUnits;
 	private Map<Integer,Map<Integer, Unit>> unitsByAgent;

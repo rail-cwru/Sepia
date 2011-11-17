@@ -43,6 +43,11 @@ public abstract class Template<T> implements Serializable{
 	 */
 	public abstract T produceInstance();
 	private static int nextID=0;
+	public static void reserveIDsUpTo(int minID)
+	{
+		if (nextID <= minID)
+			nextID = minID+1;
+	}
 	public Template()
 	{
 		ID = nextID++;

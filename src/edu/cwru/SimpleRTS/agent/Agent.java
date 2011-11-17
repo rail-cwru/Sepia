@@ -16,6 +16,11 @@ import edu.cwru.SimpleRTS.environment.State;
 public abstract class Agent implements Serializable {
 	protected boolean verbose; 
 	private static int nextID = 0;
+	public static void reserveIDsUpTo(int minID)
+	{
+		if (nextID <= minID)
+			nextID = minID+1;
+	}
 //	private final int[] enemynums;
 	protected final int playernum;
 	/**
