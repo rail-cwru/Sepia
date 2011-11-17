@@ -20,6 +20,11 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
+		
+		String para = "--config data/midasConfig.xml data/midas3.map --agent edu.cwru.SimpleRTS.agent.MyAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 1";
+		args = para.split(" +");
+		
+		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
 		{
 			printUsage("Not enough arguments");
