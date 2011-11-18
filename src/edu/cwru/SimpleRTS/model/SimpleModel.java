@@ -100,10 +100,11 @@ public class SimpleModel implements Model {
 		boolean resourcesGathered = true;
 		int gold = prefs.getInt("RequiredGold", 0);
 		int wood = prefs.getInt("RequiredWood", 0);
-		System.out.println("Agent.maxId() " + Agent.maxId());
+//		System.out.println("Agent.maxId() " + Agent.maxId());
 		for(int i = 0; i <= Agent.maxId() && resourcesGathered; i++)
 		{
-			resourcesGathered = state.getResourceAmount(i, ResourceType.GOLD) >= gold &&
+			if(Agent.getCountsTowardTermination(i))
+				resourcesGathered = state.getResourceAmount(i, ResourceType.GOLD) >= gold &&
 								state.getResourceAmount(i, ResourceType.WOOD) >= wood;
 		}
 		return resourcesGathered;

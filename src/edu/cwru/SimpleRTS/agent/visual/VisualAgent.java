@@ -6,6 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Semaphore;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import com.google.common.collect.ImmutableMap;
@@ -16,6 +17,7 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 
 public class VisualAgent extends Agent {
 
+	
 	/**
 	 * 
 	 */
@@ -43,7 +45,7 @@ public class VisualAgent extends Agent {
 	};
 	
 	public VisualAgent(int playernum) {
-		super(playernum);
+		super(playernum, false);
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
@@ -63,7 +65,7 @@ public class VisualAgent extends Agent {
 	}
 	
 	public VisualAgent(int playernum, final StateView initState) {
-		super(playernum);
+		super(playernum, false);
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
@@ -112,6 +114,7 @@ public class VisualAgent extends Agent {
 	public void terminalStep(StateView newstate) {
 		if(screen != null)
 			screen.updateState(newstate);
+		JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
 	}
 	
 	public void addAction(Action action) {
