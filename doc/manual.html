@@ -210,7 +210,23 @@
 			
 		</p>
 		<h2 id="Engine">The Engine</h2>
-		<p>The following is a simple overview of the engine.
+		<p>The top level of the engine is the <code>edu.cwru.SimpleRTS.environment.Environment</code>.  The Environment interacts with the agents through immutable methods within the abstract class <code>edu.cwru.SimpleRTS.agent.Agent</code>.  Environment provides the Agent with states, then receives actions back. 
+		</p>
+		<p>
+		The Environment verifies the orders and passes them on to the Model.  Model is the center of the interpretation of orders.  As implemented in SimpleModel, it takes in all of the orders.  Any compound actions are processed within SimplePlanner, which calculates pathing and breaks down the compound commands into a series of primitive ones.  The primitive commands making up compound commands are queued, and recalculated upon failure.  Thus, a compound command need not be reissued, although in some cases (long moves across a crowded area that became less crowded during the course of the movement) it may result in slightly better pathing.  There is presently no direct way of definitively determining that an action has been completed successfully or not, but the task of a unit being idle may be an alternative to checking postconditions manually. Actions are then executed, leaving effects in the State.
+		</p>
+		<p>
+		The State and other items accessible from the state collectively store virtually all information about the world and what has happened.
+		Information accessible from the state includes resources amounts, resource nodes, units, and logs of important events.
+		Most information is accessed through IDs, which can also be found in State.
+		The State is accessed by agents through the StateView class, which is a read-only version of the state, giving read-only versions of some of its components as well.
+		</p>
+		<p>
+		Accessed through State, other important classes include:<br>
+		Unit, which stores information about where a unit is, how healthy it is, what it is carrying, et cetera.<br>
+		UnitTemplate, which stores key information about a unit type, like range, attack, armor, whether it can build things, etc.  It can be accessed from a unit of that type (with getTemplate/getTemplateView or from State via it's name and the player)<br>
+		</p>
+		<p> Action is used to convey commands between the agent and the simulation.  There are several subclasses, to prevent mistakes, they should be constructed using the static factory-style methods in Action itself.  Actions are divided into compound and primitive types.  Primitive types are the basic building blocks, like taking a step in one direction, gathering from an adjacent resource, or attacking a guy in range.  Compound actions are more goal based and are resolved by the simulator itself into the primitives needed to fulfill that goal.  As a result, compound actions are more robust, being self correcting to a point.  
 		</p>
 		<h2 id="Contact">Contact Info</h2>
 		<p>For questions about running simulations, contact Tim Ernsberger at 
