@@ -23,6 +23,7 @@ public class Main {
 		
 		//String para = "--config data/midasConfig.xml data/midas5.map --agent edu.cwru.SimpleRTS.agent.MyAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 1";
 		//para = "--config data/midasConfig.xml data/midas5.map --agent edu.cwru.SimpleRTS.agent.MyAgent 0";
+		//String para = "--config data/defaultConfig.xml data/footmen8v8.map --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0 --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam 0 --agentparam true --agentparam true --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 2";
 		//args = para.split(" +");
 		
 		
