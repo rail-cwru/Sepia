@@ -127,7 +127,13 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 		public void paintComponent(Graphics g) {
 			g.setColor(new Color(0x99,0x66,0x33));//medium green
 			g.fillRect(0, 0, getWidth(), getHeight());//background
-			
+			Color oldcolor = g.getColor();
+			g.setColor(new Color(0x66,0x44,0x22));
+			for (int i = 0; i<currentState.getXExtent(); i++)
+				g.drawLine(scaleX(i), 0, scaleX(i), getHeight());
+			for (int j = 0; j<currentState.getYExtent(); j++)
+				g.drawLine(0, scaleY(j), getWidth(), scaleY(j));
+			g.setColor(oldcolor);
 			if(currentState == null)
 				return;
 			
