@@ -1,0 +1,11 @@
+Build:TownHall
+Transfer:1:Idle:Gold
+Build:Peasant
+Transfer:1:Idle:Gold
+Build:Peasant
+Transfer:1:Idle:Gold
+Build:Peasant
+Transfer:1:Idle:Gold
+Wait:Gold:200
+Build:Barracks
+Attack:All
