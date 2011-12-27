@@ -183,6 +183,8 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Build:
 			case Produce:
 				boolean foundaproducer=false;
+				if (agent.verbose)
+					System.out.println("Checking all of my " + relstate.myUnitIDs.size() + " units");
 				for (Integer id : relstate.myUnitIDs) {
 					if (agent.busycoordinator.isIdle(id) && 
 							(type==GoalType.Produce||agent.gathercoordinator.hasIdleWorker(id)) && 
@@ -190,6 +192,10 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 						foundaproducer=true;
 						break;
 					}
+//					System.out.println(state.getUnit(id).getTemplateView().getUnitName());
+//					System.out.println(agent.busycoordinator.isIdle(id)); 
+//					System.out.println((type==GoalType.Produce||agent.gathercoordinator.hasIdleWorker(id))) ;
+//					System.out.println(state.getUnit(id).getTemplateView().canProduce(template.getID()));
 				}
 				if (!foundaproducer)
 				{
@@ -428,11 +434,12 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		if (verbose)
 			System.out.println("ScriptedGoalAgent starting another action");
 		EventLogger.EventLoggerView eventlog = state.getEventLog();
-		int roundnumber = eventlog.getCurrentRound();
+		int roundnumber = eventlog.getLastRound();
 		List<BirthLog> births = eventlog.getBirths(roundnumber);
 		List<DeathLog> deaths = eventlog.getDeaths(roundnumber);
 		for (BirthLog birth : births) {
-			if (state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
+			if (
+				state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
 				gathercoordinator.assignIdle(birth.getNewUnitID());
 			}
 			busycoordinator.assignIdle(birth.getNewUnitID());

@@ -2,12 +2,16 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
 
+import Exception.OutOfDateException;
+
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 
 public class Unit extends Target {
 	
@@ -43,12 +47,24 @@ public class Unit extends Target {
 	public int getxPosition() {
 		return xPosition;
 	}
+	/**
+	 * Set the x position of the unit.
+	 * DO NOT USE THIS TO MOVE UNITS
+	 * @param x
+	 */
 	public void setxPosition(int x) {
 		xPosition = x;
+		
 	}
+	
 	public int getyPosition() {
 		return yPosition;
 	}
+	/**
+	 * Set the y position of the unit.
+	 * DO NOT USE THIS TO MOVE UNITS
+	 * @param y
+	 */
 	public void setyPosition(int y) {
 		yPosition = y;
 	}
@@ -170,37 +186,54 @@ public class Unit extends Target {
 			view = new UnitView(this);
 		return view;
 	}
+	public void deprecateOldView()
+	{
+		//Stop linking to the old one
+		view=null;
+		
+	}
 	public static class UnitView implements Serializable{
-		private Unit unit;
+		private final int currentHealth;
+		private final int cargoAmount;
+		private final ResourceType cargoType;
+		private final int xPosition;
+		private final int yPosition;
+		private final UnitTemplateView templateView;
+		private final UnitTask task;
+		private final int ID;
 		public UnitView(Unit unit) {
-			this.unit = unit;
+			currentHealth = unit.currentHealth;
+			templateView = unit.template.getView();
+			cargoAmount = unit.cargoAmount;
+			cargoType = unit.cargoType;
+			xPosition = unit.xPosition;
+			yPosition = unit.yPosition;
+			task = unit.task;
+			ID = unit.ID;
 		}
-		public int getHP() {
-			return unit.currentHealth;
+		public int getHP()   {
+			return currentHealth;
 		}
-		public int getPlayer() {
-			return unit.template.getPlayer();
+		public int getCargoAmount()   {
+			return cargoAmount;
 		}
-		public int getCargoAmount() {
-			return unit.cargoAmount;
+		public ResourceType getCargoType()   {
+			return cargoType;
 		}
-		public ResourceType getCargoType() {
-			return unit.cargoType;
+		public int getXPosition()   {
+			return xPosition;
 		}
-		public int getXPosition() {
-			return unit.xPosition;
+		public int getYPosition()   {
+			return yPosition;
 		}
-		public int getYPosition() {
-			return unit.yPosition;
+		public UnitTemplateView getTemplateView()   {
+			return templateView;
 		}
-		public UnitTemplateView getTemplateView() {
-			return new UnitTemplateView(unit.template);
-		}
-		public UnitTask getTask() {
-			return unit.task;
+		public UnitTask getTask()   {
+			return task;
 		}
 		public int getID() {
-			return unit.ID;
+			return ID;
 		}
 		
 	}

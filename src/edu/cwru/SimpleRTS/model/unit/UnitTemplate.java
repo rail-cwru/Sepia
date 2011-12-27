@@ -40,6 +40,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected Prerequisite prerequisite;
 	protected int goldGatherRate;
 	protected int woodGatherRate;
+	private UnitTemplateView view;
 	private List<String> produces;
 	private List<Integer> producesID;
 	public UnitTemplate()
@@ -182,35 +183,81 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public String toString() {
 		return name;
 	}
+	@Override
+	public UnitTemplateView getView() {
+		if (view == null)
+			view = new UnitTemplateView(this);
+		return view;
+	}
+	@Override
+	public void deprecateOldView() {
+		view = null;		
+	}
 	/**
 	 * 
 	 */
 	public static class UnitTemplateView extends TemplateView implements Serializable{
 		//BE CAREFUL EDITING THIS CLASS OR IT'S SUPERCLASS, IT HAS A template THAT IS NOT THE SAME AS THE VARIABLE OF THE SAME NAME IN IT'S SUPERCLASS 
+		private final boolean canGather;
+		private final boolean canBuild;
+		private final boolean canMove;
+		private final boolean canAttack;
+		private final String unitName;
+		private final int baseHealth;
+		private final int basicAttack;
+		private final int piercingAttack;
+		private final int range;
+		private final int armor;
+		private final int sightRange;
+		private final List<Integer> producesID;
+		private final char character;
+		private final boolean acceptsGold;
+		private final boolean acceptsWood;
+		private final int foodProvided;
 		
 		private static final long serialVersionUID = 1L;
-		UnitTemplate template;
 		public UnitTemplateView(UnitTemplate template) {
 			super(template);
-			this.template=template;
+			canGather = template.canGather();
+			canBuild = template.canBuild();
+			canMove = template.canMove();
+			canAttack = template.canAttack();
+			unitName = template.getUnitName();
+			baseHealth = template.getBaseHealth();
+			basicAttack = template.getBasicAttack();
+			piercingAttack = template.getPiercingAttack();
+			range = template.getRange();
+			armor = template.getArmor();
+			sightRange = template.getSightRange();
+			producesID = new ArrayList<Integer>(template.producesID.size());
+			for (Integer i : template.producesID)
+				producesID.add(i);
+			character = template.getCharacter();
+			acceptsGold = template.canAcceptGold;
+			acceptsWood = template.canAcceptWood;
+			foodProvided = template.getFoodProvided();
+			
+			
 		}
-		public boolean canGather() { return (template).canGather(); }
-		public boolean canBuild() { return (template).canBuild(); }
-		public boolean canMove() { return (template).canMove(); }
-		public boolean canAttack() { return (template).canAttack(); }
-		public String getUnitName() { return (template).getUnitName(); }
-		public int getBaseHealth() { return (template).getBaseHealth();	}
-		public int getBasicAttack() { return (template).getBasicAttack(); }
-		public int getPiercingAttack() { return (template).getPiercingAttack();	}
-		public int getRange() {	return (template).getRange(); }
-		public int getArmor() {	return (template).getArmor(); }
-		public int getSightRange() { return (template).getSightRange();	}
-		public boolean canProduce(Integer templateID) {/*System.out.println(getUnitName() + "("+template.ID+") produces " + template.producesID);*/ return (template).producesID.contains(templateID);};
-		public char getCharacter() { return (template).getCharacter(); }
-		public boolean canAcceptGold() {return (template).canAcceptGold(); }
-		public boolean canAcceptWood() {return (template).canAcceptWood(); }
-		public int getFoodProvided() {return template.getFoodProvided(); }
+		public boolean canGather() { return canGather; }
+		public boolean canBuild() { return canBuild; }
+		public boolean canMove() { return canMove; }
+		public boolean canAttack() { return canAttack; }
+		public String getUnitName() { return unitName; }
+		public int getBaseHealth() { return baseHealth;	}
+		public int getBasicAttack() { return basicAttack; }
+		public int getPiercingAttack() { return piercingAttack;	}
+		public int getRange() {	return range; }
+		public int getArmor() {	return armor; }
+		public int getSightRange() { return sightRange;	}
+		public boolean canProduce(Integer templateID) {return producesID.contains(templateID);};
+		public char getCharacter() { return character; }
+		public boolean canAcceptGold() {return acceptsGold; }
+		public boolean canAcceptWood() {return acceptsWood; }
+		public int getFoodProvided() {return foodProvided; }
 	}
+
+	
 
 	
 }

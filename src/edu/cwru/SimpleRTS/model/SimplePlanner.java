@@ -8,6 +8,7 @@ import java.util.PriorityQueue;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -111,7 +112,7 @@ public class SimplePlanner implements Serializable {
 		if (!state.inBounds(x, y)) {
 			return planPermanentFail(actor.ID);
 		}
-		LinkedList<Direction> directions = getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(),x,y,0,false);
+		LinkedList<Direction> directions = getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(),x,y,0,false);
 		if (directions == null)
 		{
 			return planFail(actor.ID);
@@ -158,7 +159,7 @@ public class SimplePlanner implements Serializable {
 		if (target == null) {
 			return planPermanentFail(actor.ID);
 		}
-		LinkedList<Direction> directions = getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),actor.getTemplate().getRange(),false);
+		LinkedList<Direction> directions = getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),actor.getTemplate().getRange(),false);
 		if (directions == null)
 			return planFail(actor.ID);
 		LinkedList<Action> plan = planMove(actor,directions);
@@ -188,7 +189,7 @@ public class SimplePlanner implements Serializable {
 		if (target == null) {
 			return planPermanentFail(actor.ID);
 		}
-		LinkedList<Direction> directions = getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
+		LinkedList<Direction> directions = getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
 		if (directions==null || directions.size()<1)
 		{
 			return planFail(actor.ID);
@@ -220,7 +221,7 @@ public class SimplePlanner implements Serializable {
 		{
 			return planPermanentFail(actor.ID);
 		}
-		LinkedList<Direction> directions = getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
+		LinkedList<Direction> directions = getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(),target.getxPosition(),target.getyPosition(),0,true);
 		if (directions==null || directions.size()<1)
 		{
 			return planFail(actor.ID);
@@ -260,7 +261,7 @@ public class SimplePlanner implements Serializable {
 		else
 		{
 //			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
-			plan = planMove(actor, getDirections(state.getView(), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
+			plan = planMove(actor, getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
 			for (int i = template.timeCost - 1; i>=0; i--)
 			{
 				plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));

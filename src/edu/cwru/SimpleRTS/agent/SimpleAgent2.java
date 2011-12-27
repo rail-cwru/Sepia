@@ -49,7 +49,7 @@ public class SimpleAgent2 extends Agent {
 			for(int enemy : currentState.getAllUnitIds())
 			{
 				UnitView v = currentState.getUnit(enemy);
-				if (v.getPlayer() == playernum)
+				if (v.getTemplateView().getPlayer() == playernum)
 					continue;
 				int distance = DistanceMetrics.chebyshevDistance(u.getXPosition(), u.getYPosition(), v.getXPosition(), v.getYPosition());
 				if(distance <= sightRange)

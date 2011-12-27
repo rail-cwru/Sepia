@@ -166,7 +166,7 @@ public class GameScreen extends JFrame implements KeyListener, Serializable{
 				if(x < 0 || y < 0 || x > getWidth() || y > getHeight())
 					continue;
 				DrawingStrategy letter = DrawingStrategy.charGraphic(unit.getTemplateView().getCharacter());
-				g.setColor(playerColors[unit.getPlayer()]);
+				g.setColor(playerColors[unit.getTemplateView().getPlayer()]);
 				letter.draw(g, x, y);
 			}
 			g.setColor(new Color(255,128,127));

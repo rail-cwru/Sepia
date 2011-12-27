@@ -52,4 +52,33 @@ public class UpgradeTemplate extends Template<Upgrade>
 		
 	}
 	
+	public class UpgradeTemplateView extends TemplateView
+	{
+		private final int attackChange;
+		private final int defenseChange;
+		public UpgradeTemplateView(UpgradeTemplate template)
+		{
+			super(template);
+			attackChange = template.attackchange;
+			defenseChange = template.defensechange;
+		}
+		public int getAttackChange() {
+			return attackChange;
+		}
+		public int getDefenseChange() {
+			return defenseChange;
+		}
+	}
+
+	@Override
+	public edu.cwru.SimpleRTS.model.Template.TemplateView getView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void deprecateOldView() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

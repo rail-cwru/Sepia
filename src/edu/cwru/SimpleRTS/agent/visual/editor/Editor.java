@@ -27,6 +27,7 @@ import javax.swing.event.ListDataListener;
 
 import org.json.JSONException;
 
+import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.agent.visual.GameScreen;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
@@ -87,7 +88,7 @@ public class Editor extends JFrame {
 					try {
 						List<Template> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum);
 						for (Template t : newPlayerTemplates) {
-							state.addTemplate(t, newPlayerNum);
+							state.addTemplate(t);
 						}
 					} catch (FileNotFoundException e1) {
 						e1.printStackTrace();
@@ -192,9 +193,7 @@ public class Editor extends JFrame {
 			{
 				String name = (String)templateSelector.getSelectedItem();
 				Unit u = ((UnitTemplate)state.getTemplate(player,name)).produceInstance();
-				u.setxPosition(x);
-				u.setyPosition(y);
-				state.addUnit(u);
+				state.addUnit(u,x,y);
 			}
 			else if(selectTree.isSelected())
 			{
@@ -222,7 +221,7 @@ public class Editor extends JFrame {
 				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount);
 				state.addResource(r);
 			}
-			screen.updateState(state.getView());
+			screen.updateState(state.getView(Agent.OBSERVER_ID));
 		}
 
 	}
@@ -245,7 +244,7 @@ public class Editor extends JFrame {
 			state = builder.build();
 		}
 		GameScreen screen = new GameScreen(null);
-		screen.updateState(state.getView());
+		screen.updateState(state.getView(Agent.OBSERVER_ID));
 		Editor editor = new Editor(screen,state,"data/unit_templates");
 		editor.setVisible(true);
 	}

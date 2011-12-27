@@ -51,25 +51,25 @@ public class CombatAgentDuelTest {
 		templates1 = TypeLoader.loadFromFile("data/unit_templates",player1);		
 		System.out.println("Sucessfully loaded templates");
 		for (Template t : templates1) {
-			builder.addTemplate(t, player1);
+			builder.addTemplate(t);
 		}
 		templates2 = TypeLoader.loadFromFile("data/unit_templates",player2);		
 		System.out.println("Sucessfully loaded templates");
 		for (Template t : templates2) {
-			builder.addTemplate(t, player2);
+			builder.addTemplate(t);
 		}
 		
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance();
 			u.setxPosition(5);
 			u.setyPosition(5);
-			builder.addUnit(u);
+			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance();
 			u.setxPosition(5);
 			u.setyPosition(4);
-			builder.addUnit(u);
+			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		
 		
@@ -77,13 +77,13 @@ public class CombatAgentDuelTest {
 			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance();
 			u.setxPosition(6);
 			u.setyPosition(5);
-			builder.addUnit(u);
+			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance();
 			u.setxPosition(6);
 			u.setyPosition(4);
-			builder.addUnit(u);
+			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
@@ -104,13 +104,13 @@ public class CombatAgentDuelTest {
 			CountDownLatch latch2 = new CountDownLatch(1);
 			if (step == 0)
 			{
-				agent1.acceptInitialState(model.getState(), latch1);
-				agent2.acceptInitialState(model.getState(), latch2);
+				agent1.acceptInitialState(model.getState(player1), latch1);
+				agent2.acceptInitialState(model.getState(player2), latch2);
 			}
 			else
 			{
-				agent1.acceptMiddleState(model.getState(), latch1);
-				agent2.acceptMiddleState(model.getState(), latch2);
+				agent1.acceptMiddleState(model.getState(player1), latch1);
+				agent2.acceptMiddleState(model.getState(player2), latch2);
 			}
 			latch1.await();
 			latch2.await();

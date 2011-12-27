@@ -32,12 +32,14 @@ public class ScriptedGoalAgentTest {
 	static Unit founder;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
+		templates = TypeLoader.loadFromFile("data/unit_templates",player);
 		System.out.println("Sucessfully loaded templates");
+		
 		State.StateBuilder builder = new State.StateBuilder();
+		
 		builder.setSize(15,15);
 		for (Template t : templates) {
-			builder.addTemplate(t, player);
+			builder.addTemplate(t);
 		}
 		
 		
@@ -47,7 +49,7 @@ public class ScriptedGoalAgentTest {
 			u.setxPosition(5);
 			u.setyPosition(5);
 			founder = u;
-			builder.addUnit(u);
+			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
 			ResourceNode rn = new ResourceNode(ResourceNode.Type.GOLD_MINE, 2, 2, 70000);
@@ -102,11 +104,11 @@ public class ScriptedGoalAgentTest {
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
 			{
-				agent.acceptInitialState(model.getState(), latch);
+				agent.acceptInitialState(model.getState(player), latch);
 			}
 			else
 			{
-				agent.acceptMiddleState(model.getState(), latch);
+				agent.acceptMiddleState(model.getState(player), latch);
 			}
 			latch.await();
 			ImmutableCollection<Action> actionsimmut = agent.getAction().values();

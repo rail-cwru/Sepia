@@ -8,10 +8,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import Exception.OutOfDateException;
+
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.*;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -41,37 +44,37 @@ public class GameUnitTest {
 			if(!(t instanceof UnitTemplate))
 				continue;
 			Unit u = ((UnitTemplate)t).produceInstance();
-			u.setxPosition(x);
+			builder.addUnit(u,x,y);
 			x += 5;
-			u.setyPosition(y);
 			y += 5;
-			builder.addUnit(u);
 		}
 		model = new SimpleModel(builder.build(), 5336,null);
 		model.setVerbosity(true);
 	}
 	/**
 	 * Move unit 1 Southeast
+	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test1() {
+	public void test1() throws OutOfDateException {
 		DirectedAction a = new DirectedAction(1, ActionType.PRIMITIVEMOVE, Direction.SOUTHEAST);
 		model.setActions(new Action[]{a});
 		model.executeStep();
-		Unit.UnitView u = model.getState().getUnit(1);
+		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(1);
 		assertEquals("Unit was not in expected row!",6,u.getXPosition());
 		assertEquals("Unit was not in expected column!",6,u.getYPosition());		
 	}
 	/**
 	 * Move unit 2 Northwest unitl it bumps into unit 1
+	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test2() {
+	public void test2() throws OutOfDateException {
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.NORTHWEST);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);
 		model.executeStep();
-		Unit.UnitView u = model.getState().getUnit(2);
+		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",9,u.getXPosition());
 		assertEquals("Unit was not in expected row!",9,u.getYPosition());
 		model.setActions(actions);
@@ -90,10 +93,11 @@ public class GameUnitTest {
 	}
 	/**
 	 * Have unit 2 attack unit 1
+	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test3() {
-		Unit.UnitView u2 = model.getState().getUnit(1);
+	public void test3() throws OutOfDateException {
+		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(1);
 		int hp = u2.getHP();
 		Action a = new TargetedAction(2, ActionType.PRIMITIVEATTACK, 1);
 		Action[] actions = new Action[]{a};
@@ -104,17 +108,18 @@ public class GameUnitTest {
 	}
 	/**
 	 * Have unit 2 move away from unit 1, then try to attack from beyond its maximum range
+	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test4() {
+	public void test4() throws OutOfDateException {
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.SOUTH);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);
 		model.executeStep();
-		Unit.UnitView u = model.getState().getUnit(2);
+		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",8,u.getYPosition());		
-		Unit.UnitView u2 = model.getState().getUnit(2);
+		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		int hp = u2.getHP();
 		a = new TargetedAction(1, ActionType.PRIMITIVEATTACK, 2);
 		actions = new Action[]{a};

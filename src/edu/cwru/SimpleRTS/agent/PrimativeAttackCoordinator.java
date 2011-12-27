@@ -46,7 +46,7 @@ public class PrimativeAttackCoordinator implements Serializable {
 		for (Integer i : allunitsID)
 		{
 			UnitView u = state.getUnit(i);
-			if (u.getPlayer()!=playernum) {
+			if (u.getTemplateView().getPlayer()!=playernum) {
 				allenemies.add(u);
 			}
 		}
@@ -78,7 +78,7 @@ public class PrimativeAttackCoordinator implements Serializable {
 		boolean foundanenemybuilding = false;
 		for (Integer i : state.getAllUnitIds()) {
 			UnitView unit = state.getUnit(i);
-			if (unit.getPlayer() != playernum) {
+			if (unit.getTemplateView().getPlayer() != playernum) {
 				if (!foundanenemy) {
 					foundanenemy = true;
 					primarytargetID = i;

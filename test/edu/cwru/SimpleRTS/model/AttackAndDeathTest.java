@@ -36,40 +36,40 @@ public class AttackAndDeathTest {
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
 		for (@SuppressWarnings("rawtypes") Template t : templates) {
-			builder.addTemplate(t, player);
+			builder.addTemplate(t);
 		}
 		
 		
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
 			test1shooter = u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
 			test1target = u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Archer")).produceInstance();
 			test2shooter = u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
 			test2target = u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
 			test3unit1 = u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
 			test3unit2= u;
-			builder.addUnit(u);
+			builder.addUnit(u,0,0);
 		}
 		state = builder.build();
 		planner = new SimplePlanner(state);
@@ -170,8 +170,8 @@ public class AttackAndDeathTest {
 		unit2.setyPosition(99);
 		assertTrue("Damage was not dealt by unit 1",unit1.getCurrentHealth() <= 1);
 		assertTrue("Damage was not dealt by unit 2",unit2.getCurrentHealth() <= 1);
-		assertTrue("Unit 1 was not cleaned up", model.getState().getUnit(unit1.ID) == null);
-		assertTrue("Unit 2 was not cleaned up", model.getState().getUnit(unit2.ID) == null);
+		assertTrue("Unit 1 was not cleaned up", model.getState(player).getUnit(unit1.ID) == null);
+		assertTrue("Unit 2 was not cleaned up", model.getState(player).getUnit(unit2.ID) == null);
 
 	}
 }

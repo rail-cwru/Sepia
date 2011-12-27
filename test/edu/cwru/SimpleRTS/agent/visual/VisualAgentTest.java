@@ -39,43 +39,35 @@ public class VisualAgentTest {
 			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1);
 			for(Template t : templates)
 			{
-				builder.addTemplate(t, player1);
+				builder.addTemplate(t);
 			}
 		}
 		{
 			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2);
 			for(Template t : templates)
 			{
-				builder.addTemplate(t, player2);
+				builder.addTemplate(t);
 			}
 		}
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player1, "Peasant");
 				Unit u1 = new Unit(ut);
-				u1.setxPosition(1);
-				u1.setyPosition(1);
-				builder.addUnit(u1);
+				builder.addUnit(u1,1,1);
 				Unit u2 = new Unit(ut);
-				u2.setxPosition(7);
-				u2.setyPosition(7);
-				builder.addUnit(u2);
+				builder.addUnit(u2,7,7);
 			}
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Footman");
 				Unit u1 = new Unit(ut);
-				u1.setxPosition(20);
-				u1.setyPosition(4);
-				builder.addUnit(u1);
+				builder.addUnit(u1,20,4);
 			}
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Archer");
 				Unit u1 = new Unit(ut);
-				u1.setxPosition(2);
-				u1.setyPosition(12);
-				builder.addUnit(u1);
+				builder.addUnit(u1,2,12);
 			}
 		
 		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 1, 100));
@@ -96,7 +88,7 @@ public class VisualAgentTest {
 		state = builder.build();
 		model = new SimpleModel(state, 6,null);
 		model.setVerbosity(true);
-		visualAgent = new VisualAgent(player1,state.getView());
+		visualAgent = new VisualAgent(player1,state.getView(player1));
 		simpleAgent = new SimpleAgent1(player2);
 		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model);
 	}

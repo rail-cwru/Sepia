@@ -26,7 +26,6 @@ public abstract class Template<T> implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private TemplateView view;
 	protected int timeCost;
 	protected int goldCost;
 	protected int woodCost;
@@ -133,36 +132,40 @@ public abstract class Template<T> implements Serializable{
 			return false;
 		return ((Template)o).ID == ID;
 	}
-	public TemplateView getView() {
-		if(view == null)
-			view = new TemplateView(this);
-		return view;
-	}
+	public abstract TemplateView getView();
+	public abstract void deprecateOldView();
 	public static class TemplateView implements Serializable{
-		protected Template template;
+		private final int timeCost;
+		private final int goldCost;
+		private final int woodCost;
+		private final int foodCost;
+		private final int ID;
+		private final int player;
 		public TemplateView(Template template){
-			this.template = template;
+			timeCost = template.getTimeCost();
+			goldCost = template.getGoldCost();
+			woodCost = template.getWoodCost();
+			foodCost = template.getFoodCost();
+			ID = template.ID;
+			player = template.getPlayer();
 		}
 		public int getTimeCost() {
-			return template.timeCost;
+			return timeCost;
 		}
 		public int getGoldCost() {
-			return template.goldCost;
+			return goldCost;
 		}
 		public int getWoodCost() {
-			return template.woodCost;
+			return woodCost;
 		}
 		public int getFoodCost() {
-			return template.foodCost;
+			return foodCost;
 		}
 		public int getID() {
-			return template.ID;
+			return ID;
 		}
 		public int getPlayer() {
-			return template.getPlayer();
-		}
-		public boolean canProduce(StateView state) {
-			return template.canProduce(state);
+			return player;
 		}
 	}
 }

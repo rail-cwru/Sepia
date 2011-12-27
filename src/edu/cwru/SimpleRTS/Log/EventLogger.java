@@ -19,7 +19,9 @@ public class EventLogger implements Serializable {
 	private List<List<ResourceExhaustionLog>> exhaustlog;
 	private List<List<ResourcePickupLog>> gatherlog;
 	private List<List<ResourceDropoffLog>> depositlog;
+	private List<RevealedResourceLog> reveallog;
 	
+	//starts at -1, must be incremented to be used
 	private int currentroundnumber = -1;
 
 	private EventLoggerView view = null;
@@ -31,6 +33,7 @@ public class EventLogger implements Serializable {
 		gatherlog = new ArrayList<List<ResourcePickupLog>>();
 		depositlog = new ArrayList<List<ResourceDropoffLog>>();
 		exhaustlog = new ArrayList<List<ResourceExhaustionLog>>();
+		reveallog = new ArrayList<RevealedResourceLog>();
 	}
 	public EventLoggerView getView() {
 		if (view == null)
@@ -103,10 +106,16 @@ public class EventLogger implements Serializable {
 		}
 		depositlog.get(depositlog.size()-1).add(new ResourceDropoffLog(depositerid, controller, amount, type, depositplaceid));
 	}
+	public void recordResourceNodeReveal(int resourcenodex, int resourcenodey, ResourceNode.Type resourcenodetype) {
+		reveallog.add(new RevealedResourceLog(resourcenodex, resourcenodey, resourcenodetype));
+	}
+	public void eraseResourceNodeReveals() {
+		reveallog = new ArrayList<RevealedResourceLog>();
+	}
 	
-	
-	public int getCurrentRound() {
-		return currentroundnumber;
+	public int getLastRound()
+	{
+		return currentroundnumber-1;
 	}
 	public List<DeathLog> getDeaths(int roundnumber) {
 		if (roundnumber < 0 || roundnumber > currentroundnumber)
@@ -149,6 +158,9 @@ public class EventLogger implements Serializable {
 			return new ArrayList<ResourcePickupLog>();
 		else 
 			return Collections.unmodifiableList(gatherlog.get(roundnumber));
+	}
+	public List<RevealedResourceLog> getRevealedResources() {
+		return Collections.unmodifiableList(reveallog);
 	}
 
 	@Override
@@ -220,6 +232,12 @@ public class EventLogger implements Serializable {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * A read-only version of the Event Log, which is used to keep track of all events that the player has seen.
+	 * @author The Condor
+	 *
+	 */
 	public static class EventLoggerView implements Serializable {
 		/**
 		 * 
@@ -229,8 +247,8 @@ public class EventLogger implements Serializable {
 		public EventLoggerView(EventLogger master) {
 			this.master = master;
 		}
-		public int getCurrentRound() {
-			return master.getCurrentRound();
+		public int getLastRound() {
+			return master.getLastRound();
 		}
 		public List<DeathLog> getDeaths(int roundnumber) {
 			return master.getDeaths(roundnumber);
@@ -252,6 +270,9 @@ public class EventLogger implements Serializable {
 		}
 		public List<ResourcePickupLog> getResourcePickups(int roundnumber) {
 			return master.getResourcePickups(roundnumber);
+		}
+		public List<RevealedResourceLog> getRevealedResources() {
+			return master.getRevealedResources();
 		}
 	}
 }

@@ -26,7 +26,7 @@ public class SimplePlannerTest {
 	
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",0);		
+		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
 		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
@@ -37,31 +37,23 @@ public class SimplePlannerTest {
 		{
 			if(!(t instanceof UnitTemplate))
 				continue;
-			builder.addTemplate(t, 0);
+			builder.addTemplate(t);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(0, "Peasant")).produceInstance();
-			u.setxPosition(10);
-			u.setyPosition(10);
-			builder.addUnit(u);
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Peasant")).produceInstance();
+			builder.addUnit(u,10,10);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(0, "Barracks")).produceInstance();
-			u.setxPosition(0);
-			u.setyPosition(0);
-			builder.addUnit(u);
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance();
+			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
-			u.setxPosition(0);
-			u.setyPosition(1);
-			builder.addUnit(u);
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			builder.addUnit(u,0,1);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(0, "Blacksmith")).produceInstance();
-			u.setxPosition(0);
-			u.setyPosition(2);
-			builder.addUnit(u);
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			builder.addUnit(u,0,2);
 		}
 		
 		for(int i = 0; i <= 12; i++)

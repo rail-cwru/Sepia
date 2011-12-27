@@ -17,6 +17,7 @@ import edu.cwru.SimpleRTS.environment.State;
  */
 public abstract class Agent implements Serializable {
 	protected boolean verbose; 
+	public static final int OBSERVER_ID = -999;
 	private static int nextID = 0;
 	/**
 	 * Doesn't really need to be called usually, as you construct agents when you run the main method, and they are not part of the state

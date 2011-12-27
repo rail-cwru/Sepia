@@ -68,14 +68,14 @@ public class CombatAgent extends Agent{
 	public Builder<Integer, Action> middleStep(StateView newstate) {
 		
 		//update its list of units
-		for (BirthLog birth : newstate.getEventLog().getBirths(newstate.getEventLog().getCurrentRound())) {
+		for (BirthLog birth : newstate.getEventLog().getBirths(newstate.getEventLog().getLastRound())) {
 			if (playernum == birth.getPlayer()) {
 				unitOrders.put(birth.getNewUnitID(), null);
 			}
 		}
 		List<Integer> toRemove = new LinkedList<Integer>();
 		List<Integer> toUnorder = new LinkedList<Integer>();
-		for (DeathLog death : newstate.getEventLog().getDeaths(newstate.getEventLog().getCurrentRound())) {
+		for (DeathLog death : newstate.getEventLog().getDeaths(newstate.getEventLog().getLastRound())) {
 			if (playernum == death.getPlayer()) {
 				toRemove.add(death.getDeadUnitID());
 			}
@@ -98,7 +98,7 @@ public class CombatAgent extends Agent{
 		if (verbose)
 		{
 			//Report the damage dealt by and to your units
-			for (DamageLog damagereport : newstate.getEventLog().getDamage(newstate.getEventLog().getCurrentRound())) {
+			for (DamageLog damagereport : newstate.getEventLog().getDamage(newstate.getEventLog().getLastRound())) {
 				if (damagereport.getAttackerController() == playernum) {
 					System.out.println(damagereport.getAttackerID() + " hit " + damagereport.getDefenderID() + " for " +damagereport.getDamage()+ " damage");
 				}

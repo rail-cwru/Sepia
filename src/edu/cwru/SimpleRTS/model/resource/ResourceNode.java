@@ -44,6 +44,12 @@ public class ResourceNode extends Target {
 	public int getAmountRemaining() {
 		return amountRemaining;
 	}
+	
+	/**
+	 * Try to pick some resources out of this node
+	 * @param amount
+	 * @return The amount of resources successfully removed from the node
+	 */
 	public int reduceAmountRemaining(int amount) {
 		int prevAmount = amountRemaining;
 		amountRemaining = Math.max(0, amountRemaining - amount);

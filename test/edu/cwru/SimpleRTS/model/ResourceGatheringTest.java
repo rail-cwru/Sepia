@@ -7,6 +7,8 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import Exception.OutOfDateException;
+
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
@@ -25,13 +27,13 @@ public class ResourceGatheringTest {
 	static SimpleModel model;
 	static List<Template> templates;
 	static Configuration configuration;
-
+	static int player = 0;
 	/**
 	 * Creates an initial state with one of each unit type.
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",0);
+		templates = TypeLoader.loadFromFile("data/unit_templates",player);
 		State.StateBuilder builder = new StateBuilder();
 		builder.setSize(64,64);
 		for(Template t : templates)
@@ -42,16 +44,12 @@ public class ResourceGatheringTest {
 			if(template.getUnitName().equals("TownHall"))
 			{
 				Unit u = template.produceInstance();
-				u.setxPosition(10);
-				u.setyPosition(10);
-				builder.addUnit(u);
+				builder.addUnit(u,10,10);
 			}
 			else if(template.getUnitName().equals("Peasant"))
 			{
 				Unit u = template.produceInstance();
-				u.setxPosition(12);
-				u.setyPosition(12);
-				builder.addUnit(u);
+				builder.addUnit(u,12,12);
 			}
 		}
 		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 11, 8, 100);
@@ -64,7 +62,7 @@ public class ResourceGatheringTest {
 		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");
 	}
 	@Test
-	public void test1() {
+	public void test1() throws OutOfDateException {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.NORTHWEST);
 		model.setActions(new Action[]{a});
 		model.executeStep();
@@ -77,23 +75,23 @@ public class ResourceGatheringTest {
 		a = new DirectedAction(1,ActionType.PRIMITIVEGATHER,Direction.NORTH);
 		model.setActions(new Action[]{a});
 		model.executeStep();
-		UnitView u = model.getState().getUnit(1);
+		UnitView u = model.getState(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.WOOD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",20,u.getCargoAmount());
 	}
 	@Test
-	public void test2() {
+	public void test2() throws OutOfDateException {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.SOUTHWEST);
-		UnitView u = model.getState().getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), ResourceType.WOOD);
+		UnitView u = model.getState(player).getUnit(a.getUnitId());
+		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD);
 		int cargoAmount = u.getCargoAmount();
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						model.getState().getResourceAmount(u.getPlayer(), ResourceType.WOOD));
+						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD));
 	}
 	@Test
-	public void test3() {
+	public void test3() throws OutOfDateException {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.SOUTH);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);
@@ -103,19 +101,19 @@ public class ResourceGatheringTest {
 		a = new DirectedAction(1,ActionType.PRIMITIVEGATHER,Direction.SOUTH);
 		model.setActions(new Action[]{a});
 		model.executeStep();
-		UnitView u = model.getState().getUnit(1);
+		UnitView u = model.getState(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.GOLD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",50,u.getCargoAmount());
 	}
 	@Test
-	public void test4() {
+	public void test4() throws OutOfDateException {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.NORTHWEST);
-		UnitView u = model.getState().getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState().getResourceAmount(u.getPlayer(), ResourceType.GOLD);
+		UnitView u = model.getState(player).getUnit(a.getUnitId());
+		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD);
 		int cargoAmount = u.getCargoAmount();
 		model.setActions(new Action[]{a});
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						model.getState().getResourceAmount(u.getPlayer(), ResourceType.GOLD));
+						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD));
 	}
 }

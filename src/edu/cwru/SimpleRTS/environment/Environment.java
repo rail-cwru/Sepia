@@ -9,6 +9,8 @@ import java.io.*;
 
 import javax.swing.SpringLayout.Constraints;
 
+import Exception.OutOfDateException;
+
 import com.google.common.collect.ImmutableMap;
 public class Environment
 {
@@ -27,18 +29,21 @@ public class Environment
 		this.model = model;
 	}
 	
-	public final Agent[] getAgents() {
-		return connectedagents;
-	}
-	
-	public final Model getModel() {
-		return model;
-	}
-	
-	public final State.StateView getState()
-	{
-		return model.getState();
-	}
+	/*
+	 * I removed these because it seemed like a security hole
+	 */
+//	public final Agent[] getAgents() {
+//		return connectedagents;
+//	}
+//	
+//	public final Model getModel() {
+//		return model;
+//	}
+//	
+//	public final State.StateView getState()
+//	{
+//		return model.getState();
+//	}
 	public final void runEpisode() throws InterruptedException
 	{
 		model.createNewWorld();
@@ -49,7 +54,7 @@ public class Environment
 		}
 		for (int i = 0; i<connectedagents.length;i++)
 		{
-			connectedagents[i].terminalStep(model.getState());
+			connectedagents[i].terminalStep(model.getState(connectedagents[i].getPlayerNumber()));
 		}
 		
 	}
@@ -62,17 +67,17 @@ public class Environment
 	 * @throws InterruptedException
 	 */
 	public boolean step() throws InterruptedException {
-		ArrayList<Action> actions = new ArrayList<Action>(model.getState().getAllUnitIds().size());
+		ArrayList<Action> actions = new ArrayList<Action>(model.getState(Agent.OBSERVER_ID).getAllUnitIds().size());
 		for(int i = 0; i<connectedagents.length;i++)
 		{
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
 			{
-				connectedagents[i].acceptInitialState(model.getState(), latch);
+				connectedagents[i].acceptInitialState(model.getState(connectedagents[i].getPlayerNumber()), latch);
 			}
 			else
 			{
-				connectedagents[i].acceptMiddleState(model.getState(), latch);
+				connectedagents[i].acceptMiddleState(model.getState(connectedagents[i].getPlayerNumber()), latch);
 			}
 			latch.await();
 			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
@@ -83,11 +88,11 @@ public class Environment
 				if (a.getUnitId() != unitId)
 					continue;
 				//If the unit does not exist, ignore the action
-				if (model.getState().getUnit(unitId) == null)
+				if (model.getState(Agent.OBSERVER_ID).getUnit(unitId) == null)
 					continue;
 				//If the unit is not the player's, ignore the action
-				if(model.getState().getUnit(unitId).getPlayer() != connectedagents[i].getPlayerNumber())
-					continue;
+					if(model.getState(Agent.OBSERVER_ID).getUnit(unitId).getTemplateView().getPlayer() != connectedagents[i].getPlayerNumber())
+						continue;
 				
 				actions.add(a);
 			}

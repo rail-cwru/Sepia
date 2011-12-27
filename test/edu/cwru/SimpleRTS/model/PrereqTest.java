@@ -35,7 +35,7 @@ public class PrereqTest {
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
 		for (Template t : templates) {
-			builder.addTemplate(t, player);
+			builder.addTemplate(t);
 		}
 		
 		
@@ -45,10 +45,8 @@ public class PrereqTest {
 		dependingupgradetemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponTwo")).hashCode();
 		{
 		Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
-		u.setxPosition(0);
-		u.setyPosition(0);
 		upgradeproducerid = u.ID;
-		builder.addUnit(u);
+		builder.addUnit(u,0,0);
 		
 		}
 		builder.setResourceAmount(player, ResourceType.GOLD, 1000);

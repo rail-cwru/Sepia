@@ -190,10 +190,10 @@ public class SimpleModel implements Model {
 	}
 	@Override
 	public void executeStep() {
-		state.getActionLog().nextRound();
-		state.getEventLog().nextRound();
+		
 		//Set each agent to have no task
 		for (Unit u : state.getUnits().values()) {
+			u.deprecateOldView();
 			u.setTask(UnitTask.Idle);
 		}
 		
@@ -335,7 +335,7 @@ public class SimpleModel implements Model {
 								else {
 									int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
 									u.pickUpResource(resource.getResourceType(), amountPickedUp);
-									state.getEventLog().recordPickupResource(u.ID, u.getPlayer(), resource.getResourceType(), amountPickedUp, resource.ID, resource.getType());
+									state.recordPickupResource(u, resource, amountPickedUp);
 								}
 								if (failed) {
 									failedtry=true;
@@ -348,7 +348,7 @@ public class SimpleModel implements Model {
 								//only can do a primative if you are in the right position
 									Unit townHall = state.unitAt(xPrime, yPrime);
 									boolean canAccept=false;
-									if (townHall!=null)
+									if (townHall!=null && townHall.getPlayer() == u.getPlayer())
 									{
 										if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
 											canAccept=true;
@@ -363,7 +363,7 @@ public class SimpleModel implements Model {
 									}
 									else {
 										int agent = u.getPlayer();
-										state.getEventLog().recordDropoffResource(u.ID, townHall.ID, agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
+										state.recordDropoffResource(u, townHall);
 										state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 										u.clearCargo();
 										
@@ -378,7 +378,7 @@ public class SimpleModel implements Model {
 									if (u.getTemplate().getRange() >= getRange(u, target))
 									{
 										int damage = calculateDamage(u,target);
-										state.getEventLog().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
+										state.recordDamage(u, target, damage);
 										target.takeDamage(damage);
 									}
 									else
@@ -403,24 +403,21 @@ public class SimpleModel implements Model {
 									}
 								}
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template, state.getView());
+								u.incrementProduction(template, state.getView(-1));
 								if (template.timeCost == u.getAmountProduced())
 								{
 									Unit building = template.produceInstance();
-									building.setxPosition(x);
-									building.setyPosition(y);
 //									System.out.println("Checking on bug: unit with id "+u.ID);
 //									System.out.println(state.getUnit(u.ID));
-									if (state.tryProduceUnit(building))
+									int[] newxy = state.getClosestPosition(x,y);
+									if (state.tryProduceUnit(building,newxy[0],newxy[1]))
 									{
 //									System.out.println(state.getUnit(u.ID));
-									state.getEventLog().recordBirth(building.ID, u.ID, building.getPlayer());
-									int[] newxy = state.getClosestPosition(x,y);
-									u.setxPosition(newxy[0]);
-									u.setyPosition(newxy[1]);
+									state.recordBirth(building, u);
+									
 //									System.out.println(state.getUnit(u.ID));
 									}
-									u.incrementProduction(null, state.getView());
+									u.incrementProduction(null, state.getView(-1));
 								}
 								
 								break;
@@ -430,7 +427,7 @@ public class SimpleModel implements Model {
 								if (!(a instanceof ProductionAction))
 									break;
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template,state.getView());
+								u.incrementProduction(template,state.getView(-1));
 //								System.out.println(template.getName() + " takes "+template.timeCost);
 //								System.out.println("Produced"+u.getAmountProduced());
 								if (template.timeCost == u.getAmountProduced())
@@ -439,21 +436,19 @@ public class SimpleModel implements Model {
 									{
 										Unit produced = ((UnitTemplate)template).produceInstance();
 										int[] newxy = state.getClosestPosition(x,y);
-										produced.setxPosition(newxy[0]);
-										produced.setyPosition(newxy[1]);
-										if (state.tryProduceUnit(produced))
+										if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 										{
-											state.getEventLog().recordBirth(produced.ID, u.ID, produced.getPlayer());
+											state.recordBirth(produced, u);
 										}
 									}
 									else if (template instanceof UpgradeTemplate) {
 										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
 										if (state.tryProduceUpgrade(upgradetemplate.produceInstance()))
 										{
-											state.getEventLog().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
+											state.recordUpgrade(upgradetemplate,u);
 										}
 									}
-									u.incrementProduction(null, state.getView());
+									u.incrementProduction(null, state.getView(-1));
 									
 								}
 								
@@ -484,7 +479,7 @@ public class SimpleModel implements Model {
 		for (Unit u : allunits.values()) {
 			if (u.getCurrentHealth() <= 0)
 			{
-				state.getEventLog().recordDeath(u.ID,u.getPlayer());
+				state.recordDeath(u);
 				dead.add(u.ID);
 			}
 		}
@@ -499,11 +494,11 @@ public class SimpleModel implements Model {
 		for (ResourceNode r : allnodes) {
 			if (r.getAmountRemaining() <= 0)
 			{
-				state.getEventLog().recordExhaustedResourceNode(r.ID, r.getType());
+				state.recordExhaustedResourceNode(r);
 				usedup.add(r.ID);
 			}
 		}
-		//Remove them
+		//Remove the used up resource nodes
 		for (int rid : usedup)
 		{
 			
@@ -547,8 +542,8 @@ public class SimpleModel implements Model {
 		return state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
 	}
 	@Override
-	public State.StateView getState() {
-		return state.getView();
+	public State.StateView getState(int player) {
+		return state.getView(player);
 	}
 	public void save(String filename) {
 		GameMap.storeState(filename, state);

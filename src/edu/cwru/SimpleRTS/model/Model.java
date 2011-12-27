@@ -16,5 +16,5 @@ public interface Model extends Serializable{
 	 * Execute actions and do anything else that needs to be done
 	 */
 	void executeStep();
-	StateView getState();
+	StateView getState(int player);
 }

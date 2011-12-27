@@ -86,9 +86,7 @@ public class MapEditor {
 							
 							Unit u = new Unit((UnitTemplate)template);
 							//u.setPlayer(player);
-							u.setxPosition(x);
-							u.setyPosition(y);
-							s.addUnit(u);
+							s.addUnit(u,x,y);
 						}
 					}
 					else
@@ -143,6 +141,6 @@ public class MapEditor {
 		}
 		if(templates != null)
 			for (Template t : templates)
-				state.addTemplate(t, player);
+				state.addTemplate(t);
 	}
 }

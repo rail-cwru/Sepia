@@ -38,7 +38,7 @@ public class ProduceTest {
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
 		for (Template t : templates) {
-			builder.addTemplate(t, player);
+			builder.addTemplate(t);
 		}
 		
 		
@@ -49,25 +49,19 @@ public class ProduceTest {
 		upgradeproducedtemplate2 = ((UpgradeTemplate)builder.getTemplate(player, "ArmorOne")).hashCode();
 		{
 		Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance();
-		u.setxPosition(0);
-		u.setyPosition(0);
 		unitproducerid = u.ID;
-		builder.addUnit(u);
+		builder.addUnit(u,0,0);
 		
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
-			u.setxPosition(0);
-			u.setyPosition(1);
 			upgradeproducer1id = u.ID;
-			builder.addUnit(u);
+			builder.addUnit(u,0,1);
 		}
 		{
 			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
-			u.setxPosition(0);
-			u.setyPosition(2);
 			upgradeproducer2id = u.ID;
-			builder.addUnit(u);
+			builder.addUnit(u,0,2);
 		}
 
 		builder.setSupplyCap(player, 10);
