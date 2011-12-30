@@ -12,7 +12,8 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 
-public class Unit extends Target {
+public class Unit extends Target implements Cloneable {
+	private static final long serialVersionUID = 1L;
 	
 	private UnitView view;
 	protected int currentHealth;
@@ -30,6 +31,25 @@ public class Unit extends Target {
 		this.currentHealth = template.getBaseHealth();
 		currentProductionAmount = 0;
 		task = UnitTask.Idle;
+	}
+	
+	@Override
+	protected Object clone() {
+		Unit unit = new Unit(template);
+		unit.currentHealth = currentHealth;
+		unit.xPosition = xPosition;
+		unit.yPosition = yPosition;
+		unit.cargoType = cargoType;
+		unit.task = task;
+		unit.cargoAmount = cargoAmount;
+		unit.currentProduction = currentProduction;
+		unit.currentProductionAmount = currentProductionAmount;
+		return unit;
+	}
+	
+	public Unit copyOf() {
+		Unit copy = (Unit)clone();		
+		return copy;
 	}
 
 	public int getPlayer() {
@@ -192,6 +212,8 @@ public class Unit extends Target {
 		
 	}
 	public static class UnitView implements Serializable{
+		private static final long serialVersionUID = 1L;
+		
 		private final int currentHealth;
 		private final int cargoAmount;
 		private final ResourceType cargoType;
