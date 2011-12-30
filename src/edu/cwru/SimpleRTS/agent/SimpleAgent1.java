@@ -20,6 +20,7 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  *
  */
 public class SimpleAgent1 extends Agent {
+	private static final long serialVersionUID = 1L;
 
 	public SimpleAgent1(int playernum) {
 		super(playernum);
