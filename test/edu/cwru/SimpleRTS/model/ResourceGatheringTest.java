@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import Exception.OutOfDateException;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
@@ -62,7 +61,7 @@ public class ResourceGatheringTest {
 		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");
 	}
 	@Test
-	public void test1() throws OutOfDateException {
+	public void test1()  {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.NORTHWEST);
 		model.setActions(new Action[]{a});
 		model.executeStep();
@@ -80,7 +79,7 @@ public class ResourceGatheringTest {
 		assertEquals("Unit did not receive the correct amount of resource!",20,u.getCargoAmount());
 	}
 	@Test
-	public void test2() throws OutOfDateException {
+	public void test2()  {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.SOUTHWEST);
 		UnitView u = model.getState(player).getUnit(a.getUnitId());
 		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD);
@@ -91,7 +90,7 @@ public class ResourceGatheringTest {
 						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD));
 	}
 	@Test
-	public void test3() throws OutOfDateException {
+	public void test3() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.SOUTH);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);
@@ -106,7 +105,7 @@ public class ResourceGatheringTest {
 		assertEquals("Unit did not receive the correct amount of resource!",50,u.getCargoAmount());
 	}
 	@Test
-	public void test4() throws OutOfDateException {
+	public void test4() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.NORTHWEST);
 		UnitView u = model.getState(player).getUnit(a.getUnitId());
 		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD);

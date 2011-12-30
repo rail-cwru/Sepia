@@ -13,7 +13,6 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.Test;
 
-import Exception.OutOfDateException;
 import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.Log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.Log.RevealedResourceLog;

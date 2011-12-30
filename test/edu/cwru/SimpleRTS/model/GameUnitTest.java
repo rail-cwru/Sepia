@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import Exception.OutOfDateException;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
@@ -56,7 +55,7 @@ public class GameUnitTest {
 	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test1() throws OutOfDateException {
+	public void test1() {
 		DirectedAction a = new DirectedAction(1, ActionType.PRIMITIVEMOVE, Direction.SOUTHEAST);
 		model.setActions(new Action[]{a});
 		model.executeStep();
@@ -69,7 +68,7 @@ public class GameUnitTest {
 	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test2() throws OutOfDateException {
+	public void test2(){
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.NORTHWEST);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);
@@ -96,7 +95,7 @@ public class GameUnitTest {
 	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test3() throws OutOfDateException {
+	public void test3() {
 		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(1);
 		int hp = u2.getHP();
 		Action a = new TargetedAction(2, ActionType.PRIMITIVEATTACK, 1);
@@ -111,7 +110,7 @@ public class GameUnitTest {
 	 * @throws OutOfDateException 
 	 */
 	@Test
-	public void test4() throws OutOfDateException {
+	public void test4() {
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.SOUTH);
 		Action[] actions = new Action[]{a};
 		model.setActions(actions);

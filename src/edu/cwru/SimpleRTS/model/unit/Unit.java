@@ -2,7 +2,6 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
 
-import Exception.OutOfDateException;
 
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
