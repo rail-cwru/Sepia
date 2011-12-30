@@ -3,20 +3,34 @@ package edu.cwru.SimpleRTS.model.resource;
 import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.model.Target;
-import edu.cwru.SimpleRTS.model.unit.Unit;
 
-public class ResourceNode extends Target {
+public class ResourceNode extends Target implements Cloneable {
+	private static final long serialVersionUID = 1L;
+	
 	private Type type;
 	private int xPosition;
 	private int yPosition;
+	private int initialAmount;
 	private int amountRemaining;
 	private ResourceView view;
 	public ResourceNode(Type type, int xPosition, int yPosition, int initialAmount) {
 		this.type = type;
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
+		this.initialAmount = initialAmount;
 		this.amountRemaining = initialAmount;
 		view=null;
+	}
+	
+	@Override
+	protected Object clone() {
+		ResourceNode copy = new ResourceNode(type, xPosition, yPosition, initialAmount);
+		copy.amountRemaining = amountRemaining;
+		return copy;
+	}
+	
+	public ResourceNode copyOf() {
+		return (ResourceNode)clone();
 	}
 	
 	public Type getType() {
