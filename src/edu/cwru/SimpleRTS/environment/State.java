@@ -19,7 +19,7 @@ import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Pair;
 
-public class State implements Serializable{
+public class State implements Serializable, Cloneable {
 	/**
 	 * 
 	 */
@@ -92,6 +92,48 @@ public class State implements Serializable{
 		setRevealedResources(false);
 	}
 	
+	@Override
+	protected Object clone() {
+		State state = new State();
+		state.players.addAll(players);
+		for(Integer i : playerCanSee.keySet())
+		{
+			state.playerCanSee.put(i, playerCanSee.get(i).clone());
+		}	
+		for(Unit u : allUnits.values())
+		{//takes care of allUnits and unitsByAgent
+			Unit copy = u.copyOf();
+			state.addUnit(copy, copy.getxPosition(), copy.getyPosition());
+		}
+		state.allTemplates.putAll(allTemplates);
+		for(Integer i : templatesByAgent.keySet())
+		{
+			@SuppressWarnings("rawtypes")
+			Map<Integer,Template> templates = new HashMap<Integer,Template>();
+			templates.putAll(templatesByAgent.get(i));
+			state.templatesByAgent.put(i, templates);
+		}
+		for(Integer i : upgradesByAgent.keySet())
+		{
+			Set<Integer> upgrades = new HashSet<Integer>();
+			upgrades.addAll(upgradesByAgent.get(i));
+			state.upgradesByAgent.put(i, upgradesByAgent.get(i));
+		}
+		for(ResourceNode node : resourceNodes)
+		{
+			state.resourceNodes.add(node.copyOf());
+		}
+		state.currentResources.putAll(currentResources);
+		state.currentSupply.putAll(currentSupply);
+		state.currentSupplyCap.putAll(currentSupplyCap);
+		
+		return state;
+	}
+	
+	public StateView getStaticCopy(int player) {
+		State state = (State)clone();
+		return state.getView(player);
+	}
 	
 	@SuppressWarnings("rawtypes")
 	/**
