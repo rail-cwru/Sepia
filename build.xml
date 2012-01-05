@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="jar" name="SimpleRTS">
+  <!--ANT 1.7 is required-->
+  <property name="simplerts.src" location="src" />
+  <property name="simplerts.dst" location="bin" />
+  <property name="lib.dir" location="lib" />
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar" />
+  </path>
+  <target name="init">
+    <mkdir dir="${simplerts.dst}" />
+    <echo message="Created build directory" />
+  </target>
+  <target name="clean">
+    <delete dir="${simplerts.dst}" />
+    <echo message="Removed build directory" />
+  </target>
+  <target name="compile" depends="init">
+    <echo message="Compiling project..." />
+    <javac srcdir="${simplerts.src}" destdir="${simplerts.dst}"
+           classpathref="classpath" includes="edu/**"
+           includeantruntime="false" />
+    <echo message="Done." />
+  </target>
+  <target name="jar" depends="compile">
+    <echo message="Creating JAR..." />
+    <jar destfile="SimpleRTS.jar" filesetmanifest="mergewithoutmain">
+      <manifest>
+        <attribute name="Main-Class" value="edu.cwru.SimpleRTS.Main"/>
+        <attribute name="Class-Path" value="."/>
+      </manifest>
+      <fileset dir="${simplerts.dst}"/>
+    </jar>
+    <echo message="Done." />
+  </target>
+</project>
