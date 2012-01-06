@@ -22,7 +22,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
     GamePanel gamePanel = new GamePanel();
- 	VisualAgentControlWindow controlWindow;
+    ControlPanel controlPanel = new ControlPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
@@ -46,10 +46,9 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel);
+				screen = new GameScreen(gamePanel, controlPanel);
 				gamePanel.addKeyListener(canvasKeyListener);
-				controlWindow = new VisualAgentControlWindow();
-				controlWindow.addStepperListener(VisualAgent.this);
+				controlPanel.addStepperListener(VisualAgent.this);
 			}					
 		}.setAgent(this);
 		SwingUtilities.invokeLater(runner);
@@ -66,7 +65,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel);
+				screen = new GameScreen(gamePanel, controlPanel);
 				gamePanel.updateState(initState);
 			}					
 		}.setAgent(this);

@@ -9,17 +9,21 @@ public class GameScreen extends JFrame implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-    private GamePanel canvas;
+    public GameScreen(GamePanel canvas) {
+        this(canvas, null);
+    }
 
-	public GameScreen(GamePanel canvas) {
+	public GameScreen(GamePanel canvas, ControlPanel controlPanel) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setSize(800, 600);
 		setTitle("SimpleRTS");
-        addKeyListener(canvas);
 		
-		this.canvas = canvas;
 		add(canvas, BorderLayout.CENTER);
+
+        if(controlPanel != null) {
+            add(controlPanel, BorderLayout.EAST);
+        }
 		
 		setVisible(true);
 	}
