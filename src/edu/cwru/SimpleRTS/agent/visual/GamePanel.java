@@ -2,26 +2,31 @@ package edu.cwru.SimpleRTS.agent.visual;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseListener;
-import java.io.Serializable;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;  
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
+import javax.swing.InputMap;
+import javax.swing.ActionMap;
+import javax.swing.JComponent;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
-public class GamePanel extends JPanel implements KeyListener, Serializable {
+public class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
 	public static final int SCALING_FACTOR = 32;
 	public static final Color[] playerColors = new Color[] {
-        new Color(255,0,0), new Color(0,255,0), new Color(0,0,255),
-		new Color(255,255,0), new Color(255,0,255), new Color(0,255,255),
+        new Color(255,0,0), new Color(0,255,0),
+        new Color(0,0,255), new Color(255,255,0),
+        new Color(255,0,255), new Color(0,255,255),
         new Color(255,255,255), new Color(0,0,0)
     };
 
@@ -31,7 +36,19 @@ public class GamePanel extends JPanel implements KeyListener, Serializable {
 
     public GamePanel() {
         setSize(800, 600);
-        this.addKeyListener(this);
+
+        // Add Key Bindings
+        InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        map.put(KeyStroke.getKeyStroke("UP"), "shiftUp");
+        map.put(KeyStroke.getKeyStroke("DOWN"), "shiftDown");
+        map.put(KeyStroke.getKeyStroke("LEFT"), "shiftLeft");
+        map.put(KeyStroke.getKeyStroke("RIGHT"), "shiftRight");
+
+        ActionMap amap = getActionMap();
+        amap.put("shiftUp", new ShiftAction(ShiftDirection.UP));
+        amap.put("shiftDown", new ShiftAction(ShiftDirection.DOWN));
+        amap.put("shiftLeft", new ShiftAction(ShiftDirection.LEFT));
+        amap.put("shiftRight", new ShiftAction(ShiftDirection.RIGHT));
     }
 
     @Override
@@ -83,36 +100,44 @@ public class GamePanel extends JPanel implements KeyListener, Serializable {
         g.setColor(new Color(255,128,127));
         g.drawString(tlx+","+tly, getWidth()-32, getHeight()-1);
     }
-	
-	@Override
-	public void keyPressed(KeyEvent e) {
-		switch(e.getKeyCode())
-		{
-			case KeyEvent.VK_UP:
+
+    public static enum ShiftDirection {
+        UP, DOWN, LEFT, RIGHT;
+    }
+
+    public class ShiftAction extends AbstractAction {
+
+        ShiftDirection shiftDirection;
+
+        public ShiftAction(ShiftDirection shiftDirection) {
+            this.shiftDirection = shiftDirection;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            // TODO: currentState == null ?
+            switch(shiftDirection) {
+			case UP:
 				if(tly > 0)
 					tly--;
 				break;
-			case KeyEvent.VK_DOWN:
+			case DOWN:
 				if(tly + getHeight()/SCALING_FACTOR < currentState.getYExtent())
 				tly++;
 				break;
-			case KeyEvent.VK_LEFT:
+			case LEFT:
 				if(tlx > 0)
 					tlx--;
 				break;
-			case KeyEvent.VK_RIGHT:
+			case RIGHT:
 				if(tlx + getWidth()/SCALING_FACTOR < currentState.getXExtent())
 					tlx++;	
 				break;
-		}
-        this.repaint();
-	}
+            }
+            GamePanel.this.repaint();
+        }
 
-	@Override
-	public void keyReleased(KeyEvent arg0) {}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {}
+    }
 
 	public int scaleX(int x) {
 		return (x-tlx)*SCALING_FACTOR;
