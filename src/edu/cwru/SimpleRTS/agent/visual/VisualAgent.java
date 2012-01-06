@@ -15,7 +15,7 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 
-public class VisualAgent extends Agent {
+public class VisualAgent extends Agent implements ActionListener {
 
 	
 	/**
@@ -26,13 +26,6 @@ public class VisualAgent extends Agent {
 	GameScreen screen;
 	VisualAgentControlWindow controlWindow;
 	private final Semaphore stepSignal = new Semaphore(0);
-	private final ActionListener stepperListener = new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			stepSignal.drainPermits();
-			stepSignal.release();
-		}
-	};
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
 //			System.out.println(e.getKeyCode());
@@ -58,7 +51,7 @@ public class VisualAgent extends Agent {
 				screen = new GameScreen(agent);
 				screen.addCanvasKeyListener(canvasKeyListener);
 				controlWindow = new VisualAgentControlWindow();
-				controlWindow.addStepperListener(stepperListener);
+				controlWindow.addStepperListener(VisualAgent.this);
 			}					
 		}.setAgent(this);
 		SwingUtilities.invokeLater(runner);
@@ -121,6 +114,12 @@ public class VisualAgent extends Agent {
 		actions.put(action.getUnitId(),action);
 	}
 	
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        stepSignal.drainPermits();
+        stepSignal.release();
+    }
+
 	public static String getUsage() {
 		return "None";
 	}
