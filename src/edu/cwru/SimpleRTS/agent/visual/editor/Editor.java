@@ -29,6 +29,7 @@ import org.json.JSONException;
 
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.agent.visual.GameScreen;
+import edu.cwru.SimpleRTS.agent.visual.GamePanel;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.Template;
@@ -42,6 +43,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class Editor extends JFrame {
 	
 	GameScreen screen;
+    GamePanel gamePanel;
 	State state;
 	JComboBox templateSelector;
 	JComboBox playerSelector;
@@ -55,8 +57,9 @@ public class Editor extends JFrame {
 	JButton save;
 	JTextArea error;
 	
-	public Editor(GameScreen screen, State state, String templatefilename) {
+	public Editor(GameScreen screen, GamePanel gamePanel, State state, String templatefilename) {
 		this.screen = screen;
+        this.gamePanel = gamePanel;
 		this.state = state;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(screen.getLocation().x+screen.getWidth()+1, screen.getLocation().y);
@@ -64,7 +67,7 @@ public class Editor extends JFrame {
 		setTitle("Editor");
 		setLayout(new FlowLayout());
 		
-		screen.addMouseListener(this.new EditorMouseListener());
+		gamePanel.addMouseListener(this.new EditorMouseListener());
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel(new Object[]{});
 		playerSelector = new JComboBox(model);
@@ -180,8 +183,8 @@ public class Editor extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			int x = screen.unscaleX(e.getX());
-			int y = screen.unscaleY(e.getY());
+			int x = gamePanel.unscaleX(e.getX());
+			int y = gamePanel.unscaleY(e.getY());
 			System.out.println(x+","+y);
 			int player = playerSelector.getSelectedIndex();
 			if(!selectPointer.isSelected() && (state.unitAt(x, y) != null || state.resourceAt(x, y) != null))
@@ -221,7 +224,7 @@ public class Editor extends JFrame {
 				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount);
 				state.addResource(r);
 			}
-			screen.updateState(state.getView(Agent.OBSERVER_ID));
+			gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
 		}
 
 	}
@@ -243,9 +246,10 @@ public class Editor extends JFrame {
 			builder.setSize(32, 32);
 			state = builder.build();
 		}
-		GameScreen screen = new GameScreen(null);
-		screen.updateState(state.getView(Agent.OBSERVER_ID));
-		Editor editor = new Editor(screen,state,"data/unit_templates");
+        GamePanel gamePanel = new GamePanel();
+		GameScreen screen = new GameScreen(gamePanel);
+		gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+		Editor editor = new Editor(screen, gamePanel, state, "data/unit_templates");
 		editor.setVisible(true);
 	}
 }

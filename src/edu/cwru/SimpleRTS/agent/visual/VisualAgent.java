@@ -17,14 +17,12 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 
 public class VisualAgent extends Agent implements ActionListener {
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
-	VisualAgentControlWindow controlWindow;
+    GamePanel gamePanel = new GamePanel();
+ 	VisualAgentControlWindow controlWindow;
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
@@ -48,8 +46,8 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(agent);
-				screen.addCanvasKeyListener(canvasKeyListener);
+				screen = new GameScreen(gamePanel);
+				gamePanel.addKeyListener(canvasKeyListener);
 				controlWindow = new VisualAgentControlWindow();
 				controlWindow.addStepperListener(VisualAgent.this);
 			}					
@@ -68,8 +66,8 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(agent);
-				screen.updateState(initState);
+				screen = new GameScreen(gamePanel);
+				gamePanel.updateState(initState);
 			}					
 		}.setAgent(this);
 		SwingUtilities.invokeLater(runner);
@@ -82,8 +80,8 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public ImmutableMap.Builder<Integer, Action> middleStep(StateView newstate) {
-		if(screen != null)
-			screen.updateState(newstate);
+		if(gamePanel != null)
+			gamePanel.updateState(newstate);
 		try {
 			stepSignal.acquire();
 		} catch (InterruptedException e) {
@@ -96,8 +94,8 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public void terminalStep(StateView newstate) {
-		if(screen != null)
-			screen.updateState(newstate);
+		if(gamePanel != null)
+			gamePanel.updateState(newstate);
 		JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
 	}
 	
