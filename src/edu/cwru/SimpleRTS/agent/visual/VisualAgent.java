@@ -77,16 +77,7 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public ImmutableMap.Builder<Integer, Action> initialStep(StateView newstate) {
-		if(screen != null)
-			screen.updateState(newstate);
-		try {
-			stepSignal.acquire();
-		} catch (InterruptedException e) {
-			System.err.println("Unable to wait for step button to be pressed.");
-		}
-		ImmutableMap.Builder<Integer, Action> toReturn = actions;
-		actions = new ImmutableMap.Builder<Integer, Action>();
-		return toReturn;
+        return middleStep(newstate);
 	}
 
 	@Override
