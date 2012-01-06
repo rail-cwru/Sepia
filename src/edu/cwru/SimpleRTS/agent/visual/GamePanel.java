@@ -1,6 +1,7 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;  
@@ -22,6 +23,7 @@ public class GamePanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
+    public static final int WIDTH = 800, HEIGHT = 600;
 	public static final int SCALING_FACTOR = 32;
 	public static final Color[] playerColors = new Color[] {
         new Color(255,0,0), new Color(0,255,0),
@@ -35,7 +37,7 @@ public class GamePanel extends JPanel {
 	private int tly;
 
     public GamePanel() {
-        setSize(800, 600);
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         // Add Key Bindings
         InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);

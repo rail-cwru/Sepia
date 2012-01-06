@@ -47,6 +47,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			@Override
 			public void run() {
 				screen = new GameScreen(gamePanel, controlPanel);
+                screen.pack();
 				gamePanel.addKeyListener(canvasKeyListener);
 				controlPanel.addStepperListener(VisualAgent.this);
 			}					
@@ -66,6 +67,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			@Override
 			public void run() {
 				screen = new GameScreen(gamePanel, controlPanel);
+                screen.pack();
 				gamePanel.updateState(initState);
 			}					
 		}.setAgent(this);

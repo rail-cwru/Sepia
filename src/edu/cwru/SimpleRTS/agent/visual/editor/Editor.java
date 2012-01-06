@@ -24,6 +24,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.ListDataListener;
+import javax.swing.SwingUtilities;
 
 import org.json.JSONException;
 
@@ -246,10 +247,17 @@ public class Editor extends JFrame {
 			builder.setSize(32, 32);
 			state = builder.build();
 		}
-        GamePanel gamePanel = new GamePanel();
-		GameScreen screen = new GameScreen(gamePanel);
-		gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
-		Editor editor = new Editor(screen, gamePanel, state, "data/unit_templates");
-		editor.setVisible(true);
+        final State fstate = state;
+        final GamePanel gamePanel = new GamePanel();
+		final GameScreen screen = new GameScreen(gamePanel);
+        gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+		SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                screen.pack();
+                Editor editor = new Editor(screen, gamePanel, fstate, "data/unit_templates");
+                editor.setVisible(true);
+            }
+        });
 	}
 }
