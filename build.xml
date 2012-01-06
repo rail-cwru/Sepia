@@ -30,6 +30,7 @@
         <attribute name="Class-Path" value="."/>
       </manifest>
       <fileset dir="${simplerts.dst}"/>
+      <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
     </jar>
     <echo message="Done." />
   </target>
