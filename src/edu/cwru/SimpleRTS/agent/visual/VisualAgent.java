@@ -35,8 +35,13 @@ public class VisualAgent extends Agent implements ActionListener {
 		}
 	};
 	
+	protected final boolean humanControllable;
+	protected final boolean infoVis;
+	
 	public VisualAgent(int playernum, String[] otherargs) {
 		super(playernum, Boolean.parseBoolean(otherargs[0]));
+		humanControllable = Boolean.parseBoolean(otherargs[0]);
+		infoVis = Boolean.parseBoolean(otherargs[1]);
 		gamePanel = new GamePanel(this);
 		actions = new HashMap<Integer, Action>();
 		Runnable runner = new Runnable() {
@@ -58,6 +63,8 @@ public class VisualAgent extends Agent implements ActionListener {
 	
 	public VisualAgent(int playernum, final StateView initState) {
 		super(playernum, false);
+		humanControllable = false;
+		infoVis = false;
 		actions = new HashMap<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
@@ -112,6 +119,6 @@ public class VisualAgent extends Agent implements ActionListener {
     }
 
 	public static String getUsage() {
-		return "It takes three parameters (--param): a boolean for whether it can be controlled from GUI";
+		return "It takes three parameters (--param): a boolean for whether it can be controlled by human, a boolean for whether visualize info for units";
 	}
 }

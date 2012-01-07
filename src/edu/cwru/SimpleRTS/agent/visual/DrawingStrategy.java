@@ -16,7 +16,11 @@ public abstract class DrawingStrategy {
 	private static DrawingStrategy mine;
 	private static Map<Character,DrawingStrategy> letters;
 	private static DrawingStrategy selected;
+	private static DrawingStrategy infoBox; 
 	
+	String info = null;
+	
+	public void setInfo(String info) { this.info = info;}
 	
 	public abstract void draw(Graphics g, int tlx, int tly);
 	
@@ -101,6 +105,20 @@ public abstract class DrawingStrategy {
 			};
 		}
 		return selected;
+	}
+	
+	public static DrawingStrategy infoGraphic() {
+		if(infoBox == null) 
+		{
+			infoBox = new DrawingStrategy() {
+				@Override
+				public void draw(Graphics g, int tlx, int tly) {
+					g.setColor(new Color(0x00,0x00,0x00));	
+					g.drawChars(info.toCharArray(), 0, info.length(), tlx, tly);
+				}
+			};
+		}
+		return infoBox;
 	}
 }
 
