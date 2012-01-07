@@ -23,6 +23,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	GameScreen screen;
     GamePanel gamePanel;
     ControlPanel controlPanel = new ControlPanel();
+    InfoPanel infoPanel = new InfoPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
@@ -52,7 +53,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel);
+				screen = new GameScreen(gamePanel, controlPanel, infoPanel);
                 screen.pack();
 				gamePanel.addKeyListener(canvasKeyListener);
 				controlPanel.addStepperListener(VisualAgent.this);
@@ -74,7 +75,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel);
+				screen = new GameScreen(gamePanel, controlPanel, infoPanel);
                 screen.pack();
 				gamePanel.updateState(initState);
 			}					
