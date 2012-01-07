@@ -2,8 +2,14 @@ package edu.cwru.SimpleRTS.environment;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import edu.cwru.SimpleRTS.Log.ActionLogger;
 import edu.cwru.SimpleRTS.Log.EventLogger;
@@ -727,7 +733,6 @@ public class State implements Serializable, Cloneable {
 		return Math.min(amount != null ? amount : 0,MAXSUPPLY);
 	}
 	
-	@SuppressWarnings("rawtypes")
 	/**
 	 * Adds some supply to the current amount.  It tracks the full value, but won't return any more than the maximum cap
 	 * @param player
@@ -1008,6 +1013,10 @@ public class State implements Serializable, Cloneable {
 		private StateView(State state, int player) {
 			this.state = state;
 			this.player = player;
+		}
+		
+		public StateView getStaticCopy() {
+			return state.getStaticCopy(player);
 		}
 		/**
 		 * Get a read-only log of the game's events _that you have seen_
