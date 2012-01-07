@@ -5,9 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
-import com.google.common.collect.ImmutableMap;
-
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
 /**
@@ -96,7 +93,7 @@ public abstract class Agent implements Serializable {
 	
 	
 	//Action selection and such
-	protected ImmutableMap.Builder<Integer,Action> chosenActions;
+	protected Map<Integer,Action> chosenActions;
 	
 	/**
 	 * Request the action that the agent will take at this timestep.
@@ -104,18 +101,17 @@ public abstract class Agent implements Serializable {
 	 * Must not be called until calculation is done.  You will know that it is done by the latch being passed to acceptState()
 	 * @return
 	 */
-	public final ImmutableMap<Integer,Action> getAction()
+	public final Map<Integer,Action> getAction()
 	{
-		ImmutableMap<Integer, Action> actions = chosenActions.build();
 		
 		if (verbose) {
 			System.out.println("Agent "+playernum+" is performing actions:");
-			Set<Integer> units = actions.keySet();
+			Set<Integer> units = chosenActions.keySet();
 			for (Integer i : units) {
-				System.out.println("\t" + i + " " + actions.get(i));
+				System.out.println("\t" + i + " " + chosenActions.get(i));
 			}
 		}
-		return actions;
+		return chosenActions;
 	}
 	/**
 	 * Accept the first state of an episode and begin calculating a response for it
@@ -153,14 +149,14 @@ public abstract class Agent implements Serializable {
 	 * @param newstate The new state of the system
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public abstract ImmutableMap.Builder<Integer,Action> initialStep(State.StateView newstate);
+	public abstract Map<Integer,Action> initialStep(State.StateView newstate);
 
 	/**
 	 * Accept an intermediate state of an episode
 	 * @param newstate The new state of the system
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public abstract ImmutableMap.Builder<Integer,Action> middleStep(State.StateView newstate);
+	public abstract Map<Integer,Action> middleStep(State.StateView newstate);
 	/**
 	 * Receive notification that the episode has terminated.
 	 * @param newstate The final state of the system

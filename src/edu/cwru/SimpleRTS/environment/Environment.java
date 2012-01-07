@@ -1,16 +1,12 @@
 package edu.cwru.SimpleRTS.environment;
-import edu.cwru.SimpleRTS.agent.*;
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.model.*;
-
 import java.util.ArrayList;
-import java.util.concurrent.*;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
-import javax.swing.SpringLayout.Constraints;
-
-
-import com.google.common.collect.ImmutableMap;
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.model.Model;
 public class Environment
 {
 	public void forceNewEpisode() {
@@ -79,7 +75,13 @@ public class Environment
 				connectedagents[i].acceptMiddleState(model.getState(connectedagents[i].getPlayerNumber()), latch);
 			}
 			latch.await();
-			ImmutableMap<Integer,Action> actionMap = connectedagents[i].getAction();
+			Map<Integer,Action> actionMapTemp = connectedagents[i].getAction();
+			Map<Integer,Action> actionMap = new HashMap<Integer,Action>();
+			for(Integer key : actionMapTemp.keySet())
+			{
+				actionMap.put(key,actionMapTemp.get(key));
+			}
+			
 			for(Integer unitId : actionMap.keySet())
 			{
 				Action a = actionMap.get(unitId);

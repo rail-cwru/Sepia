@@ -4,12 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-
-import com.google.common.collect.ImmutableMap;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
@@ -19,7 +19,7 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	transient ImmutableMap.Builder<Integer, Action> actions;
+	transient Map<Integer, Action> actions;
 	GameScreen screen;
     GamePanel gamePanel;
     ControlPanel controlPanel = new ControlPanel();
@@ -38,7 +38,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	public VisualAgent(int playernum, String[] otherargs) {
 		super(playernum, Boolean.parseBoolean(otherargs[0]));
 		gamePanel = new GamePanel(this);
-		actions = new ImmutableMap.Builder<Integer, Action>();
+		actions = new HashMap<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
 			public Runnable setAgent(VisualAgent agent) {
@@ -58,7 +58,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	
 	public VisualAgent(int playernum, final StateView initState) {
 		super(playernum, false);
-		actions = new ImmutableMap.Builder<Integer, Action>();
+		actions = new HashMap<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
 			public Runnable setAgent(VisualAgent agent) {
@@ -76,12 +76,12 @@ public class VisualAgent extends Agent implements ActionListener {
 	}
 
 	@Override
-	public ImmutableMap.Builder<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate) {
         return middleStep(newstate);
 	}
 
 	@Override
-	public ImmutableMap.Builder<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate) {
 		if(gamePanel != null)
 			gamePanel.updateState(newstate);
 		try {
@@ -89,8 +89,8 @@ public class VisualAgent extends Agent implements ActionListener {
 		} catch (InterruptedException e) {
 			System.err.println("Unable to wait for step button to be pressed.");
 		}
-		ImmutableMap.Builder<Integer, Action> toReturn = actions;
-		actions = new ImmutableMap.Builder<Integer, Action>();
+		Map<Integer, Action> toReturn = actions;
+		actions = new HashMap<Integer, Action>();
 		return toReturn;
 	}
 

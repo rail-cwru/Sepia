@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
@@ -18,6 +15,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
 public class SimpleAgent2 extends Agent {
+	private static final long serialVersionUID = 1L;
 	
 	private StateView currentState;
 	//Maps unit to it's target
@@ -31,13 +29,13 @@ public class SimpleAgent2 extends Agent {
 	}
 	
 	@Override
-	public ImmutableMap.Builder<Integer,Action> initialStep(StateView newstate) {		
+	public Map<Integer,Action> initialStep(StateView newstate) {		
 		return middleStep(newstate);
 	}
 
 	@Override
-	public ImmutableMap.Builder<Integer,Action> middleStep(StateView newState) {
-		ImmutableMap.Builder<Integer,Action> builder = new ImmutableMap.Builder<Integer,Action>();
+	public Map<Integer,Action> middleStep(StateView newState) {
+		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		currentState = newState;
 		targetsOfUnits.clear();
 		List<Integer> unitIds = currentState.getUnitIds(playernum);

@@ -5,17 +5,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 
 import edu.cwru.SimpleRTS.Log.BirthLog;
 import edu.cwru.SimpleRTS.Log.DeathLog;
@@ -24,10 +17,8 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
 /**
@@ -394,7 +385,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		Transfer, Attack, Produce, Build, Wait, Faulty; /*Faulty marks a bad argument into the goal*/
 	}
 	@Override
-	public Builder<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate) {
 		//Put all units into the gathering coordinator, that they might 
 		gathercoordinator.initialize(newstate);
 		busycoordinator.initialize(newstate);
@@ -413,24 +404,24 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		return act(newstate);
 		}
 		catch (IOException e) {
-			return new ImmutableMap.Builder<Integer,Action>();
+			return new HashMap<Integer,Action>();
 		}
 	}
 	@Override
-	public Builder<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate) {
 		
 		try {
 			return act(newstate);
 			}
 			catch (IOException e) {
-				return new ImmutableMap.Builder<Integer,Action>();
+				return new HashMap<Integer,Action>();
 			}
 	}
 	@Override
 	public void terminalStep(StateView newstate) {
 		
 	}
-	public Builder<Integer, Action> act(StateView state) throws IOException {
+	public Map<Integer, Action> act(StateView state) throws IOException {
 		if (verbose)
 			System.out.println("ScriptedGoalAgent starting another action");
 		EventLogger.EventLoggerView eventlog = state.getEventLog();
@@ -490,11 +481,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		gathercoordinator.assignActions(state, rsv, actions);
 		attackcoordinator.coordinate(state, actions);
 		
-		ImmutableMap.Builder<Integer, Action> act = new ImmutableMap.Builder<Integer, Action>();
-		for (Entry<Integer, Action> entry: actions.entrySet()) {
-			act.put(entry.getKey(), entry.getValue());
-		}
-		return act;
+		return actions;
 		
 	}
 	

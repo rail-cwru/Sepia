@@ -9,8 +9,6 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableCollection;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.SimpleModel;
@@ -111,7 +109,7 @@ public class ScriptedGoalAgentTest {
 				agent.acceptMiddleState(model.getState(player), latch);
 			}
 			latch.await();
-			ImmutableCollection<Action> actionsimmut = agent.getAction().values();
+			Collection<Action> actionsimmut = agent.getAction().values();
 			Action[] actions = new Action[actionsimmut.size()];
 			{
 				int i = 0;

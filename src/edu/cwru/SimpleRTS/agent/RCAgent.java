@@ -2,11 +2,10 @@ package edu.cwru.SimpleRTS.agent;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.prefs.Preferences;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
@@ -42,17 +41,17 @@ public class RCAgent extends Agent {
 	StateView currentState;
 	
 	@Override
-	public Builder<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate) {
 		step = 0;
 		return middleStep(newstate);
 	}
 
 	@Override
-	public ImmutableMap.Builder<Integer,Action> middleStep(StateView newState) {
+	public Map<Integer,Action> middleStep(StateView newState) {
 		step++;
 		System.out.println("=> Step: " + step);
 		
-		ImmutableMap.Builder<Integer,Action> builder = new ImmutableMap.Builder<Integer,Action>();
+		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		currentState = newState;
 		System.out.println("All units: " + currentState.getAllUnitIds());
 		

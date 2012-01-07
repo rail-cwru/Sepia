@@ -5,9 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-
 import edu.cwru.SimpleRTS.Log.BirthLog;
 import edu.cwru.SimpleRTS.Log.DamageLog;
 import edu.cwru.SimpleRTS.Log.DeathLog;
@@ -49,7 +46,7 @@ public class CombatAgent extends Agent{
 	 * @return
 	 */
 	@Override
-	public Builder<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate) {
 		//Do setup things for a new game
 			//Clear the unit orders
 			unitOrders = new HashMap<Integer, Integer>();
@@ -60,12 +57,12 @@ public class CombatAgent extends Agent{
 				unitOrders.put(uid, null);
 			}
 			doAggro(newstate);
-		Builder<Integer, Action> myAction = getAction(newstate);
+		Map<Integer, Action> myAction = getAction(newstate);
 		return myAction;
 	}
 
 	@Override
-	public Builder<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate) {
 		
 		//update its list of units
 		for (BirthLog birth : newstate.getEventLog().getBirths(newstate.getEventLog().getLastRound())) {
@@ -119,8 +116,8 @@ public class CombatAgent extends Agent{
 	}
 	
 	
-	private Builder<Integer, Action> getAction(StateView currentstate) {
-		Builder<Integer, Action> actions = new ImmutableMap.Builder<Integer, Action>();
+	private Map<Integer, Action> getAction(StateView currentstate) {
+		Map<Integer, Action> actions = new HashMap<Integer, Action>();
 		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
 			if (verbose)
 				System.out.println("Order: " + order.getKey() + " attacking " + (order.getValue()==null?"noone":order.getValue()));

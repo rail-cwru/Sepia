@@ -1,31 +1,21 @@
 package edu.cwru.SimpleRTS.agent;
-import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.google.common.collect.ImmutableCollection;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.SimplePlanner;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
-import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.TypeLoader;
 
 
@@ -114,8 +104,8 @@ public class CombatAgentDuelTest {
 			}
 			latch1.await();
 			latch2.await();
-			ImmutableCollection<Action> actionsimmut1 = agent1.getAction().values();
-			ImmutableCollection<Action> actionsimmut2 = agent2.getAction().values();
+			Collection<Action> actionsimmut1 = agent1.getAction().values();
+			Collection<Action> actionsimmut2 = agent2.getAction().values();
 			Action[] actions = new Action[actionsimmut1.size() + actionsimmut2.size()];
 			{
 				int i = 0;
