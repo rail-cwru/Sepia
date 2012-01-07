@@ -248,7 +248,7 @@ public class Editor extends JFrame {
 			state = builder.build();
 		}
         final State fstate = state;
-        final GamePanel gamePanel = new GamePanel();
+        final GamePanel gamePanel = new GamePanel(null);
 		final GameScreen screen = new GameScreen(gamePanel);
         gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
 		SwingUtilities.invokeLater(new Runnable() {

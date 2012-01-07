@@ -15,6 +15,8 @@ public abstract class DrawingStrategy {
 	private static DrawingStrategy tree;
 	private static DrawingStrategy mine;
 	private static Map<Character,DrawingStrategy> letters;
+	private static DrawingStrategy selected;
+	
 	
 	public abstract void draw(Graphics g, int tlx, int tly);
 	
@@ -84,4 +86,27 @@ public abstract class DrawingStrategy {
 		}
 		return strategy;
 	}
+	
+	public static DrawingStrategy selectedGraphic() {
+		if(selected == null)
+		{
+			selected = new DrawingStrategy() {
+				@Override
+				public void draw(Graphics g, int tlx, int tly) {
+					Color previous = g.getColor();
+					g.setColor(new Color(0xFF,0xFF,0xFF));	
+					g.drawRect(tlx, tly, 32, 32);
+					g.setColor(previous);
+				}
+			};
+		}
+		return selected;
+	}
 }
+
+
+
+
+
+
+

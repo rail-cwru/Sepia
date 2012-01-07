@@ -21,7 +21,7 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	transient ImmutableMap.Builder<Integer, Action> actions;
 	GameScreen screen;
-    GamePanel gamePanel = new GamePanel();
+    GamePanel gamePanel;
     ControlPanel controlPanel = new ControlPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
@@ -35,8 +35,9 @@ public class VisualAgent extends Agent implements ActionListener {
 		}
 	};
 	
-	public VisualAgent(int playernum) {
-		super(playernum, false);
+	public VisualAgent(int playernum, String[] otherargs) {
+		super(playernum, Boolean.parseBoolean(otherargs[0]));
+		gamePanel = new GamePanel(this);
 		actions = new ImmutableMap.Builder<Integer, Action>();
 		Runnable runner = new Runnable() {
 			VisualAgent agent;
@@ -111,6 +112,6 @@ public class VisualAgent extends Agent implements ActionListener {
     }
 
 	public static String getUsage() {
-		return "None";
+		return "It takes three parameters (--param): a boolean for whether it can be controlled from GUI";
 	}
 }

@@ -14,8 +14,13 @@ import javax.swing.InputMap;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionType;
+import edu.cwru.SimpleRTS.action.LocatedAction;
+import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
@@ -36,7 +41,11 @@ public class GamePanel extends JPanel {
 	private int tlx;
 	private int tly;
 
-    public GamePanel() {
+	private VisualAgent agent;
+	private int playernum;
+	private int selectedID;  	// left clicked
+	
+    public GamePanel(VisualAgent agent) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         // Add Key Bindings
@@ -51,6 +60,12 @@ public class GamePanel extends JPanel {
         amap.put("shiftDown", new ShiftAction(ShiftDirection.DOWN));
         amap.put("shiftLeft", new ShiftAction(ShiftDirection.LEFT));
         amap.put("shiftRight", new ShiftAction(ShiftDirection.RIGHT));
+        
+        this.addMouseListener(this.new GamePanelMouseListener());
+        this.agent = agent;
+        if(agent!=null)
+        	this.playernum = agent.getPlayerNumber();
+        selectedID = -1;
     }
 
     @Override
@@ -66,6 +81,17 @@ public class GamePanel extends JPanel {
         g.setColor(oldcolor);
         if(currentState == null)
             return;
+        
+        //draw selected
+        if(selectedID>=0) {
+        	UnitView unit = currentState.getUnit(selectedID);
+        	int x = scaleX(unit.getXPosition());
+            int y = scaleY(unit.getYPosition());
+            if(x >= 0 && y >= 0) {
+            	DrawingStrategy selected = DrawingStrategy.selectedGraphic();
+            	selected.draw(g, x, y);
+            }
+        }
         
         //draw trees
         DrawingStrategy tree = DrawingStrategy.treeGraphic();
@@ -109,7 +135,9 @@ public class GamePanel extends JPanel {
 
     public class ShiftAction extends AbstractAction {
 
-        ShiftDirection shiftDirection;
+		private static final long serialVersionUID = 8622421006574238465L;
+		
+		ShiftDirection shiftDirection;
 
         public ShiftAction(ShiftDirection shiftDirection) {
             this.shiftDirection = shiftDirection;
@@ -157,5 +185,69 @@ public class GamePanel extends JPanel {
 	public void updateState(StateView state) {
 		this.currentState = state;
         this.repaint();
+	}
+	
+	private class GamePanelMouseListener extends MouseAdapter {
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
+			int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
+			System.out.println("Current Gold: " + currentGold);
+			System.out.println("Current Wood: " + currentWood);
+			
+			int x = unscaleX(e.getX());
+			int y = unscaleY(e.getY());
+			StateView state = currentState;
+			System.out.println(x+","+y);
+			if(e.getButton()==MouseEvent.BUTTON1) { // left click
+				System.out.println("Left clicked");
+				selectedID = -1;
+				if(state.unitAt(x, y)!=null) {
+					int leftSelected = state.unitAt(x, y);
+					if(state.getUnit(leftSelected).getTemplateView().getPlayer()==playernum)
+						selectedID = leftSelected;
+					return ;
+				}
+			} else if(e.getButton()==MouseEvent.BUTTON3) { // right click
+				System.out.println("Right clicked");
+				if(selectedID>=0) {
+					UnitView myUnit = state.getUnit(selectedID);
+					if(myUnit==null) { // the selected unit is dead or you can't see it
+						selectedID = -1;
+						return ;
+					}
+					if(state.unitAt(x, y)!=null) { 
+						int rightSelected = state.unitAt(x, y);
+						UnitView targetUnit = state.getUnit(rightSelected);
+						if(myUnit.getTemplateView().canAttack() && targetUnit.getTemplateView().getPlayer()!=playernum) { 
+							// attack the target
+							Action action = new TargetedAction(selectedID, ActionType.COMPOUNDATTACK, rightSelected);
+							System.out.println("=> Action: " + action);
+							agent.addAction(action);
+						} else if(myUnit.getCargoAmount()>0 && 
+								((targetUnit.getTemplateView().canAcceptGold() && myUnit.getCargoType()==ResourceType.GOLD) ||
+										(targetUnit.getTemplateView().canAcceptWood() && myUnit.getCargoType()==ResourceType.WOOD))) {
+							// target is townhall, and the peasant holds the gold or wood
+							Action action = new TargetedAction(selectedID, ActionType.COMPOUNDDEPOSIT, rightSelected);
+							System.out.println("=> Action: " + action);
+							agent.addAction(action);
+						}
+					} else if(state.resourceAt(x, y)!=null) { // gather resource if doable
+						int rightSelected = state.resourceAt(x, y);
+						if(myUnit.getTemplateView().canGather()) {
+							Action action = new TargetedAction(selectedID, ActionType.COMPOUNDGATHER, rightSelected);
+							System.out.println("=> Action: " + action);
+							agent.addAction(action);
+						}
+					} else { // move
+						Action action = new LocatedAction(selectedID, ActionType.COMPOUNDMOVE, x, y);
+						System.out.println("=> Action: " + action);
+						agent.addAction(action);
+					}
+				}
+			}
+		}
+
 	}
 }

@@ -47,7 +47,7 @@ public class Environment
 	{
 		model.createNewWorld();
 		step = 0;
-		while(!model.isTerminated())
+		while(!isTerminated())
 		{
 			step();
 		}
