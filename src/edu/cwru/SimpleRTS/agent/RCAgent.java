@@ -15,7 +15,6 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
-import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
 /**
@@ -24,14 +23,16 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
  * @author Feng
  *
  */
-public class MyAgent extends Agent {
+public class RCAgent extends Agent {
 
 	private static final long serialVersionUID = -4047208702628325380L;
 
 	private int goldRequired;
 	private int woodRequired;
 	
-	public MyAgent(int playernum) {
+	private int step;
+	
+	public RCAgent(int playernum) {
 		super(playernum);
 		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
 		goldRequired = prefs.getInt("RequiredGold", 0);
@@ -42,11 +43,15 @@ public class MyAgent extends Agent {
 	
 	@Override
 	public Builder<Integer, Action> initialStep(StateView newstate) {
+		step = 0;
 		return middleStep(newstate);
 	}
 
 	@Override
 	public ImmutableMap.Builder<Integer,Action> middleStep(StateView newState) {
+		step++;
+		System.out.println("=> Step: " + step);
+		
 		ImmutableMap.Builder<Integer,Action> builder = new ImmutableMap.Builder<Integer,Action>();
 		currentState = newState;
 		System.out.println("All units: " + currentState.getAllUnitIds());
@@ -71,8 +76,7 @@ public class MyAgent extends Agent {
 		if(peasantIds.size()>=2) {  // collect resources
 			if(currentWood<woodRequired) {
 				int peasantId = peasantIds.get(1);
-				Unit.UnitView peasant = currentState.getUnit(peasantId);
-				int townhallId = 0;
+				int townhallId = townhallIds.get(0);
 				Action b = null;
 				if(currentState.getUnit(peasantId).getCargoAmount()>0)
 					b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
@@ -82,10 +86,9 @@ public class MyAgent extends Agent {
 				}
 				builder.put(peasantId, b);
 			}
-			else if(currentGold<goldRequired) {
+			if(currentGold<goldRequired) {
 				int peasantId = peasantIds.get(0);
-				Unit.UnitView peasant = currentState.getUnit(peasantId);
-				int townhallId = 0;
+				int townhallId = townhallIds.get(0);
 				Action b = null;
 				if(currentState.getUnit(peasantId).getCargoType() == ResourceType.GOLD && currentState.getUnit(peasantId).getCargoAmount()>0)
 					b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
@@ -98,15 +101,14 @@ public class MyAgent extends Agent {
 		}
 		else {  // build peasant
 			if(currentGold>=400) {
-				System.err.println("already have enough gold to produce a new peasant.");
+				System.out.println("already have enough gold to produce a new peasant.");
 				TemplateView peasanttemplate = currentState.getTemplate(playernum, "Peasant");
 				int peasanttemplateID = peasanttemplate.getID();
-				int townhallID = 0;
+				int townhallID = townhallIds.get(0);
 				builder.put(townhallID, Action.createCompoundProduction(townhallID, peasanttemplateID));
 			} else {
 				int peasantId = peasantIds.get(0);
-				Unit.UnitView peasant = currentState.getUnit(peasantId);
-				int townhallId = 0;
+				int townhallId = townhallIds.get(0);
 				Action b = null;
 				if(currentState.getUnit(peasantId).getCargoType() == ResourceType.GOLD && currentState.getUnit(peasantId).getCargoAmount()>0)
 					b = new TargetedAction(peasantId, ActionType.COMPOUNDDEPOSIT, townhallId);
@@ -122,6 +124,9 @@ public class MyAgent extends Agent {
 
 	@Override
 	public void terminalStep(StateView newstate) {
+		step++;
+		System.out.println("=> Step: " + step);
+		
 		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
 		System.out.println("Current Gold: " + currentGold);

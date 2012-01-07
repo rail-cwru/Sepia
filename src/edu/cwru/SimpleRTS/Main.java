@@ -21,9 +21,7 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
-		//String para = "--config data/midasConfig.xml data/midas5.map --agent edu.cwru.SimpleRTS.agent.MyAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 1";
-		//para = "--config data/midasConfig.xml data/midas5.map --agent edu.cwru.SimpleRTS.agent.MyAgent 0";
-		//String para = "--config data/defaultConfig.xml data/footmen8v8.map --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0 --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam 0 --agentparam true --agentparam true --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 2";
+		//String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 1";
 		//args = para.split(" +");
 		
 		
@@ -213,7 +211,8 @@ public class Main {
 		try {
 			Preferences.importPreferences(new FileInputStream(arg));
 			return true;
-		} catch(Exception e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
