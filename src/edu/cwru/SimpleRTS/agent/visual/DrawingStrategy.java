@@ -113,8 +113,14 @@ public abstract class DrawingStrategy {
 			infoBox = new DrawingStrategy() {
 				@Override
 				public void draw(Graphics g, int tlx, int tly) {
-					g.setColor(new Color(0x00,0x00,0x00));	
-					g.drawChars(info.toCharArray(), 0, info.length(), tlx, tly);
+					g.setColor(new Color(0x00,0x00,0x00));
+					info = info.trim();
+					String[] infos = info.split("\n");
+					int linenum = infos.length;
+					for(int i=0; i<linenum; i++) {
+						int height = linenum-i-1;
+						g.drawChars(infos[i].toCharArray(), 0, infos[i].length(), tlx, tly-height*12);
+					}
 				}
 			};
 		}

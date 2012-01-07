@@ -322,10 +322,25 @@ public class GamePanel extends JPanel {
 				return scaleY(state.getResourceNode(id).getYPosition()); 
 		}
 		public String getInfo() { 
-			if(state.getUnit(id)!=null)
-				info = "Unit " + id;
-			else 
-				info = "Res " + id;
+			if(state.getUnit(id)!=null) {
+				info = "ID: " + id + "\n";
+				UnitView unit = state.getUnit(id);
+				if(unit.getTemplateView().getUnitName().equals("Peasant")) {
+					if(unit.getCargoAmount()>0)
+						info += unit.getCargoType().toString() + ": " + unit.getCargoAmount();
+				} else if(unit.getTemplateView().getUnitName().equals("TownHall")){
+					info += "HP: " + unit.getHP();
+				}
+				else { // TODO: add other info for other types of unit
+					//info = "Unit: " + id;
+					;
+				}
+			}
+			else {
+				info = "";
+				ResourceView resource = state.getResourceNode(id);
+				info += resource.getType().toString() + ": " + resource.getAmountRemaining();
+			}
 			return info;
 		}
 	}
