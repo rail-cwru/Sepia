@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.environment;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -173,6 +174,15 @@ public class State implements Serializable, Cloneable {
 			
 		}
 	}
+	
+	public PlayerState getPlayerState(int player) {
+		return playerStates.get(player);
+	}
+	
+	public Collection<PlayerState> getPlayerStates() {
+		return playerStates.values();
+	}
+	
 	public ActionLogger getActionLog() {
 		return actionlog;
 	}
@@ -967,6 +977,9 @@ public class State implements Serializable, Cloneable {
 		public StateBuilder() {
 			state = new State();
 			built = false;
+		}
+		public void addPlayer(PlayerState player) {
+			state.playerStates.put(player.playerNum, player);
 		}
 		public void addUnit(Unit u, int x, int y) {
 			state.addUnit(u,x,y);
