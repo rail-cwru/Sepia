@@ -29,6 +29,9 @@
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="template" type="xs:int"/>
 		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="resourceAmount" type="ResourceQuantity"/>
+		</xs:sequence>
 		<xs:element name="supply" type="xs:int"/>
 		<xs:element name="supplyCap" type="xs:int"/>
 	</xs:sequence>
