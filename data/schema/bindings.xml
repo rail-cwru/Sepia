@@ -2,7 +2,10 @@
 <jxb:bindings version="2.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<jxb:bindings schemaLocation="state.xsd" node="/xs:schema">
 		<jxb:schemaBindings>
-			<jxb:package name="edu.cwru.SimpleRTS.environment.schema"/>
+			<jxb:package name="edu.cwru.SimpleRTS.environment.state"/>
+			<jxb:nameXmlTransform>
+				<jxb:typeName prefix="Xml"/>
+			</jxb:nameXmlTransform>
 		</jxb:schemaBindings>
 		<jxb:bindings node="xs:simpleType[@name='ResourceType']">
 			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceType" 

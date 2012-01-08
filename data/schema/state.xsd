@@ -19,6 +19,7 @@
 </xs:complexType>
 <xs:complexType name="Player">
 	<xs:sequence>
+		<xs:element name="ID" type="xs:int"/>
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="unit" type="Unit" />
 		</xs:sequence>
@@ -28,10 +29,9 @@
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="template" type="xs:int"/>
 		</xs:sequence>
+		<xs:element name="supply" type="xs:int"/>
+		<xs:element name="supplyCap" type="xs:int"/>
 	</xs:sequence>
-	<xs:attribute name="ID" type="xs:int"/>
-	<xs:attribute name="supply" type="xs:int"/>
-	<xs:attribute name="supplyCap" type="xs:int"/>
 	
 </xs:complexType>
 <xs:complexType name="Unit">
