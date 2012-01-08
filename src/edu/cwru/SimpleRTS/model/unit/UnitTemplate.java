@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -151,7 +150,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void addProductionItem(String item) {
 		this.produces.add(item);
 	}
-	public boolean canProduce(Template t) {
+	public boolean canProduce(@SuppressWarnings("rawtypes") Template t) {
 		if (t==null)
 			return false;
 		for (Integer i : producesID)
@@ -164,14 +163,14 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		super.namesToIds(unittemplates, upgradetemplates);
 		producesID.clear();
 		for (String s : produces) {
-			for (Template t : unittemplates) {
+			for (@SuppressWarnings("rawtypes") Template t : unittemplates) {
 				if (s.equals(t.getName())) {
 					producesID.add(t.ID);
 					break;
 				}
 				
 			}
-			for (Template t : upgradetemplates) {
+			for (@SuppressWarnings("rawtypes") Template t : upgradetemplates) {
 				if (s.equals(t.getName())) {
 					producesID.add(t.ID);
 					break;
@@ -193,6 +192,91 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void deprecateOldView() {
 		view = null;		
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + armor;
+		result = prime * result + baseHealth;
+		result = prime * result + basicAttack;
+		result = prime * result + (canAcceptGold ? 1231 : 1237);
+		result = prime * result + (canAcceptWood ? 1231 : 1237);
+		result = prime * result + (canBuild ? 1231 : 1237);
+		result = prime * result + (canGather ? 1231 : 1237);
+		result = prime * result + (canMove ? 1231 : 1237);
+		result = prime * result + character;
+		result = prime * result + foodProvided;
+		result = prime * result + goldGatherRate;
+		result = prime * result + piercingAttack;
+		result = prime * result
+				+ ((produces == null) ? 0 : produces.hashCode());
+		result = prime * result
+				+ ((producesID == null) ? 0 : producesID.hashCode());
+		result = prime * result + range;
+		result = prime * result + sightRange;
+		result = prime * result
+				+ ((unitName == null) ? 0 : unitName.hashCode());
+		result = prime * result + woodGatherRate;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UnitTemplate other = (UnitTemplate) obj;
+		if (armor != other.armor)
+			return false;
+		if (baseHealth != other.baseHealth)
+			return false;
+		if (basicAttack != other.basicAttack)
+			return false;
+		if (canAcceptGold != other.canAcceptGold)
+			return false;
+		if (canAcceptWood != other.canAcceptWood)
+			return false;
+		if (canBuild != other.canBuild)
+			return false;
+		if (canGather != other.canGather)
+			return false;
+		if (canMove != other.canMove)
+			return false;
+		if (character != other.character)
+			return false;
+		if (foodProvided != other.foodProvided)
+			return false;
+		if (goldGatherRate != other.goldGatherRate)
+			return false;
+		if (piercingAttack != other.piercingAttack)
+			return false;
+		if (produces == null) {
+			if (other.produces != null)
+				return false;
+		} else if (!produces.equals(other.produces))
+			return false;
+		if (producesID == null) {
+			if (other.producesID != null)
+				return false;
+		} else if (!producesID.equals(other.producesID))
+			return false;
+		if (range != other.range)
+			return false;
+		if (sightRange != other.sightRange)
+			return false;
+		if (unitName == null) {
+			if (other.unitName != null)
+				return false;
+		} else if (!unitName.equals(other.unitName))
+			return false;
+		if (woodGatherRate != other.woodGatherRate)
+			return false;
+		return true;
+	}
+
 	/**
 	 * 
 	 */
