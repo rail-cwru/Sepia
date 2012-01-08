@@ -58,6 +58,8 @@ public class State implements Serializable, Cloneable {
 	/**
 	 * Maps player to an array of how many units can see each cell in the map
 	 * Note that observer sight may not be used like the others
+	 * Observer sight is tracked as the sum of all other sight
+	 * But when it comes time to tell if the observer can see something, it always can
 	 */
 	private Map<Integer,int[][]> playerCanSee;
 	private boolean hasFogOfWar;
@@ -268,7 +270,7 @@ public class State implements Serializable, Cloneable {
 	 * @return
 	 */
 	public boolean canSee(int x, int y, int player) {
-		if (!hasFogOfWar)
+		if (!hasFogOfWar || player == Agent.OBSERVER_ID)
 		{
 			return true;
 		}
@@ -297,15 +299,18 @@ public class State implements Serializable, Cloneable {
 		playerCanSee = new HashMap<Integer,int[][]>();
 		int[][] observersight = new int[getXExtent()][getYExtent()];
 		playerCanSee.put(Agent.OBSERVER_ID, observersight);
-		for (Unit u : allUnits.values())
+		for (Integer player : players)
 		{
-			int player = u.getPlayer();
 			if (!playerCanSee.containsKey(player))
 			{
 				playerCanSee.put(player, new int[getXExtent()][getYExtent()]);
+				playerStates.get(player).setVisiblityMatrix(new int[getXExtent()][getYExtent()]);
 			}
+		}
+		for (Unit u : allUnits.values())
+		{
+			int player = u.getPlayer();
 			PlayerState state = playerStates.get(player);
-			state.setVisiblityMatrix(new int[getXExtent()][getYExtent()]);
 			int x = u.getxPosition();
 			int y = u.getyPosition();
 			int s = u.getTemplate().getSightRange();
@@ -495,6 +500,9 @@ public class State implements Serializable, Cloneable {
 					if (inBounds(i,j))
 					{
 						playerCanSee.get(Agent.OBSERVER_ID)[i][j]++;
+						System.out.println(u);
+						System.out.println(u.getPlayer());
+						System.out.println(playerCanSee.keySet());
 						playerCanSee.get(u.getPlayer())[i][j]++;
 						playerStates.get(player).getVisiblityMatrix()[i][j]++;
 					}

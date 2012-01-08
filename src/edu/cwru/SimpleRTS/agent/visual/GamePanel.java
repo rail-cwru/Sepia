@@ -15,12 +15,14 @@ import javax.swing.ActionMap;
 import javax.swing.JComponent;
 
 
+import edu.cwru.SimpleRTS.Log.RevealedResourceLog;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.LocatedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
@@ -78,13 +80,14 @@ public class GamePanel extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());//background
         Color oldcolor = g.getColor();
         g.setColor(new Color(0x66,0x44,0x22));
+        if(currentState == null)
+            return;
         for (int i = 0; i<currentState.getXExtent(); i++)
             g.drawLine(scaleX(i), 0, scaleX(i), getHeight());
         for (int j = 0; j<currentState.getYExtent(); j++)
             g.drawLine(0, scaleY(j), getWidth(), scaleY(j));
         g.setColor(oldcolor);
-        if(currentState == null)
-            return;
+        
         
         //draw selected by left click
         if(selectedID>=0) {
@@ -97,6 +100,22 @@ public class GamePanel extends JPanel {
             }
         }
         
+        //draw revealed resources
+        DrawingStrategy revealedTree = DrawingStrategy.revealedTreeGraphic();
+        DrawingStrategy revealedMine = DrawingStrategy.revealedMineGraphic();
+        for (RevealedResourceLog rrl : currentState.getEventLog().getRevealedResources())
+        {
+        	int x = scaleX(rrl.getResourceNodeXPosition());
+        	int y = scaleY(rrl.getResourceNodeYPosition());
+        	if (rrl.getResourceNodeType()==Type.GOLD_MINE)
+        	{
+        		revealedMine.draw(g, x, y);
+        	}
+        	else if (rrl.getResourceNodeType()==Type.TREE)
+        	{
+        		revealedTree.draw(g, x, y);
+        	}
+        }
         
         //draw trees
         DrawingStrategy tree = DrawingStrategy.treeGraphic();
@@ -134,6 +153,17 @@ public class GamePanel extends JPanel {
             g.setColor(playerColors[unit.getTemplateView().getPlayer()]);
             letter.draw(g, x, y);
         }
+        
+        //draw fog of war
+        DrawingStrategy fog = DrawingStrategy.fogGraphic();
+        for (int i = 0; i<currentState.getXExtent(); i++)
+        	for (int j = 0; j<currentState.getYExtent(); j++)
+            {
+        		if (!currentState.canSee(i, j))
+        			fog.draw(g, scaleX(i), scaleY(j));
+            }
+        
+       
         g.setColor(new Color(255,128,127));
         g.drawString(tlx+","+tly, getWidth()-32, getHeight()-1);
         
@@ -214,9 +244,9 @@ public class GamePanel extends JPanel {
 			int y = unscaleY(e.getY());
 			System.out.println(x+","+y);
 			
-			if(agent.humanControllable)
+			if(agent!=null && agent.humanControllable)
 				humanControl(e);
-			if(agent.infoVis)
+			if(agent != null && agent.infoVis)
 				infoVisual(e);
 			repaint();
 		}

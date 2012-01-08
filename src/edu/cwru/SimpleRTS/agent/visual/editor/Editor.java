@@ -31,6 +31,7 @@ import org.json.JSONException;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.agent.visual.GameScreen;
 import edu.cwru.SimpleRTS.agent.visual.GamePanel;
+import edu.cwru.SimpleRTS.agent.visual.VisualAgent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.Template;
@@ -55,6 +56,12 @@ public class Editor extends JFrame {
 	JRadioButton selectUnit;
 	JRadioButton selectTree;
 	JRadioButton selectMine;
+	ButtonGroup fogOfWar;
+	JRadioButton fogOn;
+	JRadioButton fogOff;
+	ButtonGroup revealResources;
+	JRadioButton revealResourcesOn;
+	JRadioButton revealResourcesOff;
 	JButton save;
 	JTextArea error;
 	
@@ -113,6 +120,85 @@ public class Editor extends JFrame {
 		cursorGroup.add(selectTree);
 		selectMine = new JRadioButton("Mine");
 		cursorGroup.add(selectMine);
+		
+		
+		
+		//Make a button group for fog of war, one radio button for on and one for off
+		//  and make listeners to set the state
+		//  then make it default to off
+		fogOfWar = new ButtonGroup();
+		fogOn = new JRadioButton("Fog on war");
+		fogOfWar.add(fogOn);
+		fogOn.addActionListener(new ActionListener() {
+			State state;
+			Editor ed;
+			public ActionListener setThings(State state, Editor ed) {
+				this.state = state;
+				this.ed = ed;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				state.setFogOfWar(true);
+				ed.updateScreen();
+			}			
+		}.setThings(state,this));
+		fogOff = new JRadioButton("Fog off war");
+		fogOfWar.add(fogOff);
+		fogOff.addActionListener(new ActionListener() {
+			State state;
+			Editor ed;
+			public ActionListener setThings(State state, Editor ed) {
+				this.state = state;
+				this.ed = ed;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				state.setFogOfWar(false);
+				ed.updateScreen();
+			}			
+		}.setThings(state,this));
+		fogOff.setSelected(true);
+		
+		//Make a button group for revealed resources, one radio button for on and one for off
+		//  and make listeners to set the state
+		//  then make it default to off
+		revealResources = new ButtonGroup();
+		revealResourcesOn = new JRadioButton("Reveal Resources");
+		revealResources.add(revealResourcesOn);
+		revealResourcesOn.addActionListener(new ActionListener() {
+			State state;
+			Editor ed;
+			public ActionListener setThings(State state, Editor ed) {
+				this.state = state;
+				this.ed = ed;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				state.setRevealedResources(true);
+				ed.updateScreen();
+			}			
+		}.setThings(state,this));
+		revealResourcesOff = new JRadioButton("Unreveal Resources");
+		revealResources.add(revealResourcesOff);
+		revealResourcesOff.addActionListener(new ActionListener() {
+			State state;
+			Editor ed;
+			public ActionListener setThings(State state, Editor ed) {
+				this.state = state;
+				this.ed = ed;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				state.setRevealedResources(false);
+				ed.updateScreen();
+			}			
+		}.setThings(state,this));
+		revealResourcesOff.setSelected(true);
+		
 		String[] unitnames;
 		List<UnitTemplate> tempunittemplates=null;
 		try {
@@ -175,8 +261,12 @@ public class Editor extends JFrame {
 		add(resourceAmount);
 		add(save);
 		add(error);
-		
+		add(fogOn);
+		add(fogOff);
+		add(revealResourcesOn);
+		add(revealResourcesOff);
 		setVisible(true);
+		updateScreen();
 	}
 	
 	
@@ -225,11 +315,14 @@ public class Editor extends JFrame {
 				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount);
 				state.addResource(r);
 			}
-			gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+			updateScreen();
 		}
 
 	}
-
+	public void updateScreen()
+	{
+		gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+	}
 	public static void main(String[] args) throws FileNotFoundException, JSONException {
 		State state = null;
 		if(args.length > 0)
@@ -250,7 +343,7 @@ public class Editor extends JFrame {
         final State fstate = state;
         final GamePanel gamePanel = new GamePanel(null);
 		final GameScreen screen = new GameScreen(gamePanel);
-        gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+        
 		SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
