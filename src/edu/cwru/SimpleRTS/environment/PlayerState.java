@@ -118,6 +118,10 @@ public class PlayerState implements Serializable, Cloneable {
 	public void setCurrentSupplyCap(int supply) {
 		currentSupplyCap = supply;
 	}
+
+	public void addToCurrentSupplyCap(int increase) {
+		setCurrentSupplyCap(getCurrentSupplyCap() + increase);
+	}
 	
 	public StateView getView() {
 		return view;
