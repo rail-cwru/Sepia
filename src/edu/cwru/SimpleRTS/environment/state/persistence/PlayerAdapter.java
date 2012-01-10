@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
+import java.util.Collection;
 import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.PlayerState;
@@ -46,7 +47,7 @@ public class PlayerAdapter {
 		return xml;
 	}
 	
-	public PlayerState fromXml(XmlPlayer xml, @SuppressWarnings("rawtypes") List<Template> templates) {
+	public PlayerState fromXml(XmlPlayer xml, @SuppressWarnings("rawtypes") Collection<Template> templates) {
 		PlayerState player = new PlayerState(xml.getID());
 		UnitAdapter unitAdapter = new UnitAdapter(player.getTemplates());
 		
