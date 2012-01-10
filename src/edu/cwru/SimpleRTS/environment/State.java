@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,7 +23,6 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
-import edu.cwru.SimpleRTS.util.Pair;
 
 public class State implements Serializable, Cloneable {
 	/**
@@ -54,51 +52,54 @@ public class State implements Serializable, Cloneable {
 	
 	private List<Integer> players;
 	private Map<Integer,Unit> allUnits;
-	private Map<Integer, StateView> views;
+	//private Map<Integer, StateView> views;
 	/**
 	 * Maps player to an array of how many units can see each cell in the map
 	 * Note that observer sight may not be used like the others
 	 * Observer sight is tracked as the sum of all other sight
 	 * But when it comes time to tell if the observer can see something, it always can
 	 */
-	private Map<Integer,int[][]> playerCanSee;
+	//private Map<Integer,int[][]> playerCanSee;
 	private boolean hasFogOfWar;
 	private boolean revealedResources;
-	private Map<Integer,Map<Integer, Unit>> unitsByAgent;
+	//private Map<Integer,Map<Integer, Unit>> unitsByAgent;
 	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
-	private Map<Pair<Integer,ResourceType>,Integer> currentResources;
-	private Map<Integer,Integer> currentSupply;
-	private Map<Integer,Integer> currentSupplyCap;
-	private Map<Integer, Set<Integer>> upgradesByAgent;
+	//private Map<Pair<Integer,ResourceType>,Integer> currentResources;
+	//private Map<Integer,Integer> currentSupply;
+	//private Map<Integer,Integer> currentSupplyCap;
+	//private Map<Integer, Set<Integer>> upgradesByAgent;
 	private int xextent;
 	private int yextent;
-	@SuppressWarnings("rawtypes")
-	private Map<Integer, Map<Integer,Template>> templatesByAgent;
+	//@SuppressWarnings("rawtypes")
+	//private Map<Integer, Map<Integer,Template>> templatesByAgent;
 	@SuppressWarnings("rawtypes")
 	private Map<Integer,Template> allTemplates;
-	private HashMap<Integer, EventLogger> eventlogs;
+	//private HashMap<Integer, EventLogger> eventlogs;
 	private ActionLogger actionlog;
 	private Map<Integer,PlayerState> playerStates;
+	private PlayerState observerState;
 	@SuppressWarnings("rawtypes")
 	public State() {
 		
 		players = new ArrayList<Integer>();
-		playerCanSee = new HashMap<Integer,int[][]>();
+		//playerCanSee = new HashMap<Integer,int[][]>();
 		allUnits = new HashMap<Integer,Unit>();
-		unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
+		//unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
 		allTemplates = new HashMap<Integer,Template>();
-		templatesByAgent = new HashMap<Integer,Map<Integer,Template>>();
-		upgradesByAgent = new HashMap<Integer, Set<Integer>>();
+		//templatesByAgent = new HashMap<Integer,Map<Integer,Template>>();
+		//upgradesByAgent = new HashMap<Integer, Set<Integer>>();
 		resourceNodes = new ArrayList<ResourceNode>();
-		currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
-		currentSupply = new HashMap<Integer,Integer>();
-		currentSupplyCap = new HashMap<Integer,Integer>();
-		views = new HashMap<Integer,StateView>();
-		eventlogs = new HashMap<Integer, EventLogger>();
-		eventlogs.put(Agent.OBSERVER_ID, new EventLogger());
+		//currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
+		//currentSupply = new HashMap<Integer,Integer>();
+		//currentSupplyCap = new HashMap<Integer,Integer>();
+		//views = new HashMap<Integer,StateView>();
+		//eventlogs = new HashMap<Integer, EventLogger>();
+		//eventlogs.put(Agent.OBSERVER_ID, new EventLogger());
 		actionlog = new ActionLogger();
 		playerStates = new HashMap<Integer,PlayerState>();
+		//observerState = new PlayerState(Agent.OBSERVER_ID);
+		addPlayer(Agent.OBSERVER_ID);
 		setFogOfWar(false);
 		setRevealedResources(false);
 	}
@@ -107,36 +108,40 @@ public class State implements Serializable, Cloneable {
 	protected Object clone() {
 		State state = new State();
 		state.players.addAll(players);
-		for(Integer i : playerCanSee.keySet())
+		/*for(Integer i : playerCanSee.keySet())
 		{
 			state.playerCanSee.put(i, playerCanSee.get(i).clone());
-		}	
+		}	*/
 		for(Unit u : allUnits.values())
 		{//takes care of allUnits and unitsByAgent
 			Unit copy = u.copyOf();
 			state.addUnit(copy, copy.getxPosition(), copy.getyPosition());
 		}
 		state.allTemplates.putAll(allTemplates);
-		for(Integer i : templatesByAgent.keySet())
+		/*for(Integer i : templatesByAgent.keySet())
 		{
 			@SuppressWarnings("rawtypes")
 			Map<Integer,Template> templates = new HashMap<Integer,Template>();
 			templates.putAll(templatesByAgent.get(i));
 			state.templatesByAgent.put(i, templates);
-		}
+		}*//*
 		for(Integer i : upgradesByAgent.keySet())
 		{
 			Set<Integer> upgrades = new HashSet<Integer>();
 			upgrades.addAll(upgradesByAgent.get(i));
 			state.upgradesByAgent.put(i, upgradesByAgent.get(i));
-		}
+		}*/
 		for(ResourceNode node : resourceNodes)
 		{
 			state.resourceNodes.add(node.copyOf());
 		}
-		state.currentResources.putAll(currentResources);
-		state.currentSupply.putAll(currentSupply);
-		state.currentSupplyCap.putAll(currentSupplyCap);
+		for(Integer i : playerStates.keySet())
+		{
+			state.playerStates.put(i, playerStates.get(i).copyOf());
+		}
+		//state.currentResources.putAll(currentResources);
+		//state.currentSupply.putAll(currentSupply);
+		//state.currentSupplyCap.putAll(currentSupplyCap);
 		
 		return state;
 	}
@@ -146,28 +151,35 @@ public class State implements Serializable, Cloneable {
 		return state.getView(player);
 	}
 	
-	@SuppressWarnings("rawtypes")
+	//@SuppressWarnings("rawtypes")
 	/**
 	 * Add another player
 	 * @param playernumber The player number of the player to add
 	 */
 	public void addPlayer(int playernumber)
 	{
-		if (!players.contains(playernumber))
+		if (!players.contains(playernumber) || playernumber == Agent.OBSERVER_ID)
 		{
-			players.add(playernumber);
 			PlayerState playerState = new PlayerState(playernumber);
-			playerStates.put(playernumber, playerState);
+			if(playernumber != Agent.OBSERVER_ID)
+			{
+				players.add(playernumber);
+				playerStates.put(playernumber, playerState);
+			}
+			else
+			{
+				observerState = playerState;
+			}
 			EventLogger neweventlogger = new EventLogger();
 			for (int i = 0; i<=turnNumber;i++)
 				neweventlogger.nextRound();
-			eventlogs.put(playernumber, neweventlogger);
+			//eventlogs.put(playernumber, neweventlogger);
 			playerState.setEventLogger(neweventlogger);
-			templatesByAgent.put(playernumber, new HashMap<Integer,Template>());
+			/*templatesByAgent.put(playernumber, new HashMap<Integer,Template>());
 			unitsByAgent.put(playernumber, new HashMap<Integer,Unit>());
 			upgradesByAgent.put(playernumber, new HashSet<Integer>());
-			playerCanSee.put(playernumber, new int[getXExtent()][getYExtent()]);
-			playerState.setVisiblityMatrix(new int[getXExtent()][getYExtent()]);
+			playerCanSee.put(playernumber, new int[getXExtent()][getYExtent()]);*/
+			playerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
 			if (revealedResources) {
 				for (ResourceNode r : resourceNodes) {
 					neweventlogger.recordResourceNodeReveal(r.getxPosition(), r.getyPosition(), r.getType());
@@ -189,8 +201,10 @@ public class State implements Serializable, Cloneable {
 		return actionlog;
 	}
 	public EventLogger getEventLog(int playerid) {
-		return eventlogs.get(playerid);
-		//return playerStates.get(playerid).getEventLogger();
+		//return eventlogs.get(playerid);
+		if(playerid == Agent.OBSERVER_ID)
+			return observerState.getEventLogger();
+		return playerStates.get(playerid).getEventLogger();
 	}
 	public int getTurnNumber() { return turnNumber; }
 	public Map<Integer, Unit> getUnits() {
@@ -239,28 +253,31 @@ public class State implements Serializable, Cloneable {
 		else {
 			this.revealedResources = false;
 			//Don't change this to foreach player, as that will skip the observer's log
-			for (EventLogger e : eventlogs.values()) {
+			/*for (EventLogger e : eventlogs.values()) {
 				e.eraseResourceNodeReveals();
-			}/*
+			}*/
 			for(PlayerState s : playerStates.values())
 			{
 				s.getEventLogger().eraseResourceNodeReveals();
 			}
-			*/
+			observerState.getEventLogger().eraseResourceNodeReveals();
 		}
 	}
 	
 	private void revealResource(ResourceNode resource) {
 		//Don't change this to foreach player, as that will skip the observer's log
-		for (EventLogger e : eventlogs.values()) {
+		/*for (EventLogger e : eventlogs.values()) {
 			e.recordResourceNodeReveal(resource.getxPosition(), resource.getyPosition(), resource.getType());
-		}/*
+		}*/
 		for(PlayerState s : playerStates.values())
 		{
 			s.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
 														resource.getyPosition(), 
 														resource.getType());
-		}*/
+		}
+		observerState.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
+																resource.getyPosition(), 
+																resource.getType());
 	}
 	/**
 	 * Returns whether the selected coordinates are visible to the player through the fog of war.
@@ -280,8 +297,8 @@ public class State implements Serializable, Cloneable {
 		}
 		else
 		{
-			int[][] cansee = playerCanSee.get(player);
-			//int[][] cansee = playerStates.get(player).getVisiblityMatrix();
+			//int[][] cansee = playerCanSee.get(player);
+			int[][] cansee = playerStates.get(player).getVisibilityMatrix();
 			if (cansee==null)
 			{
 				return false;
@@ -296,15 +313,22 @@ public class State implements Serializable, Cloneable {
 	 * Recalculates the vision of each agent from scratch.
 	 */
 	private void recalculateVisionFromScratch() {
-		playerCanSee = new HashMap<Integer,int[][]>();
+		/*playerCanSee = new HashMap<Integer,int[][]>();
 		int[][] observersight = new int[getXExtent()][getYExtent()];
-		playerCanSee.put(Agent.OBSERVER_ID, observersight);
-		for (Integer player : players)
+		playerCanSee.put(Agent.OBSERVER_ID, observersight);*/
+		/*for (Integer player : players)
 		{
 			if (!playerCanSee.containsKey(player)||playerStates.get(player).getVisiblityMatrix()==null)
 			{
 				playerCanSee.put(player, new int[getXExtent()][getYExtent()]);
-				playerStates.get(player).setVisiblityMatrix(new int[getXExtent()][getYExtent()]);
+			}
+		}*/
+		observerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
+		for (PlayerState player : playerStates.values())
+		{
+			if(player.getVisibilityMatrix() == null)
+			{
+				player.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
 			}
 		}
 		for (Unit u : allUnits.values())
@@ -318,9 +342,10 @@ public class State implements Serializable, Cloneable {
 				for (int j = y-s; j<=y+s;j++)
 					if (inBounds(i,j))
 					{
-						state.getVisiblityMatrix()[i][j]++;
-						playerCanSee.get(player)[i][j]++;
-						observersight[i][j]++;
+						state.getVisibilityMatrix()[i][j]++;
+						//playerCanSee.get(player)[i][j]++;
+						//observersight[i][j]++;
+						observerState.getVisibilityMatrix()[i][j]++;
 					}
 		}
 	}
@@ -375,6 +400,7 @@ public class State implements Serializable, Cloneable {
 	}
 	@SuppressWarnings("rawtypes")
 	public Template getTemplate(int player, String name) {
+		/*
 		Map<Integer,Template> playerstemplates = templatesByAgent.get(player);
 		if (playerstemplates == null)
 		{
@@ -387,24 +413,36 @@ public class State implements Serializable, Cloneable {
 				return t;
 			}
 		}
-		return null;
-		//return playerStates.get(player).getTemplate(name);
+		return null;*/
+		PlayerState playerState = playerStates.get(player);
+		if (playerState == null)
+		{
+			System.out.println("Player not found");
+			return null;
+		}		
+		return playerState.getTemplate(name);
 	}
 	@SuppressWarnings("rawtypes")
 	public Map<Integer,Template> getTemplates(int player) {
-		if(templatesByAgent.get(player) == null)
+		/*if(templatesByAgent.get(player) == null)
 			return null;
-		return Collections.unmodifiableMap(templatesByAgent.get(player));
-		//return Collections.unmodifiableMap(playerStates.get(player).getTemplates());
+		return Collections.unmodifiableMap(templatesByAgent.get(player));*/
+		if(playerStates.get(player) == null)
+			return null;
+		return Collections.unmodifiableMap(playerStates.get(player).getTemplates());
 	}
 	public boolean doesPlayerHaveUnit(int player, int templateid) {
-		Map<Integer, Template> templates = templatesByAgent.get(player);
+		/*Map<Integer, Template> templates = templatesByAgent.get(player);
 		if (templates != null) {
 			return templates.containsKey(templateid);
 		}
 		
+		return false;*/
+		if(playerStates.get(player) != null)
+		{
+			return playerStates.get(player).getTemplate(templateid) != null;
+		}
 		return false;
-		//return playerStates.get(player).getTemplate(templateid) != null;
 	}
 	public void setSize(int x, int y) {
 		xextent = x;
@@ -445,21 +483,22 @@ public class State implements Serializable, Cloneable {
 	}
 	private static final Map<Integer,Unit> EMPTY_MAP = new HashMap<Integer,Unit>();
 	public Map<Integer,Unit> getUnits(int player) {
-		if(unitsByAgent.get(player) == null)
+		//if(unitsByAgent.get(player) == null)
+		if(playerStates.get(player) == null)
 			return EMPTY_MAP;
-		return Collections.unmodifiableMap(unitsByAgent.get(player));
-		//return Collections.unmodifiableMap(playerStates.get(player).getUnits());
+		//return Collections.unmodifiableMap(unitsByAgent.get(player));
+		return Collections.unmodifiableMap(playerStates.get(player).getUnits());
 	}
 	public boolean tryProduceUnit(Unit u,int x, int y) {
 			if (!positionAvailable(x,y))
 				return false;
 			UnitTemplate ut = u.getTemplate();
-			Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
-			Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
-			Integer currentgold = currentResources.get(goldpair);
-			//Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
-			Integer currentwood = currentResources.get(woodpair);
-			//Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
+			//Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
+			//Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
+			//Integer currentgold = currentResources.get(goldpair);
+			Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
+			//Integer currentwood = currentResources.get(woodpair);
+			Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
 			if (currentgold == null)
 				currentgold = 0;
 			if (currentwood == null)
@@ -481,14 +520,19 @@ public class State implements Serializable, Cloneable {
 		if (!players.contains(player))
 			addPlayer(player);
 		if(!allUnits.containsKey(u.ID)) {
-			Map<Integer, Unit> map = unitsByAgent.get(player);
-			if(map == null)
+			//Map<Integer, Unit> map = unitsByAgent.get(player);
+			PlayerState playerState = playerStates.get(player);
+			if(playerState == null)
+			{
+				playerStates.put(player, playerState = new PlayerState(player));
+			}
+			Map<Integer, Unit> map = playerState.getUnits();
+			/*if(map == null)
 			{
 				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
-			}
+			}*/
 			allUnits.put(u.ID,u);
 			map.put(u.ID, u);
-			playerStates.get(player).addUnit(u);
 			alterSupplyCapAmount(player,u.getTemplate().getFoodProvided());
 			alterSupplyAmount(player, u.getTemplate().getFoodCost());
 			u.setxPosition(x);
@@ -499,13 +543,13 @@ public class State implements Serializable, Cloneable {
 				{
 					if (inBounds(i,j))
 					{
-						playerCanSee.get(Agent.OBSERVER_ID)[i][j]++;
-						System.out.println(u);
-						System.out.println(u.getPlayer());
-						System.out.println(playerCanSee.entrySet());
-						System.out.println(playerStates.entrySet());
-						playerCanSee.get(u.getPlayer())[i][j]++;
-						playerStates.get(player).getVisiblityMatrix()[i][j]++;
+						//playerCanSee.get(Agent.OBSERVER_ID)[i][j]++;
+						observerState.getVisibilityMatrix()[i][j]++;
+						//System.out.println(u);
+						//System.out.println(u.getPlayer());
+						//System.out.println(playerCanSee.entrySet());
+						//playerCanSee.get(u.getPlayer())[i][j]++;
+						playerState.getVisibilityMatrix()[i][j]++;
 					}
 				}
 		}
@@ -522,9 +566,10 @@ public class State implements Serializable, Cloneable {
 		int sightrange = u.getTemplate().getSightRange();
 		int x = u.getxPosition();
 		int y = u.getyPosition();
-		int[][] playersight=playerCanSee.get(u.getTemplate().getPlayer());
-		//playersight = playerStates.get(u.getTemplate().getPlayer()).getVisibilityMatrix();
-		int[][] observersight=playerCanSee.get(Agent.OBSERVER_ID);
+		//int[][] playersight=playerCanSee.get(u.getTemplate().getPlayer());
+		int[][] playersight = playerStates.get(u.getPlayer()).getVisibilityMatrix();
+		//int[][] observersight=playerCanSee.get(Agent.OBSERVER_ID);
+		int[][] observersight = observerState.getVisibilityMatrix();
 		if (direction.xComponent()!=0)
 		{
 			int xoffset;
@@ -611,7 +656,7 @@ public class State implements Serializable, Cloneable {
 		if (allUnits.containsKey(unitID))
 		{
 			Unit u = allUnits.remove(unitID);
-			unitsByAgent.get(u.getPlayer()).remove(unitID);
+			//unitsByAgent.get(u.getPlayer()).remove(unitID);
 			playerStates.get(u.getPlayer()).getUnits().remove(unitID);
 			alterSupplyCapAmount(u.getPlayer(),-u.getTemplate().getFoodProvided());
 			alterSupplyAmount(u.getPlayer(), -u.getTemplate().getFoodCost());
@@ -623,9 +668,10 @@ public class State implements Serializable, Cloneable {
 				{
 					if (inBounds(i,j))
 					{
-						playerCanSee.get(Agent.OBSERVER_ID)[i][j]--;
-						playerCanSee.get(u.getPlayer())[i][j]--;
-						playerStates.get(u.getPlayer()).getVisiblityMatrix()[i][j]--;
+						//playerCanSee.get(Agent.OBSERVER_ID)[i][j]--;
+						observerState.getVisibilityMatrix()[i][j]--;
+						//playerCanSee.get(u.getPlayer())[i][j]--;
+						playerStates.get(u.getPlayer()).getVisibilityMatrix()[i][j]--;
 					}
 				}
 		}
@@ -637,24 +683,29 @@ public class State implements Serializable, Cloneable {
 		if (!players.contains(player))
 			addPlayer(player);
 		if(!allTemplates.containsKey(t.ID)) {
-			Map<Integer, Template> map = templatesByAgent.get(player);
-			if(map == null)
+			//Map<Integer, Template> map = templatesByAgent.get(player);
+			PlayerState playerState = playerStates.get(player);
+			if(playerState == null)
+			{
+				playerStates.put(player, playerState = new PlayerState(player));
+			}
+			Map<Integer, Template> map = playerState.getTemplates();
+			/*if(map == null)
 			{
 				templatesByAgent.put(player, map = new HashMap<Integer, Template>());
-			}
+			}*/
 			allTemplates.put(t.ID,t);
 			map.put(t.ID, t);
-			playerStates.get(player).addTemplate(t);
 		}
 	}
 	public boolean tryProduceUpgrade(Upgrade upgrade) {
 		UpgradeTemplate ut = upgrade.getTemplate();
-		Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
-		Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
-		Integer currentgold = currentResources.get(goldpair);
-		//Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
-		Integer currentwood = currentResources.get(woodpair);
-		//Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
+		//Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
+		//Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
+		//Integer currentgold = currentResources.get(goldpair);
+		Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
+		//Integer currentwood = currentResources.get(woodpair);
+		Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
 		if (currentgold == null)
 			currentgold = 0;
 		if (currentwood == null)
@@ -674,12 +725,17 @@ public class State implements Serializable, Cloneable {
 	private void addUpgrade(Upgrade upgrade) {
 			UpgradeTemplate upgradetemplate = upgrade.getTemplate();
 			int player = upgradetemplate.getPlayer();
-			Set<Integer> list = upgradesByAgent.get(player);
-			Set<Integer> list2 = playerStates.get(player).getUpgrades();
-			if(list == null)
+			//Set<Integer> list = upgradesByAgent.get(player);
+			PlayerState playerState = playerStates.get(player);
+			if(playerState == null)
+			{
+				playerStates.put(player, playerState = new PlayerState(player));
+			}
+			Set<Integer> list = playerState.getUpgrades();
+			/*if(list == null)
 			{
 				upgradesByAgent.put(player, list = new HashSet<Integer>());
-			}
+			}*/
 			if (!list.contains(upgradetemplate.ID))
 			{
 				//upgrade all of the affected units
@@ -690,16 +746,15 @@ public class State implements Serializable, Cloneable {
 				}
 			}
 			list.add(upgradetemplate.ID);
-			list2.add(upgradetemplate.ID);
 	}
 	public boolean hasUpgrade(Integer upgradetemplateid, int player) {
-		Set<Integer> set = upgradesByAgent.get(player);
+		/*Set<Integer> set = upgradesByAgent.get(player);
 		if(set == null)
 		{
 			return false;
 		}
-		return set.contains(upgradetemplateid);
-		//return playerStates.get(player).getUpgrades().contains(upgradetemplateid);
+		return set.contains(upgradetemplateid);*/
+		return playerStates.get(player).getUpgrades().contains(upgradetemplateid);
 	}
 	public List<ResourceNode> getResources() {
 		return Collections.unmodifiableList(resourceNodes);
@@ -744,8 +799,8 @@ public class State implements Serializable, Cloneable {
 		return null;
 	}
 	public int getResourceAmount(int player, ResourceType type) {
-		Integer amount = currentResources.get(new Pair<Integer,ResourceType>(player,type));
-		//Integer amount = playerStates.get(player).getCurrentResourceAmount(type);
+		//Integer amount = currentResources.get(new Pair<Integer,ResourceType>(player,type));
+		Integer amount = playerStates.get(player).getCurrentResourceAmount(type);
 		return amount != null ? amount : 0;			
 	}
 	public void depositResources(int player, ResourceType type, int amount)
@@ -762,11 +817,11 @@ public class State implements Serializable, Cloneable {
 	 * @param amount
 	 */
 	private void addResourceAmount(int player, ResourceType type, int amount) {
-		Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
+		/*Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
 		Integer previous = currentResources.get(pair);
 		if(previous == null)
 			previous = 0;
-		currentResources.put(pair, previous+amount);
+		currentResources.put(pair, previous+amount);*/
 		playerStates.get(player).addToCurrentResourceAmount(type, amount);
 	}
 	/**
@@ -780,14 +835,14 @@ public class State implements Serializable, Cloneable {
 		addResourceAmount(player, type, -amount);
 	}
 	public int getSupplyAmount(int player) {
-		Integer amount = currentSupply.get(player);
-		return amount != null ? amount : 0;
-		//return playerStates.get(player).getCurrentSupply();
+		/*Integer amount = currentSupply.get(player);
+		return amount != null ? amount : 0;*/
+		return playerStates.get(player).getCurrentSupply();
 	}
 	public int getSupplyCap(int player) {
-		Integer amount = currentSupplyCap.get(player);
-		return Math.min(amount != null ? amount : 0,MAXSUPPLY);
-		//return Math.min(playerStates.get(player).getCurrentSupplyCap(), MAXSUPPLY);
+		/*Integer amount = currentSupplyCap.get(player);
+		return Math.min(amount != null ? amount : 0,MAXSUPPLY);*/
+		return Math.min(playerStates.get(player).getCurrentSupplyCap(), MAXSUPPLY);
 	}
 	
 	/**
@@ -796,10 +851,10 @@ public class State implements Serializable, Cloneable {
 	 * @param amount
 	 */
 	private void alterSupplyCapAmount(int player, int amount) {
-		Integer i = currentSupplyCap.get(player);
+		/*Integer i = currentSupplyCap.get(player);
 		if(i == null) //this should never happen
 			i=0;
-		currentSupplyCap.put(player, i+amount);
+		currentSupplyCap.put(player, i+amount);*/
 		playerStates.get(player).addToCurrentSupplyCap(amount);
 	}
 	/**
@@ -808,12 +863,12 @@ public class State implements Serializable, Cloneable {
 	 * @param amount
 	 */
 	private void alterSupplyAmount(int player, int amount) {
-		
+		/*
 		Integer currentsupply = currentSupply.get(player);
 		if (currentsupply == null)
 			currentsupply = 0;
 		
-		currentSupply.put(player, currentsupply+amount);
+		currentSupply.put(player, currentsupply+amount);*/
 		playerStates.get(player).addToCurrentSupply(amount);
 	}
 	public boolean checkValidSupplyAddition(int player, int amounttoadd, int offsettingcapgain) {
@@ -824,7 +879,7 @@ public class State implements Serializable, Cloneable {
 		}
 		else
 		{
-			Integer currentcap = currentSupplyCap.get(player);
+			/*Integer currentcap = currentSupplyCap.get(player);
 			if (currentcap == null)
 			{
 				currentcap = 0; //just set it to zero if it isn't set, this way it functions right if for some reason we make it possible to be using a negative amount of supply
@@ -838,12 +893,16 @@ public class State implements Serializable, Cloneable {
 				//set it, because why not
 				currentSupply.put(player, 0);
 			}
-			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) >= currentsupply + amounttoadd;
-			/*
+			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) >= currentsupply + amounttoadd;*/
+			
 			PlayerState playerState = playerStates.get(player);
+			if(playerState == null)
+			{
+				playerStates.put(player, playerState = new PlayerState(player));
+			}
 			return Math.min(playerState.getCurrentSupplyCap() + offsettingcapgain, MAXSUPPLY) >=
 						    playerState.getCurrentSupply() + amounttoadd;
-			 */
+			 
 		}
 	}
 	/**
@@ -853,127 +912,18 @@ public class State implements Serializable, Cloneable {
 	public void incrementTurn() {
 		turnNumber++;
 		//Don't change this unless you change how OBSERVERs work
-		for (EventLogger eventlog: eventlogs.values())
+		/*for (EventLogger eventlog: eventlogs.values())
 		{
 			eventlog.nextRound();
-		}/*
+		}*/
 		for (PlayerState s : playerStates.values())
 		{
 			s.getEventLogger().nextRound();
-		}*/
+		}
+		observerState.getEventLogger().nextRound();
 		actionlog.nextRound();
 	}
 	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + MAXSUPPLY;
-		result = prime * result
-				+ ((actionlog == null) ? 0 : actionlog.hashCode());
-		result = prime * result
-				+ ((allTemplates == null) ? 0 : allTemplates.hashCode());
-		result = prime * result
-				+ ((allUnits == null) ? 0 : allUnits.hashCode());
-		result = prime
-				* result
-				+ ((currentResources == null) ? 0 : currentResources.hashCode());
-		result = prime * result
-				+ ((currentSupply == null) ? 0 : currentSupply.hashCode());
-		result = prime
-				* result
-				+ ((currentSupplyCap == null) ? 0 : currentSupplyCap.hashCode());
-		result = prime * result
-				+ ((eventlogs == null) ? 0 : eventlogs.hashCode());
-		result = prime * result
-				+ ((resourceNodes == null) ? 0 : resourceNodes.hashCode());
-		result = prime
-				* result
-				+ ((templatesByAgent == null) ? 0 : templatesByAgent.hashCode());
-		result = prime * result + turnNumber;
-		result = prime * result
-				+ ((unitsByAgent == null) ? 0 : unitsByAgent.hashCode());
-		result = prime * result
-				+ ((upgradesByAgent == null) ? 0 : upgradesByAgent.hashCode());
-		result = prime * result + xextent;
-		result = prime * result + yextent;
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		State other = (State) obj;
-		if (MAXSUPPLY != other.MAXSUPPLY)
-			return false;
-		if (actionlog == null) {
-			if (other.actionlog != null)
-				return false;
-		} else if (!actionlog.equals(other.actionlog))
-			return false;
-		if (allTemplates == null) {
-			if (other.allTemplates != null)
-				return false;
-		} else if (!allTemplates.equals(other.allTemplates))
-			return false;
-		if (allUnits == null) {
-			if (other.allUnits != null)
-				return false;
-		} else if (!allUnits.equals(other.allUnits))
-			return false;
-		if (currentResources == null) {
-			if (other.currentResources != null)
-				return false;
-		} else if (!currentResources.equals(other.currentResources))
-			return false;
-		if (currentSupply == null) {
-			if (other.currentSupply != null)
-				return false;
-		} else if (!currentSupply.equals(other.currentSupply))
-			return false;
-		if (currentSupplyCap == null) {
-			if (other.currentSupplyCap != null)
-				return false;
-		} else if (!currentSupplyCap.equals(other.currentSupplyCap))
-			return false;
-		if (eventlogs == null) {
-			if (other.eventlogs != null)
-				return false;
-		} else if (!eventlogs.equals(other.eventlogs))
-			return false;
-		if (resourceNodes == null) {
-			if (other.resourceNodes != null)
-				return false;
-		} else if (!resourceNodes.equals(other.resourceNodes))
-			return false;
-		if (templatesByAgent == null) {
-			if (other.templatesByAgent != null)
-				return false;
-		} else if (!templatesByAgent.equals(other.templatesByAgent))
-			return false;
-		if (turnNumber != other.turnNumber)
-			return false;
-		if (unitsByAgent == null) {
-			if (other.unitsByAgent != null)
-				return false;
-		} else if (!unitsByAgent.equals(other.unitsByAgent))
-			return false;
-		if (upgradesByAgent == null) {
-			if (other.upgradesByAgent != null)
-				return false;
-		} else if (!upgradesByAgent.equals(other.upgradesByAgent))
-			return false;
-		if (xextent != other.xextent)
-			return false;
-		if (yextent != other.yextent)
-			return false;
-		return true;
-	}
-
 	@SuppressWarnings("rawtypes")
 	/**
 	 * Builder class that allows one-time access to a new state for construction purposes.
@@ -1014,19 +964,25 @@ public class State implements Serializable, Cloneable {
 			state.turnNumber = turn;
 		}
 		public void setResourceAmount(int player, ResourceType resource, int amount) {
-			state.currentResources.put(new Pair<Integer,ResourceType>(player,resource), amount);
+			state.addResourceAmount(player, resource, amount);
 		}
 		public void setSupplyCap(int player, int supply) {
-			state.currentSupplyCap.put(player, supply);
+			//state.currentSupplyCap.put(player, supply);
+			state.alterSupplyCapAmount(player, supply);
 		}
 		public String getTextString() {
 			return state.getTextString();
 		}
 		public boolean hasTemplates(int player) {
-			Map<Integer,Template> templates = state.templatesByAgent.get(player);
-			if (templates == null) {
+			//Map<Integer,Template> templates = state.templatesByAgent.get(player);
+			if(state.getPlayerState(player) == null)
+			{
 				return false;
 			}
+			Map<Integer,Template> templates = state.getPlayerState(player).getTemplates();
+			/*if (templates == null) {
+				return false;
+			}*/
 			return templates.size() != 0;
 		}
 		/**
@@ -1048,13 +1004,23 @@ public class State implements Serializable, Cloneable {
 		}
 	}
 	public StateView getView(int player) {
-		StateView toreturn = views.get(player);
+		//StateView toreturn = views.get(player);
+		if(player == Agent.OBSERVER_ID)
+		{
+			if(observerState.getView() == null)
+				observerState.setStateView(new StateView(this,player));
+
+			return observerState.getView();
+		}
+		
+		StateView toreturn = playerStates.get(player).getView();
 		if(toreturn == null)
 		{
 			toreturn = new StateView(this,player);
-			views.put(player, toreturn);
+			//views.put(player, toreturn);
+			playerStates.get(player).setStateView(toreturn);
 		}
-		return views.get(player);
+		return toreturn;
 	}
 	@SuppressWarnings("rawtypes")
 	/**
@@ -1383,27 +1349,42 @@ public class State implements Serializable, Cloneable {
 		int x = newunit.getxPosition();
 		int y = newunit.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player))
 			{
 				getEventLog(player).recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			if (canSee(x, y, playerState.playerNum))
+			{
+				playerState.getEventLogger().recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
+			}
 		}
+		observerState.getEventLogger().recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
 	}
 	public void recordUpgrade(UpgradeTemplate upgradetemplate, Unit creator) {
 		
 		int x = creator.getxPosition();
 		int y = creator.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player))
 			{
 				getEventLog(player).recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			if (canSee(x, y, playerState.playerNum))
+			{
+				playerState.getEventLogger().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
+			}
 		}
-		
+		observerState.getEventLogger().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());		
 	}
 	public void recordDamage(Unit u, Unit target, int damage) {
 		
@@ -1412,13 +1393,22 @@ public class State implements Serializable, Cloneable {
 		int x2 = u.getxPosition();
 		int y2 = u.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player) || canSee(x2, y2, player))
 			{
 				getEventLog(player).recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			int player = playerState.playerNum;
+			if (canSee(x, y, player) || canSee(x2, y2, player))
+			{
+				playerState.getEventLogger().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
+			}
 		}
+		observerState.getEventLogger().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);		
 	}
 	public void recordPickupResource(Unit u, ResourceNode resource, int amountPickedUp) {
 		int x = resource.getxPosition();
@@ -1426,39 +1416,75 @@ public class State implements Serializable, Cloneable {
 		int x2 = u.getxPosition();
 		int y2 = u.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player) || canSee(x2, y2, player))
 			{
 				getEventLog(player).recordPickupResource(u.ID, u.getPlayer(), resource.getResourceType(), amountPickedUp, resource.ID, resource.getType());;
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			int player = playerState.playerNum;
+			if (canSee(x, y, player) || canSee(x2, y2, player))
+			{
+				playerState.getEventLogger().recordPickupResource(u.ID, 
+																  u.getPlayer(), 
+																  resource.getResourceType(), 
+																  amountPickedUp, 
+																  resource.ID, 
+																  resource.getType());
+			}
 		}
+		observerState.getEventLogger().recordPickupResource(u.ID, 
+														    u.getPlayer(), 
+														    resource.getResourceType(), 
+														    amountPickedUp, 
+														    resource.ID, 
+														    resource.getType());
 		
 	}
 	public void recordDeath(Unit u) {
 		int x = u.getxPosition();
 		int y = u.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player))
 			{
 				getEventLog(player).recordDeath(u.ID,u.getPlayer());
 			}
+		}*/
+
+		for(PlayerState playerState : playerStates.values())
+		{
+			if (canSee(x, y, playerState.playerNum))
+			{
+				playerState.getEventLogger().recordDeath(u.ID,u.getPlayer());
+			}
 		}
+		observerState.getEventLogger().recordDeath(u.ID,u.getPlayer());
 	}
 	public void recordExhaustedResourceNode(ResourceNode r) {
 		
 		int x = r.getxPosition();
 		int y = r.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player))
 			{
 				getEventLog(player).recordExhaustedResourceNode(r.ID, r.getType());
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			if (canSee(x, y, playerState.playerNum))
+			{
+				playerState.getEventLogger().recordExhaustedResourceNode(r.ID, r.getType());
+			}
 		}
+		observerState.getEventLogger().recordExhaustedResourceNode(r.ID, r.getType());
 	}
 	public void recordDropoffResource(Unit u, Unit townHall) {
 		int x = townHall.getxPosition();
@@ -1466,13 +1492,22 @@ public class State implements Serializable, Cloneable {
 		int x2 = u.getxPosition();
 		int y2 = u.getyPosition();
 		//Don't change the iterating thing to "player" because it won't do the observer properly
-		for (Integer player : eventlogs.keySet())
+		/*for (Integer player : eventlogs.keySet())
 		{
 			if (canSee(x, y, player) || canSee(x2, y2, player))
 			{
 				getEventLog(player).recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
 			}
+		}*/
+		for(PlayerState playerState : playerStates.values())
+		{
+			int player = playerState.playerNum;
+			if (canSee(x, y, player) || canSee(x2, y2, player))
+			{
+				playerState.getEventLogger().recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
+			}
 		}
+		observerState.getEventLogger().recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
 		
 	}
 	

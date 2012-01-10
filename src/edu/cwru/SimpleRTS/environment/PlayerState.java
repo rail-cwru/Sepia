@@ -139,11 +139,11 @@ public class PlayerState implements Serializable, Cloneable {
 		this.logger = logger;
 	}
 	
-	public int[][] getVisiblityMatrix() {
+	public int[][] getVisibilityMatrix() {
 		return canSee;
 	}
 	
-	public void setVisiblityMatrix(int[][] matrix) {
+	public void setVisibilityMatrix(int[][] matrix) {
 		canSee = matrix;
 	}
 	
