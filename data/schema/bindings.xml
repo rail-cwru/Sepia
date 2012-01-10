@@ -4,6 +4,7 @@
 		<jxb:schemaBindings>
 			<jxb:package name="edu.cwru.SimpleRTS.environment.state.persistence.generated"/>
 			<jxb:nameXmlTransform>
+				<jxb:elementName prefix="Xml"/>
 				<jxb:typeName prefix="Xml"/>
 			</jxb:nameXmlTransform>
 		</jxb:schemaBindings>
