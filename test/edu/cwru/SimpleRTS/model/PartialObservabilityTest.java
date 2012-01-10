@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,9 +97,12 @@ public void sightTest() throws FileNotFoundException, JSONException {
 		state.addTemplate(t2);
 	UnitTemplate template = ((UnitTemplate)state.getTemplate(player, "Footman"));
 	UnitTemplate enemytemplate = ((UnitTemplate)state.getTemplate(otherplayer, "Footman"));
-	Unit u = new Unit(template);
-	state.addUnit(u, 0, 0);
-	
+	List<Unit> myunits = new ArrayList<Unit>();
+	{	
+		Unit u = new Unit(template);
+		state.addUnit(u, 0, 0);
+		myunits.add(u);
+	}
 	for (int i = 0; i < state.getXExtent(); i++)
 	{
 		for (int j = 0; j < state.getYExtent(); j++)
@@ -111,18 +115,33 @@ public void sightTest() throws FileNotFoundException, JSONException {
 	}
 	
 	Random r = new Random();
-	int numsteps = 5000;
+	int numsteps = 1000;
+	int howoftentoaddorremoveunits=25;
 	StateView view = state.getView(player);
-	
 	for (int n = 0;n<numsteps;n++)
 	{
-		
+		if ((n+1)%howoftentoaddorremoveunits==0)
+		{
+			if (myunits.size()==0||r.nextBoolean())//add
+			{
+				Unit u = new Unit(template);
+				state.addUnit(u, r.nextInt(state.getXExtent()), r.nextInt(state.getYExtent()));
+				myunits.add(u);
+			}
+			else //remove
+			{
+				Unit u = myunits.remove(r.nextInt(myunits.size()));
+				state.removeUnit(u.ID);
+			}
+		}
+		for (Unit u : myunits)
+		{
 		Direction d = Direction.values()[r.nextInt(Direction.values().length)];
 		if (state.inBounds(u.getxPosition()+d.xComponent(), u.getyPosition()+d.yComponent()))
 			state.moveUnit(u, d);
-		
+		}
 		System.out.println("Step: "+n);
-		System.out.println(printView(u.getxPosition(), u.getyPosition(), view));
+		System.out.println(printView(myunits, view));
 		List<Integer> allresources = view.getAllResourceIds();
 		List<Integer> allunits = view.getAllUnitIds();
 		for (int i = 0; i<state.getXExtent(); i++)
@@ -186,22 +205,32 @@ public void sightTest() throws FileNotFoundException, JSONException {
 	for (int n = 0;n<numsteps;n++)
 	{
 		
-		
-		Direction d = Direction.values()[r.nextInt(Direction.values().length)];
-		if (state.inBounds(u.getxPosition()+d.xComponent(), u.getyPosition()+d.yComponent()))
-			state.moveUnit(u, d);
-		
+		for (Unit u : myunits)
+		{
+			Direction d = Direction.values()[r.nextInt(Direction.values().length)];
+			if (state.inBounds(u.getxPosition()+d.xComponent(), u.getyPosition()+d.yComponent()))
+				state.moveUnit(u, d);
+		}
 		
 		System.out.println("Step: "+n);
-		System.out.println(printView(u.getxPosition(), u.getyPosition(), view));
+		System.out.println(printView(myunits, view));
 		List<Integer> allresources = view.getAllResourceIds();
 		List<Integer> allunits = view.getAllUnitIds();
 		for (int i = 0; i<state.getXExtent(); i++)
 			for (int j = 0; j<state.getYExtent(); j++)
 			{
 				boolean cansee = view.canSee(i, j);
-				boolean inrange = DistanceMetrics.chebyshevDistance(i, j, u.getxPosition(), u.getyPosition())<=u.getTemplate().getSightRange();
-				assertTrue("Step "+n+":"+(cansee?"Can":"Can't") + " see "+i+","+j+", but it "+(inrange?"is":"isn't")+" in range "+DistanceMetrics.chebyshevDistance(i, j, u.getxPosition(), u.getyPosition())+" away",cansee == inrange);
+				boolean inrange = false;
+				for (Unit u : myunits)
+				{
+					if( DistanceMetrics.chebyshevDistance(i, j, u.getxPosition(), u.getyPosition())<=u.getTemplate().getSightRange())
+					{
+						inrange = true;
+						break;
+					}
+					
+				}
+				assertTrue("Step "+n+":"+(cansee?"Can":"Can't") + " see "+i+","+j+", but it "+(inrange?"is":"isn't")+" in range ",cansee == inrange);
 			}
 		
 		
@@ -268,14 +297,23 @@ public void sightTest() throws FileNotFoundException, JSONException {
 	}
 	
 }
-public String printView(int unitx, int unity,StateView v)
+public String printView(List<Unit> myunits,StateView v)
 {
 	String s="";
 	for (int i = 0; i<v.getXExtent();i++)
 	{
 		for (int j = 0; j<v.getYExtent();j++)
 		{
-			s+=(i==unitx&&j==unity)?"|u":v.canSee(i, j)?"|x":"| ";
+			boolean unitthere = false;
+			for (Unit u : myunits)
+			{
+				if (u.getxPosition() == i && u.getyPosition() == j)
+				{	
+					unitthere = true;
+					break;
+				}
+			}
+			s+=unitthere?"|u":v.canSee(i, j)?"|x":"| ";
 			
 		}
 		s+="|\n";

@@ -31,14 +31,28 @@ public class ReplayAgentTest {
 	public void setUp() throws Exception {
 	}
 	
+//	@Test
+//	public void rngtest() throws IOException, InterruptedException, BackingStoreException {
+//		String[] params = {"--config","data/replayCombatTestConfig.xml","data/combattest.map",
+//				"--agent","edu.cwru.SimpleRTS.agent.CombatAgent","0","--agentparam","1","--agentparam","false","--agentparam","true",
+//				"--agent","edu.cwru.SimpleRTS.agent.CombatAgent","1","--agentparam","0","--agentparam","false","--agentparam","true",
+//				"--agent","edu.cwru.SimpleRTS.agent.visual.VisualAgent","0","--agentparam","false","--agentparam","true"};
+//		Main.main(params);
+//		
+//		String[] params2 = {"--config","data/replayCombatTestConfig.xml","data/combattest.map",
+//				"--agent","edu.cwru.SimpleRTS.agent.ReplayAgent","0","--agentparam","saves/state0.SRTSsav","--agentparam","true",
+//				"--agent","edu.cwru.SimpleRTS.agent.ReplayAgent","1","--agentparam","saves/state0.SRTSsav","--agentparam","true",
+//				"--agent","edu.cwru.SimpleRTS.agent.visual.VisualAgent","0","--agentparam","false","--agentparam","true"};
+//		Main.main(params2);
+//		
+//	}
 	@Test
 	public void test() throws IOException, InterruptedException, BackingStoreException {
-		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true";
+		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
 		Main.main(para.split(" +"));
 		
 		para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.ReplayAgent 0 --agentparam saves/state0.SRTSsav --agentparam true --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true";
 		Main.main(para.split(" +"));
-		
-		
 	}
+	
 }

@@ -35,6 +35,7 @@ public class State implements Serializable, Cloneable {
 		 in.defaultReadObject();
 		 for (Unit u : allUnits.values())
 		 {
+			 System.out.println("Reserving ids up to "+u.ID);
 			 Target.reserveIDsUpTo(u.ID);
 			 
 		 }
@@ -44,6 +45,7 @@ public class State implements Serializable, Cloneable {
 		 }
 		 for (ResourceNode r : resourceNodes)
 		 {
+			 System.out.println("Reserving ids up to "+r.ID);
 			 Target.reserveIDsUpTo(r.ID);
 		 }
 	 }
@@ -232,7 +234,7 @@ public class State implements Serializable, Cloneable {
 		if (fogofwar)
 		{
 			hasFogOfWar = true;
-			recalculateVisionFromScratch();
+//			recalculateVisionFromScratch();
 		}
 		else
 		{
@@ -313,23 +315,10 @@ public class State implements Serializable, Cloneable {
 	 * Recalculates the vision of each agent from scratch.
 	 */
 	private void recalculateVisionFromScratch() {
-		/*playerCanSee = new HashMap<Integer,int[][]>();
-		int[][] observersight = new int[getXExtent()][getYExtent()];
-		playerCanSee.put(Agent.OBSERVER_ID, observersight);*/
-		/*for (Integer player : players)
-		{
-			if (!playerCanSee.containsKey(player)||playerStates.get(player).getVisiblityMatrix()==null)
-			{
-				playerCanSee.put(player, new int[getXExtent()][getYExtent()]);
-			}
-		}*/
 		observerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
 		for (PlayerState player : playerStates.values())
 		{
-			if(player.getVisibilityMatrix() == null)
-			{
-				player.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
-			}
+			player.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
 		}
 		for (Unit u : allUnits.values())
 		{
@@ -404,7 +393,7 @@ public class State implements Serializable, Cloneable {
 		Map<Integer,Template> playerstemplates = templatesByAgent.get(player);
 		if (playerstemplates == null)
 		{
-			System.out.println("Player not found");
+//			System.out.println("Player not found");
 			return null;
 		}
 		for (Template t : playerstemplates.values()) {
@@ -516,6 +505,7 @@ public class State implements Serializable, Cloneable {
 			}
 	}
 	public void addUnit(Unit u,int x, int y) {
+		
 		int player = u.getPlayer();
 		if (!players.contains(player))
 			addPlayer(player);
@@ -570,6 +560,18 @@ public class State implements Serializable, Cloneable {
 		int[][] playersight = playerStates.get(u.getPlayer()).getVisibilityMatrix();
 		//int[][] observersight=playerCanSee.get(Agent.OBSERVER_ID);
 		int[][] observersight = observerState.getVisibilityMatrix();
+		
+//		String s="";
+//		for (int i = 0; i<getXExtent();i++)
+//		{
+//			for (int j = 0; j<getYExtent();j++)
+//			{
+//				s+="|"+playersight[i][j];
+//				
+//			}
+//			s+="|\n";
+//		}
+//		System.out.println(s);
 		if (direction.xComponent()!=0)
 		{
 			int xoffset;
