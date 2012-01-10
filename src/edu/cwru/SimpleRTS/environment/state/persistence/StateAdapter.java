@@ -38,7 +38,7 @@ public class StateAdapter {
 		return xml;
 	}
 	
-	public State fromXml(XmlState xml, @SuppressWarnings("rawtypes") Map<Integer,List<Template>> templates) {
+	public State fromXml(XmlState xml, @SuppressWarnings("rawtypes") Map<Integer,Map<Integer,Template>> templates) {
 		StateBuilder state = new StateBuilder();
 		
 		for(XmlPlayer player : xml.getPlayer())

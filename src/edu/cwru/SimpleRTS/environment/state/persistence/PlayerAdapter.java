@@ -1,7 +1,7 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import edu.cwru.SimpleRTS.environment.PlayerState;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
@@ -47,9 +47,9 @@ public class PlayerAdapter {
 		return xml;
 	}
 	
-	public PlayerState fromXml(XmlPlayer xml, @SuppressWarnings("rawtypes") Collection<Template> templates) {
+	public PlayerState fromXml(XmlPlayer xml, @SuppressWarnings("rawtypes") Map<Integer,Template> templates) {
 		PlayerState player = new PlayerState(xml.getID());
-		UnitAdapter unitAdapter = new UnitAdapter(player.getTemplates());
+		UnitAdapter unitAdapter = new UnitAdapter(templates);
 		
 		for(XmlUnit unit : xml.getUnit())
 		{
@@ -60,7 +60,7 @@ public class PlayerAdapter {
 		
 		for(int id : xml.getTemplate())
 		{
-			for(@SuppressWarnings("rawtypes") Template template : templates)
+			for(@SuppressWarnings("rawtypes") Template template : templates.values())
 			{
 				if(template.ID == id)
 				{
