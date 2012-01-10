@@ -1,6 +1,8 @@
 package edu.cwru.SimpleRTS.util;
 
-public class Pair<A, B> {
+import java.io.Serializable;
+
+public class Pair<A, B> implements Serializable {
 	public A a;
 	public B b;
 	public Pair(A a,B b) {

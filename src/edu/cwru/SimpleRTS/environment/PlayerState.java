@@ -24,9 +24,9 @@ public class PlayerState implements Serializable, Cloneable {
 	private Map<ResourceType,Integer> currentResources;
 	private int currentSupply;
 	private int currentSupplyCap;
-	private transient StateView view;
-	private transient EventLogger logger;
-	private transient int[][] canSee;
+	private StateView view;
+	private EventLogger logger;
+	private int[][] canSee;
 	
 	@SuppressWarnings("rawtypes")
 	public PlayerState(int id) {

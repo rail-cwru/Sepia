@@ -120,6 +120,6 @@ public class VisualAgent extends Agent implements ActionListener {
     }
 
 	public static String getUsage() {
-		return "It takes three parameters (--param): a boolean for whether it can be controlled by human, a boolean for whether visualize info for units";
+		return "It takes three parameters (--agentparam): a boolean for whether it can be controlled by human, a boolean for whether visualize info for units";
 	}
 }

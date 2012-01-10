@@ -301,7 +301,7 @@ public class State implements Serializable, Cloneable {
 		playerCanSee.put(Agent.OBSERVER_ID, observersight);
 		for (Integer player : players)
 		{
-			if (!playerCanSee.containsKey(player))
+			if (!playerCanSee.containsKey(player)||playerStates.get(player).getVisiblityMatrix()==null)
 			{
 				playerCanSee.put(player, new int[getXExtent()][getYExtent()]);
 				playerStates.get(player).setVisiblityMatrix(new int[getXExtent()][getYExtent()]);
@@ -502,7 +502,8 @@ public class State implements Serializable, Cloneable {
 						playerCanSee.get(Agent.OBSERVER_ID)[i][j]++;
 						System.out.println(u);
 						System.out.println(u.getPlayer());
-						System.out.println(playerCanSee.keySet());
+						System.out.println(playerCanSee.entrySet());
+						System.out.println(playerStates.entrySet());
 						playerCanSee.get(u.getPlayer())[i][j]++;
 						playerStates.get(player).getVisiblityMatrix()[i][j]++;
 					}

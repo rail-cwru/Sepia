@@ -22,7 +22,7 @@ public class LoadingStateCreator implements StateCreator{
 			ois.close();
 		}
 		catch(Exception ex) {
-			System.err.print(new File(loadfilename).getAbsolutePath()+" ");
+			System.err.print("Could not load \""+new File(loadfilename).getAbsolutePath()+"\" ");
 			ex.printStackTrace();
 			return null;
 		}

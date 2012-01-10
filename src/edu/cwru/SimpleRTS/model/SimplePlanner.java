@@ -141,7 +141,7 @@ public class SimplePlanner implements Serializable {
 		LinkedList<Action> moves = new LinkedList<Action>();
 		while (!path.isEmpty())
 		{
-			moves.addLast(Action.createPrimitiveMove(actor.hashCode(), path.removeFirst()));
+			moves.addLast(Action.createPrimitiveMove(actor.ID, path.removeFirst()));
 		}
 		return moves;
 	}
@@ -163,7 +163,7 @@ public class SimplePlanner implements Serializable {
 		if (directions == null)
 			return planFail(actor.ID);
 		LinkedList<Action> plan = planMove(actor,directions);
-		plan.addLast(new TargetedAction(actor.hashCode(),ActionType.PRIMITIVEATTACK,target.hashCode()));
+		plan.addLast(new TargetedAction(actor.ID,ActionType.PRIMITIVEATTACK,target.ID));
 		return plan;
 	}
 	public LinkedList<Action> planAttack(int actor, int target) {
@@ -244,17 +244,17 @@ public class SimplePlanner implements Serializable {
 			if (actor.getCurrentProductionID() == template.ID)
 			{//if it is building the same thing
 				//then make it keep building it
-				int amountleft = template.hashCode() - actor.getAmountProduced();
+				int amountleft = template.timeCost - actor.getAmountProduced();
 				for (int i = 0; i<amountleft; i++)
 				{
-					plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 				}
 			}
 			else
 			{//if it is making somthing else
 				for (int i = template.timeCost - 1; i>=0; i--)
 				{
-					plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 				}
 			}
 		}
@@ -264,7 +264,7 @@ public class SimplePlanner implements Serializable {
 			plan = planMove(actor, getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
 			for (int i = template.timeCost - 1; i>=0; i--)
 			{
-				plan.addLast(Action.createPrimitiveBuild(actor.hashCode(), template.hashCode()));
+				plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 			}
 		}
 		return plan;
@@ -279,17 +279,17 @@ public class SimplePlanner implements Serializable {
 		if (actor.getCurrentProductionID() == template.ID)
 		{//if it is building the same thing
 			//then make it keep building it
-			int amountleft = template.hashCode() - actor.getAmountProduced();
+			int amountleft = template.timeCost - actor.getAmountProduced();
 			for (int i = 0; i<amountleft; i++)
 			{
-				plan.addLast(Action.createPrimitiveProduction(actor.hashCode(), template.hashCode()));
+				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
 			}
 		}
 		else
 		{//if it is making somthing else
 			for (int i = template.timeCost - 1; i>=0; i--)
 			{
-				plan.addLast(Action.createPrimitiveProduction(actor.hashCode(), template.hashCode()));
+				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
 			}
 		}
 		return plan;

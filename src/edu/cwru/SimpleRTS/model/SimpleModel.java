@@ -403,7 +403,7 @@ public class SimpleModel implements Model {
 									}
 								}
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template, state.getView(-1));
+								u.incrementProduction(template, state.getView(Agent.OBSERVER_ID));
 								if (template.timeCost == u.getAmountProduced())
 								{
 									Unit building = template.produceInstance();
@@ -417,7 +417,7 @@ public class SimpleModel implements Model {
 									
 //									System.out.println(state.getUnit(u.ID));
 									}
-									u.incrementProduction(null, state.getView(-1));
+									u.incrementProduction(null, state.getView(Agent.OBSERVER_ID));
 								}
 								
 								break;
@@ -427,7 +427,7 @@ public class SimpleModel implements Model {
 								if (!(a instanceof ProductionAction))
 									break;
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template,state.getView(-1));
+								u.incrementProduction(template,state.getView(Agent.OBSERVER_ID));
 //								System.out.println(template.getName() + " takes "+template.timeCost);
 //								System.out.println("Produced"+u.getAmountProduced());
 								if (template.timeCost == u.getAmountProduced())
@@ -448,7 +448,7 @@ public class SimpleModel implements Model {
 											state.recordUpgrade(upgradetemplate,u);
 										}
 									}
-									u.incrementProduction(null, state.getView(-1));
+									u.incrementProduction(null, state.getView(Agent.OBSERVER_ID));
 									
 								}
 								

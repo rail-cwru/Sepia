@@ -18,16 +18,18 @@ public class ActionLogger implements Serializable {
 	int roundnumber;
 	public ActionLogger () {
 		actions = new HashMap<Integer, List<List<Action>>>();
-		roundnumber=-1;//it is the 0th round, and 0 is a very round number
+		roundnumber=-1;
 		nextRound();
 	}
 	public void nextRound()
 	{
+		
+		roundnumber++;
 		for (int playerid : actions.keySet()) {
 			List<List<Action>> actionsets=actions.get(playerid);
 			actionsets.add(roundnumber,new ArrayList<Action>());
 		}
-		roundnumber++;
+		System.out.println("Action logger logging the start of round "+roundnumber);
 	}
 	public void addPlayer(int playernumber) {
 		List<List<Action>> actionset = new ArrayList<List<Action>>();
@@ -36,6 +38,7 @@ public class ActionLogger implements Serializable {
 		{
 			actionset.add(i,new ArrayList<Action>());
 		}
+		System.out.println("ActionLogger adding another player "+playernumber);
 	}
 	public void addAction(int playernum, Action action) {
 		if (!actions.containsKey(playernum))
@@ -43,6 +46,7 @@ public class ActionLogger implements Serializable {
 			addPlayer(playernum);
 		}
 		actions.get(playernum).get(roundnumber).add(action);
+		System.out.println("ActionLogger logging action "+action);
 	}
 	/**
 	 * Get the actions of a player
@@ -51,7 +55,8 @@ public class ActionLogger implements Serializable {
 	 * @return an unmodifiable list of actions performed by a player in a specific round (or an empty list if the player or round is not found)
 	 */
 	public List<Action> getActions(int playernum, int roundnumber) {
-		if (!actions.containsKey(playernum) || roundnumber<0 || roundnumber < this.roundnumber) {
+		if (!actions.containsKey(playernum) || roundnumber<0 || roundnumber > this.roundnumber) {
+			System.out.println("ActionLogger could not find an appropriate log");
 			return new ArrayList<Action>();
 		}
 		else {

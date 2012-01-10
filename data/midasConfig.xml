@@ -12,6 +12,7 @@
             <node name="environment">
               <map>
                 <entry key="NumEpisodes" value="1"/>
+                <entry key="EpisodesPerSave" value="1"/>
               </map>
             </node>
             <node name="model">

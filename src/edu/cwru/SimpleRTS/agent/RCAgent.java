@@ -103,6 +103,7 @@ public class RCAgent extends Agent {
 				System.out.println("already have enough gold to produce a new peasant.");
 				TemplateView peasanttemplate = currentState.getTemplate(playernum, "Peasant");
 				int peasanttemplateID = peasanttemplate.getID();
+				System.out.println(peasanttemplate.getID());
 				int townhallID = townhallIds.get(0);
 				builder.put(townhallID, Action.createCompoundProduction(townhallID, peasanttemplateID));
 			} else {

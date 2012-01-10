@@ -21,9 +21,9 @@ import edu.cwru.SimpleRTS.model.SimpleModel;
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
-		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true";
-		//String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
-		args = para.split(" +");
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true";
+//		//String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		args = para.split(" +");
 		
 		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
@@ -155,7 +155,7 @@ public class Main {
 			env.runEpisode();
 			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
 			{
-				model.save("saves/state"+episode);
+				model.save("saves/state"+episode+".SRTSsav");
 				for(int j = 0; saveAgents && j < agents.size(); j++)
 				{
 					try {

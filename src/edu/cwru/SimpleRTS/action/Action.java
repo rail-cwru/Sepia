@@ -1,8 +1,10 @@
 package edu.cwru.SimpleRTS.action;
 
+import java.io.Serializable;
+
 import edu.cwru.SimpleRTS.model.Direction;
 
-public class Action {
+public class Action implements Serializable{
 
 	protected ActionType type;
 	protected int unitId;
