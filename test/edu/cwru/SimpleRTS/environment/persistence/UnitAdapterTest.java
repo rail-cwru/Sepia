@@ -29,17 +29,6 @@ public class UnitAdapterTest {
 	@SuppressWarnings("rawtypes")
 	private static Map<Integer,Template> templates;
 	
-	@SuppressWarnings("rawtypes")
-	@BeforeClass
-	public static void loadTemplates() throws FileNotFoundException, JSONException {
-		templates = new HashMap<Integer,Template>();
-		List<UnitTemplate> templateList = TypeLoader.loadUnitsFromFile("data/unit_templates", 0);
-		for(Template t : templateList)
-		{
-			templates.put(t.ID,t);
-		}
-	}
-	
 	@Test
 	public void testToXml() {
 		UnitAdapter adapter = new UnitAdapter(templates);
@@ -64,16 +53,7 @@ public class UnitAdapterTest {
 	@Test
 	public void testFromXml() throws JAXBException {
 		UnitAdapter adapter = new UnitAdapter(templates);
-		XmlUnit xml = new XmlUnit();
-		xml.setCargoAmount(10);
-		xml.setCargoType(ResourceType.GOLD);
-		xml.setCurrentHealth(10);
-		xml.setProductionAmount(1);
-		xml.setProductionTemplateID(4);
-		xml.setTemplateID(2);
-		xml.setUnitTask(UnitTask.Build);
-		xml.setXPosition(2);
-		xml.setYPosition(3);
+		XmlUnit xml = AdapterTestUtil.createExampleUnit();
 		/*
 		JAXBContext context = JAXBContext.newInstance(XmlUnit.class);
 		Marshaller marshaller = context.createMarshaller();
