@@ -17,9 +17,8 @@ import edu.cwru.SimpleRTS.*;
 %import java.io.FileInputStream;
 %Preferences.importPreferences(FileInputStream('data/midasConfig.xml'));
 
-%arg = '--config data/defaultConfig.xml data/footmen8v8.map --agent edu.cwru.SimpleRTS.agent.QCombatAgent 0 --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam 0 --agentparam true --agentparam false';
-%arg = '--config data/defaultConfig.xml data/midas5.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam 0 --agentparam true --agentparam false';
-arg = '--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
+arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true';
+%arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
 args = regexpi(arg, ' +', 'split');
 Main.main(args);
 

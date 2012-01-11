@@ -66,7 +66,8 @@ public class MatlabAgent extends Agent {
 			Object[] objects = m_proxy.returningFeval("agent_middleStep", 1, newstate);
 			Map<Double, Action> actionMap = (Map<Double, Action>)objects[0];
 			for(double key : actionMap.keySet()) {
-				builder.put((int)key, actionMap.get(key));
+				int keyInt = (int)key;
+				builder.put(keyInt, actionMap.get(key));
 			}
 		} catch (MatlabInvocationException e) {
 			e.printStackTrace();
