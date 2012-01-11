@@ -39,20 +39,24 @@ public class StateAdapter {
 	}
 	
 	public State fromXml(XmlState xml, @SuppressWarnings("rawtypes") Map<Integer,Map<Integer,Template>> templates) {
-		StateBuilder state = new StateBuilder();
+		StateBuilder builder = new StateBuilder();
 		
 		for(XmlPlayer player : xml.getPlayer())
 		{
-			state.addPlayer(playerAdapter.fromXml(player, templates.get(player.getID())));
+			builder.addPlayer(playerAdapter.fromXml(player, templates.get(player.getID())));
 		}
+		
 		
 		for(XmlResourceNode resource : xml.getResourceNode())
 		{
-			state.addResource(resourceNodeAdapter.fromXml(resource));
+			builder.addResource(resourceNodeAdapter.fromXml(resource));
 		}
 		
-		state.setSize(xml.getXExtent(), xml.getYExtent());
+		builder.setSize(xml.getXExtent(), xml.getYExtent());
 		
-		return state.build();
+		State state = builder.build();
+		state.updateGlobalListsFromPlayers();
+				
+		return state;
 	}
 }

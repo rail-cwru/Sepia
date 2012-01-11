@@ -85,6 +85,10 @@ public class SimpleModel implements Model {
 		int numLivePlayers = 0;
 		for(int i = 0; i <= Agent.maxId() && numLivePlayers < 2; i++)
 		{
+			if(state.getUnits(i).size() == 0)
+			{
+				continue;
+			}
 			for(Unit u : state.getUnits(i).values())
 			{
 				if(u.getCurrentHealth() > 0)

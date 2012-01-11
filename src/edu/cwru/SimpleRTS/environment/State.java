@@ -106,6 +106,20 @@ public class State implements Serializable, Cloneable {
 		setRevealedResources(false);
 	}
 	
+	public void updateGlobalListsFromPlayers() {
+		for(PlayerState player : playerStates.values())
+		{
+			for(Unit u : player.getUnits().values())
+			{
+				allUnits.put(u.ID, u);
+			}
+			for(Template t : player.getTemplates().values())
+			{
+				allTemplates.put(t.ID, t);
+			}
+		}
+	}
+	
 	@Override
 	protected Object clone() {
 		State state = new State();
@@ -1050,6 +1064,7 @@ public class State implements Serializable, Cloneable {
 		 * @return
 		 */
 		public EventLogger.EventLoggerView getEventLog() {
+			EventLogger logger = state.getEventLog(player);
 			return state.getEventLog(player).getView();
 		}
 		/**

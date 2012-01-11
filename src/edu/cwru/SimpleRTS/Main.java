@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,8 @@ import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.StateCreator;
+import edu.cwru.SimpleRTS.environment.XmlStateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateUtil;
 import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
@@ -60,8 +61,8 @@ public class Main {
 			clearPrefs();
 		}
 		String statefilename = args[i];
-		
-		State initState = new LoadingStateCreator(statefilename).createState();
+		StateCreator stateCreator = new LoadingStateCreator(statefilename);
+		State initState = stateCreator.createState();
 		if(initState == null)
 		{			
 			JAXBContext context;
@@ -134,8 +135,10 @@ public class Main {
 					templates.put(id, emptyTemplateMap);
 				}
 			}
-			StateAdapter adapter = new StateAdapter();
-			initState = adapter.fromXml(xml, templates);
+			//StateAdapter adapter = new StateAdapter();
+			//initState = adapter.fromXml(xml, templates);
+			stateCreator = new XmlStateCreator(xml,templates);
+			initState = stateCreator.createState();
 		}
 		if(initState == null)
 		{
@@ -237,7 +240,7 @@ public class Main {
 		File firstFile = new File("saves/state0");
 		firstFile.mkdirs();
 		
-		SimpleModel model = new SimpleModel(initState, 7,new LoadingStateCreator(statefilename));
+		SimpleModel model = new SimpleModel(initState, 7, stateCreator);
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{

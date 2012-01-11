@@ -34,7 +34,8 @@ public class PlayerState implements Serializable, Cloneable {
 		units = new HashMap<Integer,Unit>();
 		templates = new HashMap<Integer,Template>();
 		upgrades = new HashSet<Integer>();
-		currentResources = new EnumMap<ResourceType,Integer>(ResourceType.class);		
+		currentResources = new EnumMap<ResourceType,Integer>(ResourceType.class);	
+		logger = new EventLogger();
 	}
 	
 	public Unit getUnit(int id) {
