@@ -9,6 +9,14 @@
           <map/>
           <node name="SimpleRTS">
             <map/>
+            <node name="agent">
+            	<map/>
+            	<node name="templatefiles">
+            		<map>
+            			<entry key="Global" value="data/unit_templates"/>
+            		</map>
+            	</node>
+            </node>
             <node name="environment">
               <map>
                 <entry key="NumEpisodes" value="10"/>
