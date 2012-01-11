@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jxb:bindings version="2.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<jxb:bindings schemaLocation="state.xsd" node="/xs:schema">
+		<jxb:schemaBindings>
+			<jxb:package name="edu.cwru.SimpleRTS.environment.state.persistence.generated"/>
+			<jxb:nameXmlTransform>
+				<jxb:elementName prefix="Xml"/>
+				<jxb:typeName prefix="Xml"/>
+			</jxb:nameXmlTransform>
+		</jxb:schemaBindings>
+		<jxb:bindings node="xs:simpleType[@name='ResourceType']">
+			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceType" 
+			 	parseMethod="ResourceType.valueOf"/>
+		</jxb:bindings>
+		<jxb:bindings node="xs:simpleType[@name='ResourceNodeType']">
+			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceNode.Type" 
+			 	parseMethod="Type.valueOf"/>
+		</jxb:bindings> 
+		<jxb:bindings node="xs:simpleType[@name='UnitTask']">
+			 <jxb:javaType name="edu.cwru.SimpleRTS.model.unit.UnitTask" 
+			 	parseMethod="UnitTask.valueOf"/>
+		</jxb:bindings> 
+	</jxb:bindings>
+</jxb:bindings>

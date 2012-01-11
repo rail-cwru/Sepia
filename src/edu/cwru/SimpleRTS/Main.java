@@ -34,9 +34,9 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true";
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
 //		args = para.split(" +");
 		
 		
