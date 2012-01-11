@@ -1,23 +1,21 @@
 package edu.cwru.SimpleRTS.util;
 
-import java.util.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 
-import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.environment.Environment;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.environment.State.StateBuilder;
-import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
-import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
 
 
 /**
@@ -26,19 +24,35 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
  * @author Feng
  *
  */
-public final class GameMap implements Serializable{
+public final class GameMap {
 		
 	private GameMap() {}
 	
 	public static void storeState(String filename, State state) {
-		try {
-			ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename));
-			outputStream.writeObject(state);
-			outputStream.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(filename.contains(".map"))
+		{
+			try {
+				ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename));
+				outputStream.writeObject(state);
+				outputStream.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				JAXBContext context = JAXBContext.newInstance(XmlState.class);
+				Marshaller marshaller = context.createMarshaller();
+				StateAdapter adapter = new StateAdapter();
+				PrintWriter writer = new PrintWriter(new File(filename));
+				marshaller.marshal(adapter.toXml(state), writer);
+				writer.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
