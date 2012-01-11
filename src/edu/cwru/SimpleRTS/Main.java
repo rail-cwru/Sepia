@@ -7,16 +7,28 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
+import org.json.JSONException;
+
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.agent.SimpleAgent1;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.XmlStateUtil;
+import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
 import edu.cwru.SimpleRTS.model.SimpleModel;
+import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
@@ -47,7 +59,83 @@ public class Main {
 			clearPrefs();
 		}
 		String statefilename = args[i];
+		
 		State initState = new LoadingStateCreator(statefilename).createState();
+		if(initState == null)
+		{			
+			JAXBContext context;
+			XmlState xml = null;
+			try {
+				context = JAXBContext.newInstance(XmlState.class);
+				xml = (XmlState)context.createUnmarshaller().unmarshal(new File(statefilename));
+			} catch (JAXBException e1) {
+				printUsage(statefilename + " is not a valid XML file describing a state.");
+			}
+			
+			@SuppressWarnings("rawtypes")
+			Map<Integer,Map<Integer,Template>> templates = new HashMap<Integer,Map<Integer,Template>>();
+			
+			Preferences preferences = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("agent").node("templatefiles");
+			String global = preferences.get("Global", "");
+			
+			for(String key : preferences.keys())
+			{
+				int playernum = -1;
+				try
+				{
+					playernum = Integer.parseInt(key);
+				}
+				catch(Exception ex)
+				{
+					continue;
+				}
+				String filename = preferences.get(key, statefilename);
+				@SuppressWarnings("rawtypes")
+				List<Template> templateList;
+				try {
+					templateList = TypeLoader.loadFromFile(filename, playernum);
+				} catch (JSONException e) {
+					printUsage("File " + filename + " was not a valid template file.");
+					return;
+				}
+				@SuppressWarnings("rawtypes")
+				Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
+				for(@SuppressWarnings("rawtypes") Template t : templateList)
+					templateMap.put(t.ID, t);
+				templates.put(playernum, templateMap);
+			}
+			@SuppressWarnings("rawtypes")
+			HashMap<Integer,Template> emptyTemplateMap = new HashMap<Integer,Template>();
+			for(Integer id : XmlStateUtil.playerIds(xml))
+			{
+				if(templates.keySet().contains(id))
+				{
+					continue;
+				}
+				if(!global.equals(""))
+				{
+					@SuppressWarnings("rawtypes")
+					List<Template> templateList;
+					try {
+						templateList = TypeLoader.loadFromFile(global, id);
+					} catch (JSONException e) {
+						printUsage("File " + global + " was not a valid template file.");
+						return;
+					}
+					@SuppressWarnings("rawtypes")
+					Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
+					for(@SuppressWarnings("rawtypes") Template t : templateList)
+						templateMap.put(t.ID, t);
+					templates.put(id, templateMap);
+				}
+				else
+				{
+					templates.put(id, emptyTemplateMap);
+				}
+			}
+			StateAdapter adapter = new StateAdapter();
+			initState = adapter.fromXml(xml, templates);
+		}
 		if(initState == null)
 		{
 			printUsage("Unable to read file " + args[i]);
