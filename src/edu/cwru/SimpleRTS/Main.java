@@ -61,8 +61,13 @@ public class Main {
 			clearPrefs();
 		}
 		String statefilename = args[i];
-		StateCreator stateCreator = new LoadingStateCreator(statefilename);
-		State initState = stateCreator.createState();
+		StateCreator stateCreator = null;
+		State initState = null;
+		if(statefilename.contains(".map"))
+		{
+			 stateCreator = new LoadingStateCreator(statefilename);
+			 initState = stateCreator.createState();
+		}
 		if(initState == null)
 		{			
 			JAXBContext context;
