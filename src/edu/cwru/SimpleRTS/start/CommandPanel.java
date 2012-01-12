@@ -34,7 +34,7 @@ public class CommandPanel extends JPanel {
 
     JTextArea commandArea;
 
-    public CommandPanel(final Component parent) {
+    public CommandPanel(final Component parent, ActionListener runListener) {
         super(new GridBagLayout());
         TitledBorder border = new TitledBorder("Command");
         border.setBorder(new LineBorder(Color.BLACK, 2));
@@ -96,6 +96,8 @@ public class CommandPanel extends JPanel {
                 }
             }
         });
+
+        runButton.addActionListener(runListener);
     }
 
     public void saveCommand(File file) {

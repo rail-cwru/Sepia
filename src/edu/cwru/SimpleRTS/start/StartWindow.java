@@ -7,6 +7,9 @@ import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -19,9 +22,12 @@ import edu.cwru.SimpleRTS.start.CommandPanel;
 import edu.cwru.SimpleRTS.start.CommandChangeListener;
 
 @SuppressWarnings("serial")
-public class StartWindow extends JFrame implements CommandChangeListener {
+public class StartWindow extends JFrame
+    implements CommandChangeListener, ActionListener {
 
     static final float TITLE_FONT = 20f;
+
+    private List<StartListener> listeners = new LinkedList<StartListener>();
 
     FilesPanel filesPanel;
     AgentPanel agentPanel;
@@ -34,7 +40,7 @@ public class StartWindow extends JFrame implements CommandChangeListener {
         JPanel startPanel = new JPanel(new GridBagLayout());
         filesPanel = new FilesPanel(this);
         agentPanel = new AgentPanel();
-        commandPanel = new CommandPanel(this);
+        commandPanel = new CommandPanel(this, this);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3, 3, 3, 3);
@@ -77,6 +83,22 @@ public class StartWindow extends JFrame implements CommandChangeListener {
     @Override
     public void commandChanged() {
         commandPanel.setArgs(toArgList());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String[] args = toArgList().toArray(new String[0]);
+        for (StartListener startListener : listeners) {
+            startListener.start(args);
+        }
+    }
+
+    public void addStartListener(StartListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeStartListener(StartListener listener) {
+        listeners.remove(listener);
     }
 
 }
