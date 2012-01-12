@@ -3,8 +3,11 @@
 
 clear java  % this command doesn't work properly under Mac OS X, but works under Windows 7. But doesn't matter a lot.
 
-%javaaddpath({[fileparts(pwd),'/SimpleRTSv3.1.jar']});
-javaaddpath({[fileparts(pwd),'/bin'], [fileparts(pwd),'/lib/matlabcontrol-4.0.0.jar']}); % use this line under Eclipse project
+% use this line when you use jar directly
+%javaaddpath({[fileparts(pwd),'/SimpleRTSv3.1.jar'], [fileparts(pwd),'/lib/matlabcontrol-4.0.0.jar']}); 
+
+% use this line under Eclipse project
+javaaddpath({[fileparts(pwd),'/bin'], [fileparts(pwd),'/lib/matlabcontrol-4.0.0.jar']}); 
  
 %javaclasspath % print out current java class path
 
