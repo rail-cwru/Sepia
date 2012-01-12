@@ -7,6 +7,11 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -31,7 +36,7 @@ public class CommandPanel extends JPanel {
         this.setBorder(border);
 
         commandArea = new JTextArea(3, 20);
-        JButton copyButton = new JButton("Copy");
+        JButton copyButton = new JButton("Copy to Clipboard");
         JButton saveButton = new JButton("Save");
         JButton runButton = new JButton("Run");
 
@@ -65,6 +70,15 @@ public class CommandPanel extends JPanel {
 
         commandArea.setEditable(false);
         commandArea.setLineWrap(true);
+
+        copyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                StringSelection selection = new StringSelection(commandArea.getText());
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, null);
+            }
+        });
     }
 
     public void setArgs(List<String> args) {
