@@ -4,18 +4,24 @@ import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import edu.cwru.SimpleRTS.start.StartWindow;
+import edu.cwru.SimpleRTS.start.AgentTable;
 
 @SuppressWarnings("serial")
 public class AgentPanel extends JPanel {
+
+    AgentTable agentTable;
 
     public AgentPanel() {
         super(new GridBagLayout());
@@ -24,7 +30,7 @@ public class AgentPanel extends JPanel {
         border.setTitleFont(border.getTitleFont().deriveFont(StartWindow.TITLE_FONT));
         this.setBorder(border);
 
-        JLabel agentTable = new JLabel("TODO: AGENT TABLE");
+        agentTable = new AgentTable();
         JButton addButton = new JButton("Add");
         JButton deleteButton = new JButton("Delete");
 
@@ -37,7 +43,7 @@ public class AgentPanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
-        add(agentTable, gbc);
+        add(new JScrollPane(agentTable), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -52,6 +58,13 @@ public class AgentPanel extends JPanel {
 
         gbc.gridx = 2;
         add(deleteButton, gbc);
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                agentTable.addRow();
+            }
+        });
 
     }
 
