@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 import java.io.File;
+import java.net.URI;
 
 import java.awt.Color;
 import java.awt.Insets;
@@ -114,7 +115,9 @@ public class FilesPanel extends JPanel implements DocumentListener {
         fc.setFileFilter(filter);
         int choice = fc.showOpenDialog(parent);
         if (choice == JFileChooser.APPROVE_OPTION) {
-            return fc.getSelectedFile().getName();
+            URI chosenFile = fc.getSelectedFile().toURI();
+            URI currentDirectory = new File(".").toURI();
+            return currentDirectory.relativize(chosenFile).getPath();
         }
         return null;
     }
