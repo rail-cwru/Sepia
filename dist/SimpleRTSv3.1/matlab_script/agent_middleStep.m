@@ -19,8 +19,8 @@ global playernum;
 global woodRequired;
 global goldRequired;
 
-currentGold = state.getResourceAmount(0, ResourceType.GOLD);
-currentWood = state.getResourceAmount(0, ResourceType.WOOD);
+currentGold = state.getResourceAmount(0, ResourceType.GOLD).intValue();
+currentWood = state.getResourceAmount(0, ResourceType.WOOD).intValue();
 allUnitIDs = state.getAllUnitIds();
 peasantIDs = zeros(allUnitIDs.size, 1)-1;
 townHallIDs = zeros(allUnitIDs.size, 1)-1;

@@ -10,8 +10,8 @@ javaaddpath({[fileparts(pwd),'/SimpleRTSv3.1.jar']});
 
 import edu.cwru.SimpleRTS.*;
 
-arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true';
-%arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
+%arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true';
+arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
 args = regexpi(arg, ' +', 'split');
 Main.main(args);
 

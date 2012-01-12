@@ -39,6 +39,7 @@ public class Main {
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
 //		args = para.split(" +");
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0";
 //		args=para.split(" +");
 		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
@@ -243,7 +244,7 @@ public class Main {
 		int episodesPerSave = prefs.getInt("EpisodesPerSave", 0);
 		boolean saveAgents = prefs.getBoolean("SaveAgents", false);
 		//just to make the directory
-		File firstFile = new File("saves/state0");
+		File firstFile = new File("saves");
 		firstFile.mkdirs();
 		
 		SimpleModel model = new SimpleModel(initState, 7, stateCreator);

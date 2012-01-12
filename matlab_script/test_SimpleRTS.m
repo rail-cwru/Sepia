@@ -10,8 +10,8 @@ javaaddpath({[fileparts(pwd),'/bin'], [fileparts(pwd),'/lib/matlabcontrol-4.0.0.
 
 import edu.cwru.SimpleRTS.*;
 
-arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true';
-%arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
+%arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true';
+arg = '--config ../data/midasConfig.xml ../data/rc_3m5t.map --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0';
 args = regexpi(arg, ' +', 'split');
 Main.main(args);
 
