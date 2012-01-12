@@ -3,11 +3,18 @@ package edu.cwru.SimpleRTS.start;
 import java.util.List;
 import java.util.LinkedList;
 
+import java.io.File;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -28,7 +35,7 @@ public class FilesPanel extends JPanel implements DocumentListener {
     JTextField configField;
     JTextField mapField;
 
-    public FilesPanel() {
+    public FilesPanel(final Component parent) {
         super(new GridBagLayout());
         TitledBorder border = new TitledBorder("Files");
         border.setBorder(new LineBorder(Color.BLACK, 2));
@@ -75,6 +82,41 @@ public class FilesPanel extends JPanel implements DocumentListener {
 
         configField.getDocument().addDocumentListener(this);
         mapField.getDocument().addDocumentListener(this);
+
+        configButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedFile = getFileName(parent,
+                    "Config Files", "xml");
+                if (selectedFile != null) {
+                    configField.setText(selectedFile);
+                }
+            }
+        });
+
+        mapButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedFile = getFileName(parent,
+                    "Map Files", "xml", "map");
+                if (selectedFile != null) {
+                    mapField.setText(selectedFile);
+                }
+            }
+        });
+    }
+
+    private String getFileName(Component parent,
+        String filterDescription, String... extensions) {
+        JFileChooser fc = new JFileChooser(new File("."));
+        FileNameExtensionFilter filter =
+            new FileNameExtensionFilter(filterDescription, extensions);
+        fc.setFileFilter(filter);
+        int choice = fc.showOpenDialog(parent);
+        if (choice == JFileChooser.APPROVE_OPTION) {
+            return fc.getSelectedFile().getName();
+        }
+        return null;
     }
 
     public List<String> toArgList() {

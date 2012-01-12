@@ -32,7 +32,7 @@ public class StartWindow extends JFrame implements CommandChangeListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel startPanel = new JPanel(new GridBagLayout());
-        filesPanel = new FilesPanel();
+        filesPanel = new FilesPanel(this);
         agentPanel = new AgentPanel();
         commandPanel = new CommandPanel(this);
 
