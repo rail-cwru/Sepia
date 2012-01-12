@@ -10,7 +10,7 @@
 	</head>
 	<body>
 		<h1>SimpleRTS Manual</h1>
-		<h4>version 1.0</h4>
+		<h4>version 1.05c</h4>
 		<hr/>
 		<h2>Table of Contents</h2>
 		<ol>
@@ -18,9 +18,12 @@
 			<li><a href="#Revisions">Revision History</a></li>
 			<li><a href="#Run">How to Run</a></li>
 			<li><a href="#Config">Configuration</a>
+			<li><a href="#VisualAgent">Visual Agent and Unit Overview</a>
 			<li><a href="#Agent">Writing An Agent</a>
+			<li><a href="#FogofWar">Making Maps</a>
 			<li><a href="#ScripAgent">Using The Scripted Agent</a>
-			<li><a href="#Engine">The Engine: Under the Hood</a>
+			<li><a href="#Engine">The Engine</a>
+			<li><a href="#FogofWar">Partial Observability</a>
 			<li><a href="#Contact">Contact Info</a></li>
 		</ol>
 		<h2 id="Introduction">1. Introduction</h2>
@@ -64,9 +67,6 @@
 			Note that the visual agent shares the same player number.  If fog of war were enabled,
 			it would be clear that sharing the same player number gives the visual agent a view of the same player's units.
 		 	Trying to initialize an agent with a playernumber that does not exist in the map will lead to errors.
-		
-		
-		
 		   </p> 
 		<p>Here is a further description of all the options that can be used (Entering in insufficient
 		   or incorrect arguments will cause the program to print out usage info and
@@ -104,7 +104,20 @@
 			</div> 
 		</div>
 		<h3>More Examples</h3>
-		<p>Some agents require more complex prompts due to their 
+		<p>Another important agent is the CombatAgent, which is a basic fighting AI.  When the combat agent is controlling them, each unit sits around (or wanders) until an enemy comes into it's sight range, at which point it mindlessly attacks that enemy until one dies.
+		The combat agent takes three additional parameters:
+		<ul>
+			<li>A space separated list of enemy player numbers (for example if this is '--agentparam "0 1 3"', then the Combat agent will attack players 0,1, and 3)</li>
+			<li>A boolean for whether it's units should wander while waiting to see enemies</li>
+			<li>A boolean for whether it should produce verbose output into System.out</li>
+		</ul>
+		</p>
+		<p>
+			Thus, an example trial involving CombatAgent (with a visual agent to watch) could be started like so:
+		<\p>
+		<code>java -cp SimpleRTSv3.1.jar edu.cwru.SimpleRTS.Main --config data/conquestConfig.xml data/com_4f4a2kv4f4a4k.xml --agent edu.cwru.SimpleRTS.agent.CombatAgent 0 --agentparam "1" --agentparam true --agentparam false --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam "0" --agentparam true --agentparam false --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true</code>
+		<p>
+			Notice that each specifies the other as its enemy.
 		</p>
 		<h2 id="Config">4. Configuration</h2>
 		<p>The configuration file is used to define victory/termination conditions and set up parameters for the
@@ -159,7 +172,32 @@
 			user on the same machine. SimpleRTS clears out the properties defined above
 			automatically, but you will have to clear out custom properties yourself.
 		</p>
-		<h2 id="Agent">5. Writing an Agent</h2>
+		<h2 id="VisualAgent">5. Visual Agent and Game Details</h2>
+		<p>
+		SimpleRTS comes with a visual agent.  This agent allows users to see what is going on and what their agents are doing.  Simply declare a visual agent with the same playernumber as your agent (more info in the How to Run section), and you will be able to see everything that the agent sees.  Once there you will be able to see gold mines (gold squares), trees (tree shaped things), as well as letters in different colors.  The color of these letters represents the player number, while the letter shows what type of unit they are. 
+		</p>
+		<ul>
+			<li>Buildings
+				<ul>
+					<li>H: Town Hall.  This building makes peasants and acts as a drop-off point for resources. It also provides some food, which allows more units to be made.</li>
+					<li>F: Farm. This building provides food to allow more units to be made.</li>
+					<li>B: Barracks.  This building trains troops, including footmen, archers, and knights.</li>
+					<li>L: Blacksmith.  This building makes upgrades, improving the combat effectiveness of the troops.</li>
+				</ul>
+			</li>
+			<li>Units
+				<ul>
+					<li>p: Peasant. The builder and gatherer.  Not an effective combat unit.</li>
+					<li>f: Footman. A basic melee combat unit.</li>
+					<li>a: Archer.  A ranged combat unit, more lethal than the footman, but more deadly.</li>
+					<li>k: Knight.  A heavier armored and more powerful melee combat unit than the footman.</li>
+				</ul>
+			</li>
+		</ul>
+		<p>
+			For more detailed information or to make changes, see data/unit_templates.
+		</p>
+		<h2 id="Agent">6. Writing an Agent</h2>
 		<p>All agents written to interact with SimpleRTS must extend the class
 		    <code>edu.cwru.SimpleRTS.agent.Agent</code>. Consult the javadoc for a
 			description of the methods in Agent. At the very least, you must implement
@@ -169,8 +207,13 @@
 		</p>
 		<p>When making more complicated agents, you may want to add additional arguments.  In order to use more arguments with the existing main method, you must change your agent's constructor to accept a string array.  In particular, the constructor must have exactly two arguments: int player, and String[] everythingelse (which you then parse into whatever).
 		If it does not match this (or just "int playernum"), it will not be loaded by the main method.  In order to pass the arguments in, each is put sequentially as --agentparam x.  More details in the How To Run section.
+		If you do add additional parameters, please override the static String getUsage() to explain their usage, as that will be called if it is used wrong.
 		</p>
-		<h2 id="Agent">6. Using the Scripted Agent</h2>
+		<h2 id="MapEditor">7. Making your own Map</h2>
+		<p>
+		SimpleRTS is also equipped with a map editor, located in <code>edu.cwru.SimpleRTS.agent.visual.editor.Editor</code>.  It has a main method and is therefore executable.  Once you run it, you will find you can add players, place units, place resource nodes, and toggle the status of fog of war and whether resources are revealed through the EventLogger (more info on the latter two <a href="#FogofWar">here</a>). 
+		</p>
+		<h2 id="Agent">8. Using the Scripted Agent</h2>
 		<p>The scripted agent may be found at <code>edu.cwru.SimpleRTS.agent.ScriptedGoalAgent</code>.
 			It's constructor requires a BufferedReader, which may be connected to a file, the standard in, or a string (via calling <code>java.io.BufferedReader</code>'s constructor with an argument of a <code>java.io.FileReader</code>, <code>java.io.InputStreamReader</code>, or <code>java.io.StringReader</code>, respectively).
 			The input must be in the form of a series of commands separated by new lines.
@@ -239,7 +282,7 @@
 			Attack:All<br>
 			
 		</p>
-		<h2 id="Engine">The Engine</h2>
+		<h2 id="Engine">9. The Engine</h2>
 		<p>The top level of the engine is the <code>edu.cwru.SimpleRTS.environment.Environment</code>.  The Environment interacts with the agents through immutable methods within the abstract class <code>edu.cwru.SimpleRTS.agent.Agent</code>.  Environment provides the Agent with states, then receives actions back. 
 		</p>
 		<p>
@@ -258,7 +301,12 @@
 		</p>
 		<p> Action is used to convey commands between the agent and the simulation.  There are several subclasses, to prevent mistakes, they should be constructed using the static factory-style methods in Action itself.  Actions are divided into compound and primitive types.  Primitive types are the basic building blocks, like taking a step in one direction, gathering from an adjacent resource, or attacking a guy in range.  Compound actions are more goal based and are resolved by the simulator itself into the primitives needed to fulfill that goal.  As a result, compound actions are more robust, being self correcting to a point.  
 		</p>
-		<h2 id="Contact">Contact Info</h2>
+		<h2 id="FogofWar">10. Partial Observability</h2>
+		<p>SimpleRTS implements partial observability through the common RTS element of "fog of war".  Fog of war may be activated as part of the map creation process.  With the fog of war activated, many interactions change.
+		In particular, it is no longer possible to access units or resource nodes found outside of the sight radius of your units, events occurring entirely outside of your sight radius are no longer available to you, and it is no longer possible to query the state to get the templates and resource values of any agent but yourself.
+		The challenge of finding resource nodes may be partially compensated for if "revealed resources" is toggled on (which is accomplished in much the same way as with fog of war itself).  With this toggled on, the EventLogger will tell you the location and type of all resources via getRevealedResources().  Beware though, as it only logs the appearance of resources, some other player (or even you) may have mined out or cut down the resource in the meantime.  
+		</p>
+		<h2 id="Contact">11. Contact Info</h2>
 		<p>For questions about running simulations, contact Tim Ernsberger at 
 			<a href="maito:tse6@case.edu">tse6@case.edu</a>.
 		</p>

@@ -165,7 +165,7 @@ public class CombatAgent extends Agent{
 
 	public static String getUsage() {
 		
-		return "It takes three parameters (--param): a space seperated array of enemy player numbers, a boolean for whether it should wander, and a boolean for verbosity";
+		return "It takes three parameters (--agentparam): a space seperated array of enemy player numbers, a boolean for whether it should wander, and a boolean for verbosity";
 	}
 	
 }
