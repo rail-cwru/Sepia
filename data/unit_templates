@@ -80,7 +80,7 @@
 		"TimeCost" : 1,
 		"GoldCost" : 1200,
 		"WoodCost" : 800,
-		"HitPoints" : 1200,
+		"HitPoints" : 1,
 		"Armor" : 20,
 		"BasicAttack" : 0,
 		"Piercing" : 0,

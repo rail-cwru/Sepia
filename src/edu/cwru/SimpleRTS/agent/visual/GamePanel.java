@@ -74,6 +74,11 @@ public class GamePanel extends JPanel {
         infoVisSelectedID = -1;
     }
 
+    public void reset() {
+    	selectedID = -1;
+        infoVisSelectedID = -1;
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(new Color(0x99,0x66,0x33));//medium green
@@ -363,7 +368,7 @@ public class GamePanel extends JPanel {
 				}
 				else { // TODO: add other info for other types of unit
 					//info = "Unit: " + id;
-					;
+					info += "HP: " + unit.getHP();
 				}
 			}
 			else {

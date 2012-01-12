@@ -85,6 +85,8 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate) {
+		if(gamePanel!=null)
+			gamePanel.reset();
         return middleStep(newstate);
 	}
 
@@ -104,9 +106,9 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public void terminalStep(StateView newstate) {
-		if(gamePanel != null)
+		if(gamePanel != null) 
 			gamePanel.updateState(newstate);
-		JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
+		//JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
 	}
 	
 	public void addAction(Action action) {
