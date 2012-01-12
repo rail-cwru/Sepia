@@ -3,8 +3,13 @@ package edu.cwru.SimpleRTS.start;
 import java.util.List;
 import java.util.LinkedList;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
@@ -14,6 +19,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
@@ -28,7 +34,7 @@ public class CommandPanel extends JPanel {
 
     JTextArea commandArea;
 
-    public CommandPanel() {
+    public CommandPanel(final Component parent) {
         super(new GridBagLayout());
         TitledBorder border = new TitledBorder("Command");
         border.setBorder(new LineBorder(Color.BLACK, 2));
@@ -79,6 +85,32 @@ public class CommandPanel extends JPanel {
                 clipboard.setContents(selection, null);
             }
         });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fc = new JFileChooser();
+                int choice = fc.showSaveDialog(parent);
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    saveCommand(fc.getSelectedFile());
+                }
+            }
+        });
+    }
+
+    public void saveCommand(File file) {
+        String toSave = commandArea.getText();
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(file);
+            writer.println(toSave);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (writer != null) {
+                writer.close();
+            }
+        }
     }
 
     public void setArgs(List<String> args) {

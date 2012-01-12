@@ -23,15 +23,18 @@ public class StartWindow extends JFrame implements CommandChangeListener {
 
     static final float TITLE_FONT = 20f;
 
-    FilesPanel filesPanel = new FilesPanel();
-    AgentPanel agentPanel = new AgentPanel();
-    CommandPanel commandPanel = new CommandPanel();
+    FilesPanel filesPanel;
+    AgentPanel agentPanel;
+    CommandPanel commandPanel;
 
     public StartWindow() {
         super("SimpleStart");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel startPanel = new JPanel(new GridBagLayout());
+        filesPanel = new FilesPanel();
+        agentPanel = new AgentPanel();
+        commandPanel = new CommandPanel(this);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(3, 3, 3, 3);
