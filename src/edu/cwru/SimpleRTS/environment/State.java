@@ -122,8 +122,8 @@ public class State implements Serializable, Cloneable {
 	
 	@Override
 	protected Object clone() {
-		State state = new State();
-		state.players.addAll(players);
+		State newstate = new State();
+		newstate.players.addAll(players);
 		/*for(Integer i : playerCanSee.keySet())
 		{
 			state.playerCanSee.put(i, playerCanSee.get(i).clone());
@@ -131,9 +131,9 @@ public class State implements Serializable, Cloneable {
 		for(Unit u : allUnits.values())
 		{//takes care of allUnits and unitsByAgent
 			Unit copy = u.copyOf();
-			state.addUnit(copy, copy.getxPosition(), copy.getyPosition());
+			newstate.addUnit(copy, copy.getxPosition(), copy.getyPosition());
 		}
-		state.allTemplates.putAll(allTemplates);
+		newstate.allTemplates.putAll(allTemplates);
 		/*for(Integer i : templatesByAgent.keySet())
 		{
 			@SuppressWarnings("rawtypes")
@@ -149,24 +149,31 @@ public class State implements Serializable, Cloneable {
 		}*/
 		for(ResourceNode node : resourceNodes)
 		{
-			state.resourceNodes.add(node.copyOf());
+			newstate.resourceNodes.add(node.copyOf());
 		}
 		for(Integer i : playerStates.keySet())
 		{
-			state.playerStates.put(i, playerStates.get(i).copyOf());
+			newstate.playerStates.put(i, playerStates.get(i).copyOf());
 		}
 		//state.currentResources.putAll(currentResources);
 		//state.currentSupply.putAll(currentSupply);
 		//state.currentSupplyCap.putAll(currentSupplyCap);
 		
-		return state;
+		return newstate;
 	}
 	
 	public StateView getStaticCopy(int player) {
 		State state = (State)clone();
 		return state.getView(player);
 	}
-	
+	/**
+	 * Return an array of the players currently in the game
+	 * @return
+	 */
+	public Integer[] getPlayers()
+	{
+		return players.toArray(new Integer[0]);
+	}
 	//@SuppressWarnings("rawtypes")
 	/**
 	 * Add another player
@@ -528,7 +535,8 @@ public class State implements Serializable, Cloneable {
 			PlayerState playerState = playerStates.get(player);
 			if(playerState == null)
 			{
-				playerStates.put(player, playerState = new PlayerState(player));
+//				TODO: see if we can do without this
+				addPlayer(player);
 			}
 			Map<Integer, Unit> map = playerState.getUnits();
 			/*if(map == null)
@@ -703,7 +711,8 @@ public class State implements Serializable, Cloneable {
 			PlayerState playerState = playerStates.get(player);
 			if(playerState == null)
 			{
-				playerStates.put(player, playerState = new PlayerState(player));
+//				TODO: see if we can do without this
+				addPlayer(player);
 			}
 			Map<Integer, Template> map = playerState.getTemplates();
 			/*if(map == null)
@@ -745,7 +754,8 @@ public class State implements Serializable, Cloneable {
 			PlayerState playerState = playerStates.get(player);
 			if(playerState == null)
 			{
-				playerStates.put(player, playerState = new PlayerState(player));
+//				TODO: see if we can do without this
+				addPlayer(player);
 			}
 			Set<Integer> list = playerState.getUpgrades();
 			/*if(list == null)
@@ -912,10 +922,6 @@ public class State implements Serializable, Cloneable {
 			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) >= currentsupply + amounttoadd;*/
 			
 			PlayerState playerState = playerStates.get(player);
-			if(playerState == null)
-			{
-				playerStates.put(player, playerState = new PlayerState(player));
-			}
 			return Math.min(playerState.getCurrentSupplyCap() + offsettingcapgain, MAXSUPPLY) >=
 						    playerState.getCurrentSupply() + amounttoadd;
 			 

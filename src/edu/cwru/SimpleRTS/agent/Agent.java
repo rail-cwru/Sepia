@@ -28,15 +28,8 @@ public abstract class Agent implements Serializable {
 //	private final int[] enemynums;
 	protected final int playernum;
 	// map: agentID -> flag, if this flag set false, then we will ignore this agent when checking terminal condition. 
-	protected static Map<Integer, Boolean> countsTowrardTerminationMap = new HashMap<Integer, Boolean>();
 	
-	/**
-	 * The highest ID number that has been assigned to an agent
-	 * @return
-	 */
-	public static int maxId() {
-		return nextID - 1;
-	}
+	
 	protected final int ID;
 	/**
 	 * Assigns this Agent the next available auto-incrementing ID and sets the playernum to the argument.
@@ -52,11 +45,6 @@ public abstract class Agent implements Serializable {
 //		this.enemynums = new int[enemynums.length];
 //		System.arraycopy(enemynums, 0, this.enemynums, 0, enemynums.length);
 		verbose = false;
-		countsTowrardTerminationMap.put(ID, countsTowardTermination);
-	}
-	
-	public static boolean getCountsTowardTermination(int id) {
-		return countsTowrardTerminationMap.get(id);
 	}
 	
 	/**

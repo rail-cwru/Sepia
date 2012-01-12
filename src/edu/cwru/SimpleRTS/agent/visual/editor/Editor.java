@@ -337,7 +337,7 @@ public class Editor extends JFrame {
 		if(state == null)
 		{
 			StateBuilder builder = new StateBuilder();
-			builder.setSize(32, 32);
+			builder.setSize(25, 19);
 			state = builder.build();
 		}
         final State fstate = state;

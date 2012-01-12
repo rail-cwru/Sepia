@@ -127,10 +127,14 @@ public class RCAgent extends Agent {
 		step++;
 		System.out.println("=> Step: " + step);
 		
+		if (currentState != null)
+		{
 		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
+		
 		System.out.println("Current Gold: " + currentGold);
 		System.out.println("Current Wood: " + currentWood);
+		}
 		System.out.println("Congratulations! You finish the task!");
 	}
 	

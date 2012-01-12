@@ -38,7 +38,8 @@ public class Main {
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
 //		args = para.split(" +");
-		
+		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+		args=para.split(" +");
 		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
 		{
@@ -310,6 +311,7 @@ public class Main {
 			Preferences.importPreferences(new FileInputStream(arg));
 			return true;
 		} catch (Exception e) {
+			System.err.println(new File(arg).getAbsolutePath());
 			e.printStackTrace();
 			return false;
 		}

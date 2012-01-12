@@ -83,13 +83,13 @@ public class SimpleModel implements Model {
 	}
 	private boolean conquestTerminated() {
 		int numLivePlayers = 0;
-		for(int i = 0; i <= Agent.maxId() && numLivePlayers < 2; i++)
+		for(Integer player : state.getPlayers())
 		{
-			if(state.getUnits(i).size() == 0)
+			if(state.getUnits(player).size() == 0)
 			{
 				continue;
 			}
-			for(Unit u : state.getUnits(i).values())
+			for(Unit u : state.getUnits(player).values())
 			{
 				if(u.getCurrentHealth() > 0)
 				{
@@ -97,6 +97,9 @@ public class SimpleModel implements Model {
 					break;
 				}
 			}
+			if (numLivePlayers > 1)
+				break;
+			
 		}
 		return numLivePlayers <= 1;
 	}
@@ -105,17 +108,16 @@ public class SimpleModel implements Model {
 		int gold = prefs.getInt("RequiredGold", 0);
 		int wood = prefs.getInt("RequiredWood", 0);
 //		System.out.println("Agent.maxId() " + Agent.maxId());
-		for(int i = 0; i <= Agent.maxId() && resourcesGathered; i++)
+		for(Integer player : state.getPlayers())
 		{
-			if(Agent.getCountsTowardTermination(i))
-				resourcesGathered = state.getResourceAmount(i, ResourceType.GOLD) >= gold &&
-								state.getResourceAmount(i, ResourceType.WOOD) >= wood;
+			resourcesGathered = state.getResourceAmount(player, ResourceType.GOLD) >= gold &&
+								state.getResourceAmount(player, ResourceType.WOOD) >= wood;
 		}
 		return resourcesGathered;
 	}
 	private boolean buildingTerminated(Preferences prefs) {
 		boolean built = true;
-		for(int i = 0; i <= Agent.maxId() && built; i++)
+		for(Integer i : state.getPlayers())
 		{
 			for(Template template : state.getTemplates(i).values())
 			{
@@ -130,6 +132,8 @@ public class SimpleModel implements Model {
 				}
 				built = actual >= required;
 			}
+			if (built)
+				break;
 		}
 		return built;
 	}
