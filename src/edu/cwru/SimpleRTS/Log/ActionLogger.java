@@ -46,7 +46,7 @@ public class ActionLogger implements Serializable {
 			addPlayer(playernum);
 		}
 		actions.get(playernum).get(roundnumber).add(action);
-		System.out.println("ActionLogger logging action "+action);
+//		System.out.println("ActionLogger logging action "+action);
 	}
 	/**
 	 * Get the actions of a player
