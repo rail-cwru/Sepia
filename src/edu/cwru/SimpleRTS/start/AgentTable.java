@@ -37,6 +37,19 @@ public class AgentTable extends JTable {
         });
     }
 
+    public void deleteSelectedRows() {
+        SwingUtils.invokeNowOrLater(new Runnable() {
+            @Override
+            public void run() {
+                int[] selection = getSelectedRows();
+                for (int i = 0; i < selection.length; i++) {
+                    selection[i] = convertRowIndexToModel(selection[i]);
+                }
+                tableModel.deleteRows(selection);
+            }
+        });
+    }
+
     static class AgentTableModel extends AbstractTableModel {
 
         public AgentTableModel() {
@@ -92,6 +105,20 @@ public class AgentTable extends JTable {
             }
             data.add(agentData);
             fireTableDataChanged();
+        }
+
+        public void deleteRows(int[] rows) {
+            // We need to be careful since indices
+            // change as items are deleted..
+            List<AgentData> toRemove = new ArrayList<AgentData>(rows.length);
+            for (int row : rows) {
+                toRemove.add(data.get(row));
+            }
+            for (AgentData deadAgent : toRemove) {
+                int deadRow = data.indexOf(deadAgent);
+                data.remove(deadAgent);
+                fireTableRowsDeleted(deadRow, deadRow);
+            }
         }
 
         @Override

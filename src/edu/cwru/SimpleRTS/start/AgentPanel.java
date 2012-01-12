@@ -66,6 +66,13 @@ public class AgentPanel extends JPanel {
             }
         });
 
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                agentTable.deleteSelectedRows();
+            }
+        });
+
     }
 
 }
