@@ -29,7 +29,7 @@ public class ActionLogger implements Serializable {
 			List<List<Action>> actionsets=actions.get(playerid);
 			actionsets.add(roundnumber,new ArrayList<Action>());
 		}
-		System.out.println("Action logger logging the start of round "+roundnumber);
+//		System.out.println("Action logger logging the start of round "+roundnumber);
 	}
 	public void addPlayer(int playernumber) {
 		List<List<Action>> actionset = new ArrayList<List<Action>>();
@@ -38,7 +38,7 @@ public class ActionLogger implements Serializable {
 		{
 			actionset.add(i,new ArrayList<Action>());
 		}
-		System.out.println("ActionLogger adding another player "+playernumber);
+//		System.out.println("ActionLogger adding another player "+playernumber);
 	}
 	public void addAction(int playernum, Action action) {
 		if (!actions.containsKey(playernum))
