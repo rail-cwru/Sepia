@@ -19,7 +19,7 @@
             </node>
             <node name="environment">
               <map>
-                <entry key="NumEpisodes" value="10"/>
+                <entry key="NumEpisodes" value="1"/>
               </map>
             </node>
             <node name="model">
