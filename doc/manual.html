@@ -24,6 +24,7 @@
 			<li><a href="#ScripAgent">Using The Scripted Agent</a>
 			<li><a href="#Engine">The Engine</a>
 			<li><a href="#FogofWar">Partial Observability</a>
+			<li><a href="#Matlab">MATLAB-Specific Notes</a>
 			<li><a href="#Contact">Contact Info</a></li>
 		</ol>
 		<h2 id="Introduction">1. Introduction</h2>
@@ -42,7 +43,8 @@
 		</p>
 		<h2 id="Run">3. How to Run</h2>
 		<p>Note: this section describes how to run SimpleRTS from a Jar file. If you wish to
-		   use the source code, you will have to figure that out on your own (Using eclipse may be of great assistance for running from source).
+		   use the source code, you will have to figure that out on your own (Using eclipse may be of great assistance for those with access to the source).
+		   If you wish to run via MATLAB, please refer to the <a href="#Matlab">MATLAB section</a>.
 		</p>
 		<p>Before you run SimpleRTS, you need to decide what you want to run.  The following examples will use
 		agents and maps from both inside and outside the jar.  As a general rule, however, always specify the path to items in the jar as precisely as possible.
@@ -306,14 +308,32 @@
 		In particular, it is no longer possible to access units or resource nodes found outside of the sight radius of your units, events occurring entirely outside of your sight radius are no longer available to you, and it is no longer possible to query the state to get the templates and resource values of any agent but yourself.
 		The challenge of finding resource nodes may be partially compensated for if "revealed resources" is toggled on (which is accomplished in much the same way as with fog of war itself).  With this toggled on, the EventLogger will tell you the location and type of all resources via getRevealedResources().  Beware though, as it only logs the appearance of resources, some other player (or even you) may have mined out or cut down the resource in the meantime.  
 		</p>
-		<h2 id="Contact">11. Contact Info</h2>
+		<h2 id="Matlab">MATLAB Specific Instructions</h2>
+		<p>Be aware that SimpleRTS works only under Matlab of Windows 7 environment, and doesn't work under Matlab of Unix/Linux/Mac OS X environment.
+		</p>
+		<p>It is recommended that those with any Java experience, and even those without any, just use the Java version instead of this more cumbersome MATLAB interface.
+		</p>
+		<h3>Running the Sample Code</h3>
+			<p>To test the matlab_script from the folder data/matlab_script, simply run test_SimpleRTS in matlab.<br>
+			This will call the main function in edu.cwru.SimpleRTS.Main, passing proper arguments.  This, in turn, calls the edu.cwru.SimpleRTS.agent.MatlabAgent.
+			</p>
+		<h3>Writing your own MATLAB Agent</h3>
+		<p>In order to write your own Agent with matlab, you must implements the following four functions, using names exactly as written:
+			<ul>
+				<li>1. agent_init -- will be called only once when MatlabAgent was created</li>
+				<li>2. agent_initialStep -- will be called at first step of the episode.</li>
+				<li>3. agent_middleStep -- called at each step of the episode (non-first, non-terminal step)</li>
+				<li>4. agent_terminalStep -- called at the terminal step of the episode</li>
+			</ul>
+		</p>
+		<h2 id="Contact">12. Contact Info</h2>
 		<p>For questions about running simulations, contact Tim Ernsberger at 
 			<a href="maito:tse6@case.edu">tse6@case.edu</a>.
 		</p>
 		<p>For questions about game mechanics, contact Scott Sosnowski at
 			<a href="mailto:sts12@case.edu">sts12@case.edu</a>.
 		</p>
-		<p>For questions about homework assignments involving SimpleRTS, contact
+		<p>For questions about the Matlab interface, contact
 			Feng Cao at <a href="mailto:fxc100@case.edu">fxc100@case.edu</a>.
 		</p>
 	</body>
