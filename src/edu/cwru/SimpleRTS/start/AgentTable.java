@@ -2,14 +2,14 @@ package edu.cwru.SimpleRTS.start;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import java.awt.Dimension;
 import java.awt.Component;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.event.TableModelListener;
 
 import edu.cwru.SimpleRTS.util.SwingUtils;
 
@@ -18,8 +18,9 @@ public class AgentTable extends JTable {
 
     AgentTableModel tableModel;
 
-    public AgentTable() {
+    public AgentTable(TableModelListener listener) {
         tableModel = new AgentTableModel();
+        tableModel.addTableModelListener(listener);
         setModel(tableModel);
         setPreferredScrollableViewportSize(new Dimension(324, 200));
         setFillsViewportHeight(true);
@@ -48,6 +49,10 @@ public class AgentTable extends JTable {
                 tableModel.deleteRows(selection);
             }
         });
+    }
+
+    public List<String> toArgList() {
+        return tableModel.toArgList();
     }
 
     static class AgentTableModel extends AbstractTableModel {
@@ -93,6 +98,24 @@ public class AgentTable extends JTable {
                 }
             }
 
+            public List<String> toArgList() {
+                List<String> args = new LinkedList<String>();
+                args.add("--agent");
+                args.add(clazz.trim().split(" ")[0]);
+                args.add(String.format("%d", playerNum));
+                // Note: the following just splits arguments
+                // using a space, so it's not smart enough
+                // to handles quoted arguments, etc.
+                String[] agentArgs = argString.split(" ");
+                for (String agentArg : agentArgs) {
+                    if (agentArg.length() > 0) {
+                        args.add("--agentparam");
+                        args.add(agentArg);
+                    }
+                }
+                return args;
+            }
+
         }
 
         List<AgentData> data = new ArrayList<AgentData>();
@@ -110,7 +133,7 @@ public class AgentTable extends JTable {
         public void deleteRows(int[] rows) {
             // We need to be careful since indices
             // change as items are deleted..
-            List<AgentData> toRemove = new ArrayList<AgentData>(rows.length);
+            List<AgentData> toRemove = new LinkedList<AgentData>();
             for (int row : rows) {
                 toRemove.add(data.get(row));
             }
@@ -119,6 +142,14 @@ public class AgentTable extends JTable {
                 data.remove(deadAgent);
                 fireTableRowsDeleted(deadRow, deadRow);
             }
+        }
+
+        public List<String> toArgList() {
+            List<String> args = new LinkedList<String>();
+            for (AgentData agentData : data) {
+                args.addAll(agentData.toArgList());
+            }
+            return args;
         }
 
         @Override

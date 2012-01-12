@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.start;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
@@ -8,6 +11,7 @@ import java.awt.GridBagLayout;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -17,6 +21,8 @@ import edu.cwru.SimpleRTS.start.StartWindow;
 @SuppressWarnings("serial")
 public class CommandPanel extends JPanel {
 
+    JTextArea commandArea;
+
     public CommandPanel() {
         super(new GridBagLayout());
         TitledBorder border = new TitledBorder("Command");
@@ -24,7 +30,7 @@ public class CommandPanel extends JPanel {
         border.setTitleFont(border.getTitleFont().deriveFont(StartWindow.TITLE_FONT));
         this.setBorder(border);
 
-        JTextArea commandArea = new JTextArea(5, 20);
+        commandArea = new JTextArea(3, 20);
         JButton copyButton = new JButton("Copy");
         JButton saveButton = new JButton("Save");
         JButton runButton = new JButton("Run");
@@ -38,7 +44,7 @@ public class CommandPanel extends JPanel {
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
-        add(commandArea, gbc);
+        add(new JScrollPane(commandArea), gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -57,6 +63,32 @@ public class CommandPanel extends JPanel {
         gbc.gridx = 3;
         add(runButton, gbc);
 
+        commandArea.setEditable(false);
+        commandArea.setLineWrap(true);
+    }
+
+    public void setArgs(List<String> args) {
+        List<String> preArgs = new LinkedList<String>();
+        preArgs.add("java");
+        // TODO: Classpath?
+        preArgs.add("edu.cwru.SimpleRTS.Main");
+        preArgs.addAll(args);
+        String command = join(preArgs, " ");
+        commandArea.setText(command);
+    }
+
+    private static String join(List<String> args, String delimiter) {
+        StringBuilder builder = new StringBuilder();
+        for (String arg : args) {
+            builder.append(arg);
+            builder.append(delimiter);
+        }
+        // Remove trailing delimiter
+        int n = builder.length();
+        if (args.size() > 0) {
+            builder.delete(n - delimiter.length(), n);
+        }
+        return builder.toString();
     }
 
 }

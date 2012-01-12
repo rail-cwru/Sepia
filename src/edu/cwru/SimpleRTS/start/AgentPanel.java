@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.start;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
@@ -14,12 +17,17 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelListener;
+import javax.swing.event.TableModelEvent;
 
 import edu.cwru.SimpleRTS.start.StartWindow;
 import edu.cwru.SimpleRTS.start.AgentTable;
 
 @SuppressWarnings("serial")
-public class AgentPanel extends JPanel {
+public class AgentPanel extends JPanel implements TableModelListener {
+
+    private List<CommandChangeListener> commandChangeListeners =
+        new LinkedList<CommandChangeListener>();
 
     AgentTable agentTable;
 
@@ -30,7 +38,7 @@ public class AgentPanel extends JPanel {
         border.setTitleFont(border.getTitleFont().deriveFont(StartWindow.TITLE_FONT));
         this.setBorder(border);
 
-        agentTable = new AgentTable();
+        agentTable = new AgentTable(this);
         JButton addButton = new JButton("Add");
         JButton deleteButton = new JButton("Delete");
 
@@ -73,6 +81,25 @@ public class AgentPanel extends JPanel {
             }
         });
 
+    }
+
+    public List<String> toArgList() {
+        return agentTable.toArgList();
+    }
+
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        for (CommandChangeListener listener : commandChangeListeners) {
+            listener.commandChanged();
+        }
+    }
+
+    public void addCommandChangeListener(CommandChangeListener listener) {
+        commandChangeListeners.add(listener);
+    }
+
+    public void removeCommandChangeListener(CommandChangeListener listener) {
+        commandChangeListeners.remove(listener);
     }
 
 }

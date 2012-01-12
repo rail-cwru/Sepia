@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.start;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -8,13 +11,15 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import edu.cwru.SimpleRTS.start.FilesPanel;
 import edu.cwru.SimpleRTS.start.AgentPanel;
 import edu.cwru.SimpleRTS.start.CommandPanel;
+import edu.cwru.SimpleRTS.start.CommandChangeListener;
 
 @SuppressWarnings("serial")
-public class StartWindow extends JFrame {
+public class StartWindow extends JFrame implements CommandChangeListener {
 
     static final float TITLE_FONT = 20f;
 
@@ -47,6 +52,28 @@ public class StartWindow extends JFrame {
         startPanel.add(commandPanel, gbc);
 
         this.getContentPane().add(startPanel, BorderLayout.CENTER);
+
+        filesPanel.addCommandChangeListener(this);
+        agentPanel.addCommandChangeListener(this);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                commandChanged();
+            }
+        });
+    }
+
+    public List<String> toArgList() {
+        List<String> args = new LinkedList<String>();
+        args.addAll(filesPanel.toArgList());
+        args.addAll(agentPanel.toArgList());
+        return args;
+    }
+
+    @Override
+    public void commandChanged() {
+        commandPanel.setArgs(toArgList());
     }
 
 }

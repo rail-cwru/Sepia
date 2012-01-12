@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.start;
 
+import java.util.List;
+import java.util.LinkedList;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.awt.GridBagConstraints;
@@ -11,11 +14,19 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 
 import edu.cwru.SimpleRTS.start.StartWindow;
 
 @SuppressWarnings("serial")
-public class FilesPanel extends JPanel {
+public class FilesPanel extends JPanel implements DocumentListener {
+
+    private List<CommandChangeListener> commandChangeListeners =
+        new LinkedList<CommandChangeListener>();
+
+    JTextField configField;
+    JTextField mapField;
 
     public FilesPanel() {
         super(new GridBagLayout());
@@ -26,8 +37,8 @@ public class FilesPanel extends JPanel {
 
         JLabel configLabel = new JLabel("Config File:");
         JLabel mapLabel = new JLabel("Map File:");
-        JTextField configField = new JTextField(20);
-        JTextField mapField = new JTextField(20);
+        configField = new JTextField(20);
+        mapField = new JTextField(20);
         JButton configButton = new JButton("Browse");
         JButton mapButton = new JButton("Browse");
 
@@ -61,6 +72,49 @@ public class FilesPanel extends JPanel {
 
         gbc.gridy = 1;
         add(mapButton, gbc);
+
+        configField.getDocument().addDocumentListener(this);
+        mapField.getDocument().addDocumentListener(this);
+    }
+
+    public List<String> toArgList() {
+        List<String> args = new LinkedList<String>();
+        String configString = configField.getText().trim();
+        if (configString.length() > 0) {
+            args.add("--config");
+            args.add(configString);
+        }
+        args.add(mapField.getText().trim());
+        return args;
+    }
+
+    public void addCommandChangeListener(CommandChangeListener listener) {
+        commandChangeListeners.add(listener);
+    }
+
+    public void removeCommandChangeListener(CommandChangeListener listener) {
+        commandChangeListeners.remove(listener);
+    }
+
+    private void fireListeners() {
+        for (CommandChangeListener listener : commandChangeListeners) {
+            listener.commandChanged();
+        }
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        fireListeners();
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        fireListeners();
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        fireListeners();
     }
 
 }
