@@ -52,7 +52,6 @@ public class State implements Serializable, Cloneable {
 	//TODO: move this constant somewhere
 	private final int MAXSUPPLY = 50;
 	
-	private List<Integer> players;
 	private Map<Integer,Unit> allUnits;
 	//private Map<Integer, StateView> views;
 	/**
@@ -84,7 +83,6 @@ public class State implements Serializable, Cloneable {
 	@SuppressWarnings("rawtypes")
 	public State() {
 		
-		players = new ArrayList<Integer>();
 		//playerCanSee = new HashMap<Integer,int[][]>();
 		allUnits = new HashMap<Integer,Unit>();
 		//unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
@@ -123,7 +121,6 @@ public class State implements Serializable, Cloneable {
 	@Override
 	protected Object clone() {
 		State newstate = new State();
-		newstate.players.addAll(players);
 		/*for(Integer i : playerCanSee.keySet())
 		{
 			state.playerCanSee.put(i, playerCanSee.get(i).clone());
@@ -172,7 +169,7 @@ public class State implements Serializable, Cloneable {
 	 */
 	public Integer[] getPlayers()
 	{
-		return players.toArray(new Integer[0]);
+		return playerStates.keySet().toArray(new Integer[]{});
 	}
 	//@SuppressWarnings("rawtypes")
 	/**
@@ -181,12 +178,11 @@ public class State implements Serializable, Cloneable {
 	 */
 	public void addPlayer(int playernumber)
 	{
-		if (!players.contains(playernumber) || playernumber == Agent.OBSERVER_ID)
+		if (!playerStates.containsKey(playernumber) || playernumber == Agent.OBSERVER_ID)
 		{
 			PlayerState playerState = new PlayerState(playernumber);
 			if(playernumber != Agent.OBSERVER_ID)
 			{
-				players.add(playernumber);
 				playerStates.put(playernumber, playerState);
 			}
 			else
@@ -528,7 +524,7 @@ public class State implements Serializable, Cloneable {
 	public void addUnit(Unit u,int x, int y) {
 		
 		int player = u.getPlayer();
-		if (!players.contains(player))
+		if (!playerStates.containsKey(player))
 			addPlayer(player);
 		if(!allUnits.containsKey(u.ID)) {
 			//Map<Integer, Unit> map = unitsByAgent.get(player);
@@ -704,7 +700,7 @@ public class State implements Serializable, Cloneable {
 	@SuppressWarnings("rawtypes")
 	public void addTemplate(Template t) {
 		int player = t.getPlayer(); 
-		if (!players.contains(player))
+		if (!playerStates.containsKey(player))
 			addPlayer(player);
 		if(!allTemplates.containsKey(t.ID)) {
 			//Map<Integer, Template> map = templatesByAgent.get(player);

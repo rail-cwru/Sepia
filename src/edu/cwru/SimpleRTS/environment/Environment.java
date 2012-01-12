@@ -43,10 +43,10 @@ public class Environment
 	{
 		model.createNewWorld();
 		step = 0;
-		do
+		while(!isTerminated())
 		{
 			step();
-		} while(!isTerminated());
+		} 
 		for (int i = 0; i<connectedagents.length;i++)
 		{
 			connectedagents[i].terminalStep(model.getState(connectedagents[i].getPlayerNumber()));
