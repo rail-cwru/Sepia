@@ -108,7 +108,10 @@ public class VisualAgent extends Agent implements ActionListener {
 	public void terminalStep(StateView newstate) {
 		if(gamePanel != null) 
 			gamePanel.updateState(newstate);
+		if(controlPanel!=null)
+			controlPanel.stopPlay();
 		//JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
+		System.out.println("=======> You've finished current episode!");
 	}
 	
 	public void addAction(Action action) {

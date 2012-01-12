@@ -35,7 +35,7 @@ public class State implements Serializable, Cloneable {
 		 in.defaultReadObject();
 		 for (Unit u : allUnits.values())
 		 {
-			 System.out.println("Reserving ids up to "+u.ID);
+			 //System.out.println("Reserving ids up to "+u.ID);
 			 Target.reserveIDsUpTo(u.ID);
 			 
 		 }
@@ -45,7 +45,7 @@ public class State implements Serializable, Cloneable {
 		 }
 		 for (ResourceNode r : resourceNodes)
 		 {
-			 System.out.println("Reserving ids up to "+r.ID);
+			 //System.out.println("Reserving ids up to "+r.ID);
 			 Target.reserveIDsUpTo(r.ID);
 		 }
 	 }

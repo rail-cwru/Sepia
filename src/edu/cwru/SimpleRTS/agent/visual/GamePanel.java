@@ -247,7 +247,7 @@ public class GamePanel extends JPanel {
 		public void mouseClicked(MouseEvent e) {
 			int x = unscaleX(e.getX());
 			int y = unscaleY(e.getY());
-			System.out.println(x+","+y);
+			//System.out.println(x+","+y);
 			
 			if(agent!=null && agent.humanControllable)
 				humanControl(e);
@@ -279,15 +279,15 @@ public class GamePanel extends JPanel {
 	private void humanControl(MouseEvent e) {
 		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
-		System.out.println("Current Gold: " + currentGold);
-		System.out.println("Current Wood: " + currentWood);
+		//System.out.println("Current Gold: " + currentGold);
+		//System.out.println("Current Wood: " + currentWood);
 		
 		int x = unscaleX(e.getX());
 		int y = unscaleY(e.getY());
 		StateView state = currentState;
 		//System.out.println(x+","+y);
 		if(e.getButton()==MouseEvent.BUTTON1) { // left click
-			System.out.println("Left clicked");
+			//System.out.println("Left clicked");
 			selectedID = -1;
 			if(state.unitAt(x, y)!=null) {
 				int leftSelected = state.unitAt(x, y);
@@ -296,7 +296,7 @@ public class GamePanel extends JPanel {
 				return ;
 			}
 		} else if(e.getButton()==MouseEvent.BUTTON3) { // right click
-			System.out.println("Right clicked");
+			//System.out.println("Right clicked");
 			if(selectedID>=0) {
 				UnitView myUnit = state.getUnit(selectedID);
 				if(myUnit==null) { // the selected unit is dead or you can't see it

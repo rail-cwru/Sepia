@@ -121,6 +121,12 @@ public class ControlPanel extends JPanel implements ActionListener {
         playing = !playing;
         playButton.invalidate();
     }
+    
+    protected void stopPlay() {
+    	playing = true;
+    	togglePlay();
+    	playButton.setSelected(false);
+    }
 
 	public void addStepperListener(ActionListener l) {
         listeners.add(l);

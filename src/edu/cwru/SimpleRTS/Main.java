@@ -253,6 +253,7 @@ public class Main {
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
+			System.out.println("\n=======> Start running episode " + episode);
 			env.runEpisode();
 			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
 			{
