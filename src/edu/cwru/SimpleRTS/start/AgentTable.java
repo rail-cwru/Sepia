@@ -70,7 +70,7 @@ public class AgentTable extends JTable {
                 {Integer.class, String.class, String.class};
 
             private Integer playerNum = 0;
-            private String clazz = "";
+            private String clazz = "edu.cwru.SimpleRTS.agent.";
             private String argString = "";
 
             public Object get(int index) {
