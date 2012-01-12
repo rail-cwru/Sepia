@@ -23,7 +23,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	GameScreen screen;
     GamePanel gamePanel;
     ControlPanel controlPanel = new ControlPanel();
-    InfoPanel infoPanel = new InfoPanel();
+    LogPanel logPanel = new LogPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
@@ -53,7 +53,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel, infoPanel);
+				screen = new GameScreen(gamePanel, controlPanel, logPanel);
                 screen.pack();
 				gamePanel.addKeyListener(canvasKeyListener);
 				controlPanel.addStepperListener(VisualAgent.this);
@@ -75,7 +75,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel, infoPanel);
+				screen = new GameScreen(gamePanel, controlPanel, logPanel);
                 screen.pack();
 				gamePanel.updateState(initState);
 			}					
@@ -111,7 +111,7 @@ public class VisualAgent extends Agent implements ActionListener {
 		if(controlPanel!=null)
 			controlPanel.stopPlay();
 		//JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
-		System.out.println("=======> You've finished current episode!");
+		log("=======> You've finished current episode!");
 	}
 	
 	public void addAction(Action action) {
@@ -122,6 +122,17 @@ public class VisualAgent extends Agent implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         stepSignal.drainPermits();
         stepSignal.release();
+    }
+    
+    public void log(String log) {
+    	System.out.println(log);
+    	if(logPanel==null)
+    		return ;
+    	if(log.startsWith("#clear"))
+    		logPanel.clear();
+    	else {
+    		logPanel.append(log);
+    	}
     }
 
 	public static String getUsage() {

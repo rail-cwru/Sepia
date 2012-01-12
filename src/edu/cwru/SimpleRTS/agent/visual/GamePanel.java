@@ -245,8 +245,8 @@ public class GamePanel extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			int x = unscaleX(e.getX());
-			int y = unscaleY(e.getY());
+			//int x = unscaleX(e.getX());
+			//int y = unscaleY(e.getY());
 			//System.out.println(x+","+y);
 			
 			if(agent!=null && agent.humanControllable)
@@ -263,7 +263,7 @@ public class GamePanel extends JPanel {
 		int y = unscaleY(e.getY());
 		StateView state = currentState;
 		if(e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()==2) { // double click
-			System.out.println("double clicked!");
+			//System.out.println("double clicked!");
 			infoVisSelectedID = -1;
 			info = null;
 			if(state.unitAt(x, y)!=null) {
@@ -277,8 +277,8 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void humanControl(MouseEvent e) {
-		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
-		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
+		//int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
+		//int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
 		//System.out.println("Current Gold: " + currentGold);
 		//System.out.println("Current Wood: " + currentWood);
 		
@@ -309,30 +309,34 @@ public class GamePanel extends JPanel {
 					if(myUnit.getTemplateView().canAttack() && targetUnit.getTemplateView().getPlayer()!=playernum) { 
 						// attack the target
 						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDATTACK, rightSelected);
-						System.out.println("=> Action: " + action);
+						log("=> Action: " + action);
 						agent.addAction(action);
 					} else if(myUnit.getCargoAmount()>0 && 
 							((targetUnit.getTemplateView().canAcceptGold() && myUnit.getCargoType()==ResourceType.GOLD) ||
 									(targetUnit.getTemplateView().canAcceptWood() && myUnit.getCargoType()==ResourceType.WOOD))) {
 						// target is townhall, and the peasant holds the gold or wood
 						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDDEPOSIT, rightSelected);
-						System.out.println("=> Action: " + action);
+						log("=> Action: " + action);
 						agent.addAction(action);
 					}
 				} else if(state.resourceAt(x, y)!=null) { // gather resource if doable
 					int rightSelected = state.resourceAt(x, y);
 					if(myUnit.getTemplateView().canGather()) {
 						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDGATHER, rightSelected);
-						System.out.println("=> Action: " + action);
+						log("=> Action: " + action);
 						agent.addAction(action);
 					}
 				} else { // move
 					Action action = new LocatedAction(selectedID, ActionType.COMPOUNDMOVE, x, y);
-					System.out.println("=> Action: " + action);
+					log("=> Action: " + action);
 					agent.addAction(action);
 				}
 			}
 		}
+	}
+	
+	private void log(String text) {
+		agent.log(text);
 	}
 	
 	private class Info{
