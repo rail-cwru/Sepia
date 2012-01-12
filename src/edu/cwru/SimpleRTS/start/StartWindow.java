@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.LinkedList;
 
 import java.awt.Insets;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.BorderLayout;
@@ -26,6 +27,7 @@ public class StartWindow extends JFrame
     implements CommandChangeListener, ActionListener {
 
     static final float TITLE_FONT = 20f;
+    static final Dimension AGENT_TABLE_SIZE = new Dimension(700, 200);
 
     private List<StartListener> listeners = new LinkedList<StartListener>();
 

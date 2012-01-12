@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import java.awt.Dimension;
 import java.awt.Component;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.event.TableModelListener;
 
+import edu.cwru.SimpleRTS.start.StartWindow;
 import edu.cwru.SimpleRTS.util.SwingUtils;
 
 @SuppressWarnings("serial")
@@ -22,7 +23,7 @@ public class AgentTable extends JTable {
         tableModel = new AgentTableModel();
         tableModel.addTableModelListener(listener);
         setModel(tableModel);
-        setPreferredScrollableViewportSize(new Dimension(324, 200));
+        setPreferredScrollableViewportSize(StartWindow.AGENT_TABLE_SIZE);
         setFillsViewportHeight(true);
     }
 
