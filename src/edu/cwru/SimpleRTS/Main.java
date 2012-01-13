@@ -81,6 +81,7 @@ public class Main {
 				xml = (XmlState)context.createUnmarshaller().unmarshal(new File(statefilename));
 			} catch (JAXBException e1) {
 				printUsage(statefilename + " is not a valid XML file describing a state.");
+				return;
 			}
 			
 			@SuppressWarnings("rawtypes")
