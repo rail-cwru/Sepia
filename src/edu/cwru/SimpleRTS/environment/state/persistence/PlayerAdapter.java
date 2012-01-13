@@ -51,28 +51,40 @@ public class PlayerAdapter {
 		PlayerState player = new PlayerState(xml.getID());
 		UnitAdapter unitAdapter = new UnitAdapter(templates);
 		
-		for(XmlUnit unit : xml.getUnit())
+		if(xml.getUnit() != null)
 		{
-			player.addUnit(unitAdapter.fromXml(unit));
+			for(XmlUnit unit : xml.getUnit())
+			{
+				player.addUnit(unitAdapter.fromXml(unit));
+			}
 		}
 		
-		player.getUpgrades().addAll(xml.getUpgrade());
-		
-		for(int id : xml.getTemplate())
+		if(xml.getUpgrade() != null)
 		{
-			for(@SuppressWarnings("rawtypes") Template template : templates.values())
+			player.getUpgrades().addAll(xml.getUpgrade());
+		}
+		
+		if(xml.getTemplate() != null)
+		{
+			for(int id : xml.getTemplate())
 			{
-				if(template.ID == id)
+				for(@SuppressWarnings("rawtypes") Template template : templates.values())
 				{
-					player.addTemplate(template);
-					break;
+					if(template.ID == id)
+					{
+						player.addTemplate(template);
+						break;
+					}
 				}
 			}
 		}
 		
-		for(XmlResourceQuantity resource : xml.getResourceAmount())
+		if(xml.getResourceAmount() != null)
 		{
-			player.setCurrentResourceAmount(resource.getType(), resource.getQuantity());
+			for(XmlResourceQuantity resource : xml.getResourceAmount())
+			{
+				player.setCurrentResourceAmount(resource.getType(), resource.getQuantity());
+			}
 		}
 		
 		player.setCurrentSupply(xml.getSupply());

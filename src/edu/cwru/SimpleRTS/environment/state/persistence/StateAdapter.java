@@ -47,9 +47,12 @@ public class StateAdapter {
 		}
 		
 		
-		for(XmlResourceNode resource : xml.getResourceNode())
+		if(xml.getResourceNode() != null)
 		{
-			builder.addResource(resourceNodeAdapter.fromXml(resource));
+			for(XmlResourceNode resource : xml.getResourceNode())
+			{
+				builder.addResource(resourceNodeAdapter.fromXml(resource));
+			}
 		}
 		
 		builder.setSize(xml.getXExtent(), xml.getYExtent());
