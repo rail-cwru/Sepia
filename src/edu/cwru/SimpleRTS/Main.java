@@ -276,15 +276,11 @@ public class Main {
 	}
 	private static void printUsage(String error) {
 		System.out.println(error);
-		System.out.println("Usage: java [-cp <path to your agent's class file>];SimpleRTS.jar] edu.cwru.SimpleRTS.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--loadfrom <serialized agent file name>]] ...] ");
-		System.out.println("\nExample: java -cp SimpleRTS.jar edu.cwru.SimpleRTS.Main data/footmen5v5.map --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0 --agent edu.cwru.SimpleRTS.agent.CombatAgent 1 --agentparam 0 --agentparam true --agentparam true");
-		System.out.println("\tThis will load the map stored in the file data/footmen5v5.map with new instances of SimpleAgent1 and an new CombatAgent to oppose the first that does wander and is verbose and run 10 episodes (assumes working directory is where SimpleRTS.jar is located)");
-		System.out.println("Example: java -cp SimpleRTS.jar --config data/defaultConfig.xml edu.cwru.SimpleRTS.Main data/footmen5v5.map --agent edu.cwru.SimpleRTS.agent.ScriptedGoalAgent 0 --loadfrom agents/script1 --agent edu.cwru.SimpleRTS.agent.SimpleAgent2 1");
-		System.out.println("\tThis will load the configuration in data/defaultConfig.xml and the map stored in the file data/footmen5v5.map with the ScriptedGoalAgent stored in agents/script1 and a new instance of SimpleAgent2 (assumes working directory is where SimpleRTS.jar is located)");
-		System.out.println("Example: java -cp bin;lib/SimpleRTS.jar edu.cwru.SimpleRTS.Main data/footmen5v5.map --agent edu.cwru.SimpleRTS.agent.ScriptedGoalAgent 0 --loadfrom agents/script1 --agent edu.cwru.SimpleRTS.agent.QFunctionAgent 1");
-	System.out.println("\tThis will load the map stored in the file data/footmen5v5.map with the ScriptedGoalAgent stored in agents/script1 and a new instance of QFunctionAgent (assumes SimpleRTS.jar is in the lib subdirectory and that QFunctionAgent.class is in the subdirectory bin/edu/cwru/SimpleRTS/agent and is in the package edu.cwru.SimpleRTS.agent)");
+		System.out.println("Usage: java [-cp <path to your agent's class file>];SimpleRTS.jar] edu.cwru.SimpleRTS.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--agentparam otherparameter]* [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("\nExample: --config data/defaultConfig.xml \"data/com_4f4a2kv4f4a2k.xml\" --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
+		System.out.println("See doc/manual.html for more information");
 	}
 	private static Agent readAgent(String filename) {
 		Agent agent = null;
