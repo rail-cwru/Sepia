@@ -46,6 +46,7 @@ public final class GameMap {
 			try {
 				JAXBContext context = JAXBContext.newInstance(XmlState.class);
 				Marshaller marshaller = context.createMarshaller();
+				marshaller.setProperty("jaxb.formatted.output", true);
 				StateAdapter adapter = new StateAdapter();
 				PrintWriter writer = new PrintWriter(new File(filename));
 				marshaller.marshal(adapter.toXml(state), writer);
