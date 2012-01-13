@@ -13,7 +13,8 @@ public class ResourceNode extends Target implements Cloneable {
 	private int initialAmount;
 	private int amountRemaining;
 	private ResourceView view;
-	public ResourceNode(Type type, int xPosition, int yPosition, int initialAmount) {
+	public ResourceNode(Type type, int xPosition, int yPosition, int initialAmount,int ID) {
+		super(ID);
 		this.type = type;
 		this.xPosition = xPosition;
 		this.yPosition = yPosition;
@@ -24,7 +25,7 @@ public class ResourceNode extends Target implements Cloneable {
 	
 	@Override
 	protected Object clone() {
-		ResourceNode copy = new ResourceNode(type, xPosition, yPosition, initialAmount);
+		ResourceNode copy = new ResourceNode(type, xPosition, yPosition, initialAmount,ID);
 		copy.amountRemaining = amountRemaining;
 		return copy;
 	}

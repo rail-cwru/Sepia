@@ -19,7 +19,7 @@
             </node>
             <node name="environment">
               <map>
-                <entry key="NumEpisodes" value="1"/>
+                <entry key="NumEpisodes" value="10"/>
                 <entry key="EpisodesPerSave" value="1"/>
               </map>
             </node>
@@ -28,7 +28,7 @@
             		<entry key="RequiredGold" value="50"/>
             		<entry key="RequiredWood" value="10" />
             		<entry key="Midas" value="true" />
-            		<entry key="TimeLimit" value="1000" />
+            		<entry key="TimeLimit" value="65535" />
             	</map>
             </node>
           </node>

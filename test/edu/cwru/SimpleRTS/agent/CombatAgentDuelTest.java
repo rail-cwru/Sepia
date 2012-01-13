@@ -35,28 +35,28 @@ public class CombatAgentDuelTest {
 		
 		
 		builder.setSize(15,15);
+		state = builder.build();
 		
 		
-		
-		templates1 = TypeLoader.loadFromFile("data/unit_templates",player1);		
+		templates1 = TypeLoader.loadFromFile("data/unit_templates",player1,state);		
 		System.out.println("Sucessfully loaded templates");
 		for (Template t : templates1) {
 			builder.addTemplate(t);
 		}
-		templates2 = TypeLoader.loadFromFile("data/unit_templates",player2);		
+		templates2 = TypeLoader.loadFromFile("data/unit_templates",player2,state);		
 		System.out.println("Sucessfully loaded templates");
 		for (Template t : templates2) {
 			builder.addTemplate(t);
 		}
 		
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance(state);
 			u.setxPosition(5);
 			u.setyPosition(5);
 			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player1, "Footman")).produceInstance(state);
 			u.setxPosition(5);
 			u.setyPosition(4);
 			builder.addUnit(u,u.getxPosition(),u.getyPosition());
@@ -64,18 +64,18 @@ public class CombatAgentDuelTest {
 		
 		
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance(state);
 			u.setxPosition(6);
 			u.setyPosition(5);
 			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player2, "Footman")).produceInstance(state);
 			u.setxPosition(6);
 			u.setyPosition(4);
 			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
-		state = builder.build();
+		
 		planner = new SimplePlanner(state);
 		model=new SimpleModel(state, 1235,null);
 		model.setVerbosity(true);

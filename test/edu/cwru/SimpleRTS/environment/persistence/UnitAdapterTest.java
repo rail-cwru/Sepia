@@ -32,7 +32,7 @@ public class UnitAdapterTest {
 	@Test
 	public void testToXml() {
 		UnitAdapter adapter = new UnitAdapter(templates);
-		Unit unit = new Unit((UnitTemplate)templates.get(0));
+		Unit unit = new Unit((UnitTemplate)templates.get(0),34);
 		unit.setTask(UnitTask.Idle);
 		unit.setxPosition(1);
 		unit.setyPosition(1);
@@ -48,6 +48,7 @@ public class UnitAdapterTest {
 		assertEquals("current production ID did not match!", unit.getCurrentProductionID(), xml.getProductionTemplateID());
 		//assertEquals("cargo type did not match!", unit.get, xml.getProductionAmount());
 		assertEquals("task did not match!", unit.getTask(), xml.getUnitTask());
+		assertEquals("task did not match!", unit.ID, xml.getID());
 	}
 	
 	@Test

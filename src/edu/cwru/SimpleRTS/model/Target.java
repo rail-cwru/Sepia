@@ -2,6 +2,8 @@ package edu.cwru.SimpleRTS.model;
 
 import java.io.Serializable;
 
+import edu.cwru.SimpleRTS.environment.IDDistributer;
+
 /**
  * An class that signifies that an extending class can be the direct object of an action
  * This requires that they all share an ID scheme
@@ -10,15 +12,9 @@ import java.io.Serializable;
  */
 public class Target implements Serializable {
 	public final long serialVersionUID = 3105626783863300558l;
-	protected static int nextID = 0;
 	public final int ID;
-	public Target()
+	public Target(int ID)
 	{
-		ID = nextID++;
-	}
-	public static void reserveIDsUpTo(int minID)
-	{
-		if (nextID <= minID)
-			nextID = minID+1;
+		this.ID = ID;
 	}
 }

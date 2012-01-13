@@ -59,6 +59,14 @@ public class XmlState {
     protected Integer xExtent;
     @XmlAttribute
     protected Integer yExtent;
+    @XmlAttribute
+    protected Boolean fogOfWar;
+    @XmlAttribute
+    protected Boolean revealedResources;
+    @XmlAttribute
+    protected Integer nextTargetID;
+    @XmlAttribute
+    protected Integer nextTemplateID;
 
     /**
      * Gets the value of the player property.
@@ -165,5 +173,101 @@ public class XmlState {
     public void setYExtent(Integer value) {
         this.yExtent = value;
     }
+
+    /**
+     * Gets the value of the fogOfWar property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean getFogOfWar() {
+        return fogOfWar;
+    }
+
+    /**
+     * Sets the value of the revealedResources property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setRevealedResources(Boolean value) {
+        this.revealedResources = value;
+    }
+    /**
+     * Gets the value of the revealedResources property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    public Boolean getRevealedResources() {
+        return revealedResources;
+    }
+
+    /**
+     * Sets the value of the fogOfWar property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    public void setFogOfWar(Boolean value) {
+        this.fogOfWar = value;
+    }
+    
+    /**
+     * Gets the value of the nextTargetID property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getNextTargetID() {
+        return nextTargetID;
+    }
+
+    /**
+     * Sets the value of the nextTargetID property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setNextTargetID(Integer value) {
+        this.nextTargetID = value;
+    }
+    /**
+     * Gets the value of the nextTemplateID property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getNextTemplateID() {
+        return nextTemplateID;
+    }
+
+    /**
+     * Sets the value of the nextTemplateID property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setNextTemplateID(Integer value) {
+        this.nextTemplateID = value;
+    }
+    
+	
 
 }

@@ -32,9 +32,11 @@ public class ResourceGatheringTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);
 		State.StateBuilder builder = new StateBuilder();
 		builder.setSize(64,64);
+		State state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);
+		
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
@@ -42,20 +44,20 @@ public class ResourceGatheringTest {
 			UnitTemplate template = (UnitTemplate)t;
 			if(template.getUnitName().equals("TownHall"))
 			{
-				Unit u = template.produceInstance();
+				Unit u = template.produceInstance(state);
 				builder.addUnit(u,10,10);
 			}
 			else if(template.getUnitName().equals("Peasant"))
 			{
-				Unit u = template.produceInstance();
+				Unit u = template.produceInstance(state);
 				builder.addUnit(u,12,12);
 			}
 		}
-		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 11, 8, 100);
-		ResourceNode g = new ResourceNode(ResourceNode.Type.GOLD_MINE, 11, 12, 5000);
+		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 11, 8, 100,state.nextTargetID());
+		ResourceNode g = new ResourceNode(ResourceNode.Type.GOLD_MINE, 11, 12, 5000,state.nextTargetID());
 		builder.addResource(t);
 		builder.addResource(g);
-		model = new SimpleModel(builder.build(), 5336,null);
+		model = new SimpleModel(state, 5336,null);
 		model.setVerbosity(true);
 		(configuration = Configuration.getInstance()).put(ResourceNode.Type.TREE+"GatherRate", 20+"");
 		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");

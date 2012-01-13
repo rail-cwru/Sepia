@@ -49,7 +49,7 @@ import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 })
 public class XmlUnit {
-
+	protected int id;
     protected int currentHealth;
     protected int xPosition;
     protected int yPosition;
@@ -80,6 +80,21 @@ public class XmlUnit {
         this.currentHealth = value;
     }
 
+    /**
+     * Gets the value of the id property.
+     * 
+     */
+    public int getID() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     */
+    public void setID(int value) {
+        this.id= value;
+    }
     /**
      * Gets the value of the xPosition property.
      * 

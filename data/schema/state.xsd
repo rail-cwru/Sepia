@@ -16,6 +16,101 @@
 		</xs:sequence>
 		<xs:attribute name="xExtent" type="xs:int"/>
 		<xs:attribute name="yExtent" type="xs:int"/>
+		<xs:attribute name="nextTargetID" type="xs:int"/>
+		<xs:attribute name="nextTemplateID" type="xs:int"/>
+		<xs:attribute name="revealedResources" type="xs:boolean"/>
+		<xs:attribute name="fogOfWar" type="xs:boolean"/>
+	</xs:complexType>
+</xs:element>
+<xs:complexType name="Player">
+	<xs:sequence>
+		<xs:element name="ID" type="xs:int"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="unit" type="Unit" />
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="upgrade" type="xs:int"/>
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="template" type="xs:int"/>
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="resourceAmount" type="ResourceQuantity"/>
+		</xs:sequence>
+		<xs:element name="supply" type="xs:int"/>
+		<xs:element name="supplyCap" type="xs:int"/>
+	</xs:sequence>
+	
+</xs:complexType>
+<xs:complexType name="Unit">
+	<xs:all>
+		<xs:element name="currentHealth" type="xs:int"/>
+		<xs:element name="xPosition" type="xs:int"/>
+		<xs:element name="yPosition" type="xs:int"/>
+		<xs:element name="templateID" type="xs:int"/>
+		<xs:element name="cargoType" type="ResourceType"/>
+		<xs:element name="cargoAmount" type="xs:int"/>
+		<xs:element name="unitTask" type="UnitTask"/>
+		<xs:element name="productionTemplateID" type="xs:int"/>
+		<xs:element name="productionAmount" type="xs:int"/>
+	</xs:all>
+</xs:complexType>
+<xs:simpleType name="UnitTask">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="Wood"/>
+		<xs:enumeration value="Gold"/>
+		<xs:enumeration value="Idle"/>
+		<xs:enumeration value="Build"/>
+		<xs:enumeration value="Move"/>
+		<xs:enumeration value="Attack"/>
+	</xs:restriction>
+</xs:simpleType>
+<xs:complexType name="ResourceQuantity">
+	<xs:sequence>
+		<xs:element name="quantity" type="xs:int"/>
+		<xs:element name="type" type="ResourceType"/>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ResourceNode">
+	<xs:sequence>
+		<xs:element name="type" type="ResourceNodeType"/>
+		<xs:element name="xPosition" type="xs:int"/>
+		<xs:element name="yPosition" type="xs:int"/>
+		<xs:element name="initialAmount" type="xs:int"/>
+		<xs:element name="amountRemaining" type="xs:int"/>	
+	</xs:sequence>	
+</xs:complexType>
+<xs:simpleType name="ResourceNodeType">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="TREE" />
+		<xs:enumeration value="GOLD_MINE" />
+	</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="ResourceType">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="WOOD" />
+		<xs:enumeration value="GOLD" />
+	</xs:restriction>
+</xs:simpleType>
+</xs:schema>
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	jxb:version="2.0"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+<xs:element name="state">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:sequence minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="player" type="Player"/>
+			</xs:sequence>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="resourceNode" type="ResourceNode"/>
+			</xs:sequence>
+		</xs:sequence>
+		<xs:attribute name="xExtent" type="xs:int"/>
+		<xs:attribute name="yExtent" type="xs:int"/>
 	</xs:complexType>
 </xs:element>
 <xs:complexType name="Player">

@@ -37,6 +37,7 @@ public class MapEditor {
 			commands = args[2].split(";");
 		}
 		State.StateBuilder s = new State.StateBuilder();
+		State state = s.build();
 		boolean done = false;
 		int iterator = -1;
 		while (!done)
@@ -79,12 +80,12 @@ public class MapEditor {
 					{
 						String unitname = nextcommand[1];
 						if (!s.hasTemplates(player));
-							addPlayer(s, player, templatefile);
+							addPlayer(state, player, templatefile);
 						Template template =  s.getTemplate(player, unitname);
 						if (template!=null && template instanceof UnitTemplate)
 						{
 							
-							Unit u = new Unit((UnitTemplate)template);
+							Unit u = new Unit((UnitTemplate)template,state.nextTargetID());
 							//u.setPlayer(player);
 							s.addUnit(u,x,y);
 						}
@@ -110,7 +111,7 @@ public class MapEditor {
 					int y = Integer.parseInt(nextcommand[3]);
 					if (alreadysetsize){
 						if (s.positionAvailable(x,y)) {
-							ResourceNode r = new ResourceNode(ResourceNode.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]));
+							ResourceNode r = new ResourceNode(ResourceNode.Type.valueOf(nextcommand[1].toUpperCase()),x,y,Integer.parseInt(nextcommand[4]),state.nextTargetID());
 							s.addResource(r);
 						}
 						else
@@ -125,13 +126,12 @@ public class MapEditor {
 			}
 			System.out.println(s.getTextString());
 		}
-		State state = s.build();
 		GameMap.storeState(outputfile, state);
 	}
-	static void addPlayer(State.StateBuilder state, int player, String templatefile) {
+	static void addPlayer(State state, int player, String templatefile) {
 		List<Template> templates=null;
 		try {
-			templates = TypeLoader.loadFromFile(templatefile,player);
+			templates = TypeLoader.loadFromFile(templatefile,player,state);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

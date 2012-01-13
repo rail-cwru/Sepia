@@ -19,7 +19,7 @@ public class UnitAdapter {
 	public Unit fromXml(XmlUnit xml) {
 		int templateId = xml.getTemplateID();
 		UnitTemplate template = (UnitTemplate) templates.get(templateId);
-		Unit unit = new Unit(template);
+		Unit unit = new Unit(template,xml.getID());
 		unit.setxPosition(xml.getXPosition());
 		unit.setyPosition(xml.getYPosition());
 		unit.setTask(xml.getUnitTask());
@@ -32,6 +32,7 @@ public class UnitAdapter {
 	
 	public XmlUnit toXml(Unit unit) {
 		XmlUnit xml = new XmlUnit();
+		xml.setID(unit.ID);
 		xml.setCurrentHealth(unit.getCurrentHealth());
 		xml.setXPosition(unit.getxPosition());
 		xml.setYPosition(unit.getyPosition());

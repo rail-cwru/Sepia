@@ -34,16 +34,17 @@ public class VisualAgentTest {
 	@BeforeClass
 	public static void setup() throws JSONException, IOException {
 		StateBuilder builder = new StateBuilder();
+		state = builder.build();
 		builder.setSize(32, 32);
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1);
+			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1,state);
 			for(Template t : templates)
 			{
 				builder.addTemplate(t);
 			}
 		}
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2);
+			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2,state);
 			for(Template t : templates)
 			{
 				builder.addTemplate(t);
@@ -52,40 +53,39 @@ public class VisualAgentTest {
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player1, "Peasant");
-				Unit u1 = new Unit(ut);
+				Unit u1 = new Unit(ut,state.nextTargetID());
 				builder.addUnit(u1,1,1);
-				Unit u2 = new Unit(ut);
+				Unit u2 = new Unit(ut,state.nextTargetID());
 				builder.addUnit(u2,7,7);
 			}
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Footman");
-				Unit u1 = new Unit(ut);
+				Unit u1 = new Unit(ut,state.nextTargetID());
 				builder.addUnit(u1,20,4);
 			}
 			
 			{
 				UnitTemplate ut = (UnitTemplate) builder.getTemplate(player2, "Archer");
-				Unit u1 = new Unit(ut);
+				Unit u1 = new Unit(ut,state.nextTargetID());
 				builder.addUnit(u1,2,12);
 			}
 		
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 1, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 1, 2, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 2, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 3, 3, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 0, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 1, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 3, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 4, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 5, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 6, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 7, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 8, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 9, 5, 100));
-		builder.addResource(new ResourceNode(ResourceNode.Type.GOLD_MINE, 12, 2, 100));
-		state = builder.build();
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 1, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 1, 2, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 2, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 3, 3, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 0, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 1, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 2, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 3, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 4, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 5, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 6, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 7, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 8, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.TREE, 9, 5, 100,state.nextTargetID()));
+		builder.addResource(new ResourceNode(ResourceNode.Type.GOLD_MINE, 12, 2, 100,state.nextTargetID()));
 		model = new SimpleModel(state, 6,null);
 		model.setVerbosity(true);
 		visualAgent = new VisualAgent(player1,state.getView(player1));

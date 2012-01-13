@@ -30,10 +30,13 @@ public class ScriptedGoalAgentTest {
 	static Unit founder;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);
-		System.out.println("Sucessfully loaded templates");
 		
 		State.StateBuilder builder = new State.StateBuilder();
+		state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);
+		System.out.println("Sucessfully loaded templates");
+		
+		
 		
 		builder.setSize(15,15);
 		for (Template t : templates) {
@@ -43,21 +46,21 @@ public class ScriptedGoalAgentTest {
 		
 		{
 			
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Peasant")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Peasant")).produceInstance(state);
 			u.setxPosition(5);
 			u.setyPosition(5);
 			founder = u;
 			builder.addUnit(u,u.getxPosition(),u.getyPosition());
 		}
 		{
-			ResourceNode rn = new ResourceNode(ResourceNode.Type.GOLD_MINE, 2, 2, 70000);
+			ResourceNode rn = new ResourceNode(ResourceNode.Type.GOLD_MINE, 2, 2, 70000,state.nextTargetID());
 			builder.addResource(rn);
 		}
 		{
-			ResourceNode rn = new ResourceNode(ResourceNode.Type.TREE, 1, 1, 70000);
+			ResourceNode rn = new ResourceNode(ResourceNode.Type.TREE, 1, 1, 70000,state.nextTargetID());
 			builder.addResource(rn);
 		}
-		state = builder.build();
+		
 		planner = new SimplePlanner(state);
 		model=new SimpleModel(state, 1235,null);
 		model.setVerbosity(true);

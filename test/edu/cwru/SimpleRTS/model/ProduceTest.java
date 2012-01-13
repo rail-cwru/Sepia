@@ -33,10 +33,12 @@ public class ProduceTest {
 	static int upgradeproducedtemplate2;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
-		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
+		state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);		
+		System.out.println("Sucessfully loaded templates");
+		
 		for (Template t : templates) {
 			builder.addTemplate(t);
 		}
@@ -48,18 +50,18 @@ public class ProduceTest {
 		upgradeproducedtemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponOne")).hashCode();
 		upgradeproducedtemplate2 = ((UpgradeTemplate)builder.getTemplate(player, "ArmorOne")).hashCode();
 		{
-		Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance();
+		Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance(state);
 		unitproducerid = u.ID;
 		builder.addUnit(u,0,0);
 		
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance(state);
 			upgradeproducer1id = u.ID;
 			builder.addUnit(u,0,1);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance(state);
 			upgradeproducer2id = u.ID;
 			builder.addUnit(u,0,2);
 		}
@@ -67,7 +69,6 @@ public class ProduceTest {
 		builder.setSupplyCap(player, 10);
 		builder.setResourceAmount(player, ResourceType.GOLD, 1200);
 		builder.setResourceAmount(player, ResourceType.WOOD, 800);
-		state = builder.build();
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536,null);
 		model.setVerbosity(true);

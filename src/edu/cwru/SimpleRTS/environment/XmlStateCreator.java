@@ -28,6 +28,7 @@ public class XmlStateCreator implements StateCreator {
 		}
 		catch(Exception ex)
 		{
+			ex.printStackTrace();
 			return null;
 		}
 	}

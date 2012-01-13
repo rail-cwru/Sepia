@@ -34,7 +34,10 @@ public class StateAdapter {
 		
 		xml.setXExtent(state.getXExtent());		
 		xml.setYExtent(state.getYExtent());
-		
+		xml.setNextTemplateID(state.getNextTemplateIDForXMLSave());
+		xml.setNextTargetID(state.getNextTargetIDForXMLSave());
+		xml.setFogOfWar(state.getFogOfWar());
+		xml.setRevealedResources(state.getRevealedResources());
 		return xml;
 	}
 	
@@ -56,10 +59,13 @@ public class StateAdapter {
 		}
 		
 		builder.setSize(xml.getXExtent(), xml.getYExtent());
-		
+		builder.setIDDistributerTargetMax(xml.getNextTargetID());
+		builder.setIDDistributerTemplateMax(xml.getNextTemplateID());
 		State state = builder.build();
 		state.updateGlobalListsFromPlayers();
-				
+		state.forceRecalculateVision();
+		state.setFogOfWar(xml.getFogOfWar());
+		state.setRevealedResources(xml.getRevealedResources());
 		return state;
 	}
 }

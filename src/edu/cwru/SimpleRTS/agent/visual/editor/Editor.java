@@ -97,7 +97,7 @@ public class Editor extends JFrame {
 				{
 					int newPlayerNum = model.getSize();
 					try {
-						List<Template> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum);
+						List<Template> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum,state);
 						for (Template t : newPlayerTemplates) {
 							state.addTemplate(t);
 						}
@@ -202,7 +202,7 @@ public class Editor extends JFrame {
 		String[] unitnames;
 		List<UnitTemplate> tempunittemplates=null;
 		try {
-			tempunittemplates = TypeLoader.loadUnitsFromFile(templatefilename, -3);
+			tempunittemplates = TypeLoader.loadUnitsFromFile(templatefilename, -3, new State());
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (JSONException e1) {
@@ -286,7 +286,7 @@ public class Editor extends JFrame {
 			if(selectUnit.isSelected())
 			{
 				String name = (String)templateSelector.getSelectedItem();
-				Unit u = ((UnitTemplate)state.getTemplate(player,name)).produceInstance();
+				Unit u = ((UnitTemplate)state.getTemplate(player,name)).produceInstance(state);
 				state.addUnit(u,x,y);
 			}
 			else if(selectTree.isSelected())
@@ -299,7 +299,7 @@ public class Editor extends JFrame {
 					error.setText("Invalid resource quantity.");
 					return;
 				}
-				ResourceNode r = new ResourceNode(ResourceNode.Type.TREE, x, y, amount);
+				ResourceNode r = new ResourceNode(ResourceNode.Type.TREE, x, y, amount,state.nextTargetID());
 				state.addResource(r);
 			}
 			else if(selectMine.isSelected())
@@ -312,7 +312,7 @@ public class Editor extends JFrame {
 					error.setText("Invalid resource quantity.");
 					return;
 				}
-				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount);
+				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount,state.nextTargetID());
 				state.addResource(r);
 			}
 			updateScreen();

@@ -41,6 +41,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResourceNode", propOrder = {
+	"id",
     "type",
     "xPosition",
     "yPosition",
@@ -48,7 +49,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
     "amountRemaining"
 })
 public class XmlResourceNode {
-
+	protected int id;
     @XmlElement(required = true, type = String.class)
     @XmlJavaTypeAdapter(Adapter3 .class)
     protected Type type;
@@ -129,6 +130,21 @@ public class XmlResourceNode {
         this.initialAmount = value;
     }
 
+    /**
+     * Gets the value of the id property.
+     * 
+     */
+    public int getID() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     */
+    public void setID(int value) {
+        this.id = value;
+    }
     /**
      * Gets the value of the amountRemaining property.
      * 

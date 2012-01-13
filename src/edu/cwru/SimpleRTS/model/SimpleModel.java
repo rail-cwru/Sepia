@@ -321,8 +321,7 @@ public class SimpleModel implements Model {
 								if (!(a instanceof DirectedAction))
 									break;
 								if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
-									u.setxPosition(xPrime);
-									u.setyPosition(yPrime);
+									state.moveUnit(u, ((DirectedAction)a).getDirection());
 								}
 								else {
 									failedtry=true;
@@ -414,7 +413,7 @@ public class SimpleModel implements Model {
 								u.incrementProduction(template, state.getView(Agent.OBSERVER_ID));
 								if (template.timeCost == u.getAmountProduced())
 								{
-									Unit building = template.produceInstance();
+									Unit building = template.produceInstance(state);
 //									System.out.println("Checking on bug: unit with id "+u.ID);
 //									System.out.println(state.getUnit(u.ID));
 									int[] newxy = state.getClosestPosition(x,y);
@@ -442,7 +441,7 @@ public class SimpleModel implements Model {
 								{
 									if (template instanceof UnitTemplate)
 									{
-										Unit produced = ((UnitTemplate)template).produceInstance();
+										Unit produced = ((UnitTemplate)template).produceInstance(state);
 										int[] newxy = state.getClosestPosition(x,y);
 										if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 										{
@@ -451,7 +450,7 @@ public class SimpleModel implements Model {
 									}
 									else if (template instanceof UpgradeTemplate) {
 										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-										if (state.tryProduceUpgrade(upgradetemplate.produceInstance()))
+										if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
 										{
 											state.recordUpgrade(upgradetemplate,u);
 										}

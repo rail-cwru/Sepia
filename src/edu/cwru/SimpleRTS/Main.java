@@ -74,6 +74,7 @@ public class Main {
 		}
 		if(initState == null)
 		{			
+			State templatemakingstate = new State();//TODO: remove this when xml does templates
 			JAXBContext context;
 			XmlState xml = null;
 			try {
@@ -105,7 +106,7 @@ public class Main {
 				@SuppressWarnings("rawtypes")
 				List<Template> templateList;
 				try {
-					templateList = TypeLoader.loadFromFile(filename, playernum);
+					templateList = TypeLoader.loadFromFile(filename, playernum,templatemakingstate);
 				} catch (JSONException e) {
 					printUsage("File " + filename + " was not a valid template file.");
 					return;
@@ -129,7 +130,7 @@ public class Main {
 					@SuppressWarnings("rawtypes")
 					List<Template> templateList;
 					try {
-						templateList = TypeLoader.loadFromFile(global, id);
+						templateList = TypeLoader.loadFromFile(global, id,templatemakingstate);
 					} catch (JSONException e) {
 						printUsage("File " + global + " was not a valid template file.");
 						return;

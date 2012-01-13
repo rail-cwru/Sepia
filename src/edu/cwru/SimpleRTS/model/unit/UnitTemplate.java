@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -42,14 +43,15 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	private UnitTemplateView view;
 	private List<String> produces;
 	private List<Integer> producesID;
-	public UnitTemplate()
+	public UnitTemplate(int ID)
 	{
+		super(ID);
 		producesID = new ArrayList<Integer>();
 		produces = new ArrayList<String>();
 	}
 	@Override
-	public Unit produceInstance() {
-		Unit unit = new Unit(this);
+	public Unit produceInstance(IDDistributer idsource) {
+		Unit unit = new Unit(this, idsource.nextTargetID());
 		return unit;
 	}
 	public String getUnitName() {

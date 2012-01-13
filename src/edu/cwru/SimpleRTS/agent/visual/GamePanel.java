@@ -351,14 +351,17 @@ public class GamePanel extends JPanel {
 		public int getX() {
 			if(state.getUnit(id)!=null)
 				return scaleX(state.getUnit(id).getXPosition());
+			else if (state.getResourceNode(id)!=null)
+				return scaleX(state.getResourceNode(id).getXPosition());
 			else
-				return scaleX(state.getResourceNode(id).getXPosition()); 
+				return -1;
 		}
 		public int getY() {
 			if(state.getUnit(id)!=null)
 				return scaleY(state.getUnit(id).getYPosition());
-			else
+			else if (state.getResourceNode(id)!=null)
 				return scaleY(state.getResourceNode(id).getYPosition()); 
+			return -1;
 		}
 		public String getInfo() { 
 			if(state.getUnit(id)!=null) {

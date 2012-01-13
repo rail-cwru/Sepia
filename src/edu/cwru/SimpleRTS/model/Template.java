@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.prerequisite.BuildingPrerequisite;
@@ -40,16 +41,10 @@ public abstract class Template<T> implements Serializable{
 	 * A factory method that produces copies of a "default" object
 	 * @return
 	 */
-	public abstract T produceInstance();
-	private static int nextID=0;
-	public static void reserveIDsUpTo(int minID)
+	public abstract T produceInstance(IDDistributer idsource);
+	public Template(int ID)
 	{
-		if (nextID <= minID)
-			nextID = minID+1;
-	}
-	public Template()
-	{
-		ID = nextID++;
+		this.ID = ID;
 		buildPrereq = new HashSet<String>();
 		upgradePrereq = new HashSet<String>();
 	}

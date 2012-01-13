@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.BuildingPrerequisite;
 import edu.cwru.SimpleRTS.model.prerequisite.UpgradePrerequisite;
@@ -15,13 +16,14 @@ public class UpgradeTemplate extends Template<Upgrade>
 	private String[] stringunitsaffected;
 	private int timetoproduce;
 
-	public UpgradeTemplate(int attackchange, int defensechange, String[] affectedunits)
+	public UpgradeTemplate(int ID, int attackchange, int defensechange, String[] affectedunits)
 	{
+		super(ID);
 		this.attackchange = attackchange;
 		this.defensechange = defensechange;
 		this.stringunitsaffected = affectedunits;
 	}
-	public Upgrade produceInstance()
+	public Upgrade produceInstance(IDDistributer idsource)
 	{
 		return new Upgrade(attackchange, defensechange, unittemplatesaffected, this);
 	}

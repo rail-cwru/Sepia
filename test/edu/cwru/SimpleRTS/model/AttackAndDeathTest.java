@@ -31,9 +31,11 @@ public class AttackAndDeathTest {
 	static Unit test3unit2;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
-		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
+		state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);		
+		System.out.println("Sucessfully loaded templates");
+		
 		builder.setSize(15,15);
 		for (@SuppressWarnings("rawtypes") Template t : templates) {
 			builder.addTemplate(t);
@@ -41,37 +43,36 @@ public class AttackAndDeathTest {
 		
 		
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance(state);
 			test1shooter = u;
 			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance(state);
 			test1target = u;
 			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Archer")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Archer")).produceInstance(state);
 			test2shooter = u;
 			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance(state);
 			test2target = u;
 			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance(state);
 			test3unit1 = u;
 			builder.addUnit(u,0,0);
 		}
 		
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Footman")).produceInstance(state);
 			test3unit2= u;
 			builder.addUnit(u,0,0);
 		}
-		state = builder.build();
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536,null);
 		model.setVerbosity(true);

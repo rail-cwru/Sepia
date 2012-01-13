@@ -26,11 +26,13 @@ public class SimplePlannerTest {
 	
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
-		System.out.println("Sucessfully loaded templates");
+		
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
 		state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player, state);		
+		System.out.println("Sucessfully loaded templates");
+
 		planner = new SimplePlanner(state);
 		
 		for(Template t : templates)
@@ -40,38 +42,38 @@ public class SimplePlannerTest {
 			builder.addTemplate(t);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Peasant")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Peasant")).produceInstance(state);
 			builder.addUnit(u,10,10);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Barracks")).produceInstance(state);
 			builder.addUnit(u,0,0);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance(state);
 			builder.addUnit(u,0,1);
 		}
 		{
-			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+			Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance(state);
 			builder.addUnit(u,0,2);
 		}
 		
 		for(int i = 0; i <= 12; i++)
 		{
-			ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, i, 8, 100);
+			ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, i, 8, 100, state.nextTargetID());
 			builder.addResource(t);
 		}
-		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 7, 2, 100);
+		ResourceNode t = new ResourceNode(ResourceNode.Type.TREE, 7, 2, 100, state.nextTargetID());
 		builder.addResource(t);
-		t = new ResourceNode(ResourceNode.Type.TREE, 7, 3, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 7, 3, 100, state.nextTargetID());
 		builder.addResource(t);
-		t = new ResourceNode(ResourceNode.Type.TREE, 8, 3, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 8, 3, 100, state.nextTargetID());
 		builder.addResource(t);
-		t = new ResourceNode(ResourceNode.Type.TREE, 8, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 8, 4, 100, state.nextTargetID());
 		builder.addResource(t);
-		t = new ResourceNode(ResourceNode.Type.TREE, 9, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 9, 4, 100, state.nextTargetID());
 		builder.addResource(t);
-		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100);
+		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100, state.nextTargetID());
 		builder.addResource(t);
 		model = new SimpleModel(state,5536,null);
 		model.setVerbosity(true);

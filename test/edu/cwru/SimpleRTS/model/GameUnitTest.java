@@ -33,21 +33,24 @@ public class GameUnitTest {
 	 */
 	@BeforeClass
 	public static void setup() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",0);
 		State.StateBuilder builder = new StateBuilder();
+		State state = builder.build();
+		state.setSize(64,64);
+		templates = TypeLoader.loadFromFile("data/unit_templates",0,state);
+		
 		int x = 0;
 		int y = 0;
-		builder.setSize(64,64);
+		
 		for(Template t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
 				continue;
-			Unit u = ((UnitTemplate)t).produceInstance();
+			Unit u = ((UnitTemplate)t).produceInstance(state);
 			builder.addUnit(u,x,y);
 			x += 5;
 			y += 5;
 		}
-		model = new SimpleModel(builder.build(), 5336,null);
+		model = new SimpleModel(state, 5336,null);
 		model.setVerbosity(true);
 	}
 	/**

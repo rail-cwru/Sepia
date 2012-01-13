@@ -8,6 +8,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.junit.BeforeClass;
 
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceQuantity;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
@@ -23,7 +24,7 @@ public class AdapterTestUtil {
 	@BeforeClass
 	public static Map<Integer,Template> loadTemplates() throws FileNotFoundException, JSONException {
 		Map<Integer,Template> templates = new HashMap<Integer,Template>();
-		List<UnitTemplate> templateList = TypeLoader.loadUnitsFromFile("data/unit_templates", 0);
+		List<UnitTemplate> templateList = TypeLoader.loadUnitsFromFile("data/unit_templates", 0,new State());
 		for(Template t : templateList)
 		{
 			templates.put(t.ID,t);
@@ -33,6 +34,7 @@ public class AdapterTestUtil {
 	
 	public static XmlUnit createExampleUnit() {
 		XmlUnit xml = new XmlUnit();
+		xml.setID(56);
 		xml.setCargoAmount(10);
 		xml.setCargoType(ResourceType.GOLD);
 		xml.setCurrentHealth(10);

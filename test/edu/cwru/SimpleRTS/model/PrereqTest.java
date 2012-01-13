@@ -30,10 +30,12 @@ public class PrereqTest {
 	static int dependingupgradetemplate;
 	@BeforeClass
 	public static void loadTemplates() throws Exception {
-		templates = TypeLoader.loadFromFile("data/unit_templates",player);		
-		System.out.println("Sucessfully loaded templates");
 		State.StateBuilder builder = new State.StateBuilder();
 		builder.setSize(15,15);
+		state = builder.build();
+		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);		
+		System.out.println("Sucessfully loaded templates");
+		
 		for (Template t : templates) {
 			builder.addTemplate(t);
 		}
@@ -44,14 +46,13 @@ public class PrereqTest {
 		upgradetemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponOne")).ID;
 		dependingupgradetemplate = ((UpgradeTemplate)builder.getTemplate(player, "WeaponTwo")).hashCode();
 		{
-		Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance();
+		Unit u = ((UnitTemplate)builder.getTemplate(player, "Blacksmith")).produceInstance(state);
 		upgradeproducerid = u.ID;
 		builder.addUnit(u,0,0);
 		
 		}
 		builder.setResourceAmount(player, ResourceType.GOLD, 1000);
 		builder.setResourceAmount(player, ResourceType.WOOD, 1000);
-		state = builder.build();
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536,null);
 		model.setVerbosity(true);

@@ -22,8 +22,8 @@ public class Unit extends Target implements Cloneable {
 	@SuppressWarnings("rawtypes")
 	protected Template currentProduction;
 	protected int currentProductionAmount;
-	public Unit(UnitTemplate template) {
-		
+	public Unit(UnitTemplate template, int ID) {
+		super(ID);
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
 		currentProductionAmount = 0;
@@ -32,7 +32,7 @@ public class Unit extends Target implements Cloneable {
 	
 	@Override
 	protected Object clone() {
-		Unit unit = new Unit(template);
+		Unit unit = new Unit(template, ID);
 		unit.currentHealth = currentHealth;
 		unit.xPosition = xPosition;
 		unit.yPosition = yPosition;

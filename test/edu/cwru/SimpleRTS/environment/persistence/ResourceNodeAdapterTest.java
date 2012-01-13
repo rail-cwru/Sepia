@@ -13,7 +13,7 @@ public class ResourceNodeAdapterTest {
 	@Test
 	public void testToXml() {
 		ResourceNodeAdapter adapter = new ResourceNodeAdapter();
-		ResourceNode node = new ResourceNode(ResourceNode.Type.GOLD_MINE, 1, 1, 1000);
+		ResourceNode node = new ResourceNode(ResourceNode.Type.GOLD_MINE, 1, 2, 1000,34);
 		
 		XmlResourceNode xml = adapter.toXml(node);
 		
@@ -31,13 +31,14 @@ public class ResourceNodeAdapterTest {
 		xml.setXPosition(1);
 		xml.setYPosition(2);
 		xml.setAmountRemaining(100);
-		
+		xml.setID(34);
 		ResourceNode node = adapter.fromXml(xml);
 
 		assertEquals("resource type did not match!", xml.getType(), node.getType());
 		assertEquals("x position did not match!", xml.getXPosition(), node.getxPosition());
 		assertEquals("y position did not match!", xml.getYPosition(), node.getyPosition());
 		assertEquals("amount remaining did not match!", xml.getAmountRemaining(), node.getAmountRemaining());
+		assertEquals("ID did not match!", xml.getID(), node.ID);
 		
 	}
 }

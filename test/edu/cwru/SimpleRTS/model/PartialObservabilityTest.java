@@ -51,7 +51,7 @@ public class PartialObservabilityTest {
 		//Repeatedly add things, changing the revealedness every so often 
 		for (int i = 0; i<100;i++)
 		{
-			ResourceNode newres = new ResourceNode(r.nextBoolean()?ResourceNode.Type.GOLD_MINE:ResourceNode.Type.TREE,r.nextInt(state.getXExtent()),r.nextInt(state.getYExtent()),r.nextInt());
+			ResourceNode newres = new ResourceNode(r.nextBoolean()?ResourceNode.Type.GOLD_MINE:ResourceNode.Type.TREE,r.nextInt(state.getXExtent()),r.nextInt(state.getYExtent()),r.nextInt(),state.nextTargetID());
 			state.addResource(newres);
 			Pair pos = new Pair(newres.getxPosition(), newres.getyPosition());
 			Pair prevnum = actualpositioning.get(pos);
@@ -81,15 +81,15 @@ public class PartialObservabilityTest {
  */
 public void sightTest() throws FileNotFoundException, JSONException {
 	//Set up the state
-	
-	int player = 0;
-	int otherplayer = 1;
-	List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player);
-	List<Template> templates2 = TypeLoader.loadFromFile("data/unit_templates",otherplayer);
-	
 	State state=new State();
 	state.setSize(20, 20);
-	ResourceNode[][] nodegrid = new ResourceNode[state.getXExtent()][state.getYExtent()];
+
+	int player = 0;
+	int otherplayer = 1;
+	List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player,state);
+	List<Template> templates2 = TypeLoader.loadFromFile("data/unit_templates",otherplayer,state);
+	
+		ResourceNode[][] nodegrid = new ResourceNode[state.getXExtent()][state.getYExtent()];
 	Unit[][] unitgrid = new Unit[state.getXExtent()][state.getYExtent()];
 	for (Template t : templates)
 		state.addTemplate(t);
@@ -99,7 +99,7 @@ public void sightTest() throws FileNotFoundException, JSONException {
 	UnitTemplate enemytemplate = ((UnitTemplate)state.getTemplate(otherplayer, "Footman"));
 	List<Unit> myunits = new ArrayList<Unit>();
 	{	
-		Unit u = new Unit(template);
+		Unit u = new Unit(template,state.nextTargetID());
 		state.addUnit(u, 0, 0);
 		myunits.add(u);
 	}
@@ -107,8 +107,8 @@ public void sightTest() throws FileNotFoundException, JSONException {
 	{
 		for (int j = 0; j < state.getYExtent(); j++)
 		{
-			nodegrid[i][j]=new ResourceNode(ResourceNode.Type.GOLD_MINE,i,j,2344);
-			unitgrid[i][j]=new Unit(enemytemplate);
+			nodegrid[i][j]=new ResourceNode(ResourceNode.Type.GOLD_MINE,i,j,2344,state.nextTargetID());
+			unitgrid[i][j]=new Unit(enemytemplate,state.nextTargetID());
 			state.addUnit(unitgrid[i][j], i, j);
 			state.addResource(nodegrid[i][j]);
 		}
@@ -124,7 +124,7 @@ public void sightTest() throws FileNotFoundException, JSONException {
 		{
 			if (myunits.size()==0||r.nextBoolean())//add
 			{
-				Unit u = new Unit(template);
+				Unit u = new Unit(template,state.nextTargetID());
 				state.addUnit(u, r.nextInt(state.getXExtent()), r.nextInt(state.getYExtent()));
 				myunits.add(u);
 			}

@@ -24,31 +24,45 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
-public class State implements Serializable, Cloneable {
+public class State implements Serializable, Cloneable, IDDistributer {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("rawtypes")
-	 private void readObject(java.io.ObjectInputStream in)
-     throws IOException, ClassNotFoundException {
-		 in.defaultReadObject();
-		 for (Unit u : allUnits.values())
-		 {
-			 //System.out.println("Reserving ids up to "+u.ID);
-			 Target.reserveIDsUpTo(u.ID);
-			 
-		 }
-		 for (Template t : allTemplates.values())
-		 {
-			 Template.reserveIDsUpTo(t.ID);
-		 }
-		 for (ResourceNode r : resourceNodes)
-		 {
-			 //System.out.println("Reserving ids up to "+r.ID);
-			 Target.reserveIDsUpTo(r.ID);
-		 }
-	 }
+	 
+	
+	private int nextIDTarget;
+	private int nextIDTemplate;
+		@Override
+	public int nextTargetID() {
+		// TODO Auto-generated method stub
+		return nextIDTarget++;
+	}
+	@Override
+	public int nextTemplateID() {
+		// TODO Auto-generated method stub
+		return nextIDTemplate++;
+	}
+	/**
+	 * DON'T USE THIS IF YOU AREN'T THE XML SAVING MECHANISM
+	 * This must be different from the other so saves in the middle of an episode don't mess up the ids
+	 * @return
+	 */
+	public int getNextTargetIDForXMLSave()
+	{
+		return nextIDTarget;
+	}
+	/**
+	 * DON'T USE THIS IF YOU AREN'T THE XML SAVING MECHANISM
+	 * This must be different from the other so saves in the middle of an episode don't mess up the ids
+	 * @return
+	 */
+	public int getNextTemplateIDForXMLSave()
+	{
+		return nextIDTemplate;
+	}
+	
 	//TODO: move this constant somewhere
 	private final int MAXSUPPLY = 50;
 	
@@ -82,7 +96,8 @@ public class State implements Serializable, Cloneable {
 	private PlayerState observerState;
 	@SuppressWarnings("rawtypes")
 	public State() {
-		
+		nextIDTarget=0;
+		nextIDTemplate=0;
 		//playerCanSee = new HashMap<Integer,int[][]>();
 		allUnits = new HashMap<Integer,Unit>();
 		//unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
@@ -258,6 +273,10 @@ public class State implements Serializable, Cloneable {
 			hasFogOfWar = false;
 		}
 	}
+	public boolean getFogOfWar()
+	{
+		return hasFogOfWar;
+	}
 	public void setRevealedResources(boolean revealedResources) {
 		if (revealedResources) {
 			//only need to do something if it is a change, or you risk duplicates
@@ -282,7 +301,10 @@ public class State implements Serializable, Cloneable {
 			observerState.getEventLogger().eraseResourceNodeReveals();
 		}
 	}
-	
+	public boolean getRevealedResources()
+	{
+		return revealedResources;
+	}
 	private void revealResource(ResourceNode resource) {
 		//Don't change this to foreach player, as that will skip the observer's log
 		/*for (EventLogger e : eventlogs.values()) {
@@ -570,7 +592,6 @@ public class State implements Serializable, Cloneable {
 	 * @param direction
 	 */
 	public void moveUnit(Unit u, Direction direction) {
-		
 		int sightrange = u.getTemplate().getSightRange();
 		int x = u.getxPosition();
 		int y = u.getyPosition();
@@ -954,6 +975,14 @@ public class State implements Serializable, Cloneable {
 		public StateBuilder() {
 			state = new State();
 			built = false;
+		}
+		public void setIDDistributerTemplateMax(int newmax)
+		{
+			state.nextIDTemplate=newmax;
+		}
+		public void setIDDistributerTargetMax(int newmax)
+		{
+			state.nextIDTarget=newmax;
 		}
 		public void addPlayer(PlayerState player) {
 			state.playerStates.put(player.playerNum, player);
@@ -1529,6 +1558,12 @@ public class State implements Serializable, Cloneable {
 		observerState.getEventLogger().recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
 		
 	}
+	public void forceRecalculateVision() {
+		recalculateVisionFromScratch();
+		
+	}
+
+
 	
 	
 }
