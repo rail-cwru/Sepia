@@ -47,7 +47,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	private String[] commandSource;
 	private int commandSourceIterator;
 	private boolean outofcommands;
-	private PrimativeAttackCoordinator attackcoordinator;
+	private PrimitiveAttackCoordinator attackcoordinator;
 	private BasicGatheringCoordinator gathercoordinator;
 	private BusynessCoordinator busycoordinator;
 	private int[] centeroftown;
@@ -71,7 +71,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		commandSourceIterator = 0;
 		outofcommands = false;
 		nextgoal=null;
-		attackcoordinator = new PrimativeAttackCoordinator(playernumber);
+		attackcoordinator = new PrimitiveAttackCoordinator(playernumber);
 		gathercoordinator = new BasicGatheringCoordinator(playernumber, r);
 		busycoordinator = new BusynessCoordinator(playernumber);
 		centeroftown=null;

@@ -16,12 +16,12 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  * @author The Condor
  *
  */
-public class PrimativeAttackCoordinator implements Serializable {
+public class PrimitiveAttackCoordinator implements Serializable {
 	int playernum;
 	List<Integer> attackers;
 	private final static int NOTARGET = Integer.MIN_VALUE;
 	Integer primarytargetID;
-	public PrimativeAttackCoordinator(int playernum) {
+	public PrimitiveAttackCoordinator(int playernum) {
 		this.playernum=playernum;
 		attackers = new LinkedList<Integer>();
 		primarytargetID = NOTARGET;

@@ -211,6 +211,53 @@
 		If it does not match this (or just "int playernum"), it will not be loaded by the main method.  In order to pass the arguments in, each is put sequentially as --agentparam x.  More details in the How To Run section.
 		If you do add additional parameters, please override the static String getUsage() to explain their usage, as that will be called if it is used wrong.
 		</p>
+		<h3>Actions</h3>
+		<p>In order to send commands to your units, you must construct a map from the IDs of your units to the actions that you want them to do.
+		Actions may be constructed by calling various static factory methods in <code>edu.cwru.SimpleRTS.action.Action</code>, such as <code>createCompoundAttack</code>.
+		The actions are divided into two groups, primitive actions and compound actions.  The primitive actions represent basic commands to individual units, whereas the compound actions are higher level, requesting a series of primitive actions over the course of several turns as part of a larger command. 
+		There are 14 possible action types, described below:
+		<ul>
+			<li>
+				PRIMITIVEATTACK: This is a TargetedAction, taking as parameters the acting unit's ID and the target's ID.  When executed, it attempts to attack the targeted unit, failing when it out of range.
+			</li>
+			<li>
+				PRIMITIVEGATHER: This is a DirectedAction, taking as parameters the acting unit's ID and a direction to attempt to gather in.  When executed, it looks in the specified direction for a resource node, if there is a node, it moves resources from the node into the unit's inventory.
+			</li>
+			<li>
+				PRIMITIVEDEPOSIT: This is a DirectedAction, taking as parameters the acting unit's ID and a direction to attempt to deposit in.  When executed, it looks in the specified direction for a town hall, if there is a town hall that you control, it moves resources from the unit's inventory and gives them to you.
+			</li>
+			<li>
+				PRIMITIVEMOVE: This is a DirectedAction, taking as parameters the acting unit's ID and a direction to attempt to move.  When executed, it attempts to move in that direction, failing if another unit is already there.
+			</li>
+			<li>
+				PRIMITIVEBUILD: This is a ProductionAction, taking as parameters the acting unit's ID and the ID of the template of the building that you are trying to build.  When executed, it does one turn's work toward building that kind of building on the spot the unit is at.  As all buildings take one turn to build, this is enough to complete it, making a building on the spot and moving the builder off to one side.
+			</li>
+			<li>
+				PRIMITIVEPRODUCE: This is a ProductionAction, taking as parameters the acting unit's ID and the ID of the template of the unit or upgrade that you are trying to build.  When executed, it does one turn's work toward the creation of the unit or upgrade specified.  As all units and upgrades take one turn to make, this is enough to complete it.  If it is a unit being made, the new unit is put to one side after being made.
+			</li>
+			<li>
+				COMPOUNDATTACK: This is a TargetedAction, taking as parameters the acting unit's ID and the target's ID.  When executed, it moves into range of a unit, then attacks it once.
+			</li>
+			<li>
+				COMPOUNDGATHER: This is a TargetedAction, taking as parameters the acting unit's ID and the ID of a resource node to gather from.  When executed, it does PRIMITIVEMOVEs until next to the specified node, then performs a PRIMITIVEGATHER on it.
+			</li>
+			<li>
+				COMPOUNDDEPOSIT: This is a TargetedAction, taking as parameters the acting unit's ID and the ID of a town hall to deposit at.  When executed, it does PRIMITIVEMOVEs until next to the specified town hall, then performs a PRIMITIVEDEPOSIT on it.
+			</li>
+			<li>
+				COMPOUNDMOVE: This is a LocatedAction, taking as parameters the acting unit's ID and the x and y coordinates of where to move.  When executed, it does PRIMITIVEMOVEs to reach that location.
+			</li>
+			<li>
+				COMPOUNDBUILD: This is a LocatedProductionAction, taking as parameters the acting unit's ID and the ID of the template of the building that you are trying to build, as well as x and y coordinates of where to build it.  When executed, it uses repeated PRIMITIVEMOVEs to reach the specified location, then does PRIMITIVEBUILD until the building is done. 
+			</li>
+			<li>
+				COMPOUNDPRODUCE: This is a ProductionAction, taking as parameters the acting unit's ID and the ID of the template of the unit or upgrade that you are trying to build.  When executed, it does PRIMITIVEPRODUCE until the unit or upgrade is completed.
+			</li>
+			<li>
+				FAILED and FAILEDPERMANENTLY: These are internal actions used by the planner in executing the compound actions.
+			</li>
+		</ul>		
+		</p>
 		<h2 id="MapEditor">7. Making your own Map</h2>
 		<p>
 		SimpleRTS is also equipped with a map editor, located in <code>edu.cwru.SimpleRTS.agent.visual.editor.Editor</code>.  It has a main method and is therefore executable.  Once you run it, you will find you can add players, place units, place resource nodes, and toggle the status of fog of war and whether resources are revealed through the EventLogger (more info on the latter two <a href="#FogofWar">here</a>). 

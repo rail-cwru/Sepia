@@ -279,6 +279,11 @@ public class SimpleModel implements Model {
 						u.setTask(UnitTask.Attack);
 						break;
 					}
+					case PRIMITIVEATTACK:
+					{
+						u.setTask(UnitTask.Attack);
+						break;
+					}
 					case PRIMITIVEDEPOSIT:
 					{
 						if (u.getCurrentCargoAmount() > 0)
