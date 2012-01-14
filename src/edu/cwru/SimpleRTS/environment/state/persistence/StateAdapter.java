@@ -64,8 +64,8 @@ public class StateAdapter {
 		State state = builder.build();
 		state.updateGlobalListsFromPlayers();
 		state.forceRecalculateVision();
-		state.setFogOfWar(xml.getFogOfWar());
-		state.setRevealedResources(xml.getRevealedResources());
+		state.setFogOfWar(xml.isFogOfWar());
+		state.setRevealedResources(xml.isRevealedResources());
 		return state;
 	}
 }
