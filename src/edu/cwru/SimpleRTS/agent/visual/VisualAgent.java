@@ -14,7 +14,12 @@ import javax.swing.SwingUtilities;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State.StateView;
-
+/**
+ * A visual agent
+ * This serves two purposes: it allows a human to play the game, and, more importantly, 
+ * it allows one to look at what the agent is doing through it's effect on the state.
+ *
+ */
 public class VisualAgent extends Agent implements ActionListener {
 
 	private static final long serialVersionUID = 1L;

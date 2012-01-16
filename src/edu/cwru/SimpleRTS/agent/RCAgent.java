@@ -53,7 +53,6 @@ public class RCAgent extends Agent {
 		
 		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		currentState = newState;
-		System.out.println("All units: " + currentState.getAllUnitIds());
 		
 		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);

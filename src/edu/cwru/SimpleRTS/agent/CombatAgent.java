@@ -52,8 +52,6 @@ public class CombatAgent extends Agent{
 			unitOrders = new HashMap<Integer, Integer>();
 			//Put all of the units into the orders.
 			for (Integer uid : newstate.getUnitIds(playernum)) {
-				if (verbose)
-					System.out.println("Adding " + uid);
 				unitOrders.put(uid, null);
 			}
 			doAggro(newstate);
@@ -120,7 +118,7 @@ public class CombatAgent extends Agent{
 		Map<Integer, Action> actions = new HashMap<Integer, Action>();
 		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
 			if (verbose)
-				System.out.println("Order: " + order.getKey() + " attacking " + (order.getValue()==null?"noone":order.getValue()));
+				System.out.println("Combat Agent for plr "+playernum+"'s order: " + order.getKey() + " attacking " + (order.getValue()==null?"noone":order.getValue()));
 			if (order.getValue() != null) //if it has a target
 			{
 				//Assign the unit an action where it attacks it's target

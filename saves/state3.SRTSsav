@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<state nextTemplateID="11" nextTargetID="11" revealedResources="false" fogOfWar="false" yExtent="19" xExtent="25">
+<state fogOfWar="false" revealedResources="false" nextTemplateID="11" nextTargetID="10" yExtent="19" xExtent="25">
     <player>
         <ID>0</ID>
         <unit>
-            <id>0</id>
+            <ID>0</ID>
             <currentHealth>1200</currentHealth>
             <xPosition>9</xPosition>
             <yPosition>6</yPosition>
@@ -14,21 +14,10 @@
             <productionAmount>0</productionAmount>
         </unit>
         <unit>
-            <id>1</id>
+            <ID>1</ID>
             <currentHealth>30</currentHealth>
             <xPosition>8</xPosition>
             <yPosition>7</yPosition>
-            <templateID>5</templateID>
-            <cargoAmount>0</cargoAmount>
-            <unitTask>Idle</unitTask>
-            <productionTemplateID>-2147483648</productionTemplateID>
-            <productionAmount>0</productionAmount>
-        </unit>
-        <unit>
-            <id>10</id>
-            <currentHealth>30</currentHealth>
-            <xPosition>10</xPosition>
-            <yPosition>5</yPosition>
             <templateID>5</templateID>
             <cargoAmount>0</cargoAmount>
             <unitTask>Idle</unitTask>
@@ -47,26 +36,34 @@
         <template>9</template>
         <template>10</template>
         <resourceAmount>
-            <quantity>50</quantity>
+            <quantity>0</quantity>
             <type>GOLD</type>
         </resourceAmount>
         <resourceAmount>
-            <quantity>20</quantity>
+            <quantity>0</quantity>
             <type>WOOD</type>
         </resourceAmount>
-        <supply>2</supply>
+        <supply>1</supply>
         <supplyCap>3</supplyCap>
     </player>
     <resourceNode>
-        <id>3</id>
+        <ID>2</ID>
+        <type>GOLD_MINE</type>
+        <xPosition>7</xPosition>
+        <yPosition>4</yPosition>
+        <initialAmount>0</initialAmount>
+        <amountRemaining>100</amountRemaining>
+    </resourceNode>
+    <resourceNode>
+        <ID>3</ID>
         <type>GOLD_MINE</type>
         <xPosition>7</xPosition>
         <yPosition>10</yPosition>
         <initialAmount>0</initialAmount>
-        <amountRemaining>150</amountRemaining>
+        <amountRemaining>500</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>4</id>
+        <ID>4</ID>
         <type>GOLD_MINE</type>
         <xPosition>17</xPosition>
         <yPosition>6</yPosition>
@@ -74,15 +71,15 @@
         <amountRemaining>5000</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>5</id>
+        <ID>5</ID>
         <type>TREE</type>
         <xPosition>14</xPosition>
         <yPosition>3</yPosition>
         <initialAmount>0</initialAmount>
-        <amountRemaining>380</amountRemaining>
+        <amountRemaining>400</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>6</id>
+        <ID>6</ID>
         <type>TREE</type>
         <xPosition>14</xPosition>
         <yPosition>8</yPosition>
@@ -90,7 +87,7 @@
         <amountRemaining>400</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>7</id>
+        <ID>7</ID>
         <type>TREE</type>
         <xPosition>9</xPosition>
         <yPosition>11</yPosition>
@@ -98,7 +95,7 @@
         <amountRemaining>400</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>8</id>
+        <ID>8</ID>
         <type>TREE</type>
         <xPosition>5</xPosition>
         <yPosition>6</yPosition>
@@ -106,7 +103,7 @@
         <amountRemaining>400</amountRemaining>
     </resourceNode>
     <resourceNode>
-        <id>9</id>
+        <ID>9</ID>
         <type>TREE</type>
         <xPosition>9</xPosition>
         <yPosition>3</yPosition>
