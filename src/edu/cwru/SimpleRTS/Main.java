@@ -34,15 +34,23 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+		// play resource collection sample
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
-//		args = para.split(" +");
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+		
+		// use matlab agent sample
 //		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0";
 		
-		// play maze
+		// play maze sample
 //		String para = "--config data/mazeConfig.xml data/maze_16x16n.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+		
+		// produce peasant and footman sample
+//		String para = "--config data/mazeConfig.xml data/produce_3p2f.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+		
+
 //		args=para.split(" +");
+		
+		 
 		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
 		{

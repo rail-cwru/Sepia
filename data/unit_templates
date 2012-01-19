@@ -120,7 +120,7 @@
 		"Piercing" : 0,
 		"Range" : 0,
 		"SightRange" : 1,
-		"FoodGiven" : 0,
+		"FoodGiven" : 2,
 		"Produces" : ["Footman"]
 	},
 		"Blacksmith" : {

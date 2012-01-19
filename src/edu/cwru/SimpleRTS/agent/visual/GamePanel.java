@@ -314,11 +314,11 @@ public class GamePanel extends JPanel {
 					} else if(myUnit.getCargoAmount()>0 && 
 							((targetUnit.getTemplateView().canAcceptGold() && myUnit.getCargoType()==ResourceType.GOLD) ||
 									(targetUnit.getTemplateView().canAcceptWood() && myUnit.getCargoType()==ResourceType.WOOD))) {
-						// target is townhall, and the peasant holds the gold or wood
+						// target is townhall or Barracks, and the peasant holds the gold or wood
 						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDDEPOSIT, rightSelected);
 						log("=> Action: " + action);
 						agent.addAction(action);
-					}
+					} 
 				} else if(state.resourceAt(x, y)!=null) { // gather resource if doable
 					int rightSelected = state.resourceAt(x, y);
 					if(myUnit.getTemplateView().canGather()) {
@@ -365,17 +365,19 @@ public class GamePanel extends JPanel {
 		}
 		public String getInfo() { 
 			if(state.getUnit(id)!=null) {
-				info = "ID: " + id + "\n";
+				info = "ID: " + id;
 				UnitView unit = state.getUnit(id);
-				if(unit.getTemplateView().getUnitName().equals("Peasant")) {
+				String unitName = unit.getTemplateView().getUnitName();
+				if(unitName.equals("Peasant")) {
 					if(unit.getCargoAmount()>0)
 						info += unit.getCargoType().toString() + ": " + unit.getCargoAmount();
-				} else if(unit.getTemplateView().getUnitName().equals("TownHall")){
-					info += "HP: " + unit.getHP();
+				} else if(unitName.equals("TownHall") || unitName.equals("Barracks")){
+					info += "\nHP: " + unit.getHP();
+					if(unit.getCargoAmount()>0)
+						info += "\n" + unit.getCargoType().toString() + unit.getCargoAmount();
 				}
 				else { // TODO: add other info for other types of unit
-					//info = "Unit: " + id;
-					info += "HP: " + unit.getHP();
+					info += "\nHP: " + unit.getHP();
 				}
 			}
 			else {
