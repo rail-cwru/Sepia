@@ -215,7 +215,9 @@ public class Main {
 			}
 			else
 			{
+				System.out.println("Making an agent of class "+agentClass.getName() + " with number " + playerNum + " and extra parameters "+extraparams);
 				try {
+					
 					Agent agent = (Agent) agentClass.getConstructor(int.class, String[].class).newInstance(playerNum,extraparams);
 					agents.add(agent);
 				} catch (Exception e) {

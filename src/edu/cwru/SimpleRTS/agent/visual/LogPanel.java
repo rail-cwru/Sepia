@@ -21,7 +21,7 @@ public class LogPanel extends JPanel {
 		super(new GridBagLayout());
 		TitledBorder border = new TitledBorder("Log");
 		border.setBorder(new LineBorder(Color.BLACK, 2));
-		border.setTitleFont(border.getTitleFont().deriveFont(20f));
+//		border.setTitleFont(border.getTitleFont().deriveFont(20f));
 		this.setBorder(border);
 		
 		//setLayout(new BorderLayout());

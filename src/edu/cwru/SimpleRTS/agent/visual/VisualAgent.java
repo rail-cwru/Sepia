@@ -67,26 +67,26 @@ public class VisualAgent extends Agent implements ActionListener {
 		SwingUtilities.invokeLater(runner);
 	}
 	
-	public VisualAgent(int playernum, final StateView initState) {
-		super(playernum, false);
-		humanControllable = false;
-		infoVis = false;
-		actions = new HashMap<Integer, Action>();
-		Runnable runner = new Runnable() {
-			VisualAgent agent;
-			public Runnable setAgent(VisualAgent agent) {
-				this.agent = agent;
-				return this;
-			}
-			@Override
-			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel, logPanel);
-                screen.pack();
-				gamePanel.updateState(initState);
-			}					
-		}.setAgent(this);
-		SwingUtilities.invokeLater(runner);
-	}
+//	public VisualAgent(int playernum, final StateView initState) {
+//		super(playernum, false);
+//		humanControllable = false;
+//		infoVis = false;
+//		actions = new HashMap<Integer, Action>();
+//		Runnable runner = new Runnable() {
+//			VisualAgent agent;
+//			public Runnable setAgent(VisualAgent agent) {
+//				this.agent = agent;
+//				return this;
+//			}
+//			@Override
+//			public void run() {
+//				screen = new GameScreen(gamePanel, controlPanel, logPanel);
+//                screen.pack();
+//				gamePanel.updateState(initState);
+//			}					
+//		}.setAgent(this);
+//		SwingUtilities.invokeLater(runner);
+//	}
 
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate) {

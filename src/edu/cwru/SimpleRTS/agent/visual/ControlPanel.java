@@ -41,7 +41,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         super(new GridBagLayout());
         TitledBorder border = new TitledBorder("Controls");
         border.setBorder(new LineBorder(Color.BLACK, 2));
-        border.setTitleFont(border.getTitleFont().deriveFont(TITLE_FONT));
+//        border.setTitleFont(border.getTitleFont().deriveFont(TITLE_FONT));
         this.setBorder(border);
 
         stepButton = new JButton("Step");
