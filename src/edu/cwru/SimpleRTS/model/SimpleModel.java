@@ -119,18 +119,25 @@ public class SimpleModel implements Model {
 		boolean built = true;
 		for(Integer i : state.getPlayers())
 		{
+			built = true;
 			for(Template template : state.getTemplates(i).values())
 			{
 				int required = prefs.getInt("Required"+template.getName()+"Player"+i, 0);
 				int actual = 0;
-				for(Unit u : state.getUnits(i).values())
+				if (required>0) //Only check if you need to find at least one
 				{
-					if(u.getTemplate().equals(template))
-						actual++;
-					if(actual >= required)
-						break;
+					for(Unit u : state.getUnits(i).values())
+					{
+						if(u.getTemplate().equals(template))
+							actual++;
+						if(actual >= required) //if you found enough of a type of unit, you can stop looking for more
+							break;
+					}
 				}
-				built = actual >= required;
+//				System.out.println("Player "+i+" has at least "+actual + "{"+template.getName()+"}s"+" (needed "+required+")");
+				built = built && (actual >= required);
+				if (!built) //if you haven't built one of the requirements, you can't have built all of them
+					break;
 			}
 			if (built)
 				break;
