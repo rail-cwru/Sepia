@@ -81,17 +81,21 @@ public class GamePanel extends JPanel {
     
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(new Color(0x99,0x66,0x33));//medium green
+    	g.setColor(new Color(0x00,0xFF,0xFF));//aqua for things out of bounds
         g.fillRect(0, 0, getWidth(), getHeight());//background
-        Color oldcolor = g.getColor();
-        g.setColor(new Color(0x66,0x44,0x22));
         if(currentState == null)
             return;
+        g.setColor(new Color(0x99,0x66,0x33));//brown color
+        g.fillRect(scaleX(0), scaleY(0), scaleX(currentState.getXExtent())-scaleX(0),scaleY(currentState.getYExtent())-scaleY(0));//background
+        Color oldcolor = g.getColor();
+        g.setColor(new Color(0x66,0x44,0x22));
+        
         
         for (int i = 0; i<currentState.getXExtent(); i++)
-            g.drawLine(scaleX(i), 0, scaleX(i), getHeight());
+            g.drawLine(scaleX(i), scaleY(0), scaleX(i), scaleY(currentState.getYExtent()));
         for (int j = 0; j<currentState.getYExtent(); j++)
-            g.drawLine(0, scaleY(j), getWidth(), scaleY(j));
+            g.drawLine(scaleX(0), scaleY(j), scaleX(currentState.getXExtent()), scaleY(j));
+        
         g.setColor(oldcolor);
         
         
@@ -171,8 +175,8 @@ public class GamePanel extends JPanel {
         
        
         g.setColor(new Color(255,128,127));
-        g.drawString(tlx+","+tly, getWidth()-32, getHeight()-1);
-        
+        g.drawString("TL:"+tlx+","+tly, getWidth()-32, getHeight()-21);
+        g.drawString(currentState.getXExtent()+"x"+currentState.getYExtent(), getWidth()-32, getHeight()-1);
         //draw info vis (by double click)
         if(infoVisSelectedID>=0 && info!=null) {
         	// TODO

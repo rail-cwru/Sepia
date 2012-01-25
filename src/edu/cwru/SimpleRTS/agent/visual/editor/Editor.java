@@ -282,6 +282,10 @@ public class Editor extends JFrame {
 			int y = gamePanel.unscaleY(e.getY());
 			System.out.println(x+","+y);
 			int player = playerSelector.getSelectedIndex();
+			if (!state.inBounds(x, y))
+			{
+				error.setText(x + "," + y + " is out of bounds.");
+			}
 			if(!selectPointer.isSelected() && !selectRemove.isSelected() && (state.unitAt(x, y) != null || state.resourceAt(x, y) != null))
 			{
 				error.setText("Cannot place on top of existing object.");
