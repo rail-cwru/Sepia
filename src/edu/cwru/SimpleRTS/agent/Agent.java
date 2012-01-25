@@ -80,8 +80,8 @@ public abstract class Agent implements Serializable {
 	}
 	
 	
-	//Action selection and such
-	protected Map<Integer,Action> chosenActions;
+	//Action selection and such.  Implementers should not have access to this
+	private Map<Integer,Action> chosenActions;
 	
 	/**
 	 * Request the action that the agent will take at this timestep.

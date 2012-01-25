@@ -87,6 +87,7 @@ public class GamePanel extends JPanel {
         g.setColor(new Color(0x66,0x44,0x22));
         if(currentState == null)
             return;
+        
         for (int i = 0; i<currentState.getXExtent(); i++)
             g.drawLine(scaleX(i), 0, scaleX(i), getHeight());
         for (int j = 0; j<currentState.getYExtent(); j++)

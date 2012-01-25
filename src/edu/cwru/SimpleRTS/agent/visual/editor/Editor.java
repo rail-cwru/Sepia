@@ -34,6 +34,7 @@ import edu.cwru.SimpleRTS.agent.visual.GamePanel;
 import edu.cwru.SimpleRTS.agent.visual.VisualAgent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
+import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -56,6 +57,7 @@ public class Editor extends JFrame {
 	JRadioButton selectUnit;
 	JRadioButton selectTree;
 	JRadioButton selectMine;
+	JRadioButton selectRemove;
 	ButtonGroup fogOfWar;
 	JRadioButton fogOn;
 	JRadioButton fogOff;
@@ -120,7 +122,8 @@ public class Editor extends JFrame {
 		cursorGroup.add(selectTree);
 		selectMine = new JRadioButton("Mine");
 		cursorGroup.add(selectMine);
-		
+		selectRemove = new JRadioButton("Remove");
+		cursorGroup.add(selectRemove);
 		
 		
 		//Make a button group for fog of war, one radio button for on and one for off
@@ -258,6 +261,7 @@ public class Editor extends JFrame {
 		add(selectUnit);
 		add(selectTree);
 		add(selectMine);
+		add(selectRemove);
 		add(resourceAmount);
 		add(save);
 		add(error);
@@ -278,7 +282,7 @@ public class Editor extends JFrame {
 			int y = gamePanel.unscaleY(e.getY());
 			System.out.println(x+","+y);
 			int player = playerSelector.getSelectedIndex();
-			if(!selectPointer.isSelected() && (state.unitAt(x, y) != null || state.resourceAt(x, y) != null))
+			if(!selectPointer.isSelected() && !selectRemove.isSelected() && (state.unitAt(x, y) != null || state.resourceAt(x, y) != null))
 			{
 				error.setText("Cannot place on top of existing object.");
 				return;
@@ -314,6 +318,25 @@ public class Editor extends JFrame {
 				}
 				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount,state.nextTargetID());
 				state.addResource(r);
+			}
+			else if(selectRemove.isSelected())
+			{
+				//Remove something on that position
+				//Try to grab a resource first
+				ResourceNode resourcethere = state.resourceAt(x, y);
+				if (resourcethere != null) //if there was a resource there
+				{//then remove it
+					state.removeResourceNode(resourcethere.ID);
+				}
+				else //otherwise, see about units
+				{
+					Unit unitthere = state.unitAt(x, y);
+					if (unitthere != null)//if there was a unit there
+					{//then remove it
+						state.removeUnit(unitthere.ID);
+					}
+				}
+					
 			}
 			updateScreen();
 		}
