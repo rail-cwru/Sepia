@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.agent.visual;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;  
@@ -88,14 +89,22 @@ public class GamePanel extends JPanel {
         g.setColor(new Color(0x99,0x66,0x33));//brown color
         g.fillRect(scaleX(0), scaleY(0), scaleX(currentState.getXExtent())-scaleX(0),scaleY(currentState.getYExtent())-scaleY(0));//background
         Color oldcolor = g.getColor();
+        
+        //Draw some lines
         g.setColor(new Color(0x66,0x44,0x22));
-        
-        
         for (int i = 0; i<currentState.getXExtent(); i++)
             g.drawLine(scaleX(i), scaleY(0), scaleX(i), scaleY(currentState.getYExtent()));
         for (int j = 0; j<currentState.getYExtent(); j++)
             g.drawLine(scaleX(0), scaleY(j), scaleX(currentState.getXExtent()), scaleY(j));
-        
+        	
+        //Draw some tiny numbers
+        Font oldfont = g.getFont();
+        g.setFont(g.getFont().deriveFont(7f));
+        g.setColor(new Color(255,128,60));
+        for (int i = 0; i<currentState.getXExtent(); i++)
+        	for (int j = 0; j<currentState.getYExtent(); j++)
+        		g.drawString(i+","+j, scaleX(i)+1, scaleY(j)+7);
+        g.setFont(oldfont);
         g.setColor(oldcolor);
         
         
@@ -175,8 +184,8 @@ public class GamePanel extends JPanel {
         
        
         g.setColor(new Color(255,128,127));
-        g.drawString("TL:"+tlx+","+tly, getWidth()-32, getHeight()-21);
-        g.drawString(currentState.getXExtent()+"x"+currentState.getYExtent(), getWidth()-32, getHeight()-1);
+        g.drawString("TL:"+tlx+","+tly, getWidth()-50, getHeight()-16);
+        g.drawString(currentState.getXExtent()+"x"+currentState.getYExtent(), getWidth()-50, getHeight()-1);
         //draw info vis (by double click)
         if(infoVisSelectedID>=0 && info!=null) {
         	// TODO

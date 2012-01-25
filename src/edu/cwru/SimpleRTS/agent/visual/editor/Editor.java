@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -20,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -64,6 +66,9 @@ public class Editor extends JFrame {
 	ButtonGroup revealResources;
 	JRadioButton revealResourcesOn;
 	JRadioButton revealResourcesOff;
+	JTextField xSize;
+	JTextField ySize;
+	JButton setSize;
 	JButton save;
 	JTextArea error;
 	
@@ -73,7 +78,7 @@ public class Editor extends JFrame {
 		this.state = state;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(screen.getLocation().x+screen.getWidth()+1, screen.getLocation().y);
-		setSize(100,screen.getHeight());
+		setSize(150,screen.getHeight());
 		setTitle("Editor");
 		setLayout(new FlowLayout());
 		
@@ -90,7 +95,7 @@ public class Editor extends JFrame {
 				this.model = model;
 				this.templatefilename = templatefilename;
 				this.state = state;
-				actionPerformed(null); //click it once so it starts with one
+				actionPerformed(null); //click it once so it starts with one player
 				return this;
 			}
 			@Override
@@ -236,6 +241,8 @@ public class Editor extends JFrame {
 		error.setWrapStyleWord(true);
 		resourceAmount = new JTextField(4);
 		resourceAmount.setText("100");
+		
+		
 		save = new JButton("Save");
 		save.addActionListener(new ActionListener() {
 			State state;
@@ -254,6 +261,132 @@ public class Editor extends JFrame {
 			
 		}.setState(state));
 		
+		
+		
+		//Add a couple of text fields and a button to resize the map
+			//x size
+		xSize = new JTextField(3);
+		xSize.setText(Integer.toString(state.getXExtent()));
+			//y size
+		ySize = new JTextField(3);
+		ySize.setText(Integer.toString(state.getYExtent()));
+			//button to set size
+		setSize = new JButton("Set Size");
+			//make a listener on the text fields to activate the button when you press enter from the fields
+		ActionListener pressSetSize = new ActionListener() {
+			JButton button;
+			public ActionListener setButtonToPress(JButton button)
+			{
+				this.button = button;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				button.doClick();
+			}
+		}.setButtonToPress(setSize);
+		xSize.addActionListener(pressSetSize);
+		ySize.addActionListener(pressSetSize);
+			//make a listener for the button that checks the text fields for validity of their numbers
+			//   and if it would make it so small that it would exclude some units/resources that are placed
+			//   then it needs to confirm it before deleting those units/nodes
+		setSize.addActionListener(new ActionListener() {
+			State state;
+			JTextField xSize;
+			JTextField ySize;
+			JTextArea errorOut;
+			Editor editor;
+			public ActionListener setStateAndFields(State state, JTextField xSize, JTextField ySize, JTextArea errorOut, Editor editor) {
+				this.state = state;
+				this.xSize = xSize;
+				this.ySize = ySize;
+				this.errorOut = errorOut;
+				this.editor = editor;
+				return this;
+			}
+			/**
+			 * Reset the text fields to the actual size of the state
+			 */
+			private void resetTextFields()
+			{
+				xSize.setText(Integer.toString(state.getXExtent()));
+				ySize.setText(Integer.toString(state.getYExtent()));
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int newxsize=-1;
+				int newysize=-1;
+				//make sure that they are integers
+				try {
+					newxsize = Integer.parseInt(xSize.getText());
+				}
+				catch (NumberFormatException nfe)
+				{
+					errorOut.setText("x Size: "+xSize.getText()+" is not an integer");
+					resetTextFields();
+					return;
+				}
+				try {
+					newysize = Integer.parseInt(ySize.getText());
+				}
+				catch (NumberFormatException nfe)
+				{
+					errorOut.setText("y Size: "+ySize.getText()+" is not an integer");
+					resetTextFields();
+					return;
+				}
+				if (newxsize < 1)
+				{
+					errorOut.setText("x Size: must be positive");
+					resetTextFields();
+					return;
+				}
+				if (newysize < 1)
+				{
+					errorOut.setText("y Size: must be positive");
+					resetTextFields();
+					return;
+				}
+				//get all units and resources that would be out of bounds
+				List<Integer> unitsToRemove = new LinkedList<Integer>();
+				for (Unit u : state.getUnits().values())
+				{
+					if (u.getxPosition() >= newxsize || u.getyPosition() >= newysize)
+					{
+						unitsToRemove.add(u.ID);
+					}
+				}
+				List<Integer> resourcesToRemove = new LinkedList<Integer>();
+				for (ResourceNode r : state.getResources())
+				{
+					if (r.getxPosition() >= newxsize || r.getyPosition() >= newysize)
+					{
+						resourcesToRemove.add(r.ID);
+					}
+				}
+				if (unitsToRemove.size() + resourcesToRemove.size() > 0)
+				{
+					int response = JOptionPane.showConfirmDialog(editor, "Resizing to "+newxsize+"x"+newysize+" will delete "+unitsToRemove.size() + " units\n and "+ resourcesToRemove.size()+" resources\nAre you sure you want to do that?", "Resizing", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (response == 0)//0 is yes, 1 is no
+					{
+						for (int id : unitsToRemove) {
+							state.removeUnit(id);
+						}
+						for (int id : resourcesToRemove) {
+							state.removeResourceNode(id);
+						}
+					}
+					else
+					{
+						resetTextFields();
+						return;
+					}
+				}
+				state.setSize(newxsize,newysize);
+				editor.updateScreen();
+			}
+			
+		}.setStateAndFields(state,xSize,ySize,error,this));
 		add(templateSelector);
 		add(playerSelector);
 		add(addPlayer);
@@ -269,6 +402,9 @@ public class Editor extends JFrame {
 		add(fogOff);
 		add(revealResourcesOn);
 		add(revealResourcesOff);
+		add(xSize);
+		add(ySize);
+		add(setSize);
 		setVisible(true);
 		updateScreen();
 	}
