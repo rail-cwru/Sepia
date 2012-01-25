@@ -56,6 +56,55 @@
 		<xs:element name="productionAmount" type="xs:int"/>
 	</xs:all>
 </xs:complexType>
+<xs:complexType name="UnitTemplate">
+	<xs:sequence>
+		<xs:element name="ID" type="xs:int"/>
+		<xs:element name="foodCost" type="xs:int"/>
+		<xs:element name="goldCost" type="xs:int"/>
+		<xs:element name="woodCost" type="xs:int"/>
+		<xs:element name="timeCost" type="xs:int"/>
+		<xs:element name="name" type="xs:string"/>
+		<xs:element name="baseHealth" type="xs:int"/>
+		<xs:element name="baseAttack" type="xs:int"/>
+		<xs:element name="piercingAttack" type="xs:int"/>
+		<xs:element name="range" type="xs:int"/>
+		<xs:element name="armor" type="xs:int"/>
+		<xs:element name="sightRange" type="xs:int"/>
+		<xs:element name="canGather" type="xs:boolean"/>
+		<xs:element name="canBuild" type="xs:boolean"/>
+		<xs:element name="canMove" type="xs:boolean"/>
+		<xs:element name="canAcceptGold" type="xs:boolean"/>
+		<xs:element name="canAcceptWood" type="xs:boolean"/>
+		<xs:element name="foodProvided" type="xs:int"/>
+		<xs:element name="character" type="xs:short"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="prerequisite" type="xs:string"/>
+		</xs:sequence>
+		<xs:element name="goldGatherRate" type="xs:int"/>
+		<xs:element name="woodGatherRate" type="xs:int"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="produces" type="xs:string"/>
+		</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="UpgradeTemplate">
+	<xs:sequence>
+		<xs:element name="ID" type="xs:int"/>
+		<xs:element name="foodCost" type="xs:int"/>
+		<xs:element name="goldCost" type="xs:int"/>
+		<xs:element name="woodCost" type="xs:int"/>
+		<xs:element name="timeCost" type="xs:int"/>
+		<xs:element name="name" type="xs:string"/>
+		<xs:element name="attackChange" type="xs:int"/>
+		<xs:element name="defenseChange" type="xs:int"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="prerequisite" type="xs:string"/>
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="affectedUnitTypes" type="xs:string"/>
+		</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
 <xs:simpleType name="UnitTask">
 	<xs:restriction base="xs:string">
 		<xs:enumeration value="Wood"/>

@@ -36,12 +36,10 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	private int nextIDTemplate;
 		@Override
 	public int nextTargetID() {
-		// TODO Auto-generated method stub
 		return nextIDTarget++;
 	}
 	@Override
 	public int nextTemplateID() {
-		// TODO Auto-generated method stub
 		return nextIDTemplate++;
 	}
 	/**
@@ -119,6 +117,10 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		setRevealedResources(false);
 	}
 	
+	/**
+	 * Used as a necessary part of loading from xml.
+	 * Harmless but pointless to use otherwise.
+	 */
 	public void updateGlobalListsFromPlayers() {
 		for(PlayerState player : playerStates.values())
 		{
@@ -132,52 +134,53 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			}
 		}
 	}
-	
-	@Override
-	protected Object clone() {
-		State newstate = new State();
-		/*for(Integer i : playerCanSee.keySet())
-		{
-			state.playerCanSee.put(i, playerCanSee.get(i).clone());
-		}	*/
-		for(Unit u : allUnits.values())
-		{//takes care of allUnits and unitsByAgent
-			Unit copy = u.copyOf();
-			newstate.addUnit(copy, copy.getxPosition(), copy.getyPosition());
-		}
-		newstate.allTemplates.putAll(allTemplates);
-		/*for(Integer i : templatesByAgent.keySet())
-		{
-			@SuppressWarnings("rawtypes")
-			Map<Integer,Template> templates = new HashMap<Integer,Template>();
-			templates.putAll(templatesByAgent.get(i));
-			state.templatesByAgent.put(i, templates);
-		}*//*
-		for(Integer i : upgradesByAgent.keySet())
-		{
-			Set<Integer> upgrades = new HashSet<Integer>();
-			upgrades.addAll(upgradesByAgent.get(i));
-			state.upgradesByAgent.put(i, upgradesByAgent.get(i));
-		}*/
-		for(ResourceNode node : resourceNodes)
-		{
-			newstate.resourceNodes.add(node.copyOf());
-		}
-		for(Integer i : playerStates.keySet())
-		{
-			newstate.playerStates.put(i, playerStates.get(i).copyOf());
-		}
-		//state.currentResources.putAll(currentResources);
-		//state.currentSupply.putAll(currentSupply);
-		//state.currentSupplyCap.putAll(currentSupplyCap);
-		
-		return newstate;
-	}
-	
-	public StateView getStaticCopy(int player) {
-		State state = (State)clone();
-		return state.getView(player);
-	}
+//	Commented out because this is neither used nor functional
+//	@Override
+//	protected Object clone() {
+//		State newstate = new State();
+//		newstate.setSize(xextent, yextent);
+//		/*for(Integer i : playerCanSee.keySet())
+//		{
+//			state.playerCanSee.put(i, playerCanSee.get(i).clone());
+//		}	*/
+//		for(Unit u : allUnits.values())
+//		{//takes care of allUnits and unitsByAgent
+//			Unit copy = u.copyOf();
+//			newstate.addUnit(copy, copy.getxPosition(), copy.getyPosition());
+//		}
+//		newstate.allTemplates.putAll(allTemplates);
+//		/*for(Integer i : templatesByAgent.keySet())
+//		{
+//			@SuppressWarnings("rawtypes")
+//			Map<Integer,Template> templates = new HashMap<Integer,Template>();
+//			templates.putAll(templatesByAgent.get(i));
+//			state.templatesByAgent.put(i, templates);
+//		}*//*
+//		for(Integer i : upgradesByAgent.keySet())
+//		{
+//			Set<Integer> upgrades = new HashSet<Integer>();
+//			upgrades.addAll(upgradesByAgent.get(i));
+//			state.upgradesByAgent.put(i, upgradesByAgent.get(i));
+//		}*/
+//		for(ResourceNode node : resourceNodes)
+//		{
+//			newstate.resourceNodes.add(node.copyOf());
+//		}
+//		for(Integer i : playerStates.keySet())
+//		{
+//			newstate.playerStates.put(i, playerStates.get(i).copyOf());
+//		}
+//		//state.currentResources.putAll(currentResources);
+//		//state.currentSupply.putAll(currentSupply);
+//		//state.currentSupplyCap.putAll(currentSupplyCap);
+//		
+//		return newstate;
+//	}
+//	
+//	public StateView getStaticCopy(int player) {
+//		State state = (State)clone();
+//		return state.getView(player);
+//	}
 	/**
 	 * Return an array of the players currently in the game
 	 * @return
@@ -1086,10 +1089,10 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			this.state = state;
 			this.player = player;
 		}
-		
-		public StateView getStaticCopy() {
-			return state.getStaticCopy(player);
-		}
+//		commented out because it is neither used nor functional
+//		public StateView getStaticCopy() {
+//			return state.getStaticCopy(player);
+//		}
 		/**
 		 * Get a read-only log of the game's events _that you have seen_
 		 * @return

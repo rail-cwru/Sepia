@@ -14,8 +14,7 @@ public class UpgradeTemplate extends Template<Upgrade>
 	private int defensechange;
 	private List<UnitTemplate> unittemplatesaffected;
 	private String[] stringunitsaffected;
-	private int timetoproduce;
-
+	private UpgradeTemplateView view;
 	public UpgradeTemplate(int ID, int attackchange, int defensechange, String[] affectedunits)
 	{
 		super(ID);
@@ -53,34 +52,53 @@ public class UpgradeTemplate extends Template<Upgrade>
 		
 		
 	}
-	
+	@Override
+	public UpgradeTemplateView getView() {
+		if (view == null)
+			view = new UpgradeTemplateView(this);
+		return view;
+	}
+	@Override
+	public void deprecateOldView() {
+		view = null;
+	}
 	public class UpgradeTemplateView extends TemplateView
 	{
 		private final int attackChange;
 		private final int defenseChange;
+		private final List<Integer> affectedUnitTypes;
 		public UpgradeTemplateView(UpgradeTemplate template)
 		{
 			super(template);
 			attackChange = template.attackchange;
 			defenseChange = template.defensechange;
+			affectedUnitTypes = new ArrayList<Integer>(template.unittemplatesaffected.size());
+			for (UnitTemplate u : template.unittemplatesaffected)
+				affectedUnitTypes.add(u.ID);
 		}
+		/**
+		 * Get the increase in attack caused by this upgrade
+		 * @return
+		 */
 		public int getAttackChange() {
 			return attackChange;
 		}
+		/**
+		 * Get the increase in armor caused by this upgrade
+		 * @return
+		 */
 		public int getDefenseChange() {
 			return defenseChange;
 		}
+		/**
+		 * Get a list of IDs representing the unit templates that are affected by this upgrade
+		 */
+		public List<Integer> getAffectedUnitTypes()
+		{
+			return affectedUnitTypes;
+		}
 	}
 
-	@Override
-	public edu.cwru.SimpleRTS.model.Template.TemplateView getView() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void deprecateOldView() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 	
 }

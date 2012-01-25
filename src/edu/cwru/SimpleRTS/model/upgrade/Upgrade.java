@@ -6,8 +6,9 @@ import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 /**
- * A class that doesn't really do anything on its own 
- * It has a template though, so that's something
+ * An instance of an upgrade template.
+ * As it has no existance in the game world,
+ * all relevant data is stored in its template.
  */
 public class Upgrade 
 {

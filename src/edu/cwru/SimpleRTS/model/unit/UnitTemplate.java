@@ -264,7 +264,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * 
 	 */
 	public static class UnitTemplateView extends TemplateView implements Serializable{
-		//BE CAREFUL EDITING THIS CLASS OR IT'S SUPERCLASS, IT HAS A template THAT IS NOT THE SAME AS THE VARIABLE OF THE SAME NAME IN IT'S SUPERCLASS 
 		private final boolean canGather;
 		private final boolean canBuild;
 		private final boolean canMove;
