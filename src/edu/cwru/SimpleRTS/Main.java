@@ -65,7 +65,8 @@ public class Main {
 				printUsage("Invalid filename for preferences "+args[i+1]);
 				return;
 			}
-			Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
+//			//print out the preferences
+//			Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
 			i += 2;
 		}
 		else
@@ -197,11 +198,48 @@ public class Main {
 				printUsage("Agent's player number was expected, but ran out of arguments");
 				return;
 			}
-			int playerNum = parseInt(args[i]);
+			int playerNum;
+			String playerNumInput = args[i];
+			if (playerNumInput.equalsIgnoreCase("Observer"))
+				playerNum = Agent.OBSERVER_ID;
+			else
+				playerNum = parseInt(playerNumInput);
+			
 			if(playerNum < 0)
 			{
 				printUsage("Agent " + agentClass.getSimpleName() + "'s player number must be a non-negative integer");
 				return;
+			}
+			else
+			{
+				//make sure it is a valid player
+				boolean valid = playerNum == Agent.OBSERVER_ID;
+				
+				
+				if (!valid)
+				{
+					Integer[] validPlayers = initState.getPlayers();
+					for (int pind = 0; !valid&&pind< validPlayers.length; pind++)
+					{
+						if (validPlayers[pind]==playerNum)
+						{
+							valid = true;
+						}
+					}
+				}
+				if (!valid)
+				{
+					String validPlayerStr="[";
+					Integer[] validPlayers = initState.getPlayers();
+					for (int pind = 0; pind< validPlayers.length; pind++)
+					{
+						validPlayerStr += "\""+validPlayers[pind]+"\", ";
+					}
+					validPlayerStr+="\"Observer\"]";
+					printUsage("Agent " + agentClass.getSimpleName() + "'s player number must be one of the players in the map file\nYou put \""+playerNumInput+"\" but it needs to be one of "+validPlayerStr);
+				}
+				
+				
 			}
 			i++;
 			while (i < args.length - 1 && args[i].equals("--agentparam"))
@@ -290,11 +328,12 @@ public class Main {
 	}
 	private static void printUsage(String error) {
 		System.out.println(error);
-		System.out.println("Usage: java [-cp <path to your agent's class file>];SimpleRTS.jar] edu.cwru.SimpleRTS.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--agentparam otherparameter]* [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("\nUsage: java [-cp <path to your agent's class file>];SimpleRTS.jar] edu.cwru.SimpleRTS.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--agentparam otherparameter]* [--loadfrom <serialized agent file name>]] ...] ");
 		System.out.println("\nExample: --config data/defaultConfig.xml \"data/com_4f4a2kv4f4a2k.xml\" --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
 		System.out.println("See doc/manual.html for more information");
+		System.exit(-1);
 	}
 	private static Agent readAgent(String filename) {
 		Agent agent = null;
@@ -327,7 +366,7 @@ public class Main {
 			Preferences.importPreferences(new FileInputStream(arg));
 			return true;
 		} catch (Exception e) {
-			System.err.println(new File(arg).getAbsolutePath());
+			System.err.println("Invalid preference file "+new File(arg).getAbsolutePath());
 			e.printStackTrace();
 			return false;
 		}
