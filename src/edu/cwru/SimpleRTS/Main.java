@@ -75,6 +75,10 @@ public class Main {
 		String statefilename = args[i];
 		StateCreator stateCreator = null;
 		State initState = null;
+		if (!new File(statefilename).exists())
+		{
+			printUsage("File " + statefilename + " does not exist");
+		}
 		if(statefilename.contains(".map"))
 		{
 			 stateCreator = new LoadingStateCreator(statefilename);
