@@ -423,7 +423,7 @@ public class SimpleModel implements Model {
 								}
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
 								u.incrementProduction(template, state.getView(Agent.OBSERVER_ID));
-								if (template.timeCost == u.getAmountProduced())
+								if (template.getTimeCost() == u.getAmountProduced())
 								{
 									Unit building = template.produceInstance(state);
 //									System.out.println("Checking on bug: unit with id "+u.ID);
@@ -449,7 +449,7 @@ public class SimpleModel implements Model {
 								u.incrementProduction(template,state.getView(Agent.OBSERVER_ID));
 //								System.out.println(template.getName() + " takes "+template.timeCost);
 //								System.out.println("Produced"+u.getAmountProduced());
-								if (template.timeCost == u.getAmountProduced())
+								if (template.getTimeCost() == u.getAmountProduced())
 								{
 									if (template instanceof UnitTemplate)
 									{

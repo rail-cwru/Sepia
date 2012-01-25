@@ -64,7 +64,7 @@ public class RCAgent extends Agent {
 		for(int i=0; i<allUnitIds.size(); i++) {
 			int id = allUnitIds.get(i);
 			UnitView unit = currentState.getUnit(id);
-			String unitTypeName = unit.getTemplateView().getUnitName();
+			String unitTypeName = unit.getTemplateView().getName();
 			if(unitTypeName.equals("TownHall"))
 				townhallIds.add(id);
 			if(unitTypeName.equals("Peasant"))

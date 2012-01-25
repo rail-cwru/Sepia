@@ -23,7 +23,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected String unitName;
 	protected int baseHealth;
 	protected int basicAttack;
 	protected int piercingAttack;
@@ -37,7 +36,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected boolean canAcceptWood;
 	protected int foodProvided;
 	protected char character;
-	protected Prerequisite prerequisite;
 	protected int goldGatherRate;
 	protected int woodGatherRate;
 	private UnitTemplateView view;
@@ -53,13 +51,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public Unit produceInstance(IDDistributer idsource) {
 		Unit unit = new Unit(this, idsource.nextTargetID());
 		return unit;
-	}
-	public String getUnitName() {
-		return unitName;
-	}
-	
-	public void setUnitName(String unitName) {
-		this.unitName = unitName;
 	}
 	public int getBaseHealth() {
 		return baseHealth;
@@ -102,9 +93,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	}
 	public void setSightRange(int sightRange) {
 		this.sightRange = sightRange;
-	}
-	public void setPrerequisite(Prerequisite prerequisite) {
-		this.prerequisite = prerequisite;
 	}
 	public boolean canAttack() {
 		return basicAttack > 0 || piercingAttack > 0;
@@ -217,8 +205,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 				+ ((producesID == null) ? 0 : producesID.hashCode());
 		result = prime * result + range;
 		result = prime * result + sightRange;
-		result = prime * result
-				+ ((unitName == null) ? 0 : unitName.hashCode());
 		result = prime * result + woodGatherRate;
 		return result;
 	}
@@ -269,11 +255,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			return false;
 		if (sightRange != other.sightRange)
 			return false;
-		if (unitName == null) {
-			if (other.unitName != null)
-				return false;
-		} else if (!unitName.equals(other.unitName))
-			return false;
 		if (woodGatherRate != other.woodGatherRate)
 			return false;
 		return true;
@@ -288,7 +269,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		private final boolean canBuild;
 		private final boolean canMove;
 		private final boolean canAttack;
-		private final String unitName;
 		private final int baseHealth;
 		private final int basicAttack;
 		private final int piercingAttack;
@@ -308,7 +288,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			canBuild = template.canBuild();
 			canMove = template.canMove();
 			canAttack = template.canAttack();
-			unitName = template.getUnitName();
 			baseHealth = template.getBaseHealth();
 			basicAttack = template.getBasicAttack();
 			piercingAttack = template.getPiercingAttack();
@@ -329,7 +308,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public boolean canBuild() { return canBuild; }
 		public boolean canMove() { return canMove; }
 		public boolean canAttack() { return canAttack; }
-		public String getUnitName() { return unitName; }
 		public int getBaseHealth() { return baseHealth;	}
 		public int getBasicAttack() { return basicAttack; }
 		public int getPiercingAttack() { return piercingAttack;	}

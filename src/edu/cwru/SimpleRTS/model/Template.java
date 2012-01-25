@@ -27,12 +27,12 @@ public abstract class Template<T> implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected int timeCost;
-	protected int goldCost;
-	protected int woodCost;
-	protected int foodCost;
-	protected int player;
-	protected PrerequisiteHolder prereqs;
+	private int timeCost;
+	private int goldCost;
+	private int woodCost;
+	private int foodCost;
+	private int player;
+	private PrerequisiteHolder prereqs;
 	private Set<String> buildPrereq;
 	private Set<String> upgradePrereq;
 	protected String name;
@@ -136,6 +136,7 @@ public abstract class Template<T> implements Serializable{
 		private final int foodCost;
 		private final int ID;
 		private final int player;
+		private final String name;
 		public TemplateView(Template template){
 			timeCost = template.getTimeCost();
 			goldCost = template.getGoldCost();
@@ -143,6 +144,7 @@ public abstract class Template<T> implements Serializable{
 			foodCost = template.getFoodCost();
 			ID = template.ID;
 			player = template.getPlayer();
+			name = template.getName();
 		}
 		public int getTimeCost() {
 			return timeCost;
@@ -161,6 +163,10 @@ public abstract class Template<T> implements Serializable{
 		}
 		public int getPlayer() {
 			return player;
+		}
+		public String getName()
+		{
+			return name;
 		}
 	}
 }

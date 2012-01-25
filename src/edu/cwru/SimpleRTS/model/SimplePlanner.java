@@ -244,7 +244,7 @@ public class SimplePlanner implements Serializable {
 			if (actor.getCurrentProductionID() == template.ID)
 			{//if it is building the same thing
 				//then make it keep building it
-				int amountleft = template.timeCost - actor.getAmountProduced();
+				int amountleft = template.getTimeCost() - actor.getAmountProduced();
 				for (int i = 0; i<amountleft; i++)
 				{
 					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
@@ -252,7 +252,7 @@ public class SimplePlanner implements Serializable {
 			}
 			else
 			{//if it is making somthing else
-				for (int i = template.timeCost - 1; i>=0; i--)
+				for (int i = template.getTimeCost() - 1; i>=0; i--)
 				{
 					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 				}
@@ -262,7 +262,7 @@ public class SimplePlanner implements Serializable {
 		{
 //			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
 			plan = planMove(actor, getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
-			for (int i = template.timeCost - 1; i>=0; i--)
+			for (int i = template.getTimeCost() - 1; i>=0; i--)
 			{
 				plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 			}
@@ -279,7 +279,7 @@ public class SimplePlanner implements Serializable {
 		if (actor.getCurrentProductionID() == template.ID)
 		{//if it is building the same thing
 			//then make it keep building it
-			int amountleft = template.timeCost - actor.getAmountProduced();
+			int amountleft = template.getTimeCost() - actor.getAmountProduced();
 			for (int i = 0; i<amountleft; i++)
 			{
 				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
@@ -287,7 +287,7 @@ public class SimplePlanner implements Serializable {
 		}
 		else
 		{//if it is making somthing else
-			for (int i = template.timeCost - 1; i>=0; i--)
+			for (int i = template.getTimeCost() - 1; i>=0; i--)
 			{
 				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
 			}

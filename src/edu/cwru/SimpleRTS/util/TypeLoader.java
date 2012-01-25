@@ -70,11 +70,11 @@ public final class TypeLoader {
 			JSONObject template = templateFile.getJSONObject(key);
 			String templateType = template.getString("TemplateType");
 			if(templateType.equals("Unit"))
-				list.add(handleUnit(template,key,player,idsource));
+				list.add(handleUnit(template,player,idsource));
 		}
 		return list;
 	}
-	private static UnitTemplate handleUnit(JSONObject obj, String name, int player, IDDistributer idsource) throws JSONException {
+	private static UnitTemplate handleUnit(JSONObject obj, int player, IDDistributer idsource) throws JSONException {
 		UnitTemplate template = new UnitTemplate(idsource.nextTemplateID());
 		template.setName(obj.getString("Name"));
 		if(obj.has("Mobile"))
@@ -122,7 +122,6 @@ public final class TypeLoader {
 		
 		template.setGoldCost(obj.getInt("GoldCost"));
 		template.setWoodCost(obj.getInt("WoodCost"));
-		
 		template.setPlayer(player);
 		if(obj.has("Produces"))
 		{
@@ -152,7 +151,7 @@ public final class TypeLoader {
 				template.addUpgradePrereqItem(reqs.getString(i));		
 			}
 		}
-		template.setUnitName(name);
+		
 		return template;
 	}
 	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name, int player, IDDistributer idsource) throws JSONException {

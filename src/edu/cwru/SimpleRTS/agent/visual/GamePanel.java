@@ -265,7 +265,7 @@ public class GamePanel extends JPanel {
 			
 			if(agent!=null && agent.humanControllable)
 				humanControl(e);
-			if(agent != null && agent.infoVis)
+			if(agent == null || agent.infoVis)
 				infoVisual(e);
 			repaint();
 		}
@@ -381,7 +381,7 @@ public class GamePanel extends JPanel {
 			if(state.getUnit(id)!=null) {
 				info = "ID: " + id;
 				UnitView unit = state.getUnit(id);
-				String unitName = unit.getTemplateView().getUnitName();
+				String unitName = unit.getTemplateView().getName();
 				if(unitName.equals("Peasant")) {
 					if(unit.getCargoAmount()>0)
 						info += unit.getCargoType().toString() + ": " + unit.getCargoAmount();

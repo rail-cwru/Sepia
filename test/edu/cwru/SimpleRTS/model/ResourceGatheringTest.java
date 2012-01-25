@@ -42,12 +42,12 @@ public class ResourceGatheringTest {
 			if(!(t instanceof UnitTemplate))
 				continue;
 			UnitTemplate template = (UnitTemplate)t;
-			if(template.getUnitName().equals("TownHall"))
+			if(template.getName().equals("TownHall"))
 			{
 				Unit u = template.produceInstance(state);
 				builder.addUnit(u,10,10);
 			}
-			else if(template.getUnitName().equals("Peasant"))
+			else if(template.getName().equals("Peasant"))
 			{
 				Unit u = template.produceInstance(state);
 				builder.addUnit(u,12,12);
