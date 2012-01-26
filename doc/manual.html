@@ -258,10 +258,28 @@
 			</li>
 		</ul>		
 		</p>
+		<h3>Accessing The State</h3>
+		<p>
+		</p>
 		<h2 id="MapEditor">7. Making your own Map</h2>
 		<p>
-		SimpleRTS is also equipped with a map editor, located in <code>edu.cwru.SimpleRTS.agent.visual.editor.Editor</code>.  It has a main method and is therefore executable.  Once you run it, you will find you can add players, place units, place resource nodes, and toggle the status of fog of war and whether resources are revealed through the EventLogger (more info on the latter two <a href="#FogofWar">here</a>). 
-		</p>
+		SimpleRTS is also equipped with a map editor, located in <code>edu.cwru.SimpleRTS.agent.visual.editor.Editor</code>.
+		  It has a main method and is therefore executable.
+		  It consists of two linked windows, the game screen and the editing tools.
+		  The game screen, which is shared with  shows the grid of the world and the units and resources you have placed on the map.
+		  The editing tools allow you to add players (it only starts with one player) and to place and remove units or resource nodes from the map.
+		  Resource nodes are placed by selecting the tree or mine radio buttons and putting in a number in the resource amount text field, then clicking the location on the game screen at which you want to place the resource node.
+		  Units are similarly placed by selecting the radio button marked "unit" and selecting the type of unit and the player number from dropdown lists, then clicking the location on the game screen to place the unit.
+		  You may remove either units or resource nodes with the remove radio button selected by clicking on them.
+		  The size of the map may be altered by a pair of text fields and the "Set Size" button, although shrinking the map may cause units near the edge to be deleted as appropriate.
+		  Large maps may be navigated using the arrow keys.
+		  It is also possible to toggle the status of fog of war and whether resources are revealed through the EventLogger.  Note
+		    that while the setting of revealed resources is visible on the screen, the fog of war is not (as it would make it hard to edit if you can't see things).
+		    (more info on these <a href="#FogofWar">here</a>).
+		    
+	    </p>
+		<p>As of version 3.1, you may not change templates, put in upgrades, give resources to players, or change unit or resource node attributes after having placed them.
+		</p>  
 		<h2 id="Agent">8. Using the Scripted Agent</h2>
 		<p>The scripted agent may be found at <code>edu.cwru.SimpleRTS.agent.ScriptedGoalAgent</code>.
 			It's constructor requires a BufferedReader, which may be connected to a file, the standard in, or a string (via calling <code>java.io.BufferedReader</code>'s constructor with an argument of a <code>java.io.FileReader</code>, <code>java.io.InputStreamReader</code>, or <code>java.io.StringReader</code>, respectively).
@@ -351,9 +369,15 @@
 		<p> Action is used to convey commands between the agent and the simulation.  There are several subclasses, to prevent mistakes, they should be constructed using the static factory-style methods in Action itself.  Actions are divided into compound and primitive types.  Primitive types are the basic building blocks, like taking a step in one direction, gathering from an adjacent resource, or attacking a guy in range.  Compound actions are more goal based and are resolved by the simulator itself into the primitives needed to fulfill that goal.  As a result, compound actions are more robust, being self correcting to a point.  
 		</p>
 		<h2 id="FogofWar">10. Partial Observability</h2>
-		<p>SimpleRTS implements partial observability through the common RTS element of "fog of war".  Fog of war may be activated as part of the map creation process.  With the fog of war activated, many interactions change.
-		In particular, it is no longer possible to access units or resource nodes found outside of the sight radius of your units, events occurring entirely outside of your sight radius are no longer available to you, and it is no longer possible to query the state to get the templates and resource values of any agent but yourself.
-		The challenge of finding resource nodes may be partially compensated for if "revealed resources" is toggled on (which is accomplished in much the same way as with fog of war itself).  With this toggled on, the EventLogger will tell you the location and type of all resources via getRevealedResources().  Beware though, as it only logs the appearance of resources, some other player (or even you) may have mined out or cut down the resource in the meantime.  
+		<p>SimpleRTS implements partial observability through the common RTS element of "fog of war".  
+		Fog of war may be activated as part of the map creation process.  With the fog of war activated, many interactions change.
+		In particular, it is no longer possible to access units or resource nodes found outside of the
+		 sight radius of your units, events occurring entirely outside of your sight radius are no longer
+		  available to you, and it is no longer possible to query the state to get the templates and resource values of any agent but yourself.
+		The challenge of finding resource nodes may be partially compensated for if "revealed resources"
+		 is toggled on (which is accomplished in much the same way as with fog of war itself).  
+		 With resources revealed, the EventLogger will tell you the location and type of all resources via getRevealedResources().
+		   Beware though, as it only logs the appearance of resources, some other player (or even you) may have mined out or cut down the resource in the meantime.  
 		</p>
 		<h2 id="Matlab">MATLAB Specific Instructions</h2>
 		<p>Be aware that SimpleRTS works only under Matlab of Windows 7 environment, and doesn't work under Matlab of Unix/Linux/Mac OS X environment.

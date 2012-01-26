@@ -1113,6 +1113,20 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			return ids;
 		}
 		/**
+		 * Get whether fog of war (partial observability) is activated
+		 * @return
+		 */
+		public boolean isFogOfWar() {
+			return state.getFogOfWar();
+		}
+		/**
+		 * Get whether initial placement of resources are revealed in the event logs
+		 * @return
+		 */
+		public boolean isRevealedResources() {
+			return state.getRevealedResources();
+		}
+		/**
 		 * Returns whether the selected coordinates are visible to the player through the fog of war.
 		 * @param x
 		 * @param y
@@ -1128,7 +1142,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get the unit ids of those units owned by the selected players.
-		 * Will not work 
+		 * Will give only your units when fog of war is on, unless you are an observer
 		 * @param player
 		 * @return
 		 */
@@ -1195,7 +1209,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get the ids of all the templates.
-		 * If you are not an observer, it will only give you yours
+		 * If you are not an observer, it will only give you yours if fog of war is on
 		 * @return
 		 */
 		public List<Integer> getAllTemplateIds() {
@@ -1210,7 +1224,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		
 		/**
 		 * Get a player's template IDs
-		 * If you are not an observer, you can't get other people's
+		 * If you are not an observer, you can't get other people's templates if fog of war is on
 		 * @param playerid
 		 * @return
 		 */
@@ -1229,7 +1243,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		
 		/**
 		 * Get a template with a specific ID
-		 * If you are not an observer, it won't work with somebody else's template.
+		 * If you are not an observer, it won't work with somebody else's template with fog of war on
 		 * @param templateID
 		 * @return
 		 */
@@ -1256,7 +1270,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get the amount of wood or gold (specified by the type) available to a specific player.
-		 * If you are not an observer, it will not work on other people.
+		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @param type The type of resource
 		 * @return
@@ -1269,7 +1283,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		
 		/**
 		 * Get the amount of supply (food) used by a specific player.
-		 * If you are not an observer, it will not work on other people.
+		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @return
 		 */
@@ -1280,7 +1294,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get the maximum amount of supply (food) available to a specific player.
-		 * If you are not an observer, it will not work on other people.
+		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @return
 		 */
@@ -1315,7 +1329,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get whether a player has a unit of a certain type.  (Say, a tech building).
-		 * If you are not an observer, then this will not work on other players
+		 * If you are not an observer, then this will not work on other players with fog of war on
 		 * @param player
 		 * @param buildingtemplateid
 		 * @return Whether the player with id playerid has a unit with a template with the template id templateid, or false if the player is not you
@@ -1327,7 +1341,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		/**
 		 * Get whether a player has researched a specific upgrade.
-		 * If you are not an observer, then this will not work on other players
+		 * If you are not an observer, then this will not work on other players with fog of war on
 		 * @param upgradeid
 		 * @param playerid
 		 * @return Whether the player has researched an upgrade with id upgradeid.  Always false if you try it on someone else.

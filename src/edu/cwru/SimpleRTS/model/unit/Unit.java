@@ -219,6 +219,8 @@ public class Unit extends Target implements Cloneable {
 		private final UnitTemplateView templateView;
 		private final UnitTask task;
 		private final int ID;
+		private final Integer currentProduction;
+		private final int currentProductionAmount;
 		public UnitView(Unit unit) {
 			currentHealth = unit.currentHealth;
 			templateView = unit.template.getView();
@@ -228,31 +230,87 @@ public class Unit extends Target implements Cloneable {
 			yPosition = unit.yPosition;
 			task = unit.task;
 			ID = unit.ID;
+			currentProduction = unit.currentProduction==null?null:unit.currentProduction.ID;
+			currentProductionAmount = unit.currentProductionAmount;
 		}
+		/**
+		 * Get the current health of the unit
+		 * @return
+		 */
 		public int getHP()   {
 			return currentHealth;
 		}
+		/**
+		 * Get the amount of gold or wood being carried by this unit.
+		 * @return
+		 */
 		public int getCargoAmount()   {
 			return cargoAmount;
 		}
+		/**
+		 * Get the type of resource being carried by the unit.
+		 * This is only relevant if getCargoAmount() indicates an amount being carried.
+		 * @return
+		 */
 		public ResourceType getCargoType()   {
 			return cargoType;
 		}
+		/**
+		 * Get the x coordinate of the unit
+		 * @return
+		 */
 		public int getXPosition()   {
 			return xPosition;
 		}
+		/**
+		 * Get the y coordinate of the unit
+		 * @return
+		 */
 		public int getYPosition()   {
 			return yPosition;
 		}
+		
+		/**
+		 * Get the progress of this unit toward making whatever it is making (as indicated by getCurrentProductionType())
+		 * @return
+		 */
+		public int getCurrentProductionAmount() {
+			return currentProductionAmount;
+		}
+		/**
+		 * Get the template id of the unit or upgrade currently being produced.
+		 * This is only relevant if getCurrentProductionAmount indicates something has progress
+		 * @return The id of the template of what is being produced, or null
+		 */
+		public Integer getCurrentProductionType() {
+			return currentProduction;
+		}
+		
+		/**
+		 * Get a view of the template this unit was made from.
+		 * This carries information shared by all units of that type,
+		 * such as the name, attack, armor, basic health, cost, 
+		 * prerequisites for building it, and what units/upgrades it can produce 
+		 * @return
+		 */
 		public UnitTemplateView getTemplateView()   {
 			return templateView;
 		}
+		/**
+		 * Get the most recent task assigned to the unit.  Most uses deprecated through the event logging functionality
+		 * @return
+		 */
 		public UnitTask getTask()   {
 			return task;
 		}
+		/**
+		 * Get the unique identification number of this unit
+		 * @return
+		 */
 		public int getID() {
 			return ID;
 		}
+		
 		
 	}
 }
