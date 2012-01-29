@@ -398,7 +398,7 @@ public class SimpleModel implements Model {
 									{
 										int damage = calculateDamage(u,target);
 										state.recordDamage(u, target, damage);
-										target.setHP(Math.max(u.getCurrentHealth()-damage,0));
+										target.setHP(Math.max(target.getCurrentHealth()-damage,0));
 									}
 									else
 									{
