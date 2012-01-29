@@ -23,9 +23,9 @@ public class UnitAdapter {
 		unit.setxPosition(xml.getXPosition());
 		unit.setyPosition(xml.getYPosition());
 		unit.setTask(xml.getUnitTask());
-		unit.pickUpResource(xml.getCargoType(), xml.getCargoAmount());
-		unit.takeDamage(template.getBaseHealth()-xml.getCurrentHealth());
-		//TODO - set production
+		unit.setCargo(xml.getCargoType(), xml.getCargoAmount());
+		unit.setHP(xml.getCurrentHealth());
+		unit.setProduction(templates.get(xml.getProductionTemplateID()), xml.getProductionAmount());
 		
 		return unit;
 	}

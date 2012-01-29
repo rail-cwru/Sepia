@@ -41,12 +41,12 @@ public class StateAdapter {
 		return xml;
 	}
 	
-	public State fromXml(XmlState xml, @SuppressWarnings("rawtypes") Map<Integer,Map<Integer,Template>> templates) {
+	public State fromXml(XmlState xml) {
 		StateBuilder builder = new StateBuilder();
 		
 		for(XmlPlayer player : xml.getPlayer())
 		{
-			builder.addPlayer(playerAdapter.fromXml(player, templates.get(player.getID())));
+			builder.addPlayer(playerAdapter.fromXml(player));
 		}
 		
 		

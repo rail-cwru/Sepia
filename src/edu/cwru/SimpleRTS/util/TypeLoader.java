@@ -174,7 +174,13 @@ public final class TypeLoader {
 			defensechange = obj.getInt("ArmorIncrease");
 		}
 		
-		UpgradeTemplate template = new UpgradeTemplate(idsource.nextTemplateID(),attackchange, defensechange, affectslist);
+		UpgradeTemplate template = new UpgradeTemplate(idsource.nextTemplateID());
+		template.setAttackChange(attackchange);
+		template.setDefenseChange(defensechange);
+		for (String s : affectslist)
+		{
+			template.addAffectedUnit(s);
+		}
 		template.setName(obj.getString("Name"));
 		template.setTimeCost(obj.getInt("TimeCost"));
 		template.setGoldCost(obj.getInt("GoldCost"));

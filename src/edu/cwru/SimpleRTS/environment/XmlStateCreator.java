@@ -11,12 +11,10 @@ public class XmlStateCreator implements StateCreator {
 	
 	private XmlState state;
 	@SuppressWarnings("rawtypes")
-	private Map<Integer,Map<Integer,Template>> templates;
 	private StateAdapter adapter;
 	
-	public XmlStateCreator(XmlState state, @SuppressWarnings("rawtypes") Map<Integer,Map<Integer,Template>> templates) {
+	public XmlStateCreator(XmlState state) {
 		this.state = state;
-		this.templates = templates;
 		adapter = new StateAdapter();
 	}
 	
@@ -24,7 +22,7 @@ public class XmlStateCreator implements StateCreator {
 	public State createState() {		
 		try
 		{
-			return adapter.fromXml(state, templates);
+			return adapter.fromXml(state);
 		}
 		catch(Exception ex)
 		{

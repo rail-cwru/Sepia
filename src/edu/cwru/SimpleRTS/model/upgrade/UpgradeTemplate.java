@@ -10,17 +10,21 @@ import edu.cwru.SimpleRTS.model.prerequisite.UpgradePrerequisite;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 public class UpgradeTemplate extends Template<Upgrade>
 {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID =-1142920055004185520l;
 	private int attackchange;
 	private int defensechange;
 	private List<UnitTemplate> unittemplatesaffected;
 	private String[] stringunitsaffected;
 	private UpgradeTemplateView view;
-	public UpgradeTemplate(int ID, int attackchange, int defensechange, String[] affectedunits)
+	public UpgradeTemplate(int ID)
 	{
 		super(ID);
-		this.attackchange = attackchange;
-		this.defensechange = defensechange;
-		this.stringunitsaffected = affectedunits;
+		stringunitsaffected=new String[0];
+		
 	}
 	public Upgrade produceInstance(IDDistributer idsource)
 	{
@@ -30,11 +34,24 @@ public class UpgradeTemplate extends Template<Upgrade>
 	{
 		return unittemplatesaffected;
 	}
+	public void setAttackChange(int attackchange) {
+		this.attackchange = attackchange;
+	}
 	public int getAttackChange() {
 		return attackchange;
 	}
+	public void setDefenseChange(int defensechange) {
+		this.defensechange = defensechange;
+	}
 	public int getDefenseChange() {
 		return defensechange;
+	}
+	public void addAffectedUnit(String templatename)
+	{//needs to be list, kept as array to avoid breaking serialized stuff,hopefully
+		String[] newstringunitsaffected = new String[stringunitsaffected.length+1];
+		System.arraycopy(stringunitsaffected, 0, newstringunitsaffected, 0, stringunitsaffected.length);
+		newstringunitsaffected[newstringunitsaffected.length-1]=templatename;
+		stringunitsaffected=newstringunitsaffected;
 	}
 	@Override
 	public void namesToIds(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {

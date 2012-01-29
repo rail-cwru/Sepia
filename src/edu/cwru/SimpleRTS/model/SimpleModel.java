@@ -353,7 +353,7 @@ public class SimpleModel implements Model {
 								}
 								else {
 									int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
-									u.pickUpResource(resource.getResourceType(), amountPickedUp);
+									u.setCargo(resource.getResourceType(), amountPickedUp);
 									state.recordPickupResource(u, resource, amountPickedUp);
 								}
 								if (failed) {
@@ -398,7 +398,7 @@ public class SimpleModel implements Model {
 									{
 										int damage = calculateDamage(u,target);
 										state.recordDamage(u, target, damage);
-										target.takeDamage(damage);
+										target.setHP(Math.max(u.getCurrentHealth()-damage,0));
 									}
 									else
 									{
@@ -422,21 +422,37 @@ public class SimpleModel implements Model {
 									}
 								}
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template, state.getView(Agent.OBSERVER_ID));
-								if (template.getTimeCost() == u.getAmountProduced())
+								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
 								{
-									Unit building = template.produceInstance(state);
-//									System.out.println("Checking on bug: unit with id "+u.ID);
-//									System.out.println(state.getUnit(u.ID));
-									int[] newxy = state.getClosestPosition(x,y);
-									if (state.tryProduceUnit(building,newxy[0],newxy[1]))
+									int newproductionamount;
+									if (u.getCurrentProductionID() == template.ID)
 									{
-//									System.out.println(state.getUnit(u.ID));
-									state.recordBirth(building, u);
-									
-//									System.out.println(state.getUnit(u.ID));
+										newproductionamount = u.getAmountProduced()+1;
 									}
-									u.incrementProduction(null, state.getView(Agent.OBSERVER_ID));
+									else
+									{
+										newproductionamount = 1;
+									}
+									u.setProduction(template, newproductionamount);
+									if (template.getTimeCost() == u.getAmountProduced())
+									{
+										Unit building = template.produceInstance(state);
+	//									System.out.println("Checking on bug: unit with id "+u.ID);
+	//									System.out.println(state.getUnit(u.ID));
+										int[] newxy = state.getClosestPosition(x,y);
+										if (state.tryProduceUnit(building,newxy[0],newxy[1]))
+										{
+	//									System.out.println(state.getUnit(u.ID));
+										state.recordBirth(building, u);
+										
+	//									System.out.println(state.getUnit(u.ID));
+										}
+										u.resetProduction();
+									}
+								}
+								else
+								{
+									u.resetProduction();
 								}
 								
 								break;
@@ -446,30 +462,48 @@ public class SimpleModel implements Model {
 								if (!(a instanceof ProductionAction))
 									break;
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-								u.incrementProduction(template,state.getView(Agent.OBSERVER_ID));
+								//check if it is even capable of producing the
+								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
+								{
+									int newproductionamount;
+									if (u.getCurrentProductionID() == template.ID)
+									{
+										newproductionamount = u.getAmountProduced()+1;
+									}
+									else
+									{
+										newproductionamount = 1;
+									}
+									u.setProduction(template, newproductionamount);
+									if (template.getTimeCost() == u.getAmountProduced())
+									{
+										if (template instanceof UnitTemplate)
+										{
+											Unit produced = ((UnitTemplate)template).produceInstance(state);
+											int[] newxy = state.getClosestPosition(x,y);
+											if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
+											{
+												state.recordBirth(produced, u);
+											}
+										}
+										else if (template instanceof UpgradeTemplate) {
+											UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
+											if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
+											{
+												state.recordUpgrade(upgradetemplate,u);
+											}
+										}
+										u.resetProduction();
+										
+									}
+								}
+								else
+								{
+									u.resetProduction();
+								}
 //								System.out.println(template.getName() + " takes "+template.timeCost);
 //								System.out.println("Produced"+u.getAmountProduced());
-								if (template.getTimeCost() == u.getAmountProduced())
-								{
-									if (template instanceof UnitTemplate)
-									{
-										Unit produced = ((UnitTemplate)template).produceInstance(state);
-										int[] newxy = state.getClosestPosition(x,y);
-										if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
-										{
-											state.recordBirth(produced, u);
-										}
-									}
-									else if (template instanceof UpgradeTemplate) {
-										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-										if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
-										{
-											state.recordUpgrade(upgradetemplate,u);
-										}
-									}
-									u.incrementProduction(null, state.getView(Agent.OBSERVER_ID));
-									
-								}
+								
 								
 								break;
 							}

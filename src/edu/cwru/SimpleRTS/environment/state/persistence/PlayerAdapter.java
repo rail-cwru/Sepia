@@ -1,21 +1,30 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import edu.cwru.SimpleRTS.environment.PlayerState;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceQuantity;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
 public class PlayerAdapter {
 	
 
 	public XmlPlayer toXml(PlayerState player) {
 		XmlPlayer xml = new XmlPlayer();
+		
+		
+		
 		UnitAdapter unitAdapter = new UnitAdapter(player.getTemplates());
 		
 		xml.setID(player.playerNum);
@@ -29,8 +38,14 @@ public class PlayerAdapter {
 		List<Integer> upgrades = xml.getUpgrade();
 		upgrades.addAll(player.getUpgrades());
 		
-		List<Integer> templateIds = xml.getTemplate();
-		templateIds.addAll(player.getTemplates().keySet());
+		List<XmlTemplate> xmltemplates= xml.getTemplate();
+		for (Template t : player.getTemplates().values())
+		{
+			if (t instanceof UnitTemplate)
+				xmltemplates.add(UnitTemplateAdapter.toXml((UnitTemplate)t));
+			else if (t instanceof UpgradeTemplate)
+				xmltemplates.add(UpgradeTemplateAdapter.toXml((UpgradeTemplate)t));
+		}
 				
 		List<XmlResourceQuantity> resources = xml.getResourceAmount();
 		for(ResourceType type : ResourceType.values())
@@ -47,9 +62,39 @@ public class PlayerAdapter {
 		return xml;
 	}
 	
-	public PlayerState fromXml(XmlPlayer xml, @SuppressWarnings("rawtypes") Map<Integer,Template> templates) {
+	public PlayerState fromXml(XmlPlayer xml) {
 		PlayerState player = new PlayerState(xml.getID());
-		UnitAdapter unitAdapter = new UnitAdapter(templates);
+		
+		
+		if(xml.getUpgrade() != null)
+		{
+			player.getUpgrades().addAll(xml.getUpgrade());
+		}
+		List <UnitTemplate> myunittemplates = new ArrayList<UnitTemplate>();
+		List <UpgradeTemplate> myupgradetemplates = new ArrayList<UpgradeTemplate>();
+		if(xml.getTemplate() != null)
+		{
+			for(XmlTemplate t : xml.getTemplate())
+			{
+				if (t instanceof XmlUnitTemplate)
+					myunittemplates.add(UnitTemplateAdapter.fromXml((XmlUnitTemplate)t,player.playerNum));
+				else if (t instanceof XmlUpgradeTemplate)
+					myupgradetemplates.add(UpgradeTemplateAdapter.fromXml((XmlUpgradeTemplate)t,player.playerNum));
+			}
+		}
+		for (UnitTemplate t : myunittemplates)
+		{
+			t.namesToIds(myunittemplates,myupgradetemplates);
+			player.addTemplate(t);
+		}
+		for (UpgradeTemplate t : myupgradetemplates)
+		{
+			t.namesToIds(myunittemplates,myupgradetemplates);
+			player.addTemplate(t);
+		}
+		
+		
+		UnitAdapter unitAdapter = new UnitAdapter(player.getTemplates());
 		
 		if(xml.getUnit() != null)
 		{
@@ -58,27 +103,6 @@ public class PlayerAdapter {
 				player.addUnit(unitAdapter.fromXml(unit));
 			}
 		}
-		
-		if(xml.getUpgrade() != null)
-		{
-			player.getUpgrades().addAll(xml.getUpgrade());
-		}
-		
-		if(xml.getTemplate() != null)
-		{
-			for(int id : xml.getTemplate())
-			{
-				for(@SuppressWarnings("rawtypes") Template template : templates.values())
-				{
-					if(template.ID == id)
-					{
-						player.addTemplate(template);
-						break;
-					}
-				}
-			}
-		}
-		
 		if(xml.getResourceAmount() != null)
 		{
 			for(XmlResourceQuantity resource : xml.getResourceAmount())

@@ -98,70 +98,70 @@ public class Main {
 				return;
 			}
 			
-			@SuppressWarnings("rawtypes")
-			Map<Integer,Map<Integer,Template>> templates = new HashMap<Integer,Map<Integer,Template>>();
-			
-			Preferences preferences = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("agent").node("templatefiles");
-			String global = preferences.get("Global", "");
-			
-			for(String key : preferences.keys())
-			{
-				int playernum = -1;
-				try
-				{
-					playernum = Integer.parseInt(key);
-				}
-				catch(Exception ex)
-				{
-					continue;
-				}
-				String filename = preferences.get(key, statefilename);
-				@SuppressWarnings("rawtypes")
-				List<Template> templateList;
-				try {
-					templateList = TypeLoader.loadFromFile(filename, playernum,templatemakingstate);
-				} catch (JSONException e) {
-					printUsage("File " + filename + " was not a valid template file.");
-					return;
-				}
-				@SuppressWarnings("rawtypes")
-				Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
-				for(@SuppressWarnings("rawtypes") Template t : templateList)
-					templateMap.put(t.ID, t);
-				templates.put(playernum, templateMap);
-			}
-			@SuppressWarnings("rawtypes")
-			HashMap<Integer,Template> emptyTemplateMap = new HashMap<Integer,Template>();
-			for(Integer id : XmlStateUtil.playerIds(xml))
-			{
-				if(templates.keySet().contains(id))
-				{
-					continue;
-				}
-				if(!global.equals(""))
-				{
-					@SuppressWarnings("rawtypes")
-					List<Template> templateList;
-					try {
-						templateList = TypeLoader.loadFromFile(global, id,templatemakingstate);
-					} catch (JSONException e) {
-						printUsage("File " + global + " was not a valid template file.");
-						return;
-					}
-					@SuppressWarnings("rawtypes")
-					Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
-					for(@SuppressWarnings("rawtypes") Template t : templateList)
-						templateMap.put(t.ID, t);
-					templates.put(id, templateMap);
-				}
-				else
-				{
-					templates.put(id, emptyTemplateMap);
-				}
-			}
+//			@SuppressWarnings("rawtypes")
+//			Map<Integer,Map<Integer,Template>> templates = new HashMap<Integer,Map<Integer,Template>>();
+//			
+//			Preferences preferences = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("agent").node("templatefiles");
+//			String global = preferences.get("Global", "");
+//			
+//			for(String key : preferences.keys())
+//			{
+//				int playernum = -1;
+//				try
+//				{
+//					playernum = Integer.parseInt(key);
+//				}
+//				catch(Exception ex)
+//				{
+//					continue;
+//				}
+//				String filename = preferences.get(key, statefilename);
+//				@SuppressWarnings("rawtypes")
+//				List<Template> templateList;
+//				try {
+//					templateList = TypeLoader.loadFromFile(filename, playernum,templatemakingstate);
+//				} catch (JSONException e) {
+//					printUsage("File " + filename + " was not a valid template file.");
+//					return;
+//				}
+//				@SuppressWarnings("rawtypes")
+//				Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
+//				for(@SuppressWarnings("rawtypes") Template t : templateList)
+//					templateMap.put(t.ID, t);
+//				templates.put(playernum, templateMap);
+//			}
+//			@SuppressWarnings("rawtypes")
+//			HashMap<Integer,Template> emptyTemplateMap = new HashMap<Integer,Template>();
+//			for(Integer id : XmlStateUtil.playerIds(xml))
+//			{
+//				if(templates.keySet().contains(id))
+//				{
+//					continue;
+//				}
+//				if(!global.equals(""))
+//				{
+//					@SuppressWarnings("rawtypes")
+//					List<Template> templateList;
+//					try {
+//						templateList = TypeLoader.loadFromFile(global, id,templatemakingstate);
+//					} catch (JSONException e) {
+//						printUsage("File " + global + " was not a valid template file.");
+//						return;
+//					}
+//					@SuppressWarnings("rawtypes")
+//					Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
+//					for(@SuppressWarnings("rawtypes") Template t : templateList)
+//						templateMap.put(t.ID, t);
+//					templates.put(id, templateMap);
+//				}
+//				else
+//				{
+//					templates.put(id, emptyTemplateMap);
+//				}
+//			}
 			//StateAdapter adapter = new StateAdapter();
 			//initState = adapter.fromXml(xml, templates);
-			stateCreator = new XmlStateCreator(xml,templates);
+			stateCreator = new XmlStateCreator(xml);
 			initState = stateCreator.createState();
 		}
 		if(initState == null)

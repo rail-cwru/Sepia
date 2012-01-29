@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.IDDistributer;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.prerequisite.Prerequisite;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
  * Contains information about default and invariant attributes of units. The class
@@ -319,8 +321,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public boolean canAcceptWood() {return acceptsWood; }
 		public int getFoodProvided() {return foodProvided; }
 	}
-
-	
-
-	
+	/**
+	 * For xml saving
+	 * @return
+	 */
+	public List<String> getProducesStrings() {
+		return produces;
+	}
 }

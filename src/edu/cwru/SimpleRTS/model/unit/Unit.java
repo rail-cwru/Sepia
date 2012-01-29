@@ -92,15 +92,9 @@ public class Unit extends Target implements Cloneable {
 	 * @param amount
 	 * @return
 	 */
-	public void takeDamage(int amount)
+	public void setHP(int amount)
 	{
-		currentHealth -= amount;
-		if (currentHealth > template.baseHealth)
-			currentHealth = template.baseHealth;
-		if (currentHealth < 0)
-		{
-			currentHealth = 0;
-		}
+		currentHealth=amount;
 	}
 	public int getAmountProduced()
 	{
@@ -120,25 +114,10 @@ public class Unit extends Target implements Cloneable {
 	 * Increment production amount
 	 * @param templateID
 	 */
-	public void incrementProduction(@SuppressWarnings("rawtypes") Template toproduce, StateView state) {
-		//check if it is even capable of producing the
-		if (template.canProduce(toproduce)&&toproduce.canProduce(state))
-		{
-			if (getCurrentProductionID() == toproduce.ID)
-			{
-				currentProductionAmount++;
-			}
-			else
-			{
-				resetProduction();
-				currentProduction = toproduce;
-				currentProductionAmount++;
-			}
-		}
-		else
-		{
-			resetProduction();
-		}
+	public void setProduction(Template toproduce, int amount) {
+		
+		currentProduction = toproduce;
+		currentProductionAmount = amount;
 	}
 	public boolean canGather()
 	{
@@ -174,7 +153,7 @@ public class Unit extends Target implements Cloneable {
 				+ template + ", cargoType=" + cargoType + ", cargoAmount="
 				+ cargoAmount + "]";
 	}
-	public boolean pickUpResource(ResourceType type, int amount) {
+	public boolean setCargo(ResourceType type, int amount) {
 		if(!(template).canGather())
 			return false;
 		cargoType = type;

@@ -94,6 +94,20 @@ public abstract class Template<T> implements Serializable{
 		upgradePrereq.add(name);
 	}
 	/**
+	 * For xml saving
+	 * @return
+	 */
+	public Set<String> getUnitPrerequisiteStrings() {
+		return buildPrereq;
+	}
+	/**
+	 * For xml saving
+	 * @return
+	 */
+	public Set<String> getUpgradePrerequisiteStrings() {
+		return upgradePrereq;
+	}
+	/**
 	 * Turn this template's list of prerequisites and things it produces into their ids
 	 */
 	public void namesToIds(List<UnitTemplate> untemplates, List<UpgradeTemplate> uptemplates) {
@@ -130,6 +144,7 @@ public abstract class Template<T> implements Serializable{
 	public abstract TemplateView getView();
 	public abstract void deprecateOldView();
 	public static class TemplateView implements Serializable{
+		private static final long serialVersionUID = 7272928444209753621l;
 		private final int timeCost;
 		private final int goldCost;
 		private final int woodCost;

@@ -1,9 +1,12 @@
 package edu.cwru.SimpleRTS.environment.persistence;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.JSONException;
 import org.junit.BeforeClass;
@@ -11,7 +14,10 @@ import org.junit.BeforeClass;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceQuantity;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
@@ -32,48 +38,197 @@ public class AdapterTestUtil {
 		return templates;
 	}
 	
-	public static XmlUnit createExampleUnit() {
+	public static XmlUnit createExampleUnit(Random r, List<XmlUnitTemplate> unittemplates, List<XmlTemplate> alltemplates) {
 		XmlUnit xml = new XmlUnit();
-		xml.setID(56);
-		xml.setCargoAmount(10);
-		xml.setCargoType(ResourceType.GOLD);
-		xml.setCurrentHealth(10);
-		xml.setProductionAmount(1);
-		xml.setProductionTemplateID(4);
-		xml.setTemplateID(2);
-		xml.setUnitTask(UnitTask.Build);
-		xml.setXPosition(2);
-		xml.setYPosition(3);
+		XmlUnitTemplate chosentemplate = unittemplates.get(r.nextInt(unittemplates.size()));
+		xml.setID(r.nextInt());
+		if (chosentemplate.isCanGather())
+		{
+			xml.setCargoAmount(r.nextInt());
+			xml.setCargoType(ResourceType.values()[r.nextInt(ResourceType.values().length)]);
+		}
+		xml.setCurrentHealth(r.nextInt(chosentemplate.getBaseHealth()));
+		xml.setProductionAmount(r.nextInt());
+		boolean invalidproduction = true;
+		Integer thingtoproduce = null;
+		while (invalidproduction)
+		{
+			XmlTemplate toproduces = alltemplates.get(r.nextInt(alltemplates.size()));
+			if (chosentemplate.getProduces().contains(toproduces.getName()))
+			{
+				thingtoproduce = toproduces.getID();
+				invalidproduction=false;
+			}
+		}
+		xml.setProductionTemplateID(thingtoproduce);
+		xml.setTemplateID(chosentemplate.getID());
+		xml.setUnitTask(UnitTask.values()[r.nextInt(UnitTask.values().length)]);
+		xml.setXPosition(r.nextInt());
+		xml.setYPosition(r.nextInt());
 		return xml;
 	}
-	
-	public static XmlPlayer createExamplePlayer() {
+	public static XmlUpgradeTemplate createExampleUpgradeTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
+		XmlUpgradeTemplate xml = new XmlUpgradeTemplate();
+		xml.setID(r.nextInt());
+		xml.setAttackChange(r.nextInt());
+		xml.setDefenseChange(r.nextInt());
+		char[] name = new char[r.nextInt(5)+8];
+		for (int i = 0; i<name.length;i++)name[i]=(char)('a'+r.nextInt(26));
+		xml.setName(new String(name));
+		xml.setTimeCost(r.nextInt());
+		xml.setWoodCost(r.nextInt());
+		for (String s : namesofunits)
+		{
+			if (r.nextBoolean())
+				xml.getAffectedUnitTypes().add(s);
+		}
+		for (String s : namesofunits)
+		{
+			if (r.nextBoolean())
+				xml.getUnitPrerequisite().add(s);
+		}
+		for (String s : namesofupgrades)
+		{
+			if (r.nextBoolean())
+				xml.getUpgradePrerequisite().add(s);
+		}
+		return xml;
+	}
+	public static XmlUnitTemplate createExampleUnitTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
+		XmlUnitTemplate xml = new XmlUnitTemplate();
+		xml.setID(r.nextInt());
+		char[] name = new char[r.nextInt(4)+3];
+		for (int i = 0; i<name.length;i++)name[i]=(char)('a'+r.nextInt(26));
+		xml.setName(new String(name));
+		xml.setTimeCost(r.nextInt());
+		xml.setWoodCost(r.nextInt());
+		xml.setArmor(r.nextInt());
+		xml.setBaseAttack(r.nextInt());
+		xml.setBaseHealth(r.nextInt(Integer.MAX_VALUE-1)+1);
+		xml.setCanAcceptGold(r.nextBoolean());
+		xml.setCanAcceptWood(r.nextBoolean());
+		xml.setCanBuild(r.nextBoolean());
+		xml.setCanGather(r.nextBoolean());
+		xml.setCanMove(r.nextBoolean());
+		xml.setCharacter((short)('a'+r.nextInt(26)));
+		xml.setFoodProvided(r.nextInt());
+		xml.setGoldGatherRate(r.nextInt());
+		xml.setPiercingAttack(r.nextInt());
+		xml.setRange(r.nextInt());
+		xml.setSightRange(r.nextInt());
+		xml.setWoodGatherRate(r.nextInt());
+		for (String s : namesofunits)
+		{
+			if (r.nextBoolean())
+				xml.getProduces().add(s);
+		}
+		for (String s : namesofupgrades)
+		{
+			if (r.nextBoolean())
+				xml.getProduces().add(s);
+		}
+		for (String s : namesofunits)
+		{
+			if (r.nextBoolean())
+				xml.getUnitPrerequisite().add(s);
+		}
+		for (String s : namesofupgrades)
+		{
+			if (r.nextBoolean())
+				xml.getUpgradePrerequisite().add(s);
+		}
+		
+		return xml;
+	}
+	public static XmlPlayer createExamplePlayer(Random r) {
 		XmlPlayer xml = new XmlPlayer();
 		
-		xml.getUnit().add(createExampleUnit());
-		xml.getUnit().add(createExampleUnit());
-		xml.getUnit().add(createExampleUnit());
+		List<Integer> targetidssofar = new ArrayList<Integer>();
+		List<String> unitnamessofar=new ArrayList<String>();
+		List<String> upgradenamessofar=new ArrayList<String>();
+		List<Integer> unittemplateidssofar = new ArrayList<Integer>();
+		List<Integer> alltemplateidssofar = new ArrayList<Integer>();
+		List<XmlTemplate> alltemplatessofar = new ArrayList<XmlTemplate>();
+		List<Integer> upgradetemplateidssofar = new ArrayList<Integer>();
+		List<XmlUnitTemplate> unittemplatessofar = new ArrayList<XmlUnitTemplate>();
+		for(int i = 0; i < r.nextInt(15)+6; i++)
+		{
+			if  (r.nextBoolean())
+			{
+				XmlUpgradeTemplate toadd = createExampleUpgradeTemplate(r,unitnamessofar,upgradenamessofar);
+				xml.getTemplate().add(toadd);
+				upgradenamessofar.add(toadd.getName());
+				alltemplateidssofar.add(toadd.getID());
+				alltemplatessofar.add(toadd);
+				upgradetemplateidssofar.add(toadd.getID());
+			}
+			else
+			{
+				XmlUnitTemplate toadd = createExampleUnitTemplate(r,unitnamessofar,upgradenamessofar);
+				xml.getTemplate().add(toadd);
+				unitnamessofar.add(toadd.getName());
+				alltemplateidssofar.add(toadd.getID());
+				alltemplatessofar.add(toadd);
+				unittemplateidssofar.add(toadd.getID());
+				unittemplatessofar.add(toadd);
+			}
+		}
+		//verify ids and names, if they are not unique, the test isn't valid, need to regenerate stuff again
+		for (Integer id :alltemplateidssofar)
+		{
+			if (alltemplateidssofar.indexOf(id) != alltemplateidssofar.lastIndexOf(id))
+			{
+				return createExamplePlayer(r);
+			}
+		}
+		for (String name : unitnamessofar)
+		{
+			if (unitnamessofar.indexOf(name) != unitnamessofar.lastIndexOf(name) || upgradenamessofar.contains(name))
+			{
+				return createExamplePlayer(r);
+			}
+		}
+		for (String name : upgradenamessofar)
+		{
+			if (upgradenamessofar.indexOf(name) != upgradenamessofar.lastIndexOf(name) || unitnamessofar.contains(name))
+			{
+				return createExamplePlayer(r);
+			}
+		}
 		
-		xml.setID(0);
-		xml.setSupply(1);
-		xml.setSupplyCap(5);
+		int numunits = r.nextInt(4)+3;
+		for (int i = 0; i<numunits;i++)
+		{
+			XmlUnit toadd = createExampleUnit(r,unittemplatessofar, alltemplatessofar);
+			xml.getUnit().add(toadd);
+			targetidssofar.add(toadd.getID());
+		}
+		for (Integer id :targetidssofar)
+		{
+			if (targetidssofar.indexOf(id) != targetidssofar.lastIndexOf(id))
+			{
+				return createExamplePlayer(r);
+			}
+		}
+		xml.setID(r.nextInt());
+		xml.setSupply(r.nextInt());
+		xml.setSupplyCap(r.nextInt());
 		
 		XmlResourceQuantity gold = new XmlResourceQuantity();
 		gold.setType(ResourceType.GOLD);
-		gold.setQuantity(700);
+		gold.setQuantity(r.nextInt());
 		xml.getResourceAmount().add(gold);
 		
 		XmlResourceQuantity wood = new XmlResourceQuantity();
 		wood.setType(ResourceType.WOOD);
-		wood.setQuantity(700);		
+		wood.setQuantity(r.nextInt());		
 		xml.getResourceAmount().add(wood);
 		
-		for(int i = 0; i < 6; i++)
+		for (Integer i : upgradetemplateidssofar)
 		{
-			xml.getTemplate().add(i);
+			if (r.nextBoolean())
+				xml.getUpgrade().add(i);
 		}
-		
-		xml.getUpgrade().add(0);
 		
 		return xml;
 	}
