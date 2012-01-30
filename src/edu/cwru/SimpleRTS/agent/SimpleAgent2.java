@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
@@ -55,14 +56,14 @@ public class SimpleAgent2 extends Agent {
 					targetsInRange.add(enemy);
 				}						
 			}
-			if(targetsInRange.size() >= 0)
+			if(targetsInRange.size() > 0)
 			{
 				int target = -1;
 				int max = -1;
 				for(int enemy : targetsInRange)
 				{
 					Integer count = targetCounts.get(enemy);
-					if(count != null && count > max)
+					if((count == null?0:count) > max)
 						target = enemy;
 				}
 				Action a = new TargetedAction(unitId, ActionType.COMPOUNDATTACK, target);
@@ -95,6 +96,10 @@ public class SimpleAgent2 extends Agent {
 				builder.put(unitId, a);
 			}
 		}
+//		for (Entry<Integer,Action> a : builder.entrySet())
+//		{
+//			System.out.println("Ordering "+a.getKey() + " to do action " + a.getValue());
+//		}
 		return builder;
 	}
 
