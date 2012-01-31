@@ -43,7 +43,8 @@ public class UpgradeTemplateAdapter {
 		xml.setTimeCost(ut.getTimeCost());
 		xml.setWoodCost(ut.getWoodCost());
 		xml.setGoldCost(ut.getGoldCost());
-		
+		xml.setAttackChange(ut.getAttackChange());
+		xml.setDefenseChange(ut.getDefenseChange());
 		for (String s:ut.getUnitPrerequisiteStrings())
 			xml.getUnitPrerequisite().add(s);
 		for (String s:ut.getUpgradePrerequisiteStrings())
