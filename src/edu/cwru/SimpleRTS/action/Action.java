@@ -29,7 +29,27 @@ public class Action implements Serializable{
 	{
 		return "Action: Unit "+unitId + ", Type " + type.toString();
 	}
-	
+	@Override public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+		else if (!(other instanceof Action))
+		{
+			return false;
+		}
+		else
+		{
+			Action aother = (Action)other;
+			return aother.type == type && aother.unitId == unitId;
+		}
+	}
+	@Override public int hashCode()
+	{
+		int prime = 61;
+		return prime * type.hashCode() + unitId;
+	}
 	/**
 	 * This is a DirectedAction, taking as parameters the acting unit's ID and a direction to attempt to move.  When executed, it attempts to move in that direction, failing if another unit is already there.
 	 * @param unitid Acting unit's ID

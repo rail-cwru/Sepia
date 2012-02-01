@@ -19,4 +19,26 @@ public class DirectedAction extends Action {
 		return "DirectedAction [direction=" + direction + ", type=" + type
 				+ ", unitId=" + unitId + "]";
 	}
+	@Override public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+		else if (!(other instanceof Action))
+		{
+			return false;
+		}
+		else
+		{
+			
+			DirectedAction aother = (DirectedAction)other;
+			return super.equals(aother) && aother.direction == direction;
+		}
+	}
+	@Override public int hashCode()
+	{
+		int prime = 61;
+		return prime * direction.hashCode() + super.hashCode();
+	}
 }

@@ -28,4 +28,26 @@ public class LocatedProductionAction extends Action{
 		return "ProductionAction [x="+x+", y="+y+", templateid=" + templateid + ", type=" + type
 				+ ", unitIdOfBuilder=" + unitId + "]";
 	}
+	@Override public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+		else if (!(other instanceof Action))
+		{
+			return false;
+		}
+		else
+		{
+			
+			LocatedProductionAction aother = (LocatedProductionAction)other;
+			return super.equals(aother) && aother.x == x && aother.y == y && aother.templateid == templateid;
+		}
+	}
+	@Override public int hashCode()
+	{
+		int prime = 61;
+		return prime*prime*prime*x + prime*prime*y+prime * templateid + super.hashCode();
+	}
 }

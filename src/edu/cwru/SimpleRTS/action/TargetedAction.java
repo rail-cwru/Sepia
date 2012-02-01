@@ -17,4 +17,26 @@ public class TargetedAction extends Action
 		return "TargetedAction [targetid=" + targetid + ", type=" + type
 				+ ", unitId=" + unitId + "]";
 	}
+	@Override public boolean equals(Object other)
+	{
+		if (this == other)
+		{
+			return true;
+		}
+		else if (!(other instanceof Action))
+		{
+			return false;
+		}
+		else
+		{
+			
+			TargetedAction aother = (TargetedAction)other;
+			return super.equals(aother) && aother.targetid == targetid;
+		}
+	}
+	@Override public int hashCode()
+	{
+		int prime = 61;
+		return prime * targetid + super.hashCode();
+	}
 }
