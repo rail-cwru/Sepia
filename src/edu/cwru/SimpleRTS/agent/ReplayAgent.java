@@ -7,11 +7,17 @@ import java.util.Random;
 
 import edu.cwru.SimpleRTS.Log.ActionLogger;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 
+/**
+ * A non-functional agent that will, upon completion, act as an example for implementing the capability of learning through actions done in old states
+ * @author The Condor
+ *
+ */
 public class ReplayAgent extends Agent {
 	private static final long serialVersionUID = 1L;
 	private String filename;
@@ -25,12 +31,12 @@ public class ReplayAgent extends Agent {
 		actions = state.getActionLog();
 	}
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		return pullActions(newstate.getTurnNumber());
 	}
 
 	@Override
-	public Map<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
 		return pullActions(newstate.getTurnNumber());
 	}
 	private Map<Integer, Action> pullActions(int turnnumber) {
@@ -39,7 +45,7 @@ public class ReplayAgent extends Agent {
 			System.out.println("Pulling actions for turn "+turnnumber);
 		}
 		Map<Integer, Action> commands = new HashMap<Integer, Action>();
-		for (Action a : actions.getActions(playernum, turnnumber))
+		for (Action a : actions.getActions(turnnumber))
 		{
 			if (verbose)
 			{
@@ -54,7 +60,7 @@ public class ReplayAgent extends Agent {
 		return commands;
 	}
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		//nothing to do, this agent doesn't track anything
 	}
 

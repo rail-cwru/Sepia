@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -265,7 +266,7 @@ public class Main {
 			}
 			else
 			{
-				System.out.println("Making an agent of class "+agentClass.getName() + " with number " + playerNum + " and extra parameters "+extraparams);
+				System.out.println("Making an agent of class "+agentClass.getName() + " with number " + playerNum + " and extra parameters "+Arrays.toString(extraparams));
 				try {
 					
 					Agent agent = (Agent) agentClass.getConstructor(int.class, String[].class).newInstance(playerNum,extraparams);

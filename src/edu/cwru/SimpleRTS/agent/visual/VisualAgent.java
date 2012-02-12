@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 /**
  * A visual agent
@@ -89,16 +90,16 @@ public class VisualAgent extends Agent implements ActionListener {
 //	}
 
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, HistoryView statehistory) {
 		if(gamePanel!=null)
 			gamePanel.reset();
-        return middleStep(newstate);
+        return middleStep(newstate, statehistory);
 	}
 
 	@Override
-	public Map<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate, HistoryView statehistory) {
 		if(gamePanel != null)
-			gamePanel.updateState(newstate);
+			gamePanel.updateState(newstate, statehistory);
 		try {
 			stepSignal.acquire();
 		} catch (InterruptedException e) {
@@ -110,9 +111,9 @@ public class VisualAgent extends Agent implements ActionListener {
 	}
 
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, HistoryView statehistory) {
 		if(gamePanel != null) 
-			gamePanel.updateState(newstate);
+			gamePanel.updateState(newstate, statehistory);
 		if(controlPanel!=null)
 			controlPanel.stopPlay();
 		//JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");

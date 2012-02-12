@@ -74,7 +74,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	 */
 	//private Map<Integer,int[][]> playerCanSee;
 	private boolean hasFogOfWar;
-	private boolean revealedResources;
 	//private Map<Integer,Map<Integer, Unit>> unitsByAgent;
 	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
@@ -89,7 +88,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	@SuppressWarnings("rawtypes")
 	private Map<Integer,Template> allTemplates;
 	//private HashMap<Integer, EventLogger> eventlogs;
-	private ActionLogger actionlog;
 	private Map<Integer,PlayerState> playerStates;
 	private PlayerState observerState;
 	@SuppressWarnings("rawtypes")
@@ -109,12 +107,10 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		//views = new HashMap<Integer,StateView>();
 		//eventlogs = new HashMap<Integer, EventLogger>();
 		//eventlogs.put(Agent.OBSERVER_ID, new EventLogger());
-		actionlog = new ActionLogger();
 		playerStates = new HashMap<Integer,PlayerState>();
 		//observerState = new PlayerState(Agent.OBSERVER_ID);
 		addPlayer(Agent.OBSERVER_ID);
 		setFogOfWar(false);
-		setRevealedResources(false);
 	}
 	
 	/**
@@ -207,21 +203,11 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			{
 				observerState = playerState;
 			}
-			EventLogger neweventlogger = new EventLogger();
-			for (int i = 0; i<=turnNumber;i++)
-				neweventlogger.nextRound();
-			//eventlogs.put(playernumber, neweventlogger);
-			playerState.setEventLogger(neweventlogger);
 			/*templatesByAgent.put(playernumber, new HashMap<Integer,Template>());
 			unitsByAgent.put(playernumber, new HashMap<Integer,Unit>());
 			upgradesByAgent.put(playernumber, new HashSet<Integer>());
 			playerCanSee.put(playernumber, new int[getXExtent()][getYExtent()]);*/
 			playerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
-			if (revealedResources) {
-				for (ResourceNode r : resourceNodes) {
-					neweventlogger.recordResourceNodeReveal(r.getxPosition(), r.getyPosition(), r.getType());
-				}
-			}
 			
 		}
 	}
@@ -234,15 +220,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		return playerStates.values();
 	}
 	
-	public ActionLogger getActionLog() {
-		return actionlog;
-	}
-	public EventLogger getEventLog(int playerid) {
-		//return eventlogs.get(playerid);
-		if(playerid == Agent.OBSERVER_ID)
-			return observerState.getEventLogger();
-		return playerStates.get(playerid).getEventLogger();
-	}
 	public int getTurnNumber() { return turnNumber; }
 	public Map<Integer, Unit> getUnits() {
 		return Collections.unmodifiableMap(allUnits);
@@ -260,9 +237,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	}
 	public void addResource(ResourceNode resource) {
 		resourceNodes.add(resource);
-		if (this.revealedResources) {
-			revealResource(resource);
-		}
 	}
 	
 	public void setFogOfWar(boolean fogofwar) {
@@ -280,49 +254,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	{
 		return hasFogOfWar;
 	}
-	public void setRevealedResources(boolean revealedResources) {
-		if (revealedResources) {
-			//only need to do something if it is a change, or you risk duplicates
-			if (!this.revealedResources)
-			{
-				this.revealedResources = true;
-				for (ResourceNode resource : resourceNodes) {
-					revealResource(resource);
-				}
-			}
-		}
-		else {
-			this.revealedResources = false;
-			//Don't change this to foreach player, as that will skip the observer's log
-			/*for (EventLogger e : eventlogs.values()) {
-				e.eraseResourceNodeReveals();
-			}*/
-			for(PlayerState s : playerStates.values())
-			{
-				s.getEventLogger().eraseResourceNodeReveals();
-			}
-			observerState.getEventLogger().eraseResourceNodeReveals();
-		}
-	}
-	public boolean getRevealedResources()
-	{
-		return revealedResources;
-	}
-	private void revealResource(ResourceNode resource) {
-		//Don't change this to foreach player, as that will skip the observer's log
-		/*for (EventLogger e : eventlogs.values()) {
-			e.recordResourceNodeReveal(resource.getxPosition(), resource.getyPosition(), resource.getType());
-		}*/
-		for(PlayerState s : playerStates.values())
-		{
-			s.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
-														resource.getyPosition(), 
-														resource.getType());
-		}
-		observerState.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
-																resource.getyPosition(), 
-																resource.getType());
-	}
+
 	/**
 	 * Returns whether the selected coordinates are visible to the player through the fog of war.
 	 * @param x
@@ -352,6 +284,13 @@ public class State implements Serializable, Cloneable, IDDistributer {
 				return cansee[x][y]>0;
 			}
 		}
+	}
+	/**
+	 * Recalculate the vision of each unit.  Required for xml loading, as that does not use the normal unit adding methods.
+	 */
+	public void forceRecalculateVision() {
+		recalculateVisionFromScratch();
+		
 	}
 	/**
 	 * Recalculates the vision of each agent from scratch.
@@ -953,17 +892,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	 */
 	public void incrementTurn() {
 		turnNumber++;
-		//Don't change this unless you change how OBSERVERs work
-		/*for (EventLogger eventlog: eventlogs.values())
-		{
-			eventlog.nextRound();
-		}*/
-		for (PlayerState s : playerStates.values())
-		{
-			s.getEventLogger().nextRound();
-		}
-		observerState.getEventLogger().nextRound();
-		actionlog.nextRound();
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -1094,14 +1022,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 //			return state.getStaticCopy(player);
 //		}
 		/**
-		 * Get a read-only log of the game's events _that you have seen_
-		 * @return
-		 */
-		public EventLogger.EventLoggerView getEventLog() {
-			EventLogger logger = state.getEventLog(player);
-			return state.getEventLog(player).getView();
-		}
-		/**
 		 * Get all of the unit ids that you can see
 		 * @return
 		 */
@@ -1118,13 +1038,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		 */
 		public boolean isFogOfWar() {
 			return state.getFogOfWar();
-		}
-		/**
-		 * Get whether initial placement of resources are revealed in the event logs
-		 * @return
-		 */
-		public boolean isRevealedResources() {
-			return state.getRevealedResources();
 		}
 		/**
 		 * Returns whether the selected coordinates are visible to the player through the fog of war.
@@ -1410,175 +1323,8 @@ public class State implements Serializable, Cloneable, IDDistributer {
 		}
 		
 	}
-	public void recordBirth(Unit newunit, Unit builder) {
-		int x = newunit.getxPosition();
-		int y = newunit.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player))
-			{
-				getEventLog(player).recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			if (canSee(x, y, playerState.playerNum))
-			{
-				playerState.getEventLogger().recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
-			}
-		}
-		observerState.getEventLogger().recordBirth(newunit.ID, builder.ID, newunit.getPlayer());
-	}
-	public void recordUpgrade(UpgradeTemplate upgradetemplate, Unit creator) {
-		
-		int x = creator.getxPosition();
-		int y = creator.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player))
-			{
-				getEventLog(player).recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			if (canSee(x, y, playerState.playerNum))
-			{
-				playerState.getEventLogger().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());
-			}
-		}
-		observerState.getEventLogger().recordUpgrade(upgradetemplate.ID, upgradetemplate.getPlayer());		
-	}
-	public void recordDamage(Unit u, Unit target, int damage) {
-		
-		int x = target.getxPosition();
-		int y = target.getyPosition();
-		int x2 = u.getxPosition();
-		int y2 = u.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				getEventLog(player).recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			int player = playerState.playerNum;
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				playerState.getEventLogger().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);
-			}
-		}
-		observerState.getEventLogger().recordDamage(u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);		
-	}
-	public void recordPickupResource(Unit u, ResourceNode resource, int amountPickedUp) {
-		int x = resource.getxPosition();
-		int y = resource.getyPosition();
-		int x2 = u.getxPosition();
-		int y2 = u.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				getEventLog(player).recordPickupResource(u.ID, u.getPlayer(), resource.getResourceType(), amountPickedUp, resource.ID, resource.getType());;
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			int player = playerState.playerNum;
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				playerState.getEventLogger().recordPickupResource(u.ID, 
-																  u.getPlayer(), 
-																  resource.getResourceType(), 
-																  amountPickedUp, 
-																  resource.ID, 
-																  resource.getType());
-			}
-		}
-		observerState.getEventLogger().recordPickupResource(u.ID, 
-														    u.getPlayer(), 
-														    resource.getResourceType(), 
-														    amountPickedUp, 
-														    resource.ID, 
-														    resource.getType());
-		
-	}
-	public void recordDeath(Unit u) {
-		int x = u.getxPosition();
-		int y = u.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player))
-			{
-				getEventLog(player).recordDeath(u.ID,u.getPlayer());
-			}
-		}*/
-
-		for(PlayerState playerState : playerStates.values())
-		{
-			if (canSee(x, y, playerState.playerNum))
-			{
-				playerState.getEventLogger().recordDeath(u.ID,u.getPlayer());
-			}
-		}
-		observerState.getEventLogger().recordDeath(u.ID,u.getPlayer());
-	}
-	public void recordExhaustedResourceNode(ResourceNode r) {
-		
-		int x = r.getxPosition();
-		int y = r.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player))
-			{
-				getEventLog(player).recordExhaustedResourceNode(r.ID, r.getType());
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			if (canSee(x, y, playerState.playerNum))
-			{
-				playerState.getEventLogger().recordExhaustedResourceNode(r.ID, r.getType());
-			}
-		}
-		observerState.getEventLogger().recordExhaustedResourceNode(r.ID, r.getType());
-	}
-	public void recordDropoffResource(Unit u, Unit townHall) {
-		int x = townHall.getxPosition();
-		int y = townHall.getyPosition();
-		int x2 = u.getxPosition();
-		int y2 = u.getyPosition();
-		//Don't change the iterating thing to "player" because it won't do the observer properly
-		/*for (Integer player : eventlogs.keySet())
-		{
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				getEventLog(player).recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
-			}
-		}*/
-		for(PlayerState playerState : playerStates.values())
-		{
-			int player = playerState.playerNum;
-			if (canSee(x, y, player) || canSee(x2, y2, player))
-			{
-				playerState.getEventLogger().recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
-			}
-		}
-		observerState.getEventLogger().recordDropoffResource(u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
-		
-	}
-	public void forceRecalculateVision() {
-		recalculateVisionFromScratch();
-		
-	}
+	
+	
 
 
 	

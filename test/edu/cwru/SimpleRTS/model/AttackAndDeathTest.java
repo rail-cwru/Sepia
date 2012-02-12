@@ -2,8 +2,10 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -93,7 +95,10 @@ public class AttackAndDeathTest {
 		LinkedList<Action> plan = planner.planAttack(shooter.ID, target.ID);
 		//Try the first action
 		assertTrue("There was no plan",plan.size() > 0);
-		model.setActions(new Action[]{plan.get(0)});
+		Map<Integer, Action> actions = new HashMap<Integer, Action>();
+		actions.put(shooter.ID,plan.get(0));
+		model.addActions(actions, player);
+//		model.setActions(new Action[]{plan.get(0)});
 		model.executeStep();
 		
 		
@@ -131,7 +136,10 @@ public class AttackAndDeathTest {
 		int i = 0;
 		while (i<plan.size())
 		{
-			model.setActions(new Action[]{plan.get(i)});
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(shooter.ID,plan.get(i));
+			model.addActions(actions, player);
+//			model.setActions(new Action[]{plan.get(i)});
 			model.executeStep();
 			i++;
 		}
@@ -163,7 +171,11 @@ public class AttackAndDeathTest {
 		//try the first two steps
 		assertTrue("There was no plan for unit1",plan1.size() > 0);
 		assertTrue("There was no plan for unit2",plan2.size() > 0);
-		model.setActions(new Action[]{plan1.get(0),plan2.get(0)});
+		Map<Integer, Action> actions = new HashMap<Integer, Action>();
+		actions.put(unit1.ID,plan1.get(0));
+		actions.put(unit2.ID,plan2.get(0));
+		model.addActions(actions, player);
+//		model.setActions(new Action[]{plan1.get(0),plan2.get(0)});
 		model.executeStep();
 		unit1.setxPosition(99);
 		unit1.setyPosition(99);

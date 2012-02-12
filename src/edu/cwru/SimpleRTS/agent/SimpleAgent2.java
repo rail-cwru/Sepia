@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
@@ -30,12 +31,12 @@ public class SimpleAgent2 extends Agent {
 	}
 	
 	@Override
-	public Map<Integer,Action> initialStep(StateView newstate) {		
-		return middleStep(newstate);
+	public Map<Integer,Action> initialStep(StateView newstate, HistoryView statehistory) {		
+		return middleStep(newstate, statehistory);
 	}
 
 	@Override
-	public Map<Integer,Action> middleStep(StateView newState) {
+	public Map<Integer,Action> middleStep(StateView newState, HistoryView statehistory) {
 		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		currentState = newState;
 		targetsOfUnits.clear();
@@ -104,7 +105,7 @@ public class SimpleAgent2 extends Agent {
 	}
 
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, HistoryView statehistory) {
 	}
 	public static String getUsage() {
 		return "None";

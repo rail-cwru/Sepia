@@ -2,8 +2,10 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -89,7 +91,12 @@ public class ProduceTest {
 		LinkedList<Action> plan = planner.planProduce(unitproducerid, unitproducedtemplate);
 		for(Action a : plan)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		int numnewfootmen=0;
@@ -108,7 +115,12 @@ public class ProduceTest {
 		LinkedList<Action> plan = planner.planProduce(upgradeproducer1id, upgradeproducedtemplate);
 		for(Action a : plan)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		int newattack = t.getBasicAttack();
@@ -122,16 +134,15 @@ public class ProduceTest {
 		LinkedList<Action> plan2 = planner.planProduce(upgradeproducer2id, upgradeproducedtemplate2);
 		for(int i = 0; i < Math.max(plan1.size(), plan2.size());i++)
 		{
-			Action[] action;
-			if (i<plan1.size() && i<plan2.size())
-				action = new Action[]{plan1.get(i),plan2.get(i)};
-			else if (i<plan1.size())
-				action = new Action[]{plan1.get(i)};
-			else if (i<plan2.size())
-				action = new Action[]{plan2.get(i)};
-			else
-				action= new Action[0];//should never reach this
-			model.setActions(action);
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			
+			if (i<plan1.size())
+				actions.put(plan1.get(i).getUnitId(),plan1.get(i));
+			if (i<plan2.size())
+				actions.put(plan2.get(i).getUnitId(),plan2.get(i));
+			model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		int newdefense = t.getArmor();

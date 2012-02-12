@@ -2,8 +2,10 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -101,7 +103,12 @@ public class SimplePlannerTest {
 		LinkedList<Action> plan = planner.planMove(0, 1, 10);
 		for(Action a : plan)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		Unit u = state.getUnit(0);
@@ -127,7 +134,12 @@ public class SimplePlannerTest {
 		System.out.println("Plan is: \n" + plan);
 		for(Action a : plan)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		System.out.println(state.getTextString());

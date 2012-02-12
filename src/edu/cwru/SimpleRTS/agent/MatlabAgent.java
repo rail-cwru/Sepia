@@ -9,6 +9,7 @@ import matlabcontrol.MatlabProxy;
 import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 
 /**
@@ -48,7 +49,7 @@ public class MatlabAgent extends Agent {
 	}
 
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		try {
 			Object[] objects = m_proxy.returningFeval("agent_initialStep", 1, newstate);
@@ -60,7 +61,7 @@ public class MatlabAgent extends Agent {
 	}
 
 	@Override
-	public Map<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
 		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		try {
 			Object[] objects = m_proxy.returningFeval("agent_middleStep", 1, newstate);
@@ -76,7 +77,7 @@ public class MatlabAgent extends Agent {
 	}
 
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		try {
 			m_proxy.feval("agent_terminalStep", newstate);
 		} catch (MatlabInvocationException e) {

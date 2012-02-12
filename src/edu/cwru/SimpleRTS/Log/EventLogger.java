@@ -21,9 +21,6 @@ public class EventLogger implements Serializable {
 	private List<List<ResourceDropoffLog>> depositlog;
 	private List<RevealedResourceLog> reveallog;
 	
-	//starts at -1, must be incremented to be used
-	private int currentroundnumber = -1;
-
 	private EventLoggerView view = null;
 	public EventLogger() {
 		damagelog = new ArrayList<List<DamageLog>>();
@@ -40,71 +37,54 @@ public class EventLogger implements Serializable {
 			view = new EventLoggerView(this);
 		return view;
 	}
-	public void nextRound() {
-		currentroundnumber++;
-		List<DamageLog> nextrounddamage = new ArrayList<DamageLog>();
-		damagelog.add(nextrounddamage);
-		List<DeathLog> nextrounddeath = new ArrayList<DeathLog>();
-		deathlog.add(nextrounddeath);
-		List<BirthLog> nextroundbirth= new ArrayList<BirthLog>();
-		birthlog.add(nextroundbirth);
-		List<UpgradeLog> nextroundupgrade= new ArrayList<UpgradeLog>();
-		upgradelog.add(nextroundupgrade);
-		List<ResourceExhaustionLog> nextroundexhaust = new ArrayList<ResourceExhaustionLog>();
-		exhaustlog.add(nextroundexhaust);
-		List<ResourceDropoffLog> nextrounddropoff = new ArrayList<ResourceDropoffLog>();
-		depositlog.add(nextrounddropoff);
-		List<ResourcePickupLog> nextroundpickup= new ArrayList<ResourcePickupLog>();
-		gatherlog.add(nextroundpickup);
-	}
-	public void recordDamage(int attackerid, int attackercontroller, int defenderid, int defendercontroller, int damage) {
-		if (damagelog.size() == 0)
+	public void recordDamage(int turnnumber, int attackerid, int attackercontroller, int defenderid, int defendercontroller, int damage) {
+		while (turnnumber+1>damagelog.size())
 		{
-			nextRound();
+			damagelog.add(new ArrayList<DamageLog>());
 		}
-		damagelog.get(damagelog.size()-1).add(new DamageLog(attackerid,attackercontroller, defenderid, defendercontroller, damage));
+		damagelog.get(turnnumber).add(new DamageLog(attackerid,attackercontroller, defenderid, defendercontroller, damage));
 	}
-	public void recordDeath(int deadunitid, int controller) {
-		if (deathlog.size() == 0)
+	public void recordDeath(int turnnumber, int deadunitid, int controller) {
+		while (turnnumber+1>deathlog.size())
 		{
-			nextRound();
+			deathlog.add(new ArrayList<DeathLog>());
 		}
-		deathlog.get(deathlog.size()-1).add(new DeathLog(deadunitid,controller));
+		deathlog.get(turnnumber).add(new DeathLog(deadunitid,controller));
 	}
-	public void recordBirth(int newunitid, int parentunitid, int controller) {
-		if (birthlog.size() == 0)
+	public void recordBirth(int turnnumber, int newunitid, int parentunitid, int controller) {
+		while (turnnumber+1>birthlog.size())
 		{
-			nextRound();
+			birthlog.add(new ArrayList<BirthLog>());
 		}
-		birthlog.get(birthlog.size()-1).add(new BirthLog(newunitid,parentunitid,controller));
+		birthlog.get(turnnumber).add(new BirthLog(newunitid,parentunitid,controller));
 	}
-	public void recordUpgrade(int deadunitid, int controller) {
-		if (upgradelog.size() == 0)
+	public void recordUpgrade(int turnnumber, int deadunitid, int controller) {
+		while (turnnumber+1>upgradelog.size())
 		{
-			nextRound();
+			upgradelog.add(new ArrayList<UpgradeLog>());
 		}
-		upgradelog.get(upgradelog.size()-1).add(new UpgradeLog(deadunitid,controller));
+		upgradelog.get(turnnumber).add(new UpgradeLog(deadunitid,controller));
 	}
-	public void recordExhaustedResourceNode(int exhaustednodeid, ResourceNode.Type type) {
-		if (exhaustlog.size() == 0)
+	public void recordExhaustedResourceNode(int turnnumber, int exhaustednodeid, ResourceNode.Type type) {
+		while (turnnumber+1>exhaustlog.size())
 		{
-			nextRound();
+			exhaustlog.add(new ArrayList<ResourceExhaustionLog>());
 		}
-		exhaustlog.get(exhaustlog.size()-1).add(new ResourceExhaustionLog(exhaustednodeid,type));
+		exhaustlog.get(turnnumber).add(new ResourceExhaustionLog(exhaustednodeid,type));
 	}
-	public void recordPickupResource(int gathererid, int controller, ResourceType type, int amount, int nodeid, ResourceNode.Type nodetype) {
-		if (gatherlog.size() == 0)
+	public void recordPickupResource(int turnnumber, int gathererid, int controller, ResourceType type, int amount, int nodeid, ResourceNode.Type nodetype) {
+		while (turnnumber+1>gatherlog.size())
 		{
-			nextRound();
+			gatherlog.add(new ArrayList<ResourcePickupLog>());
 		}
-		gatherlog.get(gatherlog.size()-1).add(new ResourcePickupLog(gathererid,controller, type, amount, nodeid, nodetype));
+		gatherlog.get(turnnumber).add(new ResourcePickupLog(gathererid,controller, type, amount, nodeid, nodetype));
 	}
-	public void recordDropoffResource(int depositerid, int depositplaceid, int controller, ResourceType type, int amount) {
-		if (depositlog.size() == 0)
+	public void recordDropoffResource(int turnnumber, int depositerid, int depositplaceid, int controller, ResourceType type, int amount) {
+		while (turnnumber+1>depositlog.size())
 		{
-			nextRound();
+			depositlog.add(new ArrayList<ResourceDropoffLog>());
 		}
-		depositlog.get(depositlog.size()-1).add(new ResourceDropoffLog(depositerid, controller, amount, type, depositplaceid));
+		depositlog.get(turnnumber).add(new ResourceDropoffLog(depositerid, controller, amount, type, depositplaceid));
 	}
 	public void recordResourceNodeReveal(int resourcenodex, int resourcenodey, ResourceNode.Type resourcenodetype) {
 		reveallog.add(new RevealedResourceLog(resourcenodex, resourcenodey, resourcenodetype));
@@ -113,48 +93,44 @@ public class EventLogger implements Serializable {
 		reveallog = new ArrayList<RevealedResourceLog>();
 	}
 	
-	public int getLastRound()
-	{
-		return currentroundnumber-1;
-	}
 	public List<DeathLog> getDeaths(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= deathlog.size())
 			return new ArrayList<DeathLog>();
 		else 
 			return Collections.unmodifiableList(deathlog.get(roundnumber));
 	}
 	public List<DamageLog> getDamage(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= damagelog.size())
 			return new ArrayList<DamageLog>();
 		else 
 			return Collections.unmodifiableList(damagelog.get(roundnumber));
 	}
 	public List<BirthLog> getBirths(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= birthlog.size())
 			return new ArrayList<BirthLog>();
 		else 
 			return Collections.unmodifiableList(birthlog.get(roundnumber));
 	}
 	public List<UpgradeLog> getUpgrades(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= upgradelog.size())
 			return new ArrayList<UpgradeLog>();
 		else 
 			return Collections.unmodifiableList(upgradelog.get(roundnumber));
 	}
 	public List<ResourceExhaustionLog> getResourceExhaustions(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= exhaustlog.size())
 			return new ArrayList<ResourceExhaustionLog>();
 		else 
 			return Collections.unmodifiableList(exhaustlog.get(roundnumber));
 	}
 	public List<ResourceDropoffLog> getResourceDropoffs(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= depositlog.size())
 			return new ArrayList<ResourceDropoffLog>();
 		else 
 			return Collections.unmodifiableList(depositlog.get(roundnumber));
 	}
 	public List<ResourcePickupLog> getResourcePickups(int roundnumber) {
-		if (roundnumber < 0 || roundnumber > currentroundnumber)
+		if (roundnumber < 0 || roundnumber >= gatherlog.size())
 			return new ArrayList<ResourcePickupLog>();
 		else 
 			return Collections.unmodifiableList(gatherlog.get(roundnumber));
@@ -169,7 +145,6 @@ public class EventLogger implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((birthlog == null) ? 0 : birthlog.hashCode());
-		result = prime * result + currentroundnumber;
 		result = prime * result
 				+ ((damagelog == null) ? 0 : damagelog.hashCode());
 		result = prime * result
@@ -197,8 +172,6 @@ public class EventLogger implements Serializable {
 			if (other.birthlog != null)
 				return false;
 		} else if (!birthlog.equals(other.birthlog))
-			return false;
-		if (currentroundnumber != other.currentroundnumber)
 			return false;
 		if (damagelog == null) {
 			if (other.damagelog != null)
@@ -246,9 +219,6 @@ public class EventLogger implements Serializable {
 		EventLogger master;
 		public EventLoggerView(EventLogger master) {
 			this.master = master;
-		}
-		public int getLastRound() {
-			return master.getLastRound();
 		}
 		public List<DeathLog> getDeaths(int roundnumber) {
 			return master.getDeaths(roundnumber);

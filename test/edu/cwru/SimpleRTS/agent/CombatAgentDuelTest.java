@@ -94,13 +94,13 @@ public class CombatAgentDuelTest {
 			CountDownLatch latch2 = new CountDownLatch(1);
 			if (step == 0)
 			{
-				agent1.acceptInitialState(model.getState(player1), latch1);
-				agent2.acceptInitialState(model.getState(player2), latch2);
+				agent1.acceptInitialState(model.getState(player1),model.getHistory(player1), latch1);
+				agent2.acceptInitialState(model.getState(player2),model.getHistory(player2), latch2);
 			}
 			else
 			{
-				agent1.acceptMiddleState(model.getState(player1), latch1);
-				agent2.acceptMiddleState(model.getState(player2), latch2);
+				agent1.acceptMiddleState(model.getState(player1),model.getHistory(player1), latch1);
+				agent2.acceptMiddleState(model.getState(player2),model.getHistory(player2), latch2);
 			}
 			latch1.await();
 			latch2.await();
@@ -136,7 +136,8 @@ public class CombatAgentDuelTest {
 //			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");
 //			System.out.println(state.getResourceAmount(player, ResourceType.WOOD)+" Wood");
 //			System.out.println(state.getSupplyAmount(player)+"/"+state.getSupplyCap(player) + " Food");
-			model.setActions(actions);
+			model.addActions(agent1.getAction(),player1);
+			model.addActions(agent2.getAction(),player2);
 			model.executeStep();
 		}
 	}

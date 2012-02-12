@@ -9,11 +9,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.prefs.Preferences;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.action.ActionQueue;
+import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.LocatedAction;
@@ -21,6 +24,7 @@ import edu.cwru.SimpleRTS.action.LocatedProductionAction;
 import edu.cwru.SimpleRTS.action.ProductionAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
@@ -30,6 +34,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.GameMap;
 /**
  * A "Simple" Model
@@ -42,6 +47,7 @@ public class SimpleModel implements Model {
 	 */
 	private static final long serialVersionUID = -8289868580233478749L;
 	private Random rand;
+	private History history;
 	private State state;
 	private HashMap<Unit, ActionQueue> queuedActions;
 	private SimplePlanner planner;
@@ -49,6 +55,9 @@ public class SimpleModel implements Model {
 	private boolean verbose;
 	public SimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
+		history = new History();
+		for (Integer i : state.getPlayers())
+			history.addPlayer(i);
 		rand = new Random(seed);
 		planner = new SimplePlanner(init);
 		queuedActions = new HashMap<Unit, ActionQueue>();
@@ -64,6 +73,9 @@ public class SimpleModel implements Model {
 	@Override
 	public void createNewWorld() {
 		state = restartTactic.createState();
+		history = new History();
+		for (Integer i : state.getPlayers())
+			history.addPlayer(i);
 		queuedActions = new HashMap<Unit, ActionQueue>();
 		planner = new SimplePlanner(state);
 	}
@@ -145,13 +157,41 @@ public class SimpleModel implements Model {
 		return built;
 	}
 	@Override
-	public void setActions(Action[] action) {
-		for (Action a : action) {
-			//NOTE: maybe make this not recalculate actions automatically
-			Unit actor = state.getUnit(a.getUnitId());
-			ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
-			queuedActions.put(actor, queue);
+	public void addActions(Map<Integer, Action> actions, int sendingPlayerNumber) {
+		for (Entry<Integer, Action> aent : actions.entrySet()) {
+			
+			int unitId = aent.getKey();
+			Action a = aent.getValue();
+			history.recordCommandRecieved(sendingPlayerNumber, state.getTurnNumber(), a);
+			//If the unit is not the same as in the action, ignore the action
+			if (a.getUnitId() != unitId)
+			{
+				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				continue;
+			}
+			//If the unit does not exist, ignore the action
+			else if (state.getUnit(unitId) == null)
+			{
+				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				continue;
+			}
+			//If the unit is not the player's, ignore the action
+			else if(state.getUnit(unitId).getPlayer() != sendingPlayerNumber)
+			{
+				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
+				continue;
+			}
+			else
+			{//Valid
+				Unit actor = state.getUnit(unitId);
+				ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
+				queuedActions.put(actor, queue);
+			}
+			
+			
 		}
+		
+	
 	}
 	private LinkedList<Action> calculatePrimitives(Action action) {
 		LinkedList<Action> primitives = null;
@@ -211,6 +251,10 @@ public class SimpleModel implements Model {
 			u.deprecateOldView();
 			u.setTask(UnitTask.Idle);
 		}
+		//Set each template to not keep the old view
+		for (Integer player : state.getPlayers())
+			for (Template t : state.getTemplates(player).values())
+				t.deprecateOldView();
 		
 		//Run the Action
 		for(ActionQueue queuedact : queuedActions.values()) 
@@ -233,6 +277,7 @@ public class SimpleModel implements Model {
 				
 				if (u != null)
 				{
+					//Set the tasks and grab the common features
 					int x = u.getxPosition();
 					int y = u.getyPosition();
 					int xPrime = 0;
@@ -321,9 +366,15 @@ public class SimpleModel implements Model {
 						xPrime = x + ((LocatedAction)a).getX();
 						yPrime = y + ((LocatedAction)a).getY();
 					}
+					
+					
+					//Gather the last of the information and actually execute the actions
 					int timestried=0;
 					boolean failedtry=true;
-					while (timestried<2&&failedtry)
+					boolean wrongtype=false;
+					boolean fullisprimitive=ActionType.isPrimitive(a.getType());
+					//recalculate and try again once if it has failed, so long as the full action is not primitive (since primitives will recalculate to the same as before) and not the wrong type (since something is wrong if it is the wrong type)
+					while ((timestried<1 || timestried<2&&failedtry && !fullisprimitive) &&!wrongtype)
 					{
 						timestried++;
 						failedtry = false;
@@ -331,7 +382,10 @@ public class SimpleModel implements Model {
 						{
 							case PRIMITIVEMOVE:
 								if (!(a instanceof DirectedAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
 									state.moveUnit(u, ((DirectedAction)a).getDirection());
 								}
@@ -342,7 +396,10 @@ public class SimpleModel implements Model {
 								break;
 							case PRIMITIVEGATHER:
 								if (!(a instanceof DirectedAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								boolean failed=false;
 								ResourceNode resource = state.resourceAt(xPrime, yPrime);
 								if(resource == null) {
@@ -354,7 +411,7 @@ public class SimpleModel implements Model {
 								else {
 									int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
 									u.setCargo(resource.getResourceType(), amountPickedUp);
-									state.recordPickupResource(u, resource, amountPickedUp);
+									history.recordPickupResource(u, resource, amountPickedUp, state);
 								}
 								if (failed) {
 									failedtry=true;
@@ -363,7 +420,10 @@ public class SimpleModel implements Model {
 								break;
 							case PRIMITIVEDEPOSIT:
 								if (!(a instanceof DirectedAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								//only can do a primative if you are in the right position
 									Unit townHall = state.unitAt(xPrime, yPrime);
 									boolean canAccept=false;
@@ -382,7 +442,7 @@ public class SimpleModel implements Model {
 									}
 									else {
 										int agent = u.getPlayer();
-										state.recordDropoffResource(u, townHall);
+										history.recordDropoffResource(u, townHall, state);
 										state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 										u.clearCargo();
 										
@@ -390,27 +450,38 @@ public class SimpleModel implements Model {
 									}
 							case PRIMITIVEATTACK:
 								if (!(a instanceof TargetedAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								Unit target = state.getUnit(((TargetedAction)a).getTargetId());
 								if (target!=null)
 								{
-									if (u.getTemplate().getRange() >= getRange(u, target))
+									if (u.getTemplate().getRange() >= DistanceMetrics.chebyshevDistance(u.getxPosition(),u.getyPosition(), target.getxPosition(), target.getyPosition()))
 									{
 										int damage = calculateDamage(u,target);
-										state.recordDamage(u, target, damage);
+										history.recordDamage(u, target, damage, state);
 										target.setHP(Math.max(target.getCurrentHealth()-damage,0));
 									}
-									else
+									else //out of range
 									{
 										failedtry=true;
 										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
 									}
 								}
+								else
+								{
+									failedtry=true;
+									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
+								}
 								break;
 							case PRIMITIVEBUILD:
 							{
 								if (!(a instanceof ProductionAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								if (queuedact.getFullAction().getType() == ActionType.COMPOUNDBUILD && queuedact.getFullAction() instanceof LocatedProductionAction)
 								{
 									LocatedProductionAction fullbuild = (LocatedProductionAction) queuedact.getFullAction();
@@ -443,16 +514,17 @@ public class SimpleModel implements Model {
 										if (state.tryProduceUnit(building,newxy[0],newxy[1]))
 										{
 	//									System.out.println(state.getUnit(u.ID));
-										state.recordBirth(building, u);
+										history.recordBirth(building, u, state);
 										
 	//									System.out.println(state.getUnit(u.ID));
 										}
 										u.resetProduction();
 									}
 								}
-								else
+								else //it can't produce the appropriate thing, or the thing's prereqs aren't met, this still resets progress from others
 								{
 									u.resetProduction();
+									failedtry=true;
 								}
 								
 								break;
@@ -460,7 +532,10 @@ public class SimpleModel implements Model {
 							case PRIMITIVEPRODUCE:
 							{
 								if (!(a instanceof ProductionAction))
+								{
+									wrongtype=true;
 									break;
+								}
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
 								//check if it is even capable of producing the
 								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
@@ -483,23 +558,24 @@ public class SimpleModel implements Model {
 											int[] newxy = state.getClosestPosition(x,y);
 											if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 											{
-												state.recordBirth(produced, u);
+												history.recordBirth(produced, u, state);
 											}
 										}
 										else if (template instanceof UpgradeTemplate) {
 											UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
 											if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
 											{
-												state.recordUpgrade(upgradetemplate,u);
+												history.recordUpgrade(upgradetemplate,u, state);
 											}
 										}
 										u.resetProduction();
 										
 									}
 								}
-								else
+								else//can't produce it, or prereqs aren't met, either way, this still resets whatever it was making before
 								{
 									u.resetProduction();
+									failedtry=true;
 								}
 //								System.out.println(template.getName() + " takes "+template.timeCost);
 //								System.out.println("Produced"+u.getAmountProduced());
@@ -514,11 +590,41 @@ public class SimpleModel implements Model {
 								break;
 							}
 							case FAILEDPERMANENTLY:
+							{
 								u.setTask(UnitTask.Idle);
 								break;
+							}
 						}
-						if (!failedtry && a.getType() != ActionType.FAILEDPERMANENTLY)
-							state.getActionLog().addAction(u.getPlayer(), a);
+						if (wrongtype)
+						{
+							//if it had the wrong type, then either the planner is bugged (unlikely) or the user provided a bad primitive action
+							//either way, record it as failed and toss it
+							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INVALIDTYPE));
+							queuedActions.remove(queuedact.getFullAction());
+						}
+						else if (!failedtry && a.getType() != ActionType.FAILEDPERMANENTLY)
+						{
+							history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
+							if (!queuedact.hasNext())
+							{
+								history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.COMPLETED));
+								queuedActions.remove(queuedact.getFullAction());
+							}
+							else
+							{
+								history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INCOMPLETE));
+							}
+						}
+						else if (a.getType()==ActionType.FAILEDPERMANENTLY || failedtry && fullisprimitive)
+						{
+							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.FAILED));
+							queuedActions.remove(queuedact.getFullAction());
+							
+						}
+						else
+						{
+							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INCOMPLETEMAYBESTUCK));
+						}
 					}
 				}
 			}
@@ -532,7 +638,7 @@ public class SimpleModel implements Model {
 		for (Unit u : allunits.values()) {
 			if (u.getCurrentHealth() <= 0)
 			{
-				state.recordDeath(u);
+				history.recordDeath(u, state);
 				dead.add(u.ID);
 			}
 		}
@@ -547,7 +653,7 @@ public class SimpleModel implements Model {
 		for (ResourceNode r : allnodes) {
 			if (r.getAmountRemaining() <= 0)
 			{
-				state.recordExhaustedResourceNode(r);
+				history.recordExhaustedResourceNode(r, state);
 				usedup.add(r.ID);
 			}
 		}
@@ -559,15 +665,6 @@ public class SimpleModel implements Model {
 		}
 		
 		state.incrementTurn();
-	}
-	/**
-	 * Get the range between two units, which is a chebyshev distance (IE, like manhattan, but with diagonals too)
-	 * @param unit1
-	 * @param unit2
-	 * @return
-	 */
-	private int getRange(Unit unit1, Unit unit2) {
-		return Math.max(Math.abs(unit1.getxPosition()-unit2.getxPosition()), Math.abs(unit1.getyPosition()-unit2.getyPosition()));
 	}
 
 	private int calculateDamage(Unit attacker, Unit defender)
@@ -597,6 +694,10 @@ public class SimpleModel implements Model {
 	@Override
 	public State.StateView getState(int player) {
 		return state.getView(player);
+	}
+	@Override
+	public History.HistoryView getHistory(int player) {
+		return history.getView(player);
 	}
 	public void save(String filename) {
 		GameMap.storeState(filename, state);

@@ -2,8 +2,10 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -68,7 +70,12 @@ public class PrereqTest {
 		LinkedList<Action> plan = planner.planProduce(upgradeproducerid, dependingupgradetemplate);
 		for(Action a : plan)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		assertFalse("It executed an upgrade without a prereq",state.hasUpgrade(dependingupgradetemplate, player));
@@ -76,14 +83,24 @@ public class PrereqTest {
 		LinkedList<Action> plan2 = planner.planProduce(upgradeproducerid, upgradetemplate);
 		for(Action a : plan2)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		assertTrue("Failed to do a normal upgrade",state.hasUpgrade(upgradetemplate, player));
 		LinkedList<Action> plan3 = planner.planProduce(upgradeproducerid, dependingupgradetemplate);
 		for(Action a : plan3)
 		{
-			model.setActions(new Action[]{a});
+//			model.setActions(new Action[]{a});
+			{
+				Map<Integer, Action> actions = new HashMap<Integer, Action>();
+				actions.put(a.getUnitId(),a);
+				model.addActions(actions, player);
+			}
 			model.executeStep();
 		}
 		assertTrue("Failed to do the upgrade ",state.hasUpgrade(dependingupgradetemplate, player));

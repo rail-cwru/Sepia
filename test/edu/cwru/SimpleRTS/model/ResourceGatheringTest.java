@@ -2,7 +2,9 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,16 +67,36 @@ public class ResourceGatheringTest {
 	@Test
 	public void test1()  {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.NORTHWEST);
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.NORTH);
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.NORTH);
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		a = new DirectedAction(1,ActionType.PRIMITIVEGATHER,Direction.NORTH);
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		UnitView u = model.getState(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.WOOD,u.getCargoType());
@@ -86,7 +108,12 @@ public class ResourceGatheringTest {
 		UnitView u = model.getState(player).getUnit(a.getUnitId());
 		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD);
 		int cargoAmount = u.getCargoAmount();
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
 						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD));
@@ -94,13 +121,28 @@ public class ResourceGatheringTest {
 	@Test
 	public void test3() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEMOVE,Direction.SOUTH);
-		Action[] actions = new Action[]{a};
-		model.setActions(actions);
+//		Action[] actions = new Action[]{a};
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
-		model.setActions(actions);
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		a = new DirectedAction(1,ActionType.PRIMITIVEGATHER,Direction.SOUTH);
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		UnitView u = model.getState(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.GOLD,u.getCargoType());
@@ -112,7 +154,12 @@ public class ResourceGatheringTest {
 		UnitView u = model.getState(player).getUnit(a.getUnitId());
 		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD);
 		int cargoAmount = u.getCargoAmount();
-		model.setActions(new Action[]{a});
+//		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(a.getUnitId(),a);
+			model.addActions(actions, player);
+		}
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
 						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD));

@@ -10,6 +10,7 @@ import java.util.prefs.Preferences;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
@@ -41,13 +42,13 @@ public class RCAgent extends Agent {
 	StateView currentState;
 	
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		step = 0;
-		return middleStep(newstate);
+		return middleStep(newstate, statehistory);
 	}
 
 	@Override
-	public Map<Integer,Action> middleStep(StateView newState) {
+	public Map<Integer,Action> middleStep(StateView newState, History.HistoryView statehistory) {
 		step++;
 		System.out.println("=> Step: " + step);
 		
@@ -122,7 +123,7 @@ public class RCAgent extends Agent {
 	}
 
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		step++;
 		System.out.println("=> Step: " + step);
 		

@@ -37,7 +37,7 @@ public class StateAdapter {
 		xml.setNextTemplateID(state.getNextTemplateIDForXMLSave());
 		xml.setNextTargetID(state.getNextTargetIDForXMLSave());
 		xml.setFogOfWar(state.getFogOfWar());
-		xml.setRevealedResources(state.getRevealedResources());
+//		xml.setRevealedResources(state.getRevealedResources());
 		return xml;
 	}
 	
@@ -65,7 +65,7 @@ public class StateAdapter {
 		state.updateGlobalListsFromPlayers();
 		state.forceRecalculateVision();
 		state.setFogOfWar(xml.isFogOfWar());
-		state.setRevealedResources(xml.isRevealedResources());
+//		state.setRevealedResources(xml.isRevealedResources());
 		return state;
 	}
 }

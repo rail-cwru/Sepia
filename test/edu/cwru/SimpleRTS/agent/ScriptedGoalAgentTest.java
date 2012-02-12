@@ -105,11 +105,11 @@ public class ScriptedGoalAgentTest {
 			CountDownLatch latch = new CountDownLatch(1);
 			if (step == 0)
 			{
-				agent.acceptInitialState(model.getState(player), latch);
+				agent.acceptInitialState(model.getState(player), model.getHistory(player), latch);
 			}
 			else
 			{
-				agent.acceptMiddleState(model.getState(player), latch);
+				agent.acceptMiddleState(model.getState(player), model.getHistory(player),latch);
 			}
 			latch.await();
 			Collection<Action> actionsimmut = agent.getAction().values();
@@ -140,7 +140,7 @@ public class ScriptedGoalAgentTest {
 			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");
 			System.out.println(state.getResourceAmount(player, ResourceType.WOOD)+" Wood");
 			System.out.println(state.getSupplyAmount(player)+"/"+state.getSupplyCap(player) + " Food");
-			model.setActions(actions);
+			model.addActions(agent.getAction(),agent.getPlayerNumber());
 			model.executeStep();
 		}
 	}

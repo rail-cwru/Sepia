@@ -34,4 +34,8 @@ public class ActionResult {
 		int prime = 61;
 		return prime*action.hashCode() + result.hashCode();
 	}
+	@Override public String toString()
+	{
+		return "ActionResult: "+action + " result:"+result;
+	}
 }

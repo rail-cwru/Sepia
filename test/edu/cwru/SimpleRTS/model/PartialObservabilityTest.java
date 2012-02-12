@@ -37,38 +37,39 @@ public class PartialObservabilityTest {
 	@Test
 	public void checkReveal()
 	{
-		int player = 0;
-		Random r = new Random();
-		State state = new State();
-		state.setSize(40, 40);
-		state.addPlayer(player);
-		boolean correctrevealedness=r.nextBoolean();
-		state.setRevealedResources(correctrevealedness);
-		
-		EventLoggerView e = state.getView(player).getEventLog();
-		EventLoggerView obs = state.getView(Agent.OBSERVER_ID).getEventLog();
-		Map<Pair,Pair> actualpositioning=new HashMap<Pair,Pair>();
-		//Repeatedly add things, changing the revealedness every so often 
-		for (int i = 0; i<100;i++)
-		{
-			ResourceNode newres = new ResourceNode(r.nextBoolean()?ResourceNode.Type.GOLD_MINE:ResourceNode.Type.TREE,r.nextInt(state.getXExtent()),r.nextInt(state.getYExtent()),r.nextInt(),state.nextTargetID());
-			state.addResource(newres);
-			Pair pos = new Pair(newres.getxPosition(), newres.getyPosition());
-			Pair prevnum = actualpositioning.get(pos);
-			
-			int nummine = newres.getType()==ResourceNode.Type.GOLD_MINE?1:0;
-			int numtree = newres.getType()==ResourceNode.Type.TREE?1:0;
-			if (prevnum!=null)
-			{	
-				nummine+=prevnum.i1;
-				numtree+=prevnum.i2;
-			}
-			actualpositioning.put(pos, new Pair(nummine,numtree));
-			revealedStatusChecker(i, e,actualpositioning,correctrevealedness);
-			revealedStatusChecker(i, obs,actualpositioning,correctrevealedness);
-			correctrevealedness = r.nextDouble() < 0.9?correctrevealedness:!correctrevealedness;
-			state.setRevealedResources(correctrevealedness);
-		}
+		assertFalse(true);
+//		int player = 0;
+//		Random r = new Random();
+//		State state = new State();
+//		state.setSize(40, 40);
+//		state.addPlayer(player);
+//		boolean correctrevealedness=r.nextBoolean();
+//		state.setRevealedResources(correctrevealedness);
+//		
+//		EventLoggerView e = state.getView(player).getEventLog();
+//		EventLoggerView obs = state.getView(Agent.OBSERVER_ID).getEventLog();
+//		Map<Pair,Pair> actualpositioning=new HashMap<Pair,Pair>();
+//		//Repeatedly add things, changing the revealedness every so often 
+//		for (int i = 0; i<100;i++)
+//		{
+//			ResourceNode newres = new ResourceNode(r.nextBoolean()?ResourceNode.Type.GOLD_MINE:ResourceNode.Type.TREE,r.nextInt(state.getXExtent()),r.nextInt(state.getYExtent()),r.nextInt(),state.nextTargetID());
+//			state.addResource(newres);
+//			Pair pos = new Pair(newres.getxPosition(), newres.getyPosition());
+//			Pair prevnum = actualpositioning.get(pos);
+//			
+//			int nummine = newres.getType()==ResourceNode.Type.GOLD_MINE?1:0;
+//			int numtree = newres.getType()==ResourceNode.Type.TREE?1:0;
+//			if (prevnum!=null)
+//			{	
+//				nummine+=prevnum.i1;
+//				numtree+=prevnum.i2;
+//			}
+//			actualpositioning.put(pos, new Pair(nummine,numtree));
+//			revealedStatusChecker(i, e,actualpositioning,correctrevealedness);
+//			revealedStatusChecker(i, obs,actualpositioning,correctrevealedness);
+//			correctrevealedness = r.nextDouble() < 0.9?correctrevealedness:!correctrevealedness;
+//			state.setRevealedResources(correctrevealedness);
+//		}
 	}
 	
 	

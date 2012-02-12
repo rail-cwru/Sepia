@@ -11,6 +11,7 @@ import edu.cwru.SimpleRTS.Log.DeathLog;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
@@ -46,7 +47,7 @@ public class CombatAgent extends Agent{
 	 * @return
 	 */
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		//Do setup things for a new game
 			//Clear the unit orders
 			unitOrders = new HashMap<Integer, Integer>();
@@ -60,17 +61,17 @@ public class CombatAgent extends Agent{
 	}
 
 	@Override
-	public Map<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
 		
 		//update its list of units
-		for (BirthLog birth : newstate.getEventLog().getBirths(newstate.getEventLog().getLastRound())) {
+		for (BirthLog birth : statehistory.getEventLogger().getBirths(newstate.getTurnNumber()-1)) {
 			if (playernum == birth.getPlayer()) {
 				unitOrders.put(birth.getNewUnitID(), null);
 			}
 		}
 		List<Integer> toRemove = new LinkedList<Integer>();
 		List<Integer> toUnorder = new LinkedList<Integer>();
-		for (DeathLog death : newstate.getEventLog().getDeaths(newstate.getEventLog().getLastRound())) {
+		for (DeathLog death : statehistory.getEventLogger().getDeaths(newstate.getTurnNumber()-1)) {
 			if (playernum == death.getPlayer()) {
 				toRemove.add(death.getDeadUnitID());
 			}
@@ -93,7 +94,7 @@ public class CombatAgent extends Agent{
 		if (verbose)
 		{
 			//Report the damage dealt by and to your units
-			for (DamageLog damagereport : newstate.getEventLog().getDamage(newstate.getEventLog().getLastRound())) {
+			for (DamageLog damagereport : statehistory.getEventLogger().getDamage(newstate.getTurnNumber()-1)) {
 				if (damagereport.getAttackerController() == playernum) {
 					System.out.println(damagereport.getAttackerID() + " hit " + damagereport.getDefenderID() + " for " +damagereport.getDamage()+ " damage");
 				}
@@ -108,7 +109,7 @@ public class CombatAgent extends Agent{
 	}
 
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		//A non learning agent needn't do anything at the final step
 		
 	}

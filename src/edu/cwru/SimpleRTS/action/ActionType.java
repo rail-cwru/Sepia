@@ -71,4 +71,14 @@ public enum ActionType {
 	 * Used internally to indicate a failure of a compound action that can not be fixed by recalculating.
 	 */
 	FAILEDPERMANENTLY;
+
+	/**
+	 * Get whether the type is primitive.
+	 * The primitive types are those named PRIMITIVE_____ as well as the fails.
+	 * @param type
+	 * @return
+	 */
+	public static boolean isPrimitive(ActionType type) {
+		return type != COMPOUNDGATHER && type != COMPOUNDBUILD && type != COMPOUNDDEPOSIT && type != COMPOUNDPRODUCE && type != COMPOUNDATTACK && type != COMPOUNDMOVE;
+	}
 }

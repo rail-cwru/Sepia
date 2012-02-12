@@ -49,7 +49,8 @@ public class Environment
 		} 
 		for (int i = 0; i<connectedagents.length;i++)
 		{
-			connectedagents[i].terminalStep(model.getState(connectedagents[i].getPlayerNumber()));
+			int playerNumber = connectedagents[i].getPlayerNumber();
+			connectedagents[i].terminalStep(model.getState(playerNumber), model.getHistory(playerNumber));
 		}
 		
 	}
@@ -62,43 +63,32 @@ public class Environment
 	 * @throws InterruptedException
 	 */
 	public boolean step() throws InterruptedException {
-		ArrayList<Action> actions = new ArrayList<Action>(model.getState(Agent.OBSERVER_ID).getAllUnitIds().size());
+		CountDownLatch[] latches = new CountDownLatch[connectedagents.length];
 		for(int i = 0; i<connectedagents.length;i++)
 		{
-			CountDownLatch latch = new CountDownLatch(1);
+			int playerNumber = connectedagents[i].getPlayerNumber();
+			latches[i]= new CountDownLatch(1);
 			if (step == 0)
 			{
-				connectedagents[i].acceptInitialState(model.getState(connectedagents[i].getPlayerNumber()), latch);
+				connectedagents[i].acceptInitialState(model.getState(playerNumber), model.getHistory(playerNumber), latches[i]);
 			}
 			else
 			{
-				connectedagents[i].acceptMiddleState(model.getState(connectedagents[i].getPlayerNumber()), latch);
+				connectedagents[i].acceptMiddleState(model.getState(playerNumber), model.getHistory(playerNumber), latches[i]);
 			}
-			latch.await();
+			
+		}
+		for (int i = 0; i<connectedagents.length; i++)
+		{
+			latches[i].await();
 			Map<Integer,Action> actionMapTemp = connectedagents[i].getAction();
 			Map<Integer,Action> actionMap = new HashMap<Integer,Action>();
 			for(Integer key : actionMapTemp.keySet())
 			{
 				actionMap.put(key,actionMapTemp.get(key));
 			}
-			
-			for(Integer unitId : actionMap.keySet())
-			{
-				Action a = actionMap.get(unitId);
-				//If the unit is not the same as in the action, ignore the action
-				if (a.getUnitId() != unitId)
-					continue;
-				//If the unit does not exist, ignore the action
-				if (model.getState(Agent.OBSERVER_ID).getUnit(unitId) == null)
-					continue;
-				//If the unit is not the player's, ignore the action
-					if(model.getState(Agent.OBSERVER_ID).getUnit(unitId).getTemplateView().getPlayer() != connectedagents[i].getPlayerNumber())
-						continue;
-				
-				actions.add(a);
-			}
+			model.addActions(actionMap, connectedagents[i].getPlayerNumber());
 		}
-		model.setActions(actions.toArray(new Action[0]));
 		model.executeStep();
 		step++;
 		return model.isTerminated();

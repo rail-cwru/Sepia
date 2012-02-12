@@ -14,6 +14,8 @@ import edu.cwru.SimpleRTS.Log.BirthLog;
 import edu.cwru.SimpleRTS.Log.DeathLog;
 import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.History;
+import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -385,7 +387,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		Transfer, Attack, Produce, Build, Wait, Faulty; /*Faulty marks a bad argument into the goal*/
 	}
 	@Override
-	public Map<Integer, Action> initialStep(StateView newstate) {
+	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		//Put all units into the gathering coordinator, that they might 
 		gathercoordinator.initialize(newstate);
 		busycoordinator.initialize(newstate);
@@ -401,33 +403,33 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		}
 		centeroftown = new int[]{xsum/myunits.size(), ysum/myunits.size()};
 		try {
-		return act(newstate);
+		return act(newstate, statehistory);
 		}
 		catch (IOException e) {
 			return new HashMap<Integer,Action>();
 		}
 	}
 	@Override
-	public Map<Integer, Action> middleStep(StateView newstate) {
+	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
 		
 		try {
-			return act(newstate);
+			return act(newstate, statehistory);
 			}
 			catch (IOException e) {
 				return new HashMap<Integer,Action>();
 			}
 	}
 	@Override
-	public void terminalStep(StateView newstate) {
+	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		
 	}
-	public Map<Integer, Action> act(StateView state) throws IOException {
+	public Map<Integer, Action> act(StateView state, HistoryView statehistory) throws IOException {
 		if (verbose)
 			System.out.println("ScriptedGoalAgent starting another action");
-		EventLogger.EventLoggerView eventlog = state.getEventLog();
-		int roundnumber = eventlog.getLastRound();
-		List<BirthLog> births = eventlog.getBirths(roundnumber);
-		List<DeathLog> deaths = eventlog.getDeaths(roundnumber);
+		EventLogger.EventLoggerView eventlog = statehistory.getEventLogger();
+		int lastturn= state.getTurnNumber()-1;
+		List<BirthLog> births = eventlog.getBirths(lastturn);
+		List<DeathLog> deaths = eventlog.getDeaths(lastturn);
 		for (BirthLog birth : births) {
 			if (
 				state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {

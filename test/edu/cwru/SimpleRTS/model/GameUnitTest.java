@@ -2,7 +2,9 @@ package edu.cwru.SimpleRTS.model;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -60,7 +62,12 @@ public class GameUnitTest {
 	@Test
 	public void test1() {
 		DirectedAction a = new DirectedAction(1, ActionType.PRIMITIVEMOVE, Direction.SOUTHEAST);
-		model.setActions(new Action[]{a});
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(1,a);
+			model.addActions(actions, 0);
+		}
+//		model.setActions(new Action[]{a});
 		model.executeStep();
 		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(1);
 		assertEquals("Unit was not in expected row!",6,u.getXPosition());
@@ -73,22 +80,46 @@ public class GameUnitTest {
 	@Test
 	public void test2(){
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.NORTHWEST);
-		Action[] actions = new Action[]{a};
-		model.setActions(actions);
+//		Action[] actions = new Action[]{a};
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+			
+		}
 		model.executeStep();
 		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",9,u.getXPosition());
 		assertEquals("Unit was not in expected row!",9,u.getYPosition());
-		model.setActions(actions);
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+		}
 		model.executeStep();
+		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",8,u.getXPosition());
 		assertEquals("Unit was not in expected row!",8,u.getYPosition());
-		model.setActions(actions);
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+		}
 		model.executeStep();
+		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",7,u.getYPosition());
-		model.setActions(actions);
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+		}
 		model.executeStep();
+		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",7,u.getYPosition());
 		
@@ -99,14 +130,20 @@ public class GameUnitTest {
 	 */
 	@Test
 	public void test3() {
-		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(1);
-		int hp = u2.getHP();
+		Unit.UnitView u1 = model.getState(Agent.OBSERVER_ID).getUnit(1);
+		int hp = u1.getHP();
 		Action a = new TargetedAction(2, ActionType.PRIMITIVEATTACK, 1);
-		Action[] actions = new Action[]{a};
-		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+		}
+//		Action[] actions = new Action[]{a};
+//		model.setActions(actions);
 		model.executeStep();
-		assertTrue("Attack failed!",hp > u2.getHP());
-		System.out.printf("Attack reduced unit 1's HP from %d to %d\n",hp,u2.getHP());		
+		u1 = model.getState(Agent.OBSERVER_ID).getUnit(1);
+		assertTrue("Attack failed!",hp > u1.getHP());
+		System.out.printf("Attack reduced unit 1's HP from %d to %d\n",hp,u1.getHP());		
 	}
 	/**
 	 * Have unit 2 move away from unit 1, then try to attack from beyond its maximum range
@@ -115,8 +152,13 @@ public class GameUnitTest {
 	@Test
 	public void test4() {
 		Action a = new DirectedAction(2, ActionType.PRIMITIVEMOVE, Direction.SOUTH);
-		Action[] actions = new Action[]{a};
-		model.setActions(actions);
+//		Action[] actions = new Action[]{a};
+//		model.setActions(actions);
+		{
+			Map<Integer, Action> actions = new HashMap<Integer, Action>();
+			actions.put(2,a);
+			model.addActions(actions, 0);
+		}
 		model.executeStep();
 		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
@@ -124,8 +166,13 @@ public class GameUnitTest {
 		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(2);
 		int hp = u2.getHP();
 		a = new TargetedAction(1, ActionType.PRIMITIVEATTACK, 2);
-		actions = new Action[]{a};
-		model.setActions(actions);
+//		actions = new Action[]{a};
+//		model.setActions(actions);
+		{
+		Map<Integer, Action> actions = new HashMap<Integer, Action>();
+		actions.put(1,a);
+		model.addActions(actions, 0);
+		}
 		model.executeStep();
 		assertTrue("Attack range check failed!",hp == u2.getHP());	
 	}

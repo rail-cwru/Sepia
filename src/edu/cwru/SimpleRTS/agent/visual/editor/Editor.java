@@ -172,40 +172,40 @@ public class Editor extends JFrame {
 		//Make a button group for revealed resources, one radio button for on and one for off
 		//  and make listeners to set the state
 		//  then make it default to off
-		revealResources = new ButtonGroup();
-		revealResourcesOn = new JRadioButton("Reveal Resources");
-		revealResources.add(revealResourcesOn);
-		revealResourcesOn.addActionListener(new ActionListener() {
-			State state;
-			Editor ed;
-			public ActionListener setThings(State state, Editor ed) {
-				this.state = state;
-				this.ed = ed;
-				return this;
-			}
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				state.setRevealedResources(true);
-				ed.updateScreen();
-			}			
-		}.setThings(state,this));
-		revealResourcesOff = new JRadioButton("Unreveal Resources");
-		revealResources.add(revealResourcesOff);
-		revealResourcesOff.addActionListener(new ActionListener() {
-			State state;
-			Editor ed;
-			public ActionListener setThings(State state, Editor ed) {
-				this.state = state;
-				this.ed = ed;
-				return this;
-			}
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				state.setRevealedResources(false);
-				ed.updateScreen();
-			}			
-		}.setThings(state,this));
-		revealResourcesOff.setSelected(true);
+//		revealResources = new ButtonGroup();
+//		revealResourcesOn = new JRadioButton("Reveal Resources");
+//		revealResources.add(revealResourcesOn);
+//		revealResourcesOn.addActionListener(new ActionListener() {
+//			State state;
+//			Editor ed;
+//			public ActionListener setThings(State state, Editor ed) {
+//				this.state = state;
+//				this.ed = ed;
+//				return this;
+//			}
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				state.setRevealedResources(true);
+//				ed.updateScreen();
+//			}			
+//		}.setThings(state,this));
+//		revealResourcesOff = new JRadioButton("Unreveal Resources");
+//		revealResources.add(revealResourcesOff);
+//		revealResourcesOff.addActionListener(new ActionListener() {
+//			State state;
+//			Editor ed;
+//			public ActionListener setThings(State state, Editor ed) {
+//				this.state = state;
+//				this.ed = ed;
+//				return this;
+//			}
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				state.setRevealedResources(false);
+//				ed.updateScreen();
+//			}			
+//		}.setThings(state,this));
+//		revealResourcesOff.setSelected(true);
 		
 		String[] unitnames;
 		List<UnitTemplate> tempunittemplates=null;
@@ -400,8 +400,8 @@ public class Editor extends JFrame {
 		add(error);
 		add(fogOn);
 		add(fogOff);
-		add(revealResourcesOn);
-		add(revealResourcesOff);
+//		add(revealResourcesOn);
+//		add(revealResourcesOff);
 		add(xSize);
 		add(ySize);
 		add(setSize);
@@ -484,7 +484,7 @@ public class Editor extends JFrame {
 	}
 	public void updateScreen()
 	{
-		gamePanel.updateState(state.getView(Agent.OBSERVER_ID));
+		gamePanel.updateState(state.getView(Agent.OBSERVER_ID), null);
 	}
 	public static void main(String[] args) throws FileNotFoundException, JSONException {
 		State state = null;

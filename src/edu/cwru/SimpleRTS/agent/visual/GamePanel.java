@@ -16,11 +16,14 @@ import javax.swing.ActionMap;
 import javax.swing.JComponent;
 
 
+import edu.cwru.SimpleRTS.Log.DamageLog;
 import edu.cwru.SimpleRTS.Log.RevealedResourceLog;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.LocatedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
@@ -42,6 +45,7 @@ public class GamePanel extends JPanel {
     };
 
 	private StateView currentState;
+	private HistoryView latestHistory;
 	private int tlx;
 	private int tly;
 
@@ -119,10 +123,12 @@ public class GamePanel extends JPanel {
             }
         }
         
+        if (latestHistory!=null)
+        {
         //draw revealed resources
         DrawingStrategy revealedTree = DrawingStrategy.revealedTreeGraphic();
         DrawingStrategy revealedMine = DrawingStrategy.revealedMineGraphic();
-        for (RevealedResourceLog rrl : currentState.getEventLog().getRevealedResources())
+        for (RevealedResourceLog rrl : latestHistory.getEventLogger().getRevealedResources())
         {
         	int x = scaleX(rrl.getResourceNodeXPosition());
         	int y = scaleY(rrl.getResourceNodeYPosition());
@@ -135,7 +141,7 @@ public class GamePanel extends JPanel {
         		revealedTree.draw(g, x, y);
         	}
         }
-        
+        }
         //draw trees
         DrawingStrategy tree = DrawingStrategy.treeGraphic();
         for(int id : currentState.getResourceNodeIds(ResourceNode.Type.TREE))
@@ -172,7 +178,59 @@ public class GamePanel extends JPanel {
             g.setColor(playerColors[unit.getTemplateView().getPlayer()]);
             letter.draw(g, x, y);
         }
-        
+        //Draw weapons fire
+        if (latestHistory!=null)
+        {
+        Color lastcolor = g.getColor();
+        for (DamageLog damage :latestHistory.getEventLogger().getDamage(currentState.getTurnNumber()-1))
+        {
+        	UnitView attacker = currentState.getUnit(damage.getAttackerID());
+        	UnitView defender = currentState.getUnit(damage.getDefenderID());
+        	g.setColor(playerColors[damage.getAttackerController()]);
+        	if (attacker != null && defender != null)
+        	{
+        		//do an offset so you can see two things shooting at each other
+        		int yplayeroffset = damage.getAttackerController()*2;
+        		g.drawLine(scaleX(attacker.getXPosition())+SCALING_FACTOR/2, scaleY(attacker.getYPosition())+SCALING_FACTOR/2, scaleX(defender.getXPosition())+SCALING_FACTOR/2, scaleY(defender.getYPosition())+SCALING_FACTOR/2 + yplayeroffset);
+        		g.drawString(Integer.toString(damage.getDamage()), (int)(scaleX(attacker.getXPosition())*0.75+scaleX(defender.getXPosition())*0.25)+SCALING_FACTOR/2, (int)(scaleY(attacker.getYPosition())*.75+scaleY(defender.getYPosition())*.25)+SCALING_FACTOR/2+yplayeroffset);
+        	}
+        	else if (attacker!=null) 
+        	{
+        		//Just draw the number over the attacker
+        		g.drawString(Integer.toString(damage.getDamage()), scaleX(attacker.getXPosition())+SCALING_FACTOR/2, scaleY(attacker.getYPosition())+SCALING_FACTOR/2);
+        	}
+        	else if (defender!=null)
+        	{
+        		//Just draw the number over the defender
+        		g.drawString(Integer.toString(damage.getDamage()), scaleX(defender.getXPosition())+SCALING_FACTOR/2, scaleY(defender.getYPosition())+SCALING_FACTOR/2);
+        	}
+        	
+        }
+        g.setColor(lastcolor);
+        //Check commands\
+        {
+        	System.out.println("Orders issued");
+	        for (Action a : latestHistory.getCommandsIssued(agent.getPlayerNumber()).getActions(currentState.getTurnNumber()-1))
+	        {
+	        	System.out.println("\t"+a);
+	        }
+        }
+        {
+        	System.out.println("Actions Executed");
+	        for (Action a : latestHistory.getActionsExecuted(agent.getPlayerNumber()).getActions(currentState.getTurnNumber()-1))
+	        {
+	        	System.out.println("\t"+a);
+	        }
+        }
+        {
+        	System.out.println("Action feedback");
+	        for (ActionResult a : latestHistory.getActionResults(agent.getPlayerNumber()).getActionResults(currentState.getTurnNumber()-1))
+	        {
+	        	System.out.println("\t"+a);
+	        }
+        }
+        }
+       
         //draw fog of war
         DrawingStrategy fog = DrawingStrategy.fogGraphic();
         for (int i = 0; i<currentState.getXExtent(); i++)
@@ -250,8 +308,9 @@ public class GamePanel extends JPanel {
 		return y/SCALING_FACTOR+tly;
 	}
 	
-	public void updateState(StateView state) {
+	public void updateState(StateView state, HistoryView history) {
 		this.currentState = state;
+		this.latestHistory = history;
         this.repaint();
 	}
 	

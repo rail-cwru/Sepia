@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.History;
+import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State;
 /**
  * The base type for any agent that can interact with the SimpleRTS environment.
@@ -104,31 +106,35 @@ public abstract class Agent implements Serializable {
 	/**
 	 * Accept the first state of an episode and begin calculating a response for it
 	 * @param newstate The new state of the system
+	 * @param statehistory The logs of events and actions leading to this state
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public final void acceptInitialState(State.StateView newstate, CountDownLatch onofflatch)
+	public final void acceptInitialState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
 	{
-		chosenActions = initialStep(newstate);
+		chosenActions = initialStep(newstate, statehistory);
 		onofflatch.countDown();
 	}
 	/**
 	 * Accept a state and begin calculating a response for it
 	 * @param newstate The new state of the system
+	 * @param historyView 
+	 * @param statehistory The logs of events and actions leading to this state
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public final void acceptMiddleState(State.StateView newstate, CountDownLatch onofflatch)
+	public final void acceptMiddleState(State.StateView newstate, HistoryView statehistory, CountDownLatch onofflatch)
 	{
-		chosenActions = middleStep(newstate);
+		chosenActions = middleStep(newstate, statehistory);
 		onofflatch.countDown();
 	}
 	/**
 	 * Accept the final state of an episode
 	 * @param newstate The new state of the system
+	 * @param statehistory The logs of events and actions leading to this state
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public final void acceptTerminalState(State.StateView newstate, CountDownLatch onofflatch)
+	public final void acceptTerminalState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
 	{
-		terminalStep(newstate);
+		terminalStep(newstate,statehistory);
 		onofflatch.countDown();
 	}
 
@@ -137,17 +143,17 @@ public abstract class Agent implements Serializable {
 	 * @param newstate The new state of the system
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public abstract Map<Integer,Action> initialStep(State.StateView newstate);
+	public abstract Map<Integer,Action> initialStep(State.StateView newstate, History.HistoryView statehistory);
 
 	/**
 	 * Accept an intermediate state of an episode
 	 * @param newstate The new state of the system
 	 * @param onofflatch A countdown latch used to synchonize completion
 	 */
-	public abstract Map<Integer,Action> middleStep(State.StateView newstate);
+	public abstract Map<Integer,Action> middleStep(State.StateView newstate, History.HistoryView statehistory);
 	/**
 	 * Receive notification that the episode has terminated.
 	 * @param newstate The final state of the system
 	 */
-	public abstract void terminalStep(State.StateView newstate);
+	public abstract void terminalStep(State.StateView newstate, History.HistoryView statehistory);
 }

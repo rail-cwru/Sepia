@@ -25,7 +25,6 @@ public class PlayerState implements Serializable, Cloneable {
 	private int currentSupply;
 	private int currentSupplyCap;
 	private StateView view;
-	private EventLogger logger;
 	private int[][] canSee;
 	
 	@SuppressWarnings("rawtypes")
@@ -35,7 +34,6 @@ public class PlayerState implements Serializable, Cloneable {
 		templates = new HashMap<Integer,Template>();
 		upgrades = new HashSet<Integer>();
 		currentResources = new EnumMap<ResourceType,Integer>(ResourceType.class);	
-		logger = new EventLogger();
 	}
 	
 	public Unit getUnit(int id) {
@@ -132,13 +130,6 @@ public class PlayerState implements Serializable, Cloneable {
 		this.view = view;
 	}
 	
-	public EventLogger getEventLogger() {
-		return logger;
-	}
-	
-	public void setEventLogger(EventLogger logger) {
-		this.logger = logger;
-	}
 	
 	public int[][] getVisibilityMatrix() {
 		return canSee;
