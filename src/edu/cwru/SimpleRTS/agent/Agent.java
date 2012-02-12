@@ -82,61 +82,61 @@ public abstract class Agent implements Serializable {
 	}
 	
 	
-	//Action selection and such.  Implementers should not have access to this
-	private Map<Integer,Action> chosenActions;
-	
-	/**
-	 * Request the action that the agent will take at this timestep.
-	 * The agent should have been asynchronously calculating this.
-	 * Must not be called until calculation is done.  You will know that it is done by the latch being passed to acceptState()
-	 * @return
-	 */
-	public final Map<Integer,Action> getAction()
-	{
-		
-		if (verbose) {
-			System.out.println("Agent "+playernum+" is performing actions:");
-			Set<Integer> units = chosenActions.keySet();
-			for (Integer i : units) {
-				System.out.println("\t" + i + " " + chosenActions.get(i));
-			}
-		}
-		return chosenActions;
-	}
-	/**
-	 * Accept the first state of an episode and begin calculating a response for it
-	 * @param newstate The new state of the system
-	 * @param statehistory The logs of events and actions leading to this state
-	 * @param onofflatch A countdown latch used to synchonize completion
-	 */
-	public final void acceptInitialState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
-	{
-		chosenActions = initialStep(newstate, statehistory);
-		onofflatch.countDown();
-	}
-	/**
-	 * Accept a state and begin calculating a response for it
-	 * @param newstate The new state of the system
-	 * @param historyView 
-	 * @param statehistory The logs of events and actions leading to this state
-	 * @param onofflatch A countdown latch used to synchonize completion
-	 */
-	public final void acceptMiddleState(State.StateView newstate, HistoryView statehistory, CountDownLatch onofflatch)
-	{
-		chosenActions = middleStep(newstate, statehistory);
-		onofflatch.countDown();
-	}
-	/**
-	 * Accept the final state of an episode
-	 * @param newstate The new state of the system
-	 * @param statehistory The logs of events and actions leading to this state
-	 * @param onofflatch A countdown latch used to synchonize completion
-	 */
-	public final void acceptTerminalState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
-	{
-		terminalStep(newstate,statehistory);
-		onofflatch.countDown();
-	}
+//	//Action selection and such.  Implementers should not have access to this
+//	private Map<Integer,Action> chosenActions;
+//	
+//	/**
+//	 * Request the action that the agent will take at this timestep.
+//	 * The agent should have been asynchronously calculating this.
+//	 * Must not be called until calculation is done.  You will know that it is done by the latch being passed to acceptState()
+//	 * @return
+//	 */
+//	public final Map<Integer,Action> getAction()
+//	{
+//		
+//		if (verbose) {
+//			System.out.println("Agent "+playernum+" is performing actions:");
+//			Set<Integer> units = chosenActions.keySet();
+//			for (Integer i : units) {
+//				System.out.println("\t" + i + " " + chosenActions.get(i));
+//			}
+//		}
+//		return chosenActions;
+//	}
+//	/**
+//	 * Accept the first state of an episode and begin calculating a response for it
+//	 * @param newstate The new state of the system
+//	 * @param statehistory The logs of events and actions leading to this state
+//	 * @param onofflatch A countdown latch used to synchonize completion
+//	 */
+//	public final void acceptInitialState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
+//	{
+//		chosenActions = initialStep(newstate, statehistory);
+//		onofflatch.countDown();
+//	}
+//	/**
+//	 * Accept a state and begin calculating a response for it
+//	 * @param newstate The new state of the system
+//	 * @param historyView 
+//	 * @param statehistory The logs of events and actions leading to this state
+//	 * @param onofflatch A countdown latch used to synchonize completion
+//	 */
+//	public final void acceptMiddleState(State.StateView newstate, HistoryView statehistory, CountDownLatch onofflatch)
+//	{
+//		chosenActions = middleStep(newstate, statehistory);
+//		onofflatch.countDown();
+//	}
+//	/**
+//	 * Accept the final state of an episode
+//	 * @param newstate The new state of the system
+//	 * @param statehistory The logs of events and actions leading to this state
+//	 * @param onofflatch A countdown latch used to synchonize completion
+//	 */
+//	public final void acceptTerminalState(State.StateView newstate, History.HistoryView statehistory, CountDownLatch onofflatch)
+//	{
+//		terminalStep(newstate,statehistory);
+//		onofflatch.countDown();
+//	}
 
 	/**
 	 * Accept the initial state of an episode
@@ -156,4 +156,6 @@ public abstract class Agent implements Serializable {
 	 * @param newstate The final state of the system
 	 */
 	public abstract void terminalStep(State.StateView newstate, History.HistoryView statehistory);
+	
+	
 }
