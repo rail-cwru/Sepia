@@ -1,4 +1,5 @@
 package edu.cwru.SimpleRTS.agent;
+import java.awt.Dimension;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.agent.visual.VisualLog;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State;
@@ -15,6 +17,7 @@ import edu.cwru.SimpleRTS.environment.State;
  *
  */
 public abstract class Agent implements Serializable {
+	protected VisualLog visualLog;
 	protected boolean verbose; 
 	public static final int OBSERVER_ID = -999;
 	private static int nextID = 0;
@@ -49,6 +52,59 @@ public abstract class Agent implements Serializable {
 		verbose = false;
 	}
 	
+	/**
+	 * Write a line to the visual log maintained by this agent.
+	 * If it is not initialized, this calls initializeVisualAgent.
+	 * @param newline The line to write
+	 */
+	public void writeLineVisual(String newline)
+	{
+		if (visualLog == null)
+			initializeVisualLog();
+		visualLog.writeLine(newline);
+		visualLog.repaint();
+	}
+	/**
+	 * Clear the visual log maintained by this agent.
+	 * If it is not initialized, this calls initializeVisualAgent.
+	 */
+	public void clearVisualLog()
+	{
+		if (visualLog == null)
+			initializeVisualLog();
+		visualLog.clearLog();
+		visualLog.repaint();
+	}
+	/**
+	 * If the visual log is initialized, then close the window and release the reference.
+	 */
+	public void closeVisualLog()
+	{
+		if (visualLog!=null)
+		{
+			visualLog.setVisible(false);
+			visualLog.dispose();
+			visualLog=null;
+		}
+	}
+	/**
+	 * Initialize the visual log, constructing it.
+	 */
+	protected void initializeVisualLog()
+	{
+		if (visualLog==null)
+			visualLog = new VisualLog(this.toString(), 300, 300);
+		visualLog.writeLine("This log belongs to "+this.toString());
+	}
+	/**
+	 * Resize the visual log to a new size.
+	 * @param width
+	 * @param height
+	 */
+	public void setVisualLogDimensions(int width, int height)
+	{
+		visualLog.setPreferredSize(new Dimension(width,height));
+	}
 	/**
 	 * Return the usage of any additional parameters
 	 * @return
