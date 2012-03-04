@@ -25,7 +25,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class ResourceGatheringTest {
 	
-	static SimpleModel model;
+	static Model model;
 	static List<Template> templates;
 	static Configuration configuration;
 	static int player = 0;
@@ -59,7 +59,7 @@ public class ResourceGatheringTest {
 		ResourceNode g = new ResourceNode(ResourceNode.Type.GOLD_MINE, 11, 12, 5000,state.nextTargetID());
 		builder.addResource(t);
 		builder.addResource(g);
-		model = new SimpleModel(state, 5336,null);
+		model = new LessSimpleModel(state, 5336,null);
 		model.setVerbosity(true);
 		(configuration = Configuration.getInstance()).put(ResourceNode.Type.TREE+"GatherRate", 20+"");
 		configuration.put(ResourceNode.Type.GOLD_MINE+"GatherRate", 50+"");

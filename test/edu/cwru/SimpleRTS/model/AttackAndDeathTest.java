@@ -19,7 +19,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class AttackAndDeathTest {
 
-	static SimpleModel model;
+	static Model model;
 	static SimplePlanner planner;
 	@SuppressWarnings("rawtypes")
 	static List<Template> templates;
@@ -76,7 +76,7 @@ public class AttackAndDeathTest {
 			builder.addUnit(u,0,0);
 		}
 		planner = new SimplePlanner(state);
-		model = new SimpleModel(state, 5536,null);
+		model = new LessSimpleModel(state, 5536,null);
 		model.setVerbosity(true);
 	}
 	

@@ -7,7 +7,14 @@ import edu.cwru.SimpleRTS.environment.*;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 public interface Model extends Serializable{
+	/**
+	 * Have the model create a new world.
+	 */
 	void createNewWorld();
+	/**
+	 * Determine whether the current state is terminal.
+	 * @return True if the current state is terminal, False otherwise.
+	 */
 	boolean isTerminated();
 	/**
 	 * Validate and add actions to the list of actions to execute
@@ -21,4 +28,5 @@ public interface Model extends Serializable{
 	void executeStep();
 	StateView getState(int player);
 	HistoryView getHistory(int player);
+	void setVerbosity(boolean verbosity);
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.BeforeClass;
@@ -11,6 +12,8 @@ import org.junit.Test;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.model.LessSimpleModel;
+import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.SimplePlanner;
 import edu.cwru.SimpleRTS.model.Template;
@@ -20,7 +23,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 
 public class CombatAgentDuelTest {
-	static SimpleModel model;
+	static LessSimpleModel model;
 	static SimplePlanner planner;
 	static List<Template> templates1;
 	static List<Template> templates2;
@@ -77,7 +80,7 @@ public class CombatAgentDuelTest {
 		}
 		
 		planner = new SimplePlanner(state);
-		model=new SimpleModel(state, 1235,null);
+		model=new LessSimpleModel(state, 1235,null);
 		model.setVerbosity(true);
 	}
 	
@@ -90,22 +93,20 @@ public class CombatAgentDuelTest {
 		CombatAgent agent2 = new CombatAgent(player2, new String[]{Integer.toString(player1), "false", "true"});
 		for (int step = 0; step<30500; step++)
 		{
-			CountDownLatch latch1 = new CountDownLatch(1);
-			CountDownLatch latch2 = new CountDownLatch(1);
+			Map<Integer,Action> acts1;
+			Map<Integer,Action> acts2;
 			if (step == 0)
 			{
-				agent1.acceptInitialState(model.getState(player1),model.getHistory(player1), latch1);
-				agent2.acceptInitialState(model.getState(player2),model.getHistory(player2), latch2);
+				acts1=agent1.initialStep(model.getState(player1),model.getHistory(player1));
+				acts2=agent2.initialStep(model.getState(player2),model.getHistory(player2));
 			}
 			else
 			{
-				agent1.acceptMiddleState(model.getState(player1),model.getHistory(player1), latch1);
-				agent2.acceptMiddleState(model.getState(player2),model.getHistory(player2), latch2);
+				acts1=agent1.middleStep(model.getState(player1),model.getHistory(player1));
+				acts2=agent2.middleStep(model.getState(player2),model.getHistory(player2));
 			}
-			latch1.await();
-			latch2.await();
-			Collection<Action> actionsimmut1 = agent1.getAction().values();
-			Collection<Action> actionsimmut2 = agent2.getAction().values();
+			Collection<Action> actionsimmut1 = acts1.values();
+			Collection<Action> actionsimmut2 = acts2.values();
 			Action[] actions = new Action[actionsimmut1.size() + actionsimmut2.size()];
 			{
 				int i = 0;
@@ -136,8 +137,8 @@ public class CombatAgentDuelTest {
 //			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");
 //			System.out.println(state.getResourceAmount(player, ResourceType.WOOD)+" Wood");
 //			System.out.println(state.getSupplyAmount(player)+"/"+state.getSupplyCap(player) + " Food");
-			model.addActions(agent1.getAction(),player1);
-			model.addActions(agent2.getAction(),player2);
+			model.addActions(acts1,player1);
+			model.addActions(acts2,player2);
 			model.executeStep();
 		}
 	}

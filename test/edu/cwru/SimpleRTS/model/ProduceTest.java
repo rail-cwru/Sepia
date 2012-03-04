@@ -22,7 +22,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class ProduceTest {
 
-	static SimpleModel model;
+	static Model model;
 	static SimplePlanner planner;
 	static List<Template> templates;
 	static State state;
@@ -69,10 +69,10 @@ public class ProduceTest {
 		}
 
 		builder.setSupplyCap(player, 10);
-		builder.setResourceAmount(player, ResourceType.GOLD, 1200);
-		builder.setResourceAmount(player, ResourceType.WOOD, 800);
+		builder.setResourceAmount(player, ResourceType.GOLD, 99999);
+		builder.setResourceAmount(player, ResourceType.WOOD, 99999);
 		planner = new SimplePlanner(state);
-		model = new SimpleModel(state, 5536,null);
+		model = new LessSimpleModel(state, 5536,null);
 		model.setVerbosity(true);
 	}
 	

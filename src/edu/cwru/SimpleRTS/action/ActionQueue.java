@@ -23,6 +23,10 @@ public class ActionQueue
 	{
 		return primitives.pop();
 	}
+	public Action peekPrimitive()
+	{
+		return primitives.peek();
+	}
 	public boolean hasNext()
 	{
 		return !primitives.isEmpty();

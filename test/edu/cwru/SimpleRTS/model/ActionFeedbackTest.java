@@ -39,7 +39,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class ActionFeedbackTest {
 
 	static State state;
-	static SimpleModel model;
+	static LessSimpleModel model;
 	private static final int player1=0;
 	private static final int player2=1;
 	private static File tempfile;
@@ -102,7 +102,7 @@ public class ActionFeedbackTest {
 		tempfile = File.createTempFile("idontcare", ".map");
 		GameMap.storeState(tempfile.getPath(), state);
 		StateCreator restartthing = new LoadingStateCreator(tempfile.getPath());
-		model = new SimpleModel(state, 6,restartthing);
+		model = new LessSimpleModel(state, 6,restartthing);
 		model.setVerbosity(true);
 	}
 	@AfterClass

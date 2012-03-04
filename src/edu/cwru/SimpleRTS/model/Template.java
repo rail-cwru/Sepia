@@ -48,6 +48,11 @@ public abstract class Template<T> implements Serializable{
 		buildPrereq = new HashSet<String>();
 		upgradePrereq = new HashSet<String>();
 	}
+	/**
+	 * Find whether the prerequisites are met for making this template.
+	 * @param state
+	 * @return
+	 */
 	public boolean canProduce(StateView state) {
 		return prereqs.isFulfilled(state);
 	}

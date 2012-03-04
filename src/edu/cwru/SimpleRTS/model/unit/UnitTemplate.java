@@ -142,6 +142,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void addProductionItem(String item) {
 		this.produces.add(item);
 	}
+	/**
+	 * Return whether the unit is capable of producing a specific template
+	 * @param t
+	 * @return
+	 */
 	public boolean canProduce(@SuppressWarnings("rawtypes") Template t) {
 		if (t==null)
 			return false;

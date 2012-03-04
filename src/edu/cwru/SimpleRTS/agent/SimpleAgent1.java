@@ -59,12 +59,14 @@ public class SimpleAgent1 extends Agent {
 			if(target >= 0)
 			{
 				Action a = new TargetedAction(unitId, ActionType.COMPOUNDATTACK, target);
+				super.writeLineVisual("Adding action "+a.toString());
 				builder.put(unitId, a);
 			}
 			else
 			{
 				int dir = (int)(Math.random()*8);
 				Action a = new DirectedAction(unitId, ActionType.PRIMITIVEMOVE, Direction.values()[dir]);
+				super.writeLineVisual("Adding action "+a.toString());
 				builder.put(unitId, a);
 			}
 		}

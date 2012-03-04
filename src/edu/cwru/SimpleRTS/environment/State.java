@@ -635,6 +635,40 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			y = u.getyPosition();
 		}
 	}
+	/**
+	 * Move a unit from one place to another and update the sight radius.
+	 * For use in the rare cases where a single direction is insufficient.
+	 * @param u The unit to move
+	 * @param newx The new x position of the unit
+	 * @param newy The new y position of the unit
+	 */
+	public void transportUnit(Unit u, int newx, int newy)
+	{
+		int[][] playersight = playerStates.get(u.getPlayer()).getVisibilityMatrix();
+		//int[][] observersight=playerCanSee.get(Agent.OBSERVER_ID);
+		int[][] observersight = observerState.getVisibilityMatrix();
+		int oldx = u.getxPosition();
+		int oldy = u.getyPosition();
+		int sightrange = u.getTemplate().getSightRange();
+		for (int i = oldx-sightrange; i<= oldx+sightrange;i++)
+			for (int j = oldy-sightrange; j<= oldy+sightrange;j++)
+			{
+				if (inBounds(i,j))
+				{
+					playersight[i][j]++;
+					observersight[i][j]++;
+				}
+			}
+		for (int i = newx-sightrange; i<= newx+sightrange;i++)
+			for (int j = newy-sightrange; j<= newy+sightrange;j++)
+			{
+				if (inBounds(i,j))
+				{
+					playersight[i][j]++;
+					observersight[i][j]++;
+				}
+			}
+	}
 	public void removeUnit(int unitID) {
 		if (allUnits.containsKey(unitID))
 		{

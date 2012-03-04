@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
@@ -10,7 +11,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.agent.visual.VisualAgent;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.model.LessSimpleModel;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.SimplePlanner;
 import edu.cwru.SimpleRTS.model.Template;
@@ -22,7 +25,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 
 public class ScriptedGoalAgentTest {
-	static SimpleModel model;
+	static LessSimpleModel model;
 	static SimplePlanner planner;
 	static List<Template> templates;
 	static State state;
@@ -62,7 +65,7 @@ public class ScriptedGoalAgentTest {
 		}
 		
 		planner = new SimplePlanner(state);
-		model=new SimpleModel(state, 1235,null);
+		model=new LessSimpleModel(state, 1235,null);
 		model.setVerbosity(true);
 	}
 	
@@ -97,26 +100,26 @@ public class ScriptedGoalAgentTest {
 		int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
 		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);
-		
+		VisualAgent vagent = new VisualAgent(0,new String[]{"true","false"});
 		for (int step = 0; step<390; step++)
 		{
 			System.out.println("--------------------------------------------------");
 			System.out.println("---------------------"+step+"------------------------");
-			CountDownLatch latch = new CountDownLatch(1);
+			Map<Integer, Action> actionsimmut;
 			if (step == 0)
 			{
-				agent.acceptInitialState(model.getState(player), model.getHistory(player), latch);
+				actionsimmut = agent.initialStep(model.getState(player), model.getHistory(player));
+				vagent.initialStep(model.getState(player), model.getHistory(player));
 			}
 			else
 			{
-				agent.acceptMiddleState(model.getState(player), model.getHistory(player),latch);
+				actionsimmut = agent.middleStep(model.getState(player), model.getHistory(player));
+				vagent.middleStep(model.getState(player), model.getHistory(player));
 			}
-			latch.await();
-			Collection<Action> actionsimmut = agent.getAction().values();
 			Action[] actions = new Action[actionsimmut.size()];
 			{
 				int i = 0;
-				for (Action a : actionsimmut)
+				for (Action a : actionsimmut.values())
 				{
 					actions[i] = a;
 					i++;
@@ -140,7 +143,7 @@ public class ScriptedGoalAgentTest {
 			System.out.println(state.getResourceAmount(player, ResourceType.GOLD)+" Gold");
 			System.out.println(state.getResourceAmount(player, ResourceType.WOOD)+" Wood");
 			System.out.println(state.getSupplyAmount(player)+"/"+state.getSupplyCap(player) + " Food");
-			model.addActions(agent.getAction(),agent.getPlayerNumber());
+			model.addActions(actionsimmut,agent.getPlayerNumber());
 			model.executeStep();
 		}
 	}

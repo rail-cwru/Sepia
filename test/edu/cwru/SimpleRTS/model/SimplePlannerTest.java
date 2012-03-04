@@ -20,7 +20,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class SimplePlannerTest {
 
-	static SimpleModel model;
+	static Model model;
 	static SimplePlanner planner;
 	static List<Template> templates;
 	static State state;
@@ -77,7 +77,7 @@ public class SimplePlannerTest {
 		builder.addResource(t);
 		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100, state.nextTargetID());
 		builder.addResource(t);
-		model = new SimpleModel(state,5536,null);
+		model = new LessSimpleModel(state,5536,null);
 		model.setVerbosity(true);
 	}
 	

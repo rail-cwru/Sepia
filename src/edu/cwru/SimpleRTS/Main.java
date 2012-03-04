@@ -28,6 +28,8 @@ import edu.cwru.SimpleRTS.environment.XmlStateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateUtil;
 import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
+import edu.cwru.SimpleRTS.model.LessSimpleModel;
+import edu.cwru.SimpleRTS.model.Model;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.util.TypeLoader;
@@ -304,7 +306,7 @@ public class Main {
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
 		
-		SimpleModel model = new SimpleModel(initState, 7, stateCreator);
+		LessSimpleModel model = new LessSimpleModel(initState, 7, stateCreator);
 		Environment env = new Environment(agents.toArray(new Agent[0]),model);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
