@@ -4,7 +4,7 @@ package edu.cwru.SimpleRTS.action;
 import edu.cwru.SimpleRTS.model.Direction;
 
 public class DirectedAction extends Action {
-	private Direction direction;
+	private final Direction direction;
 	public DirectedAction(int unitid, ActionType type, Direction direction)
 	{
 		super(unitid, type);

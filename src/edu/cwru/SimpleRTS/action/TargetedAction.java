@@ -2,7 +2,7 @@ package edu.cwru.SimpleRTS.action;
 
 public class TargetedAction extends Action
 {
-	private int targetid;
+	private final int targetid;
 	public TargetedAction(int unitid, ActionType type, int targetid)
 	{
 		super(unitid, type);

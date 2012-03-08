@@ -2,8 +2,8 @@ package edu.cwru.SimpleRTS.action;
 
 public class LocatedAction extends Action
 {
-	private int x;
-	private int y;
+	private final int x;
+	private final int y;
 	public LocatedAction(int unitid, ActionType type, int x, int y)
 	{
 		super(unitid, type);

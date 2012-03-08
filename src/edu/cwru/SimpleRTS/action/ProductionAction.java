@@ -2,7 +2,7 @@ package edu.cwru.SimpleRTS.action;
 
 public class ProductionAction extends Action
 {
-	int templateid;
+	private final int templateid;
 	public ProductionAction(int unitid, ActionType type, int templateid)
 	{
 		super(unitid, type);

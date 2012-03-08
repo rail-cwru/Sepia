@@ -11,8 +11,8 @@ import edu.cwru.SimpleRTS.model.Direction;
  */
 public class Action implements Serializable{
 
-	protected ActionType type;
-	protected int unitId;
+	protected final ActionType type;
+	protected final int unitId;
 	protected Action(int untId, ActionType type)
 	{
 		this.type = type;
