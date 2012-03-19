@@ -69,7 +69,7 @@ public class LessSimpleModel implements Model {
 	private History history;
 	private State state;
 	private HashMap<Integer,HashMap<Unit, ActionQueue>> queuedActions;
-	private SimplePlanner planner;
+	private DurativePlanner planner;
 	private StateCreator restartTactic;
 	private boolean verbose;
 	public LessSimpleModel(State init, int seed, StateCreator restartTactic) {
@@ -82,7 +82,7 @@ public class LessSimpleModel implements Model {
 			queuedActions.put(i, new HashMap<Unit,ActionQueue>());
 		}
 		rand = new Random(seed);
-		planner = new SimplePlanner(init);
+		planner = new DurativePlanner(init);
 		
 		this.restartTactic = restartTactic;
 		verbose = false;
@@ -104,7 +104,7 @@ public class LessSimpleModel implements Model {
 			queuedActions.put(i, new HashMap<Unit,ActionQueue>());
 		}
 		
-		planner = new SimplePlanner(state);
+		planner = new DurativePlanner(state);
 	}
 	
 	@Override
@@ -316,13 +316,21 @@ public class LessSimpleModel implements Model {
 		Set<Integer> problemfoodcosts=new HashSet<Integer>();//<problemplayer>
 		Set<ActionQueue> failed=new HashSet<ActionQueue>();
 		Set<ActionQueue> successfulsofar=new HashSet<ActionQueue>();
+		/** Track all units of active players, to reset their progress if they failed or weren't moved*/Set<Integer> unsuccessfulUnits = new HashSet<Integer>(); 
 		Set<ActionQueue> productionsuccessfulsofar=new HashSet<ActionQueue>();
 		for (Integer player : playersWhoseTurnItIs)
 		{
+			//Gather all units of that player, so that we can remove the ones that were successful later
+			for (Integer id : state.getUnits(player).keySet())
+			{
+				unsuccessfulUnits.add(id);
+			}
 			for (ActionQueue aq : queuedActions.get(player).values())
 			{
 				aq.resetPrimitives(calculatePrimitives(aq.getFullAction()));
 				Action a = aq.peekPrimitive();
+//				if (a==null) //Then it failed to calculate primitives, so it fails
+					
 				int uid = a.getUnitId();
 				Unit u = state.getUnit(uid);
 				if (u == null)
@@ -382,8 +390,16 @@ public class LessSimpleModel implements Model {
 							}
 							else //hasn't failed yet
 							{
-								boolean willcompletethisturn = true;
-									//TODO when adding durative actions, calculate this for real
+								int newdurativeamount;
+								if (da.equals(u.getActionProgressPrimitive()))
+								{
+									newdurativeamount = u.getActionProgressAmount()+1;
+								}
+								else
+								{
+									newdurativeamount = 1;
+								}
+								boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(), d);
 								//if it will finish, then verify claim stuff
 								if (willcompletethisturn)
 								{
@@ -504,8 +520,16 @@ public class LessSimpleModel implements Model {
 					}
 					else //template exists, is producable by the unit, and has it's tech-tree prerequisites met
 					{
-						boolean willcompletethisturn = true;
-							//TODO when adding durative actions, calculate this for real
+						int newdurativeamount;
+						if (pa.equals(u.getActionProgressPrimitive()))
+						{
+							newdurativeamount = u.getActionProgressAmount()+1;
+						}
+						else
+						{
+							newdurativeamount = 1;
+						}
+						boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateProductionDuration(u,t);
 						if (willcompletethisturn)
 						{
 							if (!problemcosts.containsKey(player))
@@ -705,8 +729,16 @@ public class LessSimpleModel implements Model {
 						}
 						else //there is a node and it has resources
 						{
-							boolean willcompletethisturn = true;
-							//TODO when adding durative actions, calculate this for real
+							int newdurativeamount;
+							if (da.equals(u.getActionProgressPrimitive()))
+							{
+								newdurativeamount = u.getActionProgressAmount()+1;
+							}
+							else
+							{
+								newdurativeamount = 1;
+							}
+							boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateGatherDuration(u,rn);
 							if (willcompletethisturn)
 							{
 								
@@ -818,12 +850,17 @@ public class LessSimpleModel implements Model {
 			}
 		}
 		
+		//Take all of the actions that haven't failed yet and execute them
 		for (ActionQueue aq : successfulsofar)
 		{
-			//execute it without further checking, logging it on the spot
+			//Mark it's unit as having moved successfully
+			unsuccessfulUnits.remove(aq.getFullAction().getUnitId());
+			
+			//execute it without further checking, logging it
 			Action a = aq.popPrimitive();
 			int uid = a.getUnitId();
 			Unit u = state.getUnit(uid);
+			boolean willcompletethisturn = true;
 			{
 				//check if it is a move
 				if (a.getType() == ActionType.PRIMITIVEMOVE)
@@ -834,13 +871,29 @@ public class LessSimpleModel implements Model {
 						
 						DirectedAction da =(DirectedAction)a;
 						Direction d = da.getDirection();
-						boolean willcompletethisturn = true;
-							//TODO when adding durative actions, calculate this for real and do the increment
+						//calculate the amount of duration
+						int newdurativeamount;
+						if (da.equals(u.getActionProgressPrimitive()))
+						{
+							newdurativeamount = u.getActionProgressAmount()+1;
+						}
+						else
+						{
+							newdurativeamount = 1;
+						}
+						willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(),d);
 						//if it will finish, then execute the atomic action
 						if (willcompletethisturn)
 						{
 							//do the atomic action
 							state.moveUnit(u, d);
+							//you did the action, so reset the progress
+							u.resetDurative();
+						}
+						else
+						{
+							//increment the duration
+							u.setDurativeStatus(da, newdurativeamount);
 						}
 					}
 				}
@@ -852,9 +905,18 @@ public class LessSimpleModel implements Model {
 				int xdest = u.getxPosition() + d.xComponent();
 				int ydest = u.getyPosition() + d.yComponent();
 				Unit townHall = state.unitAt(xdest, ydest);
-				
-				boolean willcompletethisturn = true;
-					//TODO when adding durative actions, calculate this for real and do the increment
+
+				//calculate the amount of duration
+					int newdurativeamount;
+					if (da.equals(u.getActionProgressPrimitive()))
+					{
+						newdurativeamount = u.getActionProgressAmount()+1;
+					}
+					else
+					{
+						newdurativeamount = 1;
+					}
+					willcompletethisturn = newdurativeamount== DurativePlanner.calculateDepositDuration(u,townHall);
 				//if it will finish, then execute the atomic action
 				if (willcompletethisturn)
 				{
@@ -863,7 +925,13 @@ public class LessSimpleModel implements Model {
 					history.recordDropoffResource(u, townHall, state);
 					state.depositResources(player, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 					u.clearCargo();
-					break;
+					//you completed the action, so reset the durative progress
+					u.resetDurative();
+				}
+				else
+				{
+					//increment the duration
+					u.setDurativeStatus(da, newdurativeamount);
 				}
 			}
 			if (a.getType() == ActionType.PRIMITIVEATTACK)
@@ -871,8 +939,16 @@ public class LessSimpleModel implements Model {
 				//make sure you can attack and the target exists and is in range in the last state
 				TargetedAction ta =(TargetedAction)a;
 				Unit target = state.getUnit(ta.getTargetId());
-				boolean willcompletethisturn = true;
-					//TODO when adding durative actions, calculate this for real and do the increment
+				int newdurativeamount;
+				if (ta.equals(u.getActionProgressPrimitive()))
+				{
+					newdurativeamount = u.getActionProgressAmount()+1;
+				}
+				else
+				{
+					newdurativeamount = 1;
+				}
+				willcompletethisturn = newdurativeamount== DurativePlanner.calculateAttackDuration(u,target);
 				//if it will finish, then execute the atomic action
 				if (willcompletethisturn)
 				{
@@ -880,6 +956,13 @@ public class LessSimpleModel implements Model {
 					int damage = calculateDamage(u,target);
 					history.recordDamage(u, target, damage, state);
 					target.setHP(Math.max(target.getCurrentHealth()-damage,0));
+					//you have finished the primitive, so progress resets
+					u.resetDurative();
+				}
+				else
+				{
+					//increment the duration
+					u.setDurativeStatus(ta, newdurativeamount);
 				}
 			}
 			if (a.getType() == ActionType.PRIMITIVEPRODUCE || a.getType() == ActionType.PRIMITIVEBUILD)
@@ -887,57 +970,57 @@ public class LessSimpleModel implements Model {
 				//last state check:
 				ProductionAction pa =(ProductionAction)a;
 				Template t = state.getTemplate(pa.getTemplateId());
-				
 				//the willcomplete is somewhat related to the production amount
-//				boolean willcompletethisturn = true;
-					//TODO when adding durative actions, calculate this for real and do the increment
+				int newdurativeamount;
+				if (pa.equals(u.getActionProgressPrimitive()))
+				{
+					newdurativeamount = u.getActionProgressAmount()+1;
+				}
+				else
+				{
+					newdurativeamount = 1;
+				}
+				willcompletethisturn = newdurativeamount== DurativePlanner.calculateProductionDuration(u,t);
 				//if it will finish, then execute the atomic action
-//				if (willcompletethisturn)
+				if (willcompletethisturn)
 				{
 					//do the atomic action
-					int newproductionamount;
-					if (u.getCurrentProductionID() == t.ID)
+					if (t instanceof UnitTemplate)
 					{
-						newproductionamount = u.getAmountProduced()+1;
-					}
-					else
-					{
-						newproductionamount = 1;
-					}
-					u.setProduction(t, newproductionamount);
-					if (t.getTimeCost() == u.getAmountProduced())
-					{
-						if (t instanceof UnitTemplate)
+						Unit produced = ((UnitTemplate)t).produceInstance(state);
+						int[] newxy = productionplaces.get(aq);
+						if (u.canBuild())
 						{
-							Unit produced = ((UnitTemplate)t).produceInstance(state);
-							int[] newxy = productionplaces.get(aq);
-							if (u.canBuild())
+							int oldx = u.getxPosition();
+							int oldy = u.getyPosition();
+							state.transportUnit(u, newxy[0], newxy[1]);
+							if (state.tryProduceUnit(produced,oldx,oldy))
 							{
-								int oldx = u.getxPosition();
-								int oldy = u.getyPosition();
-								state.transportUnit(u, newxy[0], newxy[1]);
-								if (state.tryProduceUnit(produced,oldx,oldy))
-								{
-									history.recordBirth(produced, u, state);
-								}
-							}
-							else
-							{
-								if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
-								{
-									history.recordBirth(produced, u, state);
-								}
+								history.recordBirth(produced, u, state);
 							}
 						}
-						else if (t instanceof UpgradeTemplate) {
-							UpgradeTemplate upgradetemplate = ((UpgradeTemplate)t);
-							if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
+						else
+						{
+							if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 							{
-								history.recordUpgrade(upgradetemplate,u, state);
+								history.recordBirth(produced, u, state);
 							}
 						}
-						u.resetProduction();
 					}
+					else if (t instanceof UpgradeTemplate) {
+						UpgradeTemplate upgradetemplate = ((UpgradeTemplate)t);
+						if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
+						{
+							history.recordUpgrade(upgradetemplate,u, state);
+						}
+					}
+					//you have finished the primitive, so progress resets
+					u.resetDurative();
+				}
+				else
+				{
+					//increment the duration
+					u.setDurativeStatus(pa, newdurativeamount);
 				}
 			}
 			if (a.getType() == ActionType.PRIMITIVEGATHER)
@@ -949,8 +1032,16 @@ public class LessSimpleModel implements Model {
 				int xdest = u.getxPosition() + d.xComponent();
 				int ydest = u.getyPosition() + d.yComponent();
 				ResourceNode rn  = state.resourceAt(xdest,ydest);
-				boolean willcompletethisturn = true;
-					//TODO when adding durative actions, calculate this for real and do the increment
+				int newdurativeamount;
+				if (da.equals(u.getActionProgressPrimitive()))
+				{
+					newdurativeamount = u.getActionProgressAmount()+1;
+				}
+				else
+				{
+					newdurativeamount = 1;
+				}
+				willcompletethisturn = newdurativeamount== DurativePlanner.calculateGatherDuration(u,rn);
 				//if it will finish, then execute the atomic action
 				if (willcompletethisturn)
 				{
@@ -958,26 +1049,39 @@ public class LessSimpleModel implements Model {
 					int amountPickedUp = rn.reduceAmountRemaining(u.getTemplate().getGatherRate(rn.getType()));
 					u.setCargo(rn.getResourceType(), amountPickedUp);
 					history.recordPickupResource(u, rn, amountPickedUp, state);
+					//you have finished the primitive, so progress resets
+					u.resetDurative();
+				}
+				else
+				{
+					//increment the duration
+					u.setDurativeStatus(da, newdurativeamount);
 				}
 
 			}
 			}
 			history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
 			
+			ActionFeedback feedback;
 			if (!aq.hasNext())
 			{
 				queuedActions.get(u.getPlayer()).remove(aq);
-				history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.COMPLETED));
+				feedback = willcompletethisturn?ActionFeedback.COMPLETED:ActionFeedback.INCOMPLETE;
+					
+				
 			}
 			else
 			{
-				history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INCOMPLETE));
+				feedback = ActionFeedback.INCOMPLETE;
 			}
+			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),feedback));
+			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(a,feedback));
 		}
 		for (ActionQueue aq : failed)
 		{
 			//should be safe to get the unitid, as it should have not been put into failed if the player was bad
 			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.FAILED));
+			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.peekPrimitive(),ActionFeedback.FAILED));
 			queuedActions.get(state.getUnit(aq.getFullAction().getUnitId()).getPlayer()).remove(aq);
 		}
 		
@@ -1015,6 +1119,18 @@ public class LessSimpleModel implements Model {
 			state.removeResourceNode(rid);
 		}
 		
+		//Reset the progress of any unit of an active player that was unable to successfully move
+		for (Integer id : unsuccessfulUnits)
+		{
+			//Grab the unsuccessful unit
+			Unit slacker = state.getUnit(id);
+			//Reset the progress of the unsuccessful unit if it didn't die or something
+			if (slacker!=null)
+			{
+				slacker.resetDurative();
+			}
+		}
+		
 		state.incrementTurn();
 		for (Unit u : state.getUnits().values()) {
 			u.deprecateOldView();
@@ -1025,6 +1141,8 @@ public class LessSimpleModel implements Model {
 				t.deprecateOldView();
 	}
 
+	
+	
 	/**
 	 * More or less duplicates the functionality of getClosestPosition in state, with claims.
 	 * Also returns null instead of -1,-1 if nothing is available.
@@ -1123,25 +1241,5 @@ public class LessSimpleModel implements Model {
 	}
 	public void save(String filename) {
 		GameMap.storeState(filename, state);
-	}
-	
-	public static interface ActionExecutor
-	{
-		public void executeAndLog(State state, History history);
-	}
-	public static class MoveExecutor implements ActionExecutor
-	{
-		private Unit u;
-		private Direction d;
-		public MoveExecutor(Unit u, Direction d)
-		{
-			this.u=u;
-			this.d=d;
-		}
-		@Override
-		public void executeAndLog(State state, History history) {
-			state.moveUnit(u, d);
-			
-		}
 	}
 }

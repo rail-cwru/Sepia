@@ -15,7 +15,9 @@
 		"Range" : 1,
 		"Mobile" : true,
 		"Gatherer" : false,
-		"Builder" : false
+		"Builder" : false,
+		"DurationMove" : 4,
+		"DurationAttack" : 4
 	},
 	"Archer" : {
 		"Name" : "Archer",
@@ -33,7 +35,9 @@
 		"Range" : 4,
 		"Mobile" : true,
 		"Gatherer" : false,
-		"Builder" : false
+		"Builder" : false,
+		"DurationMove" : 4,
+		"DurationAttack" : 4
 	},
 	"Peasant" : {
 		"Name" : "Peasant",
@@ -54,7 +58,12 @@
 		"GoldPerTrip" : 50,
 		"WoodPerTrip" : 20,
 		"Builder" : true,
-		"Produces" : ["TownHall","Barracks","Blacksmith","Farm"]
+		"Produces" : ["TownHall","Barracks","Blacksmith","Farm"],
+		"DurationAttack" : 4,
+		"DurationDeposit" : 4,
+		"DurationGatherGold" : 4,
+		"DurationGatherWood" : 4,
+		"DurationMove" : 4
 	},
 	"Knight" : {
 		"Name" : "Knight",
@@ -72,7 +81,9 @@
 		"Range" : 1,
 		"Mobile" : true,
 		"Gatherer" : false,
-		"Builder" : false
+		"Builder" : false,
+		"DurationMove" : 4,
+		"DurationAttack" : 4
 	},
 	"TownHall" : {
 		"Name" : "TownHall",
@@ -90,7 +101,8 @@
 		"FoodGiven" : 3,
 		"AcceptsGold" : true,
 		"AcceptsWood" : true,
-		"Produces" : ["Peasant"]
+		"Produces" : ["Peasant"],
+		"Mobile" : false
 	},
 	"Farm" : {
 		"Name" : "Farm",
@@ -105,7 +117,8 @@
 		"Piercing" : 0,
 		"Range" : 0,
 		"SightRange" : 1,
-		"FoodGiven" : 4
+		"FoodGiven" : 4,
+		"Mobile" : false
 	},
 	"Barracks" : {
 		"Name" : "Barracks",
@@ -121,7 +134,8 @@
 		"Range" : 0,
 		"SightRange" : 1,
 		"FoodGiven" : 0,
-		"Produces" : ["Footman"]
+		"Produces" : ["Footman"],
+		"Mobile" : false
 	},
 		"Blacksmith" : {
 		"Name" : "Blacksmith",
@@ -138,7 +152,8 @@
 		"SightRange" : 1,
 		"FoodGiven" : 0,
 		"Produces" : ["WeaponOne","WeaponTwo","ArmorOne"],
-		"BuildPrereq" : ["Barracks"]
+		"BuildPrereq" : ["Barracks"],
+		"Mobile" : false
 	},
 	"WeaponOne" : {
 		"Name" : "WeaponOne",

@@ -11,23 +11,24 @@ package edu.cwru.SimpleRTS.environment.state.persistence.generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import edu.cwru.SimpleRTS.model.resource.ResourceType;
+import edu.cwru.SimpleRTS.action.ActionType;
 
 
 /**
- * <p>Java class for ResourceQuantity complex type.
+ * <p>Java class for Action complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ResourceQuantity">
+ * &lt;complexType name="Action">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="quantity" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="type" type="{}ResourceType"/>
+ *         &lt;element name="unitId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="actionType" type="{}ActionType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,55 +38,62 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ResourceQuantity", propOrder = {
-    "quantity",
-    "type"
+@XmlType(name = "Action", propOrder = {
+    "unitId",
+    "actionType"
 })
-public class XmlResourceQuantity {
+@XmlSeeAlso({
+    XmlTargetedAction.class,
+    XmlLocatedProductionAction.class,
+    XmlProductionAction.class,
+    XmlDirectedAction.class,
+    XmlLocatedAction.class
+})
+public class XmlAction {
 
-    protected int quantity;
+    protected int unitId;
     @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    protected ResourceType type;
+    @XmlJavaTypeAdapter(Adapter5 .class)
+    protected ActionType actionType;
 
     /**
-     * Gets the value of the quantity property.
+     * Gets the value of the unitId property.
      * 
      */
-    public int getQuantity() {
-        return quantity;
+    public int getUnitId() {
+        return unitId;
     }
 
     /**
-     * Sets the value of the quantity property.
+     * Sets the value of the unitId property.
      * 
      */
-    public void setQuantity(int value) {
-        this.quantity = value;
+    public void setUnitId(int value) {
+        this.unitId = value;
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the actionType property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public ResourceType getType() {
-        return type;
+    public ActionType getActionType() {
+        return actionType;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the actionType property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setType(ResourceType value) {
-        this.type = value;
+    public void setActionType(ActionType value) {
+        this.actionType = value;
     }
 
 }

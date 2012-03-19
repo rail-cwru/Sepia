@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import edu.cwru.SimpleRTS.environment.state.persistence.ActionAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.UnitAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
 import edu.cwru.SimpleRTS.model.Template;
@@ -35,7 +36,7 @@ public class UnitAdapterTest {
 		Unit unit = new Unit((UnitTemplate)templates.get(0),34);
 		unit.setTask(UnitTask.Idle);
 		unit.setxPosition(1);
-		unit.setyPosition(1);
+		unit.setyPosition(2);
 		
 		XmlUnit xml = adapter.toXml(unit);
 		
@@ -66,7 +67,9 @@ public class UnitAdapterTest {
 		assertEquals("cargo type did not match!", unit.getCurrentCargoType(), xml.getCargoType());
 		assertEquals("cargo amount did not match!", unit.getCurrentCargoAmount(), xml.getCargoAmount());
 		assertEquals("current health did not match!", unit.getCurrentHealth(), xml.getCurrentHealth());
-		assertEquals("current production ID did not match!", unit.getCurrentProductionID(), xml.getProductionTemplateID());
+		assertEquals("current durative action did not match!", unit.getActionProgressPrimitive(), ActionAdapter.fromXml(xml.getProgressPrimitive()));
+//		assertEquals("current durative action did not match!", ActionAdapter.toXml(unit.getActionProgressPrimitive()), xml.getProgressPrimitive());
+		assertEquals("current durative progress amount did not match!", unit.getActionProgressAmount(), xml.getProgressAmount());
 		assertEquals("task did not match!", unit.getTask(), xml.getUnitTask());
 		assertEquals("id did not match!", unit.ID, xml.getID());
 	}

@@ -52,8 +52,8 @@
 		<xs:element name="cargoType" type="ResourceType"/>
 		<xs:element name="cargoAmount" type="xs:int"/>
 		<xs:element name="unitTask" type="UnitTask"/>
-		<xs:element name="productionTemplateID" type="xs:int"/>
-		<xs:element name="productionAmount" type="xs:int"/>
+		<xs:element name="progressPrimitive" type="Action"/>
+		<xs:element name="progressAmount" type="xs:int"/>
 	</xs:all>
 </xs:complexType>
 <xs:complexType name="UnitTemplate">
@@ -75,6 +75,11 @@
 				<xs:element name="character" type="xs:short"/>
 				<xs:element name="goldGatherRate" type="xs:int"/>
 				<xs:element name="woodGatherRate" type="xs:int"/>
+				<xs:element name="durationGatherWood" type="xs:int"/>
+				<xs:element name="durationGatherGold" type="xs:int"/>
+				<xs:element name="durationMove" type="xs:int"/>
+				<xs:element name="durationAttack" type="xs:int"/>
+				<xs:element name="durationDeposit" type="xs:int"/>
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="produces" type="xs:string"/>
 				</xs:sequence>
@@ -107,6 +112,60 @@
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="affectedUnitTypes" type="xs:string"/>
 				</xs:sequence>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="Action">
+	<xs:sequence>
+		<xs:element name="unitId" type="xs:int"/>
+		<xs:element name="actionType" type="ActionType"/>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="TargetedAction">
+	<xs:complexContent>
+		<xs:extension base="Action">
+			<xs:sequence>
+				<xs:element name="targetId" type="xs:int"/>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="DirectedAction">
+	<xs:complexContent>
+		<xs:extension base="Action">
+			<xs:sequence>
+				<xs:element name="direction" type="Direction"/>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="LocatedAction">
+	<xs:complexContent>
+		<xs:extension base="Action">
+			<xs:sequence>
+				<xs:element name="x" type="xs:int"/>
+				<xs:element name="y" type="xs:int"/>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="ProductionAction">
+	<xs:complexContent>
+		<xs:extension base="Action">
+			<xs:sequence>
+				<xs:element name="templateId" type="xs:int"/>
+			</xs:sequence>
+		</xs:extension>
+	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="LocatedProductionAction">
+	<xs:complexContent>
+		<xs:extension base="Action">
+			<xs:sequence>
+				<xs:element name="x" type="xs:int"/>
+				<xs:element name="y" type="xs:int"/>
+				<xs:element name="templateId" type="xs:int"/>
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
@@ -147,6 +206,36 @@
 	<xs:restriction base="xs:string">
 		<xs:enumeration value="WOOD" />
 		<xs:enumeration value="GOLD" />
+	</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="Direction">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="NORTH" />
+		<xs:enumeration value="SOUTH" />
+		<xs:enumeration value="EAST" />
+		<xs:enumeration value="WEST" />
+		<xs:enumeration value="SOUTHEAST" />
+		<xs:enumeration value="SOUTHWEST" />
+		<xs:enumeration value="NORTHEAST" />
+		<xs:enumeration value="NORTHWEST" />
+	</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="ActionType">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="PRIMITIVEMOVE" />
+		<xs:enumeration value="PRIMITIVEATTACK" />
+		<xs:enumeration value="PRIMITIVEGATHER" />
+		<xs:enumeration value="PRIMITIVEDEPOSIT" />
+		<xs:enumeration value="PRIMITIVEBUILD" />
+		<xs:enumeration value="PRIMITIVEPRODUCE" />
+		<xs:enumeration value="COMPOUNDMOVE" />
+		<xs:enumeration value="COMPOUNDATTACK" />
+		<xs:enumeration value="COMPOUNDGATHER" />
+		<xs:enumeration value="COMPOUNDDEPOSIT" />
+		<xs:enumeration value="COMPOUNDBUILD" />
+		<xs:enumeration value="COMPOUNDPRODUCE" />
+		<xs:enumeration value="FAILED" />
+		<xs:enumeration value="FAILEDPERMANENTLY" />
 	</xs:restriction>
 </xs:simpleType>
 </xs:schema>

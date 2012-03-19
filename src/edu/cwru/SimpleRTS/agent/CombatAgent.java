@@ -9,6 +9,8 @@ import edu.cwru.SimpleRTS.Log.BirthLog;
 import edu.cwru.SimpleRTS.Log.DamageLog;
 import edu.cwru.SimpleRTS.Log.DeathLog;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionFeedback;
+import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.History;
@@ -23,7 +25,13 @@ public class CombatAgent extends Agent{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Map<Integer, Integer> unitOrders;
+	/**
+	 * A list of units by id that also contains orders given to each unit
+	 */
+	private Map<Integer, Action> unitOrders;
+	/**
+	 * The player numbers that this guy attacks
+	 */
 	private int[] enemies;
 	private boolean wanderwhenidle;
 	public CombatAgent(int playernum, String[] otherargs) {
@@ -50,7 +58,7 @@ public class CombatAgent extends Agent{
 	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		//Do setup things for a new game
 			//Clear the unit orders
-			unitOrders = new HashMap<Integer, Integer>();
+			unitOrders = new HashMap<Integer, Action>();
 			//Put all of the units into the orders.
 			for (Integer uid : newstate.getUnitIds(playernum)) {
 				unitOrders.put(uid, null);
@@ -72,17 +80,21 @@ public class CombatAgent extends Agent{
 		List<Integer> toRemove = new LinkedList<Integer>();
 		List<Integer> toUnorder = new LinkedList<Integer>();
 		for (DeathLog death : statehistory.getEventLogger().getDeaths(newstate.getTurnNumber()-1)) {
+			//Check if the dead unit is mine
 			if (playernum == death.getPlayer()) {
 				toRemove.add(death.getDeadUnitID());
 			}
-			if (unitOrders.containsValue(death.getDeadUnitID())) {
-				for (Map.Entry<Integer, Integer> order: unitOrders.entrySet()) {
-					if (order.getValue() != null && death.getDeadUnitID() == order.getValue()) {
-						toUnorder.add(order.getKey());
-						
+			//check if anyone is attacking the dead unit, and tell them to stop
+				for (Map.Entry<Integer, Action> order: unitOrders.entrySet()) {
+					
+					if (order.getValue()!=null)
+					{
+						Action attackthedeadunit = Action.createCompoundAttack(order.getKey(), death.getDeadUnitID());
+						if (attackthedeadunit.equals(order.getValue())) {
+							toUnorder.add(order.getKey());
+						}
 					}
 				}
-			}
 		}
 		for (Integer i : toUnorder){
 			unitOrders.put(i,null);
@@ -104,7 +116,30 @@ public class CombatAgent extends Agent{
 				
 			}
 		}
+		//Update it's list of orders by checking for completions and failures and removing those
+		List<ActionResult> feedbacks = statehistory.getActionResults(playernum).getActionResults(newstate.getTurnNumber()-1);
+		for (ActionResult feedback : feedbacks)
+		{
+			
+			if (feedback.getResult() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete
+			{
+				//because the feedback mixes primitive feedback on duratives and compound feedback on primitives, need to check if it is the right action
+				Action action = feedback.getAction();
+				int unitid = action.getUnitId();
+				Action order = unitOrders.get(unitid);		//if this gives nullpointer, then there was some failure in registering units with unitOrders
+				//check if the completion is the same level as the order
+				if (action.equals(order))
+				{
+					//remove the order, as it is complete or failed
+					unitOrders.put(unitid, null);
+				}
+			}
+		}
+		
+		//Calculate what the orders should be
 		doAggro(newstate);
+		
+		
 		return getAction(newstate);
 	}
 
@@ -117,24 +152,20 @@ public class CombatAgent extends Agent{
 	
 	private Map<Integer, Action> getAction(StateView currentstate) {
 		Map<Integer, Action> actions = new HashMap<Integer, Action>();
-		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
+		for (Map.Entry<Integer, Action> order : unitOrders.entrySet()) {
 			if (verbose)
-				System.out.println("Combat Agent for plr "+playernum+"'s order: " + order.getKey() + " attacking " + (order.getValue()==null?"noone":order.getValue()));
-			if (order.getValue() != null) //if it has a target
+				System.out.println("Combat Agent for plr "+playernum+"'s order: " + order.getKey() + " is to use " + order.getValue());
+			if (order.getValue() != null) //if it has an order
 			{
-				//Assign the unit an action where it attacks it's target
-				actions.put(order.getKey(),Action.createCompoundAttack(order.getKey(), order.getValue()));
+				//Assign the unit its action
+				actions.put(order.getKey(), order.getValue());
 			}
-			else if (wanderwhenidle) {
-				int dir = (int)(Math.random()*8);
-				Action a = new DirectedAction(order.getKey(), ActionType.PRIMITIVEMOVE, Direction.values()[dir]);
-				actions.put(order.getKey(), a);
-			}
+
 		}
 		return actions;
 	}
 	private void doAggro(StateView state) {
-		for (Map.Entry<Integer, Integer> order : unitOrders.entrySet()) {
+		for (Map.Entry<Integer, Action> order : unitOrders.entrySet()) {
 			if (order.getValue() == null) //if it has no orders  
 			{
 				//check all of the other units to check for an enemy that is in sight range
@@ -142,21 +173,35 @@ public class CombatAgent extends Agent{
 				int ux = u.getXPosition();
 				int uy = u.getYPosition();
 				int sightradius = u.getTemplateView().getSightRange();
+				boolean foundsomething = false;
 				for (int enemy : enemies) {
-					boolean foundsomething = false;
+					
 					for (Integer enemyUnitID : state.getUnitIds(enemy)) {
 						UnitView enemyUnit = state.getUnit(enemyUnitID);
 						//get the chebyshev distance (which is the base distance for warcraft 2)
 						if (sightradius > DistanceMetrics.chebyshevDistance(ux, uy, enemyUnit.getXPosition(), enemyUnit.getYPosition()) ) {
 							//(if you can see it)
 							foundsomething=true;
-							unitOrders.put(order.getKey(), enemyUnitID);
+							unitOrders.put(order.getKey(), Action.createCompoundAttack(order.getKey(), enemyUnitID));
 							break;
 						}
 					}
 					if (foundsomething)
 						break;
 				}
+				if (!foundsomething)
+				{
+					//couldn't find an enemy, so wander maybe
+					if (wanderwhenidle)
+					{
+						Direction direction = Direction.values()[(int)(Math.random()*Direction.values().length)];
+						int newx = ux+direction.xComponent();
+						int newy = uy+direction.yComponent();
+						Action a = Action.createCompoundMove(u.getID(), newx, newy);
+						unitOrders.put(order.getKey(), a);
+					}
+				}
+				
 			}
 		}
 	}

@@ -119,6 +119,11 @@ public class PlayerAdapterTest {
 			assertEquals(ut.getGatherRate(Type.GOLD_MINE),uxt.getGoldGatherRate());
 			assertEquals(ut.getGatherRate(Type.TREE),uxt.getWoodGatherRate());
 			assertEquals(ut.getPiercingAttack(),uxt.getPiercingAttack());
+			assertEquals(ut.getDurationAttack(),uxt.getDurationAttack());
+			assertEquals(ut.getDurationGatherGold(),uxt.getDurationGatherGold());
+			assertEquals(ut.getDurationGatherWood(),uxt.getDurationGatherWood());
+			assertEquals(ut.getDurationDeposit(),uxt.getDurationDeposit());
+			assertEquals(ut.getDurationMove(),uxt.getDurationMove());
 			assertEquals(ut.getProducesStrings().size(),uxt.getProduces().size());
 			for(String s : uxt.getProduces())
 			{

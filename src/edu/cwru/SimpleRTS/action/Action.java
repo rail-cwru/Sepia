@@ -5,7 +5,8 @@ import java.io.Serializable;
 import edu.cwru.SimpleRTS.model.Direction;
 /**
  * The primary class of issued commands.
- * Contains factory methods for the construction of valid actions.
+ * Action is immutable and it's subtypes should be as well.
+ * Contains factory methods for easy construction of valid actions.
  * @author The Condor
  *
  */
@@ -13,14 +14,22 @@ public class Action implements Serializable{
 
 	protected final ActionType type;
 	protected final int unitId;
-	protected Action(int untId, ActionType type)
+	public Action(int untId, ActionType type)
 	{
 		this.type = type;
 		this.unitId = untId;
 	}
+	/**
+	 * Get the id of the unit doing the action.
+	 * @return The id of the unit doing the action
+	 */
 	public int getUnitId() {
 		return unitId;
 	}
+	/**
+	 * Get the type of action being done
+	 * @return The ActionType of the action
+	 */
 	public ActionType getType()
 	{
 		return type;

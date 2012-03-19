@@ -11,13 +11,22 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.BeforeClass;
 
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlDirectedAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlLocatedAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlLocatedProductionAction;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlProductionAction;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceQuantity;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTargetedAction;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUpgradeTemplate;
+import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
@@ -48,24 +57,155 @@ public class AdapterTestUtil {
 			xml.setCargoType(ResourceType.values()[r.nextInt(ResourceType.values().length)]);
 		}
 		xml.setCurrentHealth(r.nextInt(chosentemplate.getBaseHealth()));
-		xml.setProductionAmount(r.nextInt());
-		boolean invalidproduction = true;
-		Integer thingtoproduce = null;
-		while (invalidproduction)
-		{
-			XmlTemplate toproduces = alltemplates.get(r.nextInt(alltemplates.size()));
-			if (chosentemplate.getProduces().contains(toproduces.getName()))
-			{
-				thingtoproduce = toproduces.getID();
-				invalidproduction=false;
-			}
-		}
-		xml.setProductionTemplateID(thingtoproduce);
+		
+//		//random template it can make:
+//		boolean invalidproduction = true;
+//		Integer thingtoproduce = null;
+//		while (invalidproduction)
+//		{
+//			XmlTemplate toproduces = alltemplates.get(r.nextInt(alltemplates.size()));
+//			if (chosentemplate.getProduces().contains(toproduces.getName()))
+//			{
+//				thingtoproduce = toproduces.getID();
+//				invalidproduction=false;
+//			}
+//		}
+		xml.setProgressAmount(r.nextInt());
+		xml.setProgressPrimitive(createExampleAction(xml.getID(),r));
 		xml.setTemplateID(chosentemplate.getID());
 		xml.setUnitTask(UnitTask.values()[r.nextInt(UnitTask.values().length)]);
 		xml.setXPosition(r.nextInt());
 		xml.setYPosition(r.nextInt());
 		return xml;
+	}
+	public static XmlAction createExampleAction(int unitId,Random r)
+	{
+		//pick a random type or null, then pick some random arguments
+		int ntypes = ActionType.values().length;
+		int typeind=r.nextInt(ntypes+1);
+		if (typeind==ntypes)
+			return null;
+		
+		ActionType type = ActionType.values()[typeind];
+		switch (type)
+		{
+		case COMPOUNDATTACK:
+		{
+			XmlTargetedAction a = new XmlTargetedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTargetId(r.nextInt());
+			return a;
+		}
+		case COMPOUNDDEPOSIT:
+		{
+			XmlTargetedAction a = new XmlTargetedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTargetId(r.nextInt());
+			return a;
+		}
+		case COMPOUNDMOVE:
+		{
+			XmlLocatedAction a = new XmlLocatedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setX(r.nextInt());
+			a.setY(r.nextInt());
+			return a;
+		}
+		case COMPOUNDGATHER:
+		{
+			XmlTargetedAction a = new XmlTargetedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTargetId(r.nextInt());
+			return a;
+		}
+		case COMPOUNDPRODUCE:
+		{
+			XmlProductionAction a = new XmlProductionAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTemplateId(r.nextInt());
+			return a;
+		}
+		case COMPOUNDBUILD:
+		{
+			XmlLocatedProductionAction a = new XmlLocatedProductionAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setX(r.nextInt());
+			a.setY(r.nextInt());
+			a.setTemplateId(r.nextInt());
+			return a;
+		}
+		case PRIMITIVEATTACK:
+		{
+			XmlTargetedAction a = new XmlTargetedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTargetId(r.nextInt());
+			return a;
+		}
+		case PRIMITIVEDEPOSIT:
+		{
+			XmlDirectedAction a = new XmlDirectedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setDirection(Direction.values()[r.nextInt(Direction.values().length)]);
+			return a;
+		}
+		case PRIMITIVEMOVE:
+		{
+			XmlDirectedAction a = new XmlDirectedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setDirection(Direction.values()[r.nextInt(Direction.values().length)]);
+			return a;
+		}
+		case PRIMITIVEGATHER:
+		{
+			XmlDirectedAction a = new XmlDirectedAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setDirection(Direction.values()[r.nextInt(Direction.values().length)]);
+			return a;
+		}
+		case PRIMITIVEPRODUCE:
+		{
+			XmlProductionAction a = new XmlProductionAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTemplateId(r.nextInt());
+			return a;
+		}
+		case PRIMITIVEBUILD:
+		{
+			XmlProductionAction a = new XmlProductionAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			a.setTemplateId(r.nextInt());
+			return a;
+		}
+		case FAILED:
+		{
+			XmlAction a = new XmlAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			return a;
+		}
+		case FAILEDPERMANENTLY:
+		{
+			XmlAction a = new XmlAction();
+			a.setActionType(type);
+			a.setUnitId(unitId);
+			return a;
+		}
+		default:
+			throw new RuntimeException("Test is not up to date with action types: "+type +" is not covered");
+		}
+		
 	}
 	public static XmlUpgradeTemplate createExampleUpgradeTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
 		XmlUpgradeTemplate xml = new XmlUpgradeTemplate();
@@ -117,6 +257,11 @@ public class AdapterTestUtil {
 		xml.setRange(r.nextInt());
 		xml.setSightRange(r.nextInt());
 		xml.setWoodGatherRate(r.nextInt());
+		xml.setDurationAttack(r.nextInt());
+		xml.setDurationMove(r.nextInt());
+		xml.setDurationDeposit(r.nextInt());
+		xml.setDurationGoldGather(r.nextInt());
+		xml.setDurationWoodGather(r.nextInt());
 		for (String s : namesofunits)
 		{
 			if (r.nextBoolean())

@@ -34,7 +34,11 @@ public class UnitTemplateAdapter {
 		ut.setCanBuild(xml.isCanBuild());//if(obj.has("Builder"))
 		ut.setCanGather(xml.isCanGather());//if(obj.has("Gatherer"))
 		ut.setCanMove(xml.isCanMove());//if(obj.has("Mobile"))
-		
+		ut.setDurationAttack(xml.getDurationAttack());
+		ut.setDurationDeposit(xml.getDurationDeposit());
+		ut.setDurationMove(xml.getDurationMove());
+		ut.setDurationGoldGather(xml.getDurationGatherGold());
+		ut.setDurationWoodGather(xml.getDurationGatherWood());
 		ut.setPlayer(player);
 		for (String s : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
 			ut.addBuildPrereqItem(s);
@@ -77,6 +81,11 @@ public class UnitTemplateAdapter {
 		xml.setSightRange(ut.getSightRange());
 		
 		xml.setWoodGatherRate(ut.getGatherRate(Type.TREE));
+		xml.setDurationAttack(ut.getDurationAttack());
+		xml.setDurationDeposit(ut.getDurationDeposit());
+		xml.setDurationMove(ut.getDurationMove());
+		xml.setDurationGoldGather(ut.getDurationGatherGold());
+		xml.setDurationWoodGather(ut.getDurationGatherWood());
 		for (String s:ut.getProducesStrings())
 			xml.getProduces().add(s);
 		

@@ -79,23 +79,59 @@ public final class TypeLoader {
 		template.setName(obj.getString("Name"));
 		if(obj.has("Mobile"))
 			template.setCanMove(obj.getBoolean("Mobile"));
+		else
+			template.setCanMove(false);
 		if(obj.has("Builder"))
 			template.setCanBuild(obj.getBoolean("Builder"));
+		else
+			template.setCanBuild(false);
 		if(obj.has("Gatherer"))
 			template.setCanGather(obj.getBoolean("Gatherer"));
-		template.setBaseHealth(obj.getInt("HitPoints"));
-		template.setArmor(obj.getInt("Armor"));
-		template.setCharacter(obj.getString("Character").charAt(0));
+		else
+			template.setCanGather(false);
+		if (obj.has("HitPoints"))
+			template.setBaseHealth(obj.getInt("HitPoints"));
+		else
+			template.setBaseHealth(1);
+		if (obj.has("Armor"))
+			template.setArmor(obj.getInt("Armor"));
+		else
+			template.setArmor(0);
+		if (obj.has("Character"))
+			template.setCharacter(obj.getString("Character").charAt(0));
+		else
+			template.setCharacter('?');
 		if(obj.has("BasicAttack"))
+		{
 			template.setBasicAttack(obj.getInt("BasicAttack"));
+		}
+		else
+			template.setBasicAttack(0);
 		if(obj.has("Piercing"))
 			template.setPiercingAttack(obj.getInt("Piercing"));
+		else
+			template.setPiercingAttack(0);
 		if(obj.has("Range"))
 			template.setRange(obj.getInt("Range"));
-		template.setSightRange(obj.getInt("SightRange"));
-		template.setTimeCost(obj.getInt("TimeCost"));
+		else
+			template.setRange(1);
+		if (obj.has("SightRange"))
+			template.setSightRange(obj.getInt("SightRange"));
+		else
+			template.setSightRange(0);
+		if (obj.has("TimeCost"))
+		{
+			int timecost = obj.getInt("TimeCost");
+			if (timecost < 1)
+				throw new IllegalArgumentException("Time cost must be a positive integer");
+			template.setTimeCost(timecost);
+		}
+		else
+			template.setTimeCost(1);
 		if(obj.has("FoodCost"))
 			template.setFoodCost(obj.getInt("FoodCost"));
+		else
+			template.setFoodCost(0);
 		if(obj.has("FoodGiven"))
 			template.setFoodProvided(obj.getInt("FoodGiven"));
 		else
@@ -120,9 +156,6 @@ public final class TypeLoader {
 			template.setGoldGatherRate(0);
 		
 		
-		template.setGoldCost(obj.getInt("GoldCost"));
-		template.setWoodCost(obj.getInt("WoodCost"));
-		template.setPlayer(player);
 		if(obj.has("Produces"))
 		{
 			JSONArray produces = obj.getJSONArray("Produces");
@@ -152,6 +185,84 @@ public final class TypeLoader {
 			}
 		}
 		
+		//Various duration fields:
+		if(obj.has("DurationMove"))
+		{
+			int duration = obj.getInt("DurationMove");
+			//negative durations are meanless
+			//zero duration is meaningless so long as a unit can do only one action per turn
+			if (duration < 1)
+			{
+				throw new IllegalArgumentException("DurationMove must be positive");
+			}
+			template.setDurationMove(duration);
+		}
+		else
+		{
+			template.setDurationMove(1);
+		}
+		if(obj.has("DurationAttack"))
+		{
+			int duration = obj.getInt("DurationAttack");
+			//negative durations are meanless
+			//zero duration is meaningless so long as a unit can do only one action per turn
+			if (duration < 1)
+			{
+				throw new IllegalArgumentException("DurationAttack must be positive");
+			}
+			template.setDurationAttack(duration);
+		}
+		else
+		{
+			template.setDurationAttack(1);
+		}
+		if(obj.has("DurationDeposit"))
+		{
+			int duration = obj.getInt("DurationDeposit");
+			//negative durations are meanless
+			//zero duration is meaningless so long as a unit can do only one action per turn
+			if (duration < 1)
+			{
+				throw new IllegalArgumentException("DurationDeposit must be positive");
+			}
+			template.setDurationDeposit(duration);
+		}
+		else
+		{
+			template.setDurationDeposit(1);
+		}
+		if(obj.has("DurationGatherGold"))
+		{
+			int duration = obj.getInt("DurationGatherGold");
+			//negative durations are meanless
+			//zero duration is meaningless so long as a unit can do only one action per turn
+			if (duration < 1)
+			{
+				throw new IllegalArgumentException("DurationGatherGold must be positive");
+			}
+			template.setDurationGoldGather(duration);
+		}
+		else
+		{
+			template.setDurationGoldGather(1);
+		}
+		if(obj.has("DurationGatherWood"))
+		{
+			int duration = obj.getInt("DurationGatherWood");
+			//negative durations are meanless
+			//zero duration is meaningless so long as a unit can do only one action per turn
+			if (duration < 1)
+			{
+				throw new IllegalArgumentException("DurationGatherWood must be positive");
+			}
+			template.setDurationWoodGather(duration);
+		}
+		else
+		{
+			template.setDurationWoodGather(1);
+		}
+		
+		template.setPlayer(player);
 		return template;
 	}
 	private static UpgradeTemplate handleUpgrade(JSONObject obj, String name, int player, IDDistributer idsource) throws JSONException {

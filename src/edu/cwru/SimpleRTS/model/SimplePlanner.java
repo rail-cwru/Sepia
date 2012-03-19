@@ -237,35 +237,11 @@ public class SimplePlanner implements Serializable {
 	
 	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, UnitTemplate template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
-		//it must be already in the same place for the production to count
-		if (actor.getxPosition() == targetX && actor.getyPosition() == targetY)
-		{//if it is in the same place
-			//needs to know how much building on the target template the unit already has done
-			if (actor.getCurrentProductionID() == template.ID)
-			{//if it is building the same thing
-				//then make it keep building it
-				int amountleft = template.getTimeCost() - actor.getAmountProduced();
-				for (int i = 0; i<amountleft; i++)
-				{
-					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
-				}
-			}
-			else
-			{//if it is making somthing else
-				for (int i = template.getTimeCost() - 1; i>=0; i--)
-				{
-					plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
-				}
-			}
-		}
-		else
-		{
-//			System.out.println("Guy at "+actor.getxPosition() + "," + actor.getyPosition()+" Building thing at "+targetX+","+ targetY);
+		//it must go to the right place
+		if (actor.getxPosition() != targetX && actor.getyPosition() != targetY)
+		{//if it is not in the same place
+			//Then bring it there
 			plan = planMove(actor, getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
-			for (int i = template.getTimeCost() - 1; i>=0; i--)
-			{
-				plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
-			}
 		}
 		return plan;
 	}
@@ -275,23 +251,8 @@ public class SimplePlanner implements Serializable {
 	
 	public LinkedList<Action> planProduce(Unit actor, Template template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
-		//needs to know how much building on the target template the unit already has done
-		if (actor.getCurrentProductionID() == template.ID)
-		{//if it is building the same thing
-			//then make it keep building it
-			int amountleft = template.getTimeCost() - actor.getAmountProduced();
-			for (int i = 0; i<amountleft; i++)
-			{
-				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
-			}
-		}
-		else
-		{//if it is making somthing else
-			for (int i = template.getTimeCost() - 1; i>=0; i--)
-			{
-				plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
-			}
-		}
+		//produce is simple, a single action
+		plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));
 		return plan;
 	}
 	public LinkedList<Action> planProduce(int actor, int template) {

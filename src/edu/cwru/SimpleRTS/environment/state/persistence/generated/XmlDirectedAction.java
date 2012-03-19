@@ -13,23 +13,22 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import edu.cwru.SimpleRTS.model.resource.ResourceType;
+import edu.cwru.SimpleRTS.model.Direction;
 
 
 /**
- * <p>Java class for ResourceQuantity complex type.
+ * <p>Java class for DirectedAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ResourceQuantity">
+ * &lt;complexType name="DirectedAction">
  *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *     &lt;extension base="{}Action">
  *       &lt;sequence>
- *         &lt;element name="quantity" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="type" type="{}ResourceType"/>
+ *         &lt;element name="direction" type="{}Direction"/>
  *       &lt;/sequence>
- *     &lt;/restriction>
+ *     &lt;/extension>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -37,55 +36,39 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ResourceQuantity", propOrder = {
-    "quantity",
-    "type"
+@XmlType(name = "DirectedAction", propOrder = {
+    "direction"
 })
-public class XmlResourceQuantity {
+public class XmlDirectedAction
+    extends XmlAction
+{
 
-    protected int quantity;
     @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    protected ResourceType type;
+    @XmlJavaTypeAdapter(Adapter2 .class)
+    protected Direction direction;
 
     /**
-     * Gets the value of the quantity property.
-     * 
-     */
-    public int getQuantity() {
-        return quantity;
-    }
-
-    /**
-     * Sets the value of the quantity property.
-     * 
-     */
-    public void setQuantity(int value) {
-        this.quantity = value;
-    }
-
-    /**
-     * Gets the value of the type property.
+     * Gets the value of the direction property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public ResourceType getType() {
-        return type;
+    public Direction getDirection() {
+        return direction;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the direction property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setType(ResourceType value) {
-        this.type = value;
+    public void setDirection(Direction value) {
+        this.direction = value;
     }
 
 }

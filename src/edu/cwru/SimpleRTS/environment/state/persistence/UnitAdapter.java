@@ -25,8 +25,7 @@ public class UnitAdapter {
 		unit.setTask(xml.getUnitTask());
 		unit.setCargo(xml.getCargoType(), xml.getCargoAmount());
 		unit.setHP(xml.getCurrentHealth());
-		unit.setProduction(templates.get(xml.getProductionTemplateID()), xml.getProductionAmount());
-		
+		unit.setDurativeStatus(ActionAdapter.fromXml(xml.getProgressPrimitive()), xml.getProgressAmount());
 		return unit;
 	}
 	
@@ -40,8 +39,8 @@ public class UnitAdapter {
 		xml.setCargoAmount(unit.getCurrentCargoAmount());
 		xml.setTemplateID(unit.getTemplate().ID);
 		xml.setUnitTask(unit.getTask());
-		xml.setProductionTemplateID(unit.getCurrentProductionID());
-		xml.setProductionAmount(unit.getAmountProduced());
+		xml.setProgressPrimitive(ActionAdapter.toXml(unit.getActionProgressPrimitive()));
+		xml.setProgressAmount(unit.getActionProgressAmount());
 		
 		return xml;
 	}

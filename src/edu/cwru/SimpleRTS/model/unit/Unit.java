@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
 
+import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
@@ -20,13 +21,13 @@ public class Unit extends Target implements Cloneable {
 	protected UnitTask task;
 	protected int cargoAmount;
 	@SuppressWarnings("rawtypes")
-	protected Template currentProduction;
-	protected int currentProductionAmount;
+	protected Action currentDurativePrimitive;
+	protected int currentDurativeProgress;
 	public Unit(UnitTemplate template, int ID) {
 		super(ID);
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
-		currentProductionAmount = 0;
+		currentDurativeProgress = 0;
 		task = UnitTask.Idle;
 	}
 	
@@ -39,8 +40,8 @@ public class Unit extends Target implements Cloneable {
 		unit.cargoType = cargoType;
 		unit.task = task;
 		unit.cargoAmount = cargoAmount;
-		unit.currentProduction = currentProduction;
-		unit.currentProductionAmount = currentProductionAmount;
+		unit.currentDurativePrimitive = currentDurativePrimitive;
+		unit.currentDurativeProgress = currentDurativeProgress;
 		return unit;
 	}
 	
@@ -88,36 +89,42 @@ public class Unit extends Target implements Cloneable {
 		return template;
 	}
 	/**
-	 * 
-	 * @param amount
-	 * @return
+	 * Set the health of this unit to a specific value.
+	 * @param amount The new amount of hit points.
 	 */
 	public void setHP(int amount)
 	{
 		currentHealth=amount;
 	}
-	public int getAmountProduced()
+	/**
+	 * Get the amount of progress toward the completion of a primitive action.
+	 * @return
+	 */
+	public int getActionProgressAmount()
 	{
-		return currentProductionAmount;
-	}
-	public int getCurrentProductionID()
-	{
-		if (currentProduction==null)
-			return Integer.MIN_VALUE;
-		return currentProduction.ID;
-	}
-	public void resetProduction() {
-		currentProduction = null;
-		currentProductionAmount = 0;
+		return currentDurativeProgress;
 	}
 	/**
-	 * Increment production amount
-	 * @param templateID
+	 * Get the primitive action that the unit is working towards.
+	 * @return
 	 */
-	public void setProduction(Template toproduce, int amount) {
+	public Action getActionProgressPrimitive()
+	{
+		return currentDurativePrimitive;
+	}
+	public void resetDurative() {
+		currentDurativePrimitive = null;
+		currentDurativeProgress = 0;
+	}
+	/**
+	 * Set the status of durative actions.
+	 * @param primitive The primitive action being worked towards.
+	 * @param progress The amount of progress towards the primitive action.
+	 */
+	public void setDurativeStatus(Action primitive, int progress) {
 		
-		currentProduction = toproduce;
-		currentProductionAmount = amount;
+		currentDurativePrimitive = primitive;
+		currentDurativeProgress = progress;
 	}
 	public boolean canGather()
 	{
@@ -198,8 +205,8 @@ public class Unit extends Target implements Cloneable {
 		private final UnitTemplateView templateView;
 		private final UnitTask task;
 		private final int ID;
-		private final Integer currentProduction;
-		private final int currentProductionAmount;
+		private final Action currentDurativePrimitive;
+		private final int currentDurativeProgress;
 		public UnitView(Unit unit) {
 			currentHealth = unit.currentHealth;
 			templateView = unit.template.getView();
@@ -209,8 +216,8 @@ public class Unit extends Target implements Cloneable {
 			yPosition = unit.yPosition;
 			task = unit.task;
 			ID = unit.ID;
-			currentProduction = unit.currentProduction==null?null:unit.currentProduction.ID;
-			currentProductionAmount = unit.currentProductionAmount;
+			currentDurativePrimitive = unit.currentDurativePrimitive;
+			currentDurativeProgress = unit.currentDurativeProgress;
 		}
 		/**
 		 * Get the current health of the unit
@@ -250,19 +257,19 @@ public class Unit extends Target implements Cloneable {
 		}
 		
 		/**
-		 * Get the progress of this unit toward making whatever it is making (as indicated by getCurrentProductionType())
+		 * Get the progress of this unit toward executing a durative action.
 		 * @return
 		 */
-		public int getCurrentProductionAmount() {
-			return currentProductionAmount;
+		public int getCurrentDurativeProgress() {
+			return currentDurativeProgress;
 		}
 		/**
 		 * Get the template id of the unit or upgrade currently being produced.
 		 * This is only relevant if getCurrentProductionAmount indicates something has progress
 		 * @return The id of the template of what is being produced, or null
 		 */
-		public Integer getCurrentProductionType() {
-			return currentProduction;
+		public Action getCurrentDurativeAction() {
+			return currentDurativePrimitive;
 		}
 		
 		/**

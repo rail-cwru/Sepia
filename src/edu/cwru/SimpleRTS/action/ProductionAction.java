@@ -23,7 +23,7 @@ public class ProductionAction extends Action
 		{
 			return true;
 		}
-		else if (!(other instanceof Action))
+		else if (!(other instanceof ProductionAction))
 		{
 			return false;
 		}

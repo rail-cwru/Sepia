@@ -379,6 +379,227 @@
 		 With resources revealed, the EventLogger will tell you the location and type of all resources via getRevealedResources().
 		   Beware though, as it only logs the appearance of resources, some other player (or even you) may have mined out or cut down the resource in the meantime.  
 		</p>
+		<h2 id="unit_templates">11. The Unit Templates File</h2>
+			<p>
+				A great deal of information is stored in the unit_templates file.  This file is formatted using JSON and carries details
+				that allow the program to initialize different types of unit and upgrade.  The general formatting used by this is:
+				<code>"IrrelevantName2" : { "Option1" : valueofoption1, "Option2" : valueofoption2 }, "IrrelevantName2" : { "Option1" : valueofoption1, "Option2" : valueofoption2 }</code>
+				such as 
+				<code>"Barracks" : { "Name" : "Barracks", "GoldCost" : 300, "Produces" : ["Footman","Archer"] }, "Footman" : { "Name" : "Footman", "GoldCost" : 200, "BasicAttack" : 3}</code>
+				
+			</p>
+			<p>A complete list of available options for creating a customized unit or upgrade follows.  This uses the conceit of 
+				<ul>
+					<li>
+						<p>
+							The following are used in both units and upgrades:
+						</p>
+						<ul>
+							<li>
+								"Name" : "MyNewTemplate"<br/>
+								This example denotes that the name of the unit or upgrade is MyNewTemplate.
+								This field may be any string.
+								This is a necessary field.
+							</li>
+							<li>
+								"TemplateType" : "Unit"<br/>
+								This example denotes that the template is a unit.
+								This field may be either "Unit" or "Upgrade".
+								This is a necessary field.
+							</li>
+							<li>
+								"TimeCost" : 3<br/>
+								This example denotes that the template will take 3 steps to build or produce.
+								This field may be any positive integer, any other will be rejected.
+								This is an optional field that defaults at 1.
+								This field is related to the various Duration fields for units, differing in that the duration is stored in the target instead of the actor.
+							</li>
+							
+							<li>
+								"GoldCost" : 400<br/>
+								This example denotes that the template will cost 400 gold to build or produce.
+								This field may be any nonnegative integer, any other will be rejected.
+								This is an optional field that defaults at 0 (no cost).
+							</li>
+							<li>
+								"WoodCost" : 50<br/>
+								This example denotes that the template will cost 50 wood to build or produce.
+								This field may be any nonnegative integer, any other will be rejected.
+								This is an optional field that defaults at 0 (no cost).
+							</li>
+							<li>
+								"FoodCost" : 3<br/>
+								This example denotes that the template will take up 3 food when built or produced.
+								This field may be any nonnegative integer, any other will be rejected.
+								This is an optional field that defaults at 0 (no cost).
+							</li>
+							<li>
+								"FoodCost" : 3<br/>
+								This example denotes that the template will take up 3 food when built or produced.
+								This field may be any nonnegative integer, any other will be rejected.
+								This is an optional field that defaults at 0 (no cost).
+							</li>
+							<li>
+								"UpgradePrereq" : ["SuperWeaponUpgrade","FootUpgrade"]<br/>
+								This example denotes that this template cannot be produced/built unless the player has completed an upgrade of the type with name "SuperWeaponUpgrade" and an upgrade of the type with name "FootUpgrade".
+								This field is a list of strings, each of should correspond to the Name field of a upgrade.
+								The full prerequisites are the intersection of BuildPrereq and UpgradePrereq.
+							</li>
+							<li>
+								"BuildPrereq" : ["Blacksmith","Stable"]<br/>
+								This example denotes that this template cannot be produced/built unless the player has a unit of the type with name "Blacksmith" and a unit of the type with name "Stable".
+								This field is a list of strings, each of should correspond to the Name field of a unit.
+								The full prerequisites are the intersection of BuildPrereq and UpgradePrereq.
+							</li>
+						</ul>
+					</li>
+					<li>
+						<p>
+							The following features are only read by units:
+						</p>
+						<ul>
+							<li>
+								"HitPoints" : 30<br/>
+								This example denotes that the unit will start with 30 health.
+								This field may be any positive integer*, any other will be rejected.
+								This is an optional field that defaults to 1 (a single point of health).
+							</li>
+							<li>
+								"SightRange" : 5<br/>
+								This example denotes that when the game is partially observable, the player will be able to observe events at a distance of less than or equal to 5.
+								This field can be any integer, but not all have distinct meanings.  In normal circumstances, a sight range of zero will observe only events associated with that unit.  A negative sight range will never allow any additional observation.
+								This is an optional field that defaults to 0 (seeing only itself). 
+							</li>
+							<li>
+								"Character" : "p"<br/>
+								This example denotes that the unit will be associated with the letter 'p' on the visual display.   
+								This field can be any nonempty string, but the unit will only be associated with the first character in that string.
+								This is an optional field that defaults to '?'. 
+							</li>
+							<li>
+								"BasicAttack" : 6<br/>
+								This example denotes that the first parameter in the unit's attack is 6.
+								This field can be any integer.
+								This field is optional and defaults to 0.
+								If both this and the Piercing field are 0, then the unit will be unable to attack (rather than attacking and doing no damage).
+							</li>
+							<li>
+								"Piercing" : 3<br/>
+								This example denotes that the second parameter in the unit's attack is 3.
+								This field can be any integer.
+								This field is optional and defaults to 0.
+								If both this and the BasicAttack field are 0, then the unit will be unable to attack (rather than attacking and doing no damage).
+							</li>
+							<li>
+								"Range" : 4<br/>
+								This example denotes that the maximum distance to a target for this unit to attack it is 4.
+								This field can be any integer, but not all have distinct meanings.  1 represents a melee attack, 0 can only attack itself in normal circumstances, negative ranges will never be able to attack anything.
+								This field is irrelevant when the unit cannot attack (IE: when both attack parameters are zero).
+								This field is optional and defaults to 1 (melee attack).
+							</li>
+							<li>
+								"Armor" : 2<br/>
+								This example denotes that the armor reduction in damage calculation is 2.
+								This field can be any integer.
+								This field is irrelevant when the unit cannot attack (IE: when both attack parameters are zero).
+								This field is optional and defaults to 0 (no armor reduction).
+							</li>
+							<li>
+								"Mobile" : true<br/>
+								This example denotes that the unit is capable of attempting a move action.
+								This field can be true or false.
+								This field is optional and defaults to false (unable to move).
+							</li>
+							<li>
+								"Gatherer" : true<br/>
+								This example denotes that the unit is capable of attempting a gather action.
+								This field can be true or false.
+								This field is optional and defaults to false (unable to gather).
+							</li>
+							<li>
+								"Gatherer" : true<br/>
+								This example denotes that the unit is capable of attempting a gather action.
+								This field can be true or false.
+								This field is optional and defaults to false (unable to gather).
+							</li>
+							<li>
+								"GoldPerTrip" : 50<br/>
+								This example denotes that the unit is capable of gathering 50 gold in a single step and carrying up to 50 gold at a time.
+								This field can be any nonnegative integer*.
+								This field is optional and defaults to 0 (unable to hold or pickup any gold).
+							</li>
+							<li>
+								"WoodPerTrip" : 20<br/>
+								This example denotes that the unit is capable of gathering 50 wood in a single step and carrying up to 50 wood at a time.
+								This field can be any nonnegative integer*.
+								This field is optional and defaults to 0 (unable to hold or pickup any wood).
+							</li>
+							<li>
+								"AcceptsWood" : true<br/>
+								This example denotes that the unit is capable of being the target of a deposit from a unit carrying wood.
+								This field can be either true or false
+								This field is optional and defaults to false (unable to be the target of a deposit from a unit carying wood).
+							</li>
+							<li>
+								"AcceptsGold" : true<br/>
+								This example denotes that the unit is capable of being the target of a deposit from a unit carrying gold.
+								This field can be either true or false
+								This field is optional and defaults to false (unable to be the target of a deposit from a unit carying gold).
+							</li>
+							
+							<li>
+								"Builder" : true<br/>
+								This example denotes that the unit is capable of attempting to do build actions and incapable of attempting produce actions.
+								This field can be true or false.
+								This field is optional and defaults to false (capable of attempting produce actions and incapable of attempting produce actions).
+								This field is strongly related to the Produces field.  The two modify each other's meanings.
+							</li>
+							<li>
+								"Produces" : ["Barracks","Farm"]<br/>
+								This example denotes that the unit is capable of attempting to build or produce (depending on the Builder field) the unit or upgrade with names "Farm" or "Barracks"
+								This field is a list of strings.
+								This field is optional and defaults to an empty list (producing nothing).
+								This field is strongly related to the Builder field.  The two modify each other's meanings.
+							</li>
+							<li>
+								"DurationAttack" : 3<br/>
+								This example denotes that the unit, if capable of attacking, will take 3 steps to launch it's attack.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the attack will be applied to make the next state).
+								This field is irrelevant if the unit is unable to attack (see Piercing and BasicAttack fields).
+							</li>
+							<li>
+								"DurationDeposit" : 3<br/>
+								This example denotes that the unit, if capable of gathering, will take 3 steps to deposit the resources it is carrying.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the deposit will be applied to make the next state).
+								This field is irrelevant if the unit is unable to gather (see the Gatherer field).
+							</li>
+							<li>
+								"DurationGatherWood" : 3<br/>
+								This example denotes that the unit, if capable of gathering, will take 3 steps to deposit the resources it is carrying.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the gathering will be applied to make the next state).
+								This field is irrelevant if the unit is unable to gather (see the Gatherer field).
+							</li>
+							<li>
+								"DurationGatherGold" : 3<br/>
+								This example denotes that the unit, if capable of gathering, will take 3 steps to deposit the resources it is carrying.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the gathering will be applied to make the next state).
+								This field is irrelevant if the unit is unable to gather (see the Gatherer field).
+							</li>
+							<li>
+								"DurationMove" : 3<br/>
+								This example denotes that the unit, if capable of moving, will take 3 steps to move from one place to an adjacent place.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the move will be applied to make the next state).
+								This field is irrelevant if the unit is unable to move (see the Mobile field).
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</p>
 		<h2 id="Matlab">MATLAB Specific Instructions</h2>
 		<p>Be aware that SimpleRTS works only under Matlab of Windows 7 environment, and doesn't work under Matlab of Unix/Linux/Mac OS X environment.
 		</p>

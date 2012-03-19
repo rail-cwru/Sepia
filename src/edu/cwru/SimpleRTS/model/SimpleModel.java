@@ -37,8 +37,13 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.GameMap;
 /**
- * A "Simple" Model
- *
+ * <pre>
+ * A "Simple" Model.
+ * This model is sequential, processing most actions one at a time, and resolves
+ * conflicts in this manner.
+ * This model assumes all primitive actions take exactly one step to complete, 
+ * and will disregard all evidence to the contrary.
+ * </pre>
  */
 public class SimpleModel implements Model {
 	
@@ -495,18 +500,7 @@ public class SimpleModel implements Model {
 								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
 								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
 								{
-									int newproductionamount;
-									if (u.getCurrentProductionID() == template.ID)
-									{
-										newproductionamount = u.getAmountProduced()+1;
-									}
-									else
-									{
-										newproductionamount = 1;
-									}
-									u.setProduction(template, newproductionamount);
-									if (template.getTimeCost() == u.getAmountProduced())
-									{
+									
 										Unit building = template.produceInstance(state);
 	//									System.out.println("Checking on bug: unit with id "+u.ID);
 	//									System.out.println(state.getUnit(u.ID));
@@ -518,12 +512,10 @@ public class SimpleModel implements Model {
 										
 	//									System.out.println(state.getUnit(u.ID));
 										}
-										u.resetProduction();
-									}
+									
 								}
-								else //it can't produce the appropriate thing, or the thing's prereqs aren't met, this still resets progress from others
+								else //it can't produce the appropriate thing, or the thing's prereqs aren't met
 								{
-									u.resetProduction();
 									failedtry=true;
 								}
 								
@@ -540,41 +532,25 @@ public class SimpleModel implements Model {
 								//check if it is even capable of producing the
 								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
 								{
-									int newproductionamount;
-									if (u.getCurrentProductionID() == template.ID)
+									if (template instanceof UnitTemplate)
 									{
-										newproductionamount = u.getAmountProduced()+1;
-									}
-									else
-									{
-										newproductionamount = 1;
-									}
-									u.setProduction(template, newproductionamount);
-									if (template.getTimeCost() == u.getAmountProduced())
-									{
-										if (template instanceof UnitTemplate)
+										Unit produced = ((UnitTemplate)template).produceInstance(state);
+										int[] newxy = state.getClosestPosition(x,y);
+										if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 										{
-											Unit produced = ((UnitTemplate)template).produceInstance(state);
-											int[] newxy = state.getClosestPosition(x,y);
-											if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
-											{
-												history.recordBirth(produced, u, state);
-											}
+											history.recordBirth(produced, u, state);
 										}
-										else if (template instanceof UpgradeTemplate) {
-											UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-											if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
-											{
-												history.recordUpgrade(upgradetemplate,u, state);
-											}
+									}
+									else if (template instanceof UpgradeTemplate) {
+										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
+										if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
+										{
+											history.recordUpgrade(upgradetemplate,u, state);
 										}
-										u.resetProduction();
-										
 									}
 								}
-								else//can't produce it, or prereqs aren't met, either way, this still resets whatever it was making before
+								else//can't produce it, or prereqs aren't met
 								{
-									u.resetProduction();
 									failedtry=true;
 								}
 //								System.out.println(template.getName() + " takes "+template.timeCost);
