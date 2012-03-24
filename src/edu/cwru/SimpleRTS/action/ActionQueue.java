@@ -35,4 +35,28 @@ public class ActionQueue
 	{
 		this.primitives = primitives;
 	}
+	/**
+	 * Returns the hash code of the full action.
+	 * The primitives are of no consequence.
+	 */
+	@Override
+	public int hashCode()
+	{
+		return fullAction.hashCode();
+	}
+	/**
+	 * Returns the equality of this queue's full action with the other queue's full action.
+	 * Primitives are of no consequence.
+	 * @return
+	 */
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other == null)
+			return false;
+		if (!this.getClass().equals(other.getClass()))
+			return true;
+		else
+			return fullAction.equals(((ActionQueue)other).fullAction);
+	}
 }

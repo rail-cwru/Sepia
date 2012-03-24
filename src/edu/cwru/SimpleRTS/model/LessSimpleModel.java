@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -68,18 +69,18 @@ public class LessSimpleModel implements Model {
 	private Random rand;
 	private History history;
 	private State state;
-	private HashMap<Integer,HashMap<Unit, ActionQueue>> queuedActions;
+	private HashMap<Integer,HashMap<Integer, ActionQueue>> queuedActions; //ActionQueue uses equals and 
 	private DurativePlanner planner;
 	private StateCreator restartTactic;
 	private boolean verbose;
 	public LessSimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		history = new History();
-		queuedActions = new HashMap<Integer,HashMap<Unit, ActionQueue>>();
+		queuedActions = new HashMap<Integer,HashMap<Integer, ActionQueue>>();
 		for (Integer i : state.getPlayers())
 		{
 			history.addPlayer(i);
-			queuedActions.put(i, new HashMap<Unit,ActionQueue>());
+			queuedActions.put(i, new HashMap<Integer,ActionQueue>());
 		}
 		rand = new Random(seed);
 		planner = new DurativePlanner(init);
@@ -97,11 +98,11 @@ public class LessSimpleModel implements Model {
 	public void createNewWorld() {
 		state = restartTactic.createState();
 		history = new History();
-		queuedActions = new HashMap<Integer,HashMap<Unit, ActionQueue>>();
+		queuedActions = new HashMap<Integer,HashMap<Integer, ActionQueue>>();
 		for (Integer i : state.getPlayers())
 		{
 			history.addPlayer(i);
-			queuedActions.put(i, new HashMap<Unit,ActionQueue>());
+			queuedActions.put(i, new HashMap<Integer,ActionQueue>());
 		}
 		
 		planner = new DurativePlanner(state);
@@ -212,7 +213,7 @@ public class LessSimpleModel implements Model {
 			{//Valid
 				Unit actor = state.getUnit(unitId);
 				ActionQueue queue = new ActionQueue(a, null);
-				queuedActions.get(sendingPlayerNumber).put(actor, queue);
+				queuedActions.get(sendingPlayerNumber).put(unitId, queue);
 			}
 			
 			
@@ -221,6 +222,8 @@ public class LessSimpleModel implements Model {
 	private LinkedList<Action> calculatePrimitives(Action action) {
 		LinkedList<Action> primitives = null;
 		Unit actor = state.getUnit(action.getUnitId());
+		if (actor != null)
+		{
 		switch (action.getType()) {
 			case PRIMITIVEMOVE:
 			case PRIMITIVEATTACK:
@@ -264,7 +267,7 @@ public class LessSimpleModel implements Model {
 				break;
 			default:
 				primitives = null;
-			
+		}
 		}
 		return primitives;
 	}
@@ -325,26 +328,31 @@ public class LessSimpleModel implements Model {
 			{
 				unsuccessfulUnits.add(id);
 			}
-			for (ActionQueue aq : queuedActions.get(player).values())
+			Iterator<Entry<Integer,ActionQueue>> playerActions=queuedActions.get(player).entrySet().iterator();
+			while(playerActions.hasNext())
 			{
-				aq.resetPrimitives(calculatePrimitives(aq.getFullAction()));
-				Action a = aq.peekPrimitive();
+				Entry<Integer,ActionQueue> entry = playerActions.next();;
+				ActionQueue aq =  entry.getValue();
 //				if (a==null) //Then it failed to calculate primitives, so it fails
-					
-				int uid = a.getUnitId();
+				int uid = entry.getKey();
 				Unit u = state.getUnit(uid);
-				if (u == null)
+				if (u == null || uid!=aq.getFullAction().getUnitId())
 				{
 					//unit is dead or never existed
-					queuedActions.get(player).remove(aq);//TODO, replace this with something that won't throw an exception
-					history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.FAILED));
+					playerActions.remove();
+					history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDUNIT));
 					
 				}
-				else if (!ActionType.isPrimitive(a.getType()))
+				else
+				{
+					aq.resetPrimitives(calculatePrimitives(aq.getFullAction()));
+					Action a = aq.peekPrimitive();
+				
+				if (!ActionType.isPrimitive(a.getType()))
 				{
 					throw new RuntimeException("This should never happen, all subactions should be primitives");
 				}
-				else if (a.getType() == ActionType.PRIMITIVEATTACK && !(a instanceof TargetedAction)
+				if (a.getType() == ActionType.PRIMITIVEATTACK && !(a instanceof TargetedAction)
 						|| a.getType() == ActionType.PRIMITIVEGATHER && !(a instanceof DirectedAction)
 						|| a.getType() == ActionType.PRIMITIVEDEPOSIT && !(a instanceof DirectedAction)
 						|| a.getType() == ActionType.PRIMITIVEPRODUCE&& !(a instanceof ProductionAction)
@@ -354,7 +362,7 @@ public class LessSimpleModel implements Model {
 					//log a wrong type thing
 					history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDTYPE));
 					//remove it from the queues
-					queuedActions.get(player).remove(aq);//TODO, replace this with something that won't throw an exception
+					playerActions.remove();
 				}
 				else
 				{
@@ -797,6 +805,7 @@ public class LessSimpleModel implements Model {
 							}
 						}
 					}
+				}
 				}
 				}
 			}
