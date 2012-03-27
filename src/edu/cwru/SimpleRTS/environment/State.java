@@ -1074,6 +1074,17 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			return state.getFogOfWar();
 		}
 		/**
+		 * Get the list of the player numbers of players in the map.
+		 * @return
+		 */
+		public Integer[] getPlayerNumbers() {
+			//Make a copy of the real list
+			Integer[] actualPlayers = state.getPlayers();
+			Integer[] safePlayers = new Integer[actualPlayers.length];
+			System.arraycopy(actualPlayers, 0, safePlayers, 0, actualPlayers.length);
+			return safePlayers;
+		}
+		/**
 		 * Returns whether the selected coordinates are visible to the player through the fog of war.
 		 * @param x
 		 * @param y
