@@ -274,7 +274,7 @@ public class History {
 			if (this.player == Agent.OBSERVER_ID)
 				return observerHistory.getActionsExecuted().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == Agent.OBSERVER_ID || this.player == playerNumber)
+			if (!fogOfWar || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getActionsExecuted().getView();
 			}
@@ -285,8 +285,10 @@ public class History {
 		}
 		public ActionLoggerView getCommandsIssued(int playerNumber)
 		{
+			if (this.player == Agent.OBSERVER_ID)
+				return observerHistory.getCommandsIssued().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == Agent.OBSERVER_ID || this.player == playerNumber)
+			if (!fogOfWar || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getCommandsIssued().getView();
 			}
@@ -297,8 +299,10 @@ public class History {
 		}
 		public ActionResultLoggerView getActionResults(int playerNumber)
 		{
+			if (this.player == Agent.OBSERVER_ID)
+				return observerHistory.getActionProgress().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == Agent.OBSERVER_ID || this.player == playerNumber)
+			if (!fogOfWar || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getActionProgress().getView();
 			}
