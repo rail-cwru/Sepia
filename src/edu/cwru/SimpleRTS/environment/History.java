@@ -70,18 +70,21 @@ public class History {
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
 		playerHistories.get(player).getActionsExecuted().addAction(stepnumber, actionExecuted);
+		observerHistory.getActionsExecuted().addAction(stepnumber, actionExecuted);
 	}
 	public void recordCommandRecieved(int player, int stepnumber, Action actionRecieved)
 	{
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
 		playerHistories.get(player).getCommandsIssued().addAction(stepnumber, actionRecieved);
+		observerHistory.getCommandsIssued().addAction(stepnumber, actionRecieved);
 	}
 	public void recordActionFeedback(int player, int stepnumber, ActionResult actionFeedback)
 	{
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
 		playerHistories.get(player).getActionProgress().addActionResult(stepnumber, actionFeedback);
+		observerHistory.getActionProgress().addActionResult(stepnumber, actionFeedback);
 	}
 	public void recordBirth(Unit newunit, Unit builder, State state) {
 		int x = newunit.getxPosition();
