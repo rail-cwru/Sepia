@@ -264,11 +264,15 @@ public class History {
 		 */
 		public EventLoggerView getEventLogger()
 		{
+			if (this.player == Agent.OBSERVER_ID)
+				return new EventLoggerView(observerHistory.getEventLogger());
 			//Observability is put in the calculation
 			return new EventLoggerView(playerHistories.get(player).getEventLogger());
 		}
 		public ActionLoggerView getActionsExecuted(int playerNumber)
 		{
+			if (this.player == Agent.OBSERVER_ID)
+				return observerHistory.getActionsExecuted().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!fogOfWar || this.player == Agent.OBSERVER_ID || this.player == playerNumber)
 			{
