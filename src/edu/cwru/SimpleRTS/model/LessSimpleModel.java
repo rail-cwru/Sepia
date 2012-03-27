@@ -445,7 +445,7 @@ public class LessSimpleModel implements Model {
 						}
 					}
 				
-				if (a.getType() == ActionType.PRIMITIVEDEPOSIT)
+				else if (a.getType() == ActionType.PRIMITIVEDEPOSIT)
 				{
 					if (!u.canGather() || u.getCurrentCargoAmount() <= 0)
 					{//if can't gather or isn't carrying anything, then this isn't an acceptible action
@@ -485,7 +485,7 @@ public class LessSimpleModel implements Model {
 						}
 					}
 				}
-				if (a.getType() == ActionType.PRIMITIVEATTACK)
+				else if (a.getType() == ActionType.PRIMITIVEATTACK)
 				{
 					//make sure you can attack and the target exists and is in range in the last state
 					if (!u.canAttack())
@@ -509,7 +509,7 @@ public class LessSimpleModel implements Model {
 						}
 					}
 				}
-				if (a.getType() == ActionType.PRIMITIVEPRODUCE || a.getType() == ActionType.PRIMITIVEBUILD)
+				else if (a.getType() == ActionType.PRIMITIVEPRODUCE || a.getType() == ActionType.PRIMITIVEBUILD)
 				{//currently, this adds to productionsuccessfulsofar because they are not processed consistantly
 				//consistancy could be restored by making unit production and building actions require a place or direction for the new unit to go, and then processing it as a move
 					
@@ -713,7 +713,7 @@ public class LessSimpleModel implements Model {
 					}
 					
 				}
-				if (a.getType() == ActionType.PRIMITIVEGATHER)
+				else if (a.getType() == ActionType.PRIMITIVEGATHER)
 				{
 					//check if it can gather at all
 					if (!u.canGather())
@@ -1091,7 +1091,7 @@ public class LessSimpleModel implements Model {
 			//should be safe to get the unitid, as it should have not been put into failed if the player was bad
 			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.FAILED));
 			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.peekPrimitive(),ActionFeedback.FAILED));
-			queuedActions.get(state.getUnit(aq.getFullAction().getUnitId()).getPlayer()).remove(aq);
+			queuedActions.get(state.getUnit(aq.getFullAction().getUnitId()).getPlayer()).remove(aq.getFullAction().getUnitId());
 		}
 		
 		
