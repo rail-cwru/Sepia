@@ -1,27 +1,21 @@
 package edu.cwru.SimpleRTS.start;
 
-import java.util.List;
-import java.util.LinkedList;
-
 import java.awt.Color;
-import java.awt.Insets;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionListener;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
-
+import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.Box;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.TableModelListener;
 import javax.swing.event.TableModelEvent;
-
-import edu.cwru.SimpleRTS.start.StartWindow;
-import edu.cwru.SimpleRTS.start.AgentTable;
+import javax.swing.event.TableModelListener;
 
 @SuppressWarnings("serial")
 public class AgentPanel extends JPanel implements TableModelListener {

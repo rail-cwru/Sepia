@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.io.Serializable;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
-
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;

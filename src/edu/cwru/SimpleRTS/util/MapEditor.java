@@ -1,13 +1,11 @@
 package edu.cwru.SimpleRTS.util;
 
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
+import java.util.List;
 import org.json.JSONException;
-
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -81,7 +79,7 @@ public class MapEditor {
 						String unitname = nextcommand[1];
 						if (!s.hasTemplates(player));
 							addPlayer(state, player, templatefile);
-						Template template =  s.getTemplate(player, unitname);
+						Template<?> template =  s.getTemplate(player, unitname);
 						if (template!=null && template instanceof UnitTemplate)
 						{
 							
@@ -129,7 +127,7 @@ public class MapEditor {
 		GameMap.storeState(outputfile, state);
 	}
 	static void addPlayer(State state, int player, String templatefile) {
-		List<Template> templates=null;
+		List<Template<?>> templates=null;
 		try {
 			templates = TypeLoader.loadFromFile(templatefile,player,state);
 		} catch (FileNotFoundException e) {
@@ -140,7 +138,7 @@ public class MapEditor {
 			e.printStackTrace();
 		}
 		if(templates != null)
-			for (Template t : templates)
+			for (Template<?> t : templates)
 				state.addTemplate(t);
 	}
 }

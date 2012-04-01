@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
  *
  */
 public class ResourceExhaustionLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int nodeid;
 	private ResourceNode.Type nodetype;
 	public ResourceExhaustionLog(int exhaustednodeid, ResourceNode.Type resoucenodetype) {

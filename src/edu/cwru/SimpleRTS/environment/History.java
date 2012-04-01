@@ -2,14 +2,12 @@ package edu.cwru.SimpleRTS.environment;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import edu.cwru.SimpleRTS.Log.ActionLogger.ActionLoggerView;
 import edu.cwru.SimpleRTS.Log.ActionResultLogger.ActionResultLoggerView;
 import edu.cwru.SimpleRTS.Log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;

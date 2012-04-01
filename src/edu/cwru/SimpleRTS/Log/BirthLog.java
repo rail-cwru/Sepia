@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.Log;
 import java.io.Serializable;
 
 public class BirthLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int unitid;
 	private int player;
 	private int parent;

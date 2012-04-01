@@ -1,22 +1,18 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.environment.*;
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -28,7 +24,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
  */
 public class GameUnitTest {
 	static SimpleModel model;
-	static List<Template> templates;
+	static List<Template<?>> templates;
 
 	/**
 	 * Creates an initial state with one of each unit type.
@@ -43,7 +39,7 @@ public class GameUnitTest {
 		int x = 0;
 		int y = 0;
 		
-		for(Template t : templates)
+		for(Template<?> t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
 				continue;

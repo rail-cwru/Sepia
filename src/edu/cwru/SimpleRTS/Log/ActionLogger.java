@@ -3,11 +3,7 @@ package edu.cwru.SimpleRTS.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.Action;
 /**
  * Logs the results for a single player.

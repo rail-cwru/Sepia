@@ -2,11 +2,8 @@ package edu.cwru.SimpleRTS.model.upgrade;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.prerequisite.BuildingPrerequisite;
-import edu.cwru.SimpleRTS.model.prerequisite.UpgradePrerequisite;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 public class UpgradeTemplate extends Template<Upgrade>
 {
@@ -81,6 +78,10 @@ public class UpgradeTemplate extends Template<Upgrade>
 	}
 	public class UpgradeTemplateView extends TemplateView
 	{
+		/**
+		 * 
+		 */
+		private static final long	serialVersionUID	= 1L;
 		private final int attackChange;
 		private final int defenseChange;
 		private final List<Integer> affectedUnitTypes;

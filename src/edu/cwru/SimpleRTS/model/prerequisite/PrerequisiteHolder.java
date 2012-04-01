@@ -2,8 +2,6 @@ package edu.cwru.SimpleRTS.model.prerequisite;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 
 /**
@@ -12,6 +10,10 @@ import edu.cwru.SimpleRTS.environment.State.StateView;
  *
  */
 public class PrerequisiteHolder implements Prerequisite {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	private List<Prerequisite> prerequisites;
 	public PrerequisiteHolder(List<Prerequisite> prerequisites) {
 		this.prerequisites = prerequisites;

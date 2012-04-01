@@ -13,18 +13,18 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 public final class TypeLoader {
 	private TypeLoader(){}
 	
-	public static List<Template> loadFromFile(String filename, int player, IDDistributer idsource) throws FileNotFoundException, JSONException {
-		List<Template> templates = new ArrayList<Template>();
+	public static List<Template<?>> loadFromFile(String filename, int player, IDDistributer idsource) throws FileNotFoundException, JSONException {
+		List<Template<?>> templates = new ArrayList<Template<?>>();
 //		System.err.println("Getting upgrade templates");
 		List<UpgradeTemplate> uptemplates  = loadUpgradesFromFile(filename, player,idsource);
-		for (Template t : uptemplates)
+		for (Template<?> t : uptemplates)
 			templates.add(t);
 //		System.err.println("Getting unit templates");
 		List<UnitTemplate> untemplates  = loadUnitsFromFile(filename, player,idsource);
-		for (Template t : untemplates)
+		for (Template<?> t : untemplates)
 			templates.add(t);
 //		System.err.println("Putting templates into other templates");
-		for (Template t : templates) {
+		for (Template<?> t : templates) {
 			
 //			System.out.println(t + " " + t);
 			t.namesToIds(untemplates, uptemplates);

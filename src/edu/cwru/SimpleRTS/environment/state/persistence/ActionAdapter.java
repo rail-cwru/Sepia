@@ -1,12 +1,17 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
-import java.util.Map;
-
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.environment.state.persistence.generated.*;
-import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.DirectedAction;
+import edu.cwru.SimpleRTS.action.LocatedAction;
+import edu.cwru.SimpleRTS.action.LocatedProductionAction;
+import edu.cwru.SimpleRTS.action.ProductionAction;
+import edu.cwru.SimpleRTS.action.TargetedAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlDirectedAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlLocatedAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlLocatedProductionAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlProductionAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTargetedAction;
 
 /**
  * An adapter between Action and it's subclasses and XmlAction and it's subclasses.
@@ -61,7 +66,7 @@ public class ActionAdapter {
 		if (action == null)
 			return null;
 		XmlAction xml;
-		Class c = action.getClass();
+		Class<? extends Action> c = action.getClass();
 		if (c.equals(DirectedAction.class))
 		{
 			XmlDirectedAction txml = new XmlDirectedAction();

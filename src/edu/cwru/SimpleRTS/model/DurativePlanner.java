@@ -4,11 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-
 import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.action.ActionType;
-import edu.cwru.SimpleRTS.action.TargetedAction;
-import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -332,7 +328,7 @@ public class DurativePlanner implements Serializable {
 		return planBuild(state.getUnit(actor),targetX,targetY,(UnitTemplate)state.getTemplate(template));
 	}
 	
-	public LinkedList<Action> planProduce(Unit actor, Template template) {
+	public LinkedList<Action> planProduce(Unit actor, @SuppressWarnings("rawtypes") Template template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
 		//needs to know how much building on the target template the unit already has done
 		Action primitivetorepeat = Action.createPrimitiveProduction(actor.ID, template.ID);
@@ -436,7 +432,7 @@ public class DurativePlanner implements Serializable {
 	/**
 	 * This is a temporary debug method, remove it when you are done
 	 */
-	public static int calculateProductionDuration(Unit u, Template t) {
+	public static int calculateProductionDuration(Unit u, @SuppressWarnings("rawtypes") Template t) {
 		return t.getTimeCost();
 	}
 	

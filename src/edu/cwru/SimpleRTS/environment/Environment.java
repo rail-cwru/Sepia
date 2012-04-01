@@ -1,11 +1,8 @@
 package edu.cwru.SimpleRTS.environment;
-import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State.StateView;
@@ -115,7 +112,7 @@ public class Environment
 		 * How many milliseconds to wait before ignoring the agent and forging ahead.  Negative means that it will wait forever.
 		 * May cause concurrency problems in Agents if they aren't well prepared, or, potentially, a pileup of threads
 		 */
-		private static final long maximumtimetowait=-1;
+		private long maximumtimetowait=-1;
 		private final long timestarted;
 		private final CountDownLatch latch;
 		private final State.StateView newstate;
@@ -154,6 +151,11 @@ public class Environment
 			}
 			timestarted = System.currentTimeMillis();
 		}
+		
+		@SuppressWarnings("unused")
+		public void setMaximumWaitTime(long time) {//TODO - add this to configuration
+			this.maximumtimetowait = time;
+		}
 		/**
 		 * Waits for the agent step to finish, then returns the actions if the step was not terminal
 		 * @return The actions if the step was not terminal, null if the step was terminal
@@ -170,7 +172,6 @@ public class Environment
 					latch.await();
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return null;
 			}

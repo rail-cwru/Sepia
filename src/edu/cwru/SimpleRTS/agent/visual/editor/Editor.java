@@ -4,49 +4,42 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-
-import javax.swing.AbstractListModel;
 import javax.swing.ButtonGroup;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.ListDataListener;
 import javax.swing.SwingUtilities;
-
 import org.json.JSONException;
-
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.agent.visual.GameScreen;
 import edu.cwru.SimpleRTS.agent.visual.GamePanel;
-import edu.cwru.SimpleRTS.agent.visual.VisualAgent;
+import edu.cwru.SimpleRTS.agent.visual.GameScreen;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
-import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.GameMap;
 import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class Editor extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	GameScreen screen;
     GamePanel gamePanel;
 	State state;
@@ -104,8 +97,8 @@ public class Editor extends JFrame {
 				{
 					int newPlayerNum = model.getSize();
 					try {
-						List<Template> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum,state);
-						for (Template t : newPlayerTemplates) {
+						List<Template<?>> newPlayerTemplates = TypeLoader.loadFromFile(templatefilename, newPlayerNum,state);
+						for (Template<?> t : newPlayerTemplates) {
 							state.addTemplate(t);
 						}
 					} catch (FileNotFoundException e1) {

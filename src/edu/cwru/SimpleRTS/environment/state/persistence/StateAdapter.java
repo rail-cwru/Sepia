@@ -1,15 +1,12 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
 import java.util.List;
-import java.util.Map;
-
 import edu.cwru.SimpleRTS.environment.PlayerState;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceNode;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
-import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 
 public class StateAdapter {

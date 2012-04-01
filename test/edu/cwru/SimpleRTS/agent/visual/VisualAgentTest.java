@@ -1,13 +1,10 @@
 package edu.cwru.SimpleRTS.agent.visual;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
 import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.agent.SimpleAgent1;
 import edu.cwru.SimpleRTS.environment.Environment;
@@ -30,22 +27,21 @@ public class VisualAgentTest {
 	private static final int player1=0;
 	private static final int player2=1;
 	
-	@SuppressWarnings("rawtypes")
 	@BeforeClass
 	public static void setup() throws JSONException, IOException {
 		StateBuilder builder = new StateBuilder();
 		state = builder.build();
 		builder.setSize(32, 32);
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1,state);
-			for(Template t : templates)
+			List<Template<?>> templates = TypeLoader.loadFromFile("data/unit_templates",player1,state);
+			for(Template<?> t : templates)
 			{
 				builder.addTemplate(t);
 			}
 		}
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2,state);
-			for(Template t : templates)
+			List<Template<?>> templates = TypeLoader.loadFromFile("data/unit_templates",player2,state);
+			for(Template<?> t : templates)
 			{
 				builder.addTemplate(t);
 			}

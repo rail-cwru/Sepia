@@ -1,9 +1,5 @@
 package edu.cwru.SimpleRTS.model;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.prefs.Preferences;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.action.ActionQueue;
@@ -25,7 +19,6 @@ import edu.cwru.SimpleRTS.action.ProductionAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.History;
-import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -34,8 +27,11 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.GameMap;
+import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 /**
  * <pre>
  * A "Simple" Model.
@@ -58,6 +54,7 @@ public class SimpleModel implements Model {
 	private SimplePlanner planner;
 	private StateCreator restartTactic;
 	private boolean verbose;
+	private Configuration configuration;
 	public SimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		history = new History();
@@ -68,12 +65,17 @@ public class SimpleModel implements Model {
 		queuedActions = new HashMap<Unit, ActionQueue>();
 		this.restartTactic = restartTactic;
 		verbose = false;
+		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	public void setVerbosity(boolean verbose) {
 		this.verbose = verbose;
 	}
-	
-
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 	
 	@Override
 	public void createNewWorld() {
@@ -87,15 +89,16 @@ public class SimpleModel implements Model {
 	
 	@Override
 	public boolean isTerminated() {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
 		boolean terminated = true;
-		if(prefs.getBoolean("Conquest", false))
+		if(ConfigurationValues.MODEL_CONQUEST.getBooleanValue(configuration))
 			terminated = conquestTerminated();
-		if(terminated && prefs.getBoolean("Midas", false))
-			terminated = resourceGatheringTerminated(prefs);
-		if(terminated && prefs.getBoolean("ManifestDestiny", false))
-			terminated = buildingTerminated(prefs);
-		terminated = terminated || state.getTurnNumber() > prefs.getInt("TimeLimit", Integer.MAX_VALUE);
+		if(ConfigurationValues.MODEL_MIDAS.getBooleanValue(configuration))
+			terminated = resourceGatheringTerminated();
+		if(ConfigurationValues.MODEL_MANIFEST_DESTINY.getBooleanValue(configuration))
+			terminated = buildingTerminated();
+		
+		terminated = terminated || 
+					 state.getTurnNumber() > ConfigurationValues.MODEL_TIME_LIMIT.getIntValue(configuration);
 		return terminated;
 	}
 	private boolean conquestTerminated() {
@@ -120,10 +123,10 @@ public class SimpleModel implements Model {
 		}
 		return numLivePlayers <= 1;
 	}
-	private boolean resourceGatheringTerminated(Preferences prefs) {
+	private boolean resourceGatheringTerminated() {
 		boolean resourcesGathered = true;
-		int gold = prefs.getInt("RequiredGold", 0);
-		int wood = prefs.getInt("RequiredWood", 0);
+		int gold = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(configuration);
+		int wood = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(configuration);
 //		System.out.println("Agent.maxId() " + Agent.maxId());
 		for(Integer player : state.getPlayers())
 		{
@@ -132,14 +135,16 @@ public class SimpleModel implements Model {
 		}
 		return resourcesGathered;
 	}
-	private boolean buildingTerminated(Preferences prefs) {
+	private boolean buildingTerminated() {
 		boolean built = true;
 		for(Integer i : state.getPlayers())
 		{
 			built = true;
-			for(Template template : state.getTemplates(i).values())
+			for(@SuppressWarnings("rawtypes") Template template : state.getTemplates(i).values())
 			{
-				int required = prefs.getInt("Required"+template.getName()+"Player"+i, 0);
+				int required = 0;
+				if(configuration.containsKey("Required"+template.getName()+"Player"+i))
+					required = configuration.getInt("Required"+template.getName()+"Player"+i);
 				int actual = 0;
 				if (required>0) //Only check if you need to find at least one
 				{
@@ -258,7 +263,7 @@ public class SimpleModel implements Model {
 		}
 		//Set each template to not keep the old view
 		for (Integer player : state.getPlayers())
-			for (Template t : state.getTemplates(player).values())
+			for (@SuppressWarnings("rawtypes") Template t : state.getTemplates(player).values())
 				t.deprecateOldView();
 		
 		//Run the Action
@@ -528,6 +533,7 @@ public class SimpleModel implements Model {
 									wrongtype=true;
 									break;
 								}
+								@SuppressWarnings("rawtypes")
 								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
 								//check if it is even capable of producing the
 								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))

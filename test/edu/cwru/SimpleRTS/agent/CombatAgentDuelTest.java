@@ -5,16 +5,11 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.LessSimpleModel;
-import edu.cwru.SimpleRTS.model.Model;
-import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.SimplePlanner;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -25,8 +20,8 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class CombatAgentDuelTest {
 	static LessSimpleModel model;
 	static SimplePlanner planner;
-	static List<Template> templates1;
-	static List<Template> templates2;
+	static List<Template<?>> templates1;
+	static List<Template<?>> templates2;
 	static State state;
 	static int player1 = 0;
 	static int player2 = 1;
@@ -43,12 +38,12 @@ public class CombatAgentDuelTest {
 		
 		templates1 = TypeLoader.loadFromFile("data/unit_templates",player1,state);		
 		System.out.println("Sucessfully loaded templates");
-		for (Template t : templates1) {
+		for (Template<?> t : templates1) {
 			builder.addTemplate(t);
 		}
 		templates2 = TypeLoader.loadFromFile("data/unit_templates",player2,state);		
 		System.out.println("Sucessfully loaded templates");
-		for (Template t : templates2) {
+		for (Template<?> t : templates2) {
 			builder.addTemplate(t);
 		}
 		

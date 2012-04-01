@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;

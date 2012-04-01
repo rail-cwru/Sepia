@@ -3,6 +3,10 @@ package edu.cwru.SimpleRTS.util;
 import java.io.Serializable;
 
 public class Pair<A, B> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	public A a;
 	public B b;
 	public Pair(A a,B b) {

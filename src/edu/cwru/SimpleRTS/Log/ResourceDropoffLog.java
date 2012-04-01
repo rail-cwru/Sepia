@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  *
  */
 public class ResourceDropoffLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int pickuperid;
 	private ResourceType resource;
 	private int amount;

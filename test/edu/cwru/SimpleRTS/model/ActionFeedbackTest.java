@@ -1,35 +1,26 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import edu.cwru.SimpleRTS.Log.ActionLogger.ActionLoggerView;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.agent.SimpleAgent1;
-import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.environment.StateCreator;
-import edu.cwru.SimpleRTS.model.SimpleModel;
-import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -43,22 +34,21 @@ public class ActionFeedbackTest {
 	private static final int player1=0;
 	private static final int player2=1;
 	private static File tempfile;
-	@SuppressWarnings("rawtypes")
 	@BeforeClass
 	public static void setup() throws JSONException, IOException {
 		StateBuilder builder = new StateBuilder();
 		state = builder.build();
 		builder.setSize(32, 32);
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player1,state);
-			for(Template t : templates)
+			List<Template<?>> templates = TypeLoader.loadFromFile("data/unit_templates",player1,state);
+			for(Template<?> t : templates)
 			{
 				builder.addTemplate(t);
 			}
 		}
 		{
-			List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player2,state);
-			for(Template t : templates)
+			List<Template<?>> templates = TypeLoader.loadFromFile("data/unit_templates",player2,state);
+			for(Template<?> t : templates)
 			{
 				builder.addTemplate(t);
 			}

@@ -2,8 +2,6 @@ package edu.cwru.SimpleRTS.environment.state.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import edu.cwru.SimpleRTS.environment.PlayerState;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceQuantity;
@@ -39,7 +37,7 @@ public class PlayerAdapter {
 		upgrades.addAll(player.getUpgrades());
 		
 		List<XmlTemplate> xmltemplates= xml.getTemplate();
-		for (Template t : player.getTemplates().values())
+		for (@SuppressWarnings("rawtypes") Template t : player.getTemplates().values())
 		{
 			if (t instanceof UnitTemplate)
 				xmltemplates.add(UnitTemplateAdapter.toXml((UnitTemplate)t));

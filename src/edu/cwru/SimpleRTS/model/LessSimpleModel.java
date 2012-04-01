@@ -1,9 +1,5 @@
 package edu.cwru.SimpleRTS.model;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
-import java.util.prefs.Preferences;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.action.ActionQueue;
@@ -28,7 +22,6 @@ import edu.cwru.SimpleRTS.action.ProductionAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.History;
-import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -37,13 +30,16 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.GameMap;
+import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 /**
- * A less simple model that allows consistancy and turntaking and durative actions.
- * No longer supports unittasks
+ * A less simple model that allows consistency, turn-taking and durative actions.
+ * No longer supports unit tasks
  * Recalculates compound actions automatically every step.
- * Supports consistant actions* according to the following principles:
+ * Supports consistent actions* according to the following principles:
  * The order of actions does not affect their results,
  * Sets of actions may not cause invalid states (so some must fail),
  * The effects of one action succeeding may not change based on the actions of others**,
@@ -55,7 +51,7 @@ import edu.cwru.SimpleRTS.util.GameMap;
  * 
  * The particular solution in this makes sure that successes based on ranges (including directional actions with proximity) are calculated based on the previous state.
  * It also ensures that an action may not fail due to a unit involved being attacked for enough damage to kill it.
- * * Production/build actions that make new units fail consistancy.  The units are placed sequentially in places that were empty last state in such a way as to not disrupt move actions.  In the situation where more productions exist than empty spaces that are not being moved into, then only the minimum number of production actions will fail
+ * * Production/build actions that make new units fail consistency.  The units are placed sequentially in places that were empty last state in such a way as to not disrupt move actions.  In the situation where more productions exist than empty spaces that are not being moved into, then only the minimum number of production actions will fail
  * ** More generally, where s is the event "action has succeeded" and E is a set of possible results, and O is actions sent to other units, E given s must be independant of O, IE: for all O, P(E|s) = P(E|s,O)***
  * *** as an example that works, attacks, being based on sequential Random variables from a seed, will change exact result, but the distribution of successful attacks does not change based on other actions.  As a failing example, random movements that only fail on an actual collision wouldn't work, as the action of the other unit affects the distribution of effects. 
  * 
@@ -72,7 +68,9 @@ public class LessSimpleModel implements Model {
 	private HashMap<Integer,HashMap<Integer, ActionQueue>> queuedActions; //ActionQueue uses equals and 
 	private DurativePlanner planner;
 	private StateCreator restartTactic;
+	@SuppressWarnings("unused")
 	private boolean verbose;
+	private Configuration configuration;
 	public LessSimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		history = new History();
@@ -87,9 +85,18 @@ public class LessSimpleModel implements Model {
 		
 		this.restartTactic = restartTactic;
 		verbose = false;
+		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	public void setVerbosity(boolean verbose) {
 		this.verbose = verbose;
+	}
+	
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	public Configuration getConfiguration() {
+		return configuration;
 	}
 	
 
@@ -107,18 +114,19 @@ public class LessSimpleModel implements Model {
 		
 		planner = new DurativePlanner(state);
 	}
-	
+
 	@Override
 	public boolean isTerminated() {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
 		boolean terminated = true;
-		if(prefs.getBoolean("Conquest", false))
+		if(ConfigurationValues.MODEL_CONQUEST.getBooleanValue(configuration))
 			terminated = conquestTerminated();
-		if(terminated && prefs.getBoolean("Midas", false))
-			terminated = resourceGatheringTerminated(prefs);
-		if(terminated && prefs.getBoolean("ManifestDestiny", false))
-			terminated = buildingTerminated(prefs);
-		terminated = terminated || state.getTurnNumber() > prefs.getInt("TimeLimit", Integer.MAX_VALUE);
+		if(ConfigurationValues.MODEL_MIDAS.getBooleanValue(configuration))
+			terminated = resourceGatheringTerminated();
+		if(ConfigurationValues.MODEL_MANIFEST_DESTINY.getBooleanValue(configuration))
+			terminated = buildingTerminated();
+		
+		terminated = terminated || 
+					 state.getTurnNumber() > ConfigurationValues.MODEL_TIME_LIMIT.getIntValue(configuration);
 		return terminated;
 	}
 	private boolean conquestTerminated() {
@@ -143,10 +151,10 @@ public class LessSimpleModel implements Model {
 		}
 		return numLivePlayers <= 1;
 	}
-	private boolean resourceGatheringTerminated(Preferences prefs) {
+	private boolean resourceGatheringTerminated() {
 		boolean resourcesGathered = true;
-		int gold = prefs.getInt("RequiredGold", 0);
-		int wood = prefs.getInt("RequiredWood", 0);
+		int gold = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(configuration);
+		int wood = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(configuration);
 //		System.out.println("Agent.maxId() " + Agent.maxId());
 		for(Integer player : state.getPlayers())
 		{
@@ -155,14 +163,16 @@ public class LessSimpleModel implements Model {
 		}
 		return resourcesGathered;
 	}
-	private boolean buildingTerminated(Preferences prefs) {
+	private boolean buildingTerminated() {
 		boolean built = true;
 		for(Integer i : state.getPlayers())
 		{
 			built = true;
-			for(Template template : state.getTemplates(i).values())
+			for(@SuppressWarnings("rawtypes") Template template : state.getTemplates(i).values())
 			{
-				int required = prefs.getInt("Required"+template.getName()+"Player"+i, 0);
+				int required = 0;
+				if(configuration.containsKey("Required"+template.getName()+"Player"+i))
+					required = configuration.getInt("Required"+template.getName()+"Player"+i);
 				int actual = 0;
 				if (required>0) //Only check if you need to find at least one
 				{
@@ -211,7 +221,6 @@ public class LessSimpleModel implements Model {
 			}
 			else
 			{//Valid
-				Unit actor = state.getUnit(unitId);
 				ActionQueue queue = new ActionQueue(a, null);
 				queuedActions.get(sendingPlayerNumber).put(unitId, queue);
 			}
@@ -515,6 +524,7 @@ public class LessSimpleModel implements Model {
 					
 					//last state check:
 					ProductionAction pa =(ProductionAction)a;
+					@SuppressWarnings("rawtypes")
 					Template t = state.getTemplate(pa.getTemplateId());
 					if (a.getType() == ActionType.PRIMITIVEPRODUCE && u.canBuild()|| a.getType() == ActionType.PRIMITIVEBUILD && !u.canBuild())
 					{//if it should build and is trying to produce or should produce and is trying to build
@@ -978,6 +988,7 @@ public class LessSimpleModel implements Model {
 			{
 				//last state check:
 				ProductionAction pa =(ProductionAction)a;
+				@SuppressWarnings("rawtypes")
 				Template t = state.getTemplate(pa.getTemplateId());
 				//the willcomplete is somewhat related to the production amount
 				int newdurativeamount;
@@ -1146,7 +1157,7 @@ public class LessSimpleModel implements Model {
 		}
 		//Set each template to not keep the old view
 		for (Integer player : state.getPlayers())
-			for (Template t : state.getTemplates(player).values())
+			for (@SuppressWarnings("rawtypes") Template t : state.getTemplates(player).values())
 				t.deprecateOldView();
 	}
 

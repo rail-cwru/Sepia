@@ -1,19 +1,14 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -24,7 +19,7 @@ public class ProduceTest {
 
 	static Model model;
 	static SimplePlanner planner;
-	static List<Template> templates;
+	static List<Template<?>> templates;
 	static State state;
 	static int player = 0;
 	static int unitproducerid;
@@ -41,7 +36,7 @@ public class ProduceTest {
 		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);		
 		System.out.println("Sucessfully loaded templates");
 		
-		for (Template t : templates) {
+		for (Template<?> t : templates) {
 			builder.addTemplate(t);
 		}
 		

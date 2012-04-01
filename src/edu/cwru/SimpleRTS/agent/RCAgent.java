@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.prefs.Preferences;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.TargetedAction;
@@ -16,6 +14,9 @@ import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
+import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 
 /**
  * This agent will first collect gold to produce a peasant,
@@ -34,9 +35,12 @@ public class RCAgent extends Agent {
 	
 	public RCAgent(int playernum) {
 		super(playernum);
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
+		/*Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
 		goldRequired = prefs.getInt("RequiredGold", 0);
-		woodRequired = prefs.getInt("RequiredWood", 0);
+		woodRequired = prefs.getInt("RequiredWood", 0);*/
+		Configuration config = PreferencesConfigurationLoader.loadConfiguration();
+		goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
+		woodRequired = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(config);
 	}
 
 	StateView currentState;

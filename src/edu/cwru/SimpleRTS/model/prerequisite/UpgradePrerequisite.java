@@ -1,14 +1,13 @@
 package edu.cwru.SimpleRTS.model.prerequisite;
 
-import java.util.List;
-
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
 public class UpgradePrerequisite implements Prerequisite{
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	int upgradeid;
 	int playerid;
 	public UpgradePrerequisite(int player, int upgradeid) {

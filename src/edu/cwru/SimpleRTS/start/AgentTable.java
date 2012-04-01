@@ -1,17 +1,11 @@
 package edu.cwru.SimpleRTS.start;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import java.awt.Component;
-
+import java.util.List;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.event.TableModelListener;
-
-import edu.cwru.SimpleRTS.start.StartWindow;
+import javax.swing.table.AbstractTableModel;
 import edu.cwru.SimpleRTS.util.SwingUtils;
 
 @SuppressWarnings("serial")
@@ -66,7 +60,7 @@ public class AgentTable extends JTable {
 
             static final String[] COLUMN_NAMES =
                 {"Player Number", "Class", "Arguments"};
-            static final Class[] COLUMN_CLASSES =
+            static final Class<?>[] COLUMN_CLASSES =
                 {Integer.class, String.class, String.class};
 
             private Integer playerNum = 0;
@@ -174,7 +168,7 @@ public class AgentTable extends JTable {
         }
 
         @Override
-        public Class getColumnClass(int c) {
+        public Class<?> getColumnClass(int c) {
             return AgentData.COLUMN_CLASSES[c];
         }
 

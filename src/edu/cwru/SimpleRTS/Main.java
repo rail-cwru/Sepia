@@ -8,31 +8,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-
-import org.json.JSONException;
-
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.Environment;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateCreator;
-import edu.cwru.SimpleRTS.environment.XmlStateUtil;
-import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
 import edu.cwru.SimpleRTS.model.LessSimpleModel;
-import edu.cwru.SimpleRTS.model.Model;
-import edu.cwru.SimpleRTS.model.SimpleModel;
-import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.util.TypeLoader;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
+import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 
 public class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
@@ -90,7 +81,6 @@ public class Main {
 		}
 		if(initState == null)
 		{			
-			State templatemakingstate = new State();//TODO: remove this when xml does templates
 			JAXBContext context;
 			XmlState xml = null;
 			try {
@@ -298,10 +288,10 @@ public class Main {
 				}
 			}			
 		}
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
-		int numEpisodes = Math.max(1, prefs.getInt("NumEpisodes", 1));
-		int episodesPerSave = prefs.getInt("EpisodesPerSave", 0);
-		boolean saveAgents = prefs.getBoolean("SaveAgents", false);
+		Configuration configuration = PreferencesConfigurationLoader.loadConfiguration();
+		int numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
+		int episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
+		boolean saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);;
 		//just to make the directory
 		File firstFile = new File("saves");
 		firstFile.mkdirs();

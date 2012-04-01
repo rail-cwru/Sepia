@@ -1,11 +1,8 @@
 package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
-
 import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.Target;
-import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 
@@ -20,7 +17,6 @@ public class Unit extends Target implements Cloneable {
 	protected ResourceType cargoType;
 	protected UnitTask task;
 	protected int cargoAmount;
-	@SuppressWarnings("rawtypes")
 	protected Action currentDurativePrimitive;
 	protected int currentDurativeProgress;
 	public Unit(UnitTemplate template, int ID) {

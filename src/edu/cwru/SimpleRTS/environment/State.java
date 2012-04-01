@@ -1,6 +1,5 @@
 package edu.cwru.SimpleRTS.environment;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,12 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import edu.cwru.SimpleRTS.Log.ActionLogger;
-import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.model.Direction;
-import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
@@ -29,7 +24,6 @@ public class State implements Serializable, Cloneable, IDDistributer {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("rawtypes")
 	 
 	
 	private int nextIDTarget;
@@ -124,7 +118,7 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			{
 				allUnits.put(u.ID, u);
 			}
-			for(Template t : player.getTemplates().values())
+			for(@SuppressWarnings("rawtypes") Template t : player.getTemplates().values())
 			{
 				allTemplates.put(t.ID, t);
 			}

@@ -1,8 +1,6 @@
 package edu.cwru.SimpleRTS.model.upgrade;
 
 import java.util.List;
-
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 /**

@@ -1,8 +1,7 @@
 package edu.cwru.SimpleRTS.model;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,22 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.json.JSONException;
 import org.junit.Test;
-
-import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.Log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.Log.RevealedResourceLog;
-import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.action.ActionType;
-import edu.cwru.SimpleRTS.action.DirectedAction;
-import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
-import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -73,7 +64,6 @@ public class PartialObservabilityTest {
 	}
 	
 	
-@SuppressWarnings("rawtypes")
 @Test
 /**
  * Do a long random walk and check the sight ranges to see if they are right
@@ -87,14 +77,14 @@ public void sightTest() throws FileNotFoundException, JSONException {
 
 	int player = 0;
 	int otherplayer = 1;
-	List<Template> templates = TypeLoader.loadFromFile("data/unit_templates",player,state);
-	List<Template> templates2 = TypeLoader.loadFromFile("data/unit_templates",otherplayer,state);
+	List<Template<?>> templates = TypeLoader.loadFromFile("data/unit_templates",player,state);
+	List<Template<?>> templates2 = TypeLoader.loadFromFile("data/unit_templates",otherplayer,state);
 	
 		ResourceNode[][] nodegrid = new ResourceNode[state.getXExtent()][state.getYExtent()];
 	Unit[][] unitgrid = new Unit[state.getXExtent()][state.getYExtent()];
-	for (Template t : templates)
+	for (Template<?> t : templates)
 		state.addTemplate(t);
-	for (Template t2 : templates2)
+	for (Template<?> t2 : templates2)
 		state.addTemplate(t2);
 	UnitTemplate template = ((UnitTemplate)state.getTemplate(player, "Footman"));
 	UnitTemplate enemytemplate = ((UnitTemplate)state.getTemplate(otherplayer, "Footman"));
@@ -325,6 +315,7 @@ public String printView(List<Unit> myunits,StateView v)
 /**
  * A repeated call from checkReveal
  */
+@SuppressWarnings("unused")
 private void revealedStatusChecker(int step, EventLoggerView e, Map<Pair,Pair> actualpositioning, boolean shouldberevealed)
 {
 	System.out.println("Step "+step + ": " + (shouldberevealed?"revealed":"hidden"));

@@ -22,7 +22,7 @@ public class SimplePlannerTest {
 
 	static Model model;
 	static SimplePlanner planner;
-	static List<Template> templates;
+	static List<Template<?>> templates;
 	static State state;
 	static int player=0;
 	
@@ -37,7 +37,7 @@ public class SimplePlannerTest {
 
 		planner = new SimplePlanner(state);
 		
-		for(Template t : templates)
+		for(Template<?> t : templates)
 		{
 			if(!(t instanceof UnitTemplate))
 				continue;

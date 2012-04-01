@@ -4,14 +4,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import edu.cwru.SimpleRTS.environment.IDDistributer;
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.prerequisite.BuildingPrerequisite;
 import edu.cwru.SimpleRTS.model.prerequisite.PrerequisiteHolder;
 import edu.cwru.SimpleRTS.model.prerequisite.UpgradePrerequisite;
-import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 
@@ -144,7 +141,7 @@ public abstract class Template<T> implements Serializable{
 	public boolean equals(Object o) {
 		if(!(o instanceof Template))
 			return false;
-		return ((Template)o).ID == ID;
+		return ((Template<?>)o).ID == ID;
 	}
 	public abstract TemplateView getView();
 	public abstract void deprecateOldView();
@@ -157,7 +154,7 @@ public abstract class Template<T> implements Serializable{
 		private final int ID;
 		private final int player;
 		private final String name;
-		public TemplateView(Template template){
+		public TemplateView(Template<?> template){
 			timeCost = template.getTimeCost();
 			goldCost = template.getGoldCost();
 			woodCost = template.getWoodCost();

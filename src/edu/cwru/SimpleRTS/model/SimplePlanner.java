@@ -249,7 +249,7 @@ public class SimplePlanner implements Serializable {
 		return planBuild(state.getUnit(actor),targetX,targetY,(UnitTemplate)state.getTemplate(template));
 	}
 	
-	public LinkedList<Action> planProduce(Unit actor, Template template) {
+	public LinkedList<Action> planProduce(Unit actor, @SuppressWarnings("rawtypes") Template template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
 		//produce is simple, a single action
 		plan.addLast(Action.createPrimitiveProduction(actor.ID, template.ID));

@@ -1,12 +1,6 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
 
-import org.json.JSONArray;
-
-import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlResourceNode;
-import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUpgradeTemplate;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 

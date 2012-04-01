@@ -21,8 +21,7 @@ public class AttackAndDeathTest {
 
 	static Model model;
 	static SimplePlanner planner;
-	@SuppressWarnings("rawtypes")
-	static List<Template> templates;
+	static List<Template<?>> templates;
 	static State state;
 	static int player=0;
 	static Unit test1target;

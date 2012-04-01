@@ -1,9 +1,7 @@
 package edu.cwru.SimpleRTS.model;
 import java.io.Serializable;
 import java.util.Map;
-
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.environment.*;
+import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 public interface Model extends Serializable{

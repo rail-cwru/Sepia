@@ -8,6 +8,7 @@ import java.io.Serializable;
  *
  */
 public class DeathLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int unitid;
 	private int player;
 	public DeathLog(int deadunitid, int player) {

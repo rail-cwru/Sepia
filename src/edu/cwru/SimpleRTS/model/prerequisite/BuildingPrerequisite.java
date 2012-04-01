@@ -1,8 +1,6 @@
 package edu.cwru.SimpleRTS.model.prerequisite;
 
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 
 /**
  * A prerequisite requiring that the player control a unit with that template id
@@ -10,6 +8,10 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
  *
  */
 public class BuildingPrerequisite implements Prerequisite{
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	int buildingtemplateid;
 	int player;
 	public BuildingPrerequisite(int player, int buildingtemplateid) {

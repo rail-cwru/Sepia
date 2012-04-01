@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
  *
  */
 public class RevealedResourceLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int nodex;
 	private int nodey;
 	private ResourceNode.Type nodetype;

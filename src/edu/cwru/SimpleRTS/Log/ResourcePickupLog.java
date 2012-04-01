@@ -11,6 +11,7 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
  *
  */
 public class ResourcePickupLog implements Serializable {
+	private static final long	serialVersionUID	= 1L;
 	private int pickuper;
 	private ResourceType resource;
 	private int amount;

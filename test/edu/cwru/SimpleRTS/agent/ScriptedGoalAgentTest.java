@@ -5,16 +5,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.CountDownLatch;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.visual.VisualAgent;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.model.LessSimpleModel;
-import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.model.SimplePlanner;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
@@ -27,7 +23,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class ScriptedGoalAgentTest {
 	static LessSimpleModel model;
 	static SimplePlanner planner;
-	static List<Template> templates;
+	static List<Template<?>> templates;
 	static State state;
 	static int player=0;
 	static Unit founder;
@@ -42,7 +38,7 @@ public class ScriptedGoalAgentTest {
 		
 		
 		builder.setSize(15,15);
-		for (Template t : templates) {
+		for (Template<?> t : templates) {
 			builder.addTemplate(t);
 		}
 		
@@ -97,7 +93,7 @@ public class ScriptedGoalAgentTest {
 				"Transfer:1:Idle:Gold//make the builder go to gold\n" +
 				"Produce:Footman//make a footman\n"+
 				"Attack:All";
-		int ncommands = 11;
+		//int ncommands = 11;
 		BufferedReader commandreader = new BufferedReader(new StringReader(commands));
 		ScriptedGoalAgent agent = new ScriptedGoalAgent(0,commandreader, new Random(), true);
 		VisualAgent vagent = new VisualAgent(0,new String[]{"true","false"});
