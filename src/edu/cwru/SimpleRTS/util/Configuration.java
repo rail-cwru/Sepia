@@ -24,11 +24,11 @@ public class Configuration {
 	}
 	
 	public int getInt(String key) {
-		return (Integer)getInt(key);
+		return (Integer)settings.get(key);
 	}
 	
 	public double getDouble(String key) {
-		return (Double)getDouble(key);
+		return (Double)settings.get(key);
 	}
 	
 	public void put(String key, String value) {

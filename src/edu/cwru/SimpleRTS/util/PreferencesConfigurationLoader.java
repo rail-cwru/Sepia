@@ -16,21 +16,30 @@ public class PreferencesConfigurationLoader {
 		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
 		for(ConfigurationValues value : ConfigurationValues.values())
 		{
+			//Use the periods to navigate the tree structure
+			Preferences subprefs = prefs;
+			String subkey=value.key;
+			while(subkey.contains("."))
+			{
+				int firstperiod = subkey.indexOf(".");
+				subprefs = subprefs.node(subkey.substring(0, firstperiod));
+				subkey = subkey.substring(firstperiod+1);
+			}
 			if(value.type.equals(String.class))
 			{
-				config.put(value.key, prefs.get(value.key, null));
+				config.put(value.key, subprefs.get(subkey, null));
 			}
 			else if(value.type.equals(Boolean.class))
 			{
-				config.put(value.key, prefs.getBoolean(value.key, false));
+				config.put(value.key, subprefs.getBoolean(subkey, false));
 			}
 			else if(value.type.equals(Integer.class))
 			{
-				config.put(value.key, prefs.getInt(value.key, 0));
+				config.put(value.key, subprefs.getInt(subkey, 0));
 			} 
 			else if(value.type.equals(Double.class))
 			{
-				config.put(value.key, prefs.getDouble(value.key, 0));
+				config.put(value.key, subprefs.getDouble(subkey, 0));
 			} 
 		}
 		return config;
@@ -50,5 +59,6 @@ public class PreferencesConfigurationLoader {
 		prefs.clear();
 		prefs.node("environment").clear();
 		prefs.node("model").clear();
+		prefs.flush();
 	}
 }

@@ -44,7 +44,7 @@ public class Main {
 
 //		args=para.split(" +");
 		
-		 
+		String configfile = null;
 		
 		if(args.length < 3 || (args.length > 0 && args[0].equals("--prefs") && args.length < 5))
 		{
@@ -54,9 +54,11 @@ public class Main {
 		int i = 0;
 		if(args[i].equals("--config"))
 		{
-			if(!loadPrefs(args[i+1]))
+			configfile = args[i+1];
+			if(!new File(configfile).exists())
 			{
-				printUsage("Invalid filename for preferences "+args[i+1]);
+				configfile=null;
+				printUsage("Invalid filename for preferences "+configfile);
 				return;
 			}
 //			//print out the preferences
@@ -198,7 +200,7 @@ public class Main {
 			else
 				playerNum = parseInt(playerNumInput);
 			
-			if(playerNum < 0)
+			if(playerNum != Agent.OBSERVER_ID && playerNum < 0)
 			{
 				printUsage("Agent " + agentClass.getSimpleName() + "'s player number must be a non-negative integer");
 				return;
@@ -288,16 +290,20 @@ public class Main {
 				}
 			}			
 		}
-		Configuration configuration = PreferencesConfigurationLoader.loadConfiguration();
+		Configuration configuration;
+		if (configfile!=null)
+			configuration = PreferencesConfigurationLoader.loadConfiguration(configfile);
+		else
+			configuration = PreferencesConfigurationLoader.loadConfiguration();
 		int numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
 		int episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
 		boolean saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);;
 		//just to make the directory
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
-		
-		LessSimpleModel model = new LessSimpleModel(initState, 7, stateCreator);
-		Environment env = new Environment(agents.toArray(new Agent[0]),model);
+		int seed = 7;
+		LessSimpleModel model = new LessSimpleModel(initState, seed, stateCreator);
+		Environment env = new Environment(agents.toArray(new Agent[0]),model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			System.out.println("\n=======> Start running episode " + episode);
