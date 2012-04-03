@@ -24,6 +24,7 @@ import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
+import edu.cwru.SimpleRTS.environment.TurnTracker;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -70,6 +71,7 @@ public class LessSimpleModel implements Model {
 	private StateCreator restartTactic;
 	@SuppressWarnings("unused")
 	private boolean verbose;
+	private TurnTracker turnTracker;
 	private Configuration configuration;
 	public LessSimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
@@ -91,6 +93,10 @@ public class LessSimpleModel implements Model {
 		this.verbose = verbose;
 	}
 	
+	public void setTurnTracker(TurnTracker tracker)
+	{
+		this.turnTracker = tracker;
+	}
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
@@ -313,7 +319,6 @@ public class LessSimpleModel implements Model {
 			//execute and log all actions remaining in the successful list
 			//log all failed actions, and remove them from the queue
 			
-		Integer[] playersWhoseTurnItIs= state.getPlayers();
 		//interpret coordinates as integers
 		Map<Integer,ActionQueue> claimedspaces=new HashMap<Integer,ActionQueue>(); //merge the boolean for whether it has claimed with the set of actions that claimed it, and since one is known to be enough, don't need a set
 		Set<Integer> problemspaces=new HashSet<Integer>();//places that you know are problems
@@ -330,82 +335,426 @@ public class LessSimpleModel implements Model {
 		Set<ActionQueue> successfulsofar=new HashSet<ActionQueue>();
 		/** Track all units of active players, to reset their progress if they failed or weren't moved*/Set<Integer> unsuccessfulUnits = new HashSet<Integer>(); 
 		Set<ActionQueue> productionsuccessfulsofar=new HashSet<ActionQueue>();
-		for (Integer player : playersWhoseTurnItIs)
+		for (Integer player : queuedActions.keySet())
 		{
-			//Gather all units of that player, so that we can remove the ones that were successful later
-			for (Integer id : state.getUnits(player).keySet())
-			{
-				unsuccessfulUnits.add(id);
-			}
-			Iterator<Entry<Integer,ActionQueue>> playerActions=queuedActions.get(player).entrySet().iterator();
-			while(playerActions.hasNext())
-			{
-				Entry<Integer,ActionQueue> entry = playerActions.next();;
-				ActionQueue aq =  entry.getValue();
-//				if (a==null) //Then it failed to calculate primitives, so it fails
-				int uid = entry.getKey();
-				Unit u = state.getUnit(uid);
-				if (u == null || uid!=aq.getFullAction().getUnitId())
+			if (turnTracker == null || turnTracker.isPlayersTurn(player)) {
+				//Gather all units of that player, so that we can remove the ones that were successful later
+				for (Integer id : state.getUnits(player).keySet())
 				{
-					//unit is dead or never existed
-					playerActions.remove();
-					history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDUNIT));
-					
+					unsuccessfulUnits.add(id);
 				}
-				else
+				Iterator<Entry<Integer,ActionQueue>> playerActions=queuedActions.get(player).entrySet().iterator();
+				while(playerActions.hasNext())
 				{
-					aq.resetPrimitives(calculatePrimitives(aq.getFullAction()));
-					Action a = aq.peekPrimitive();
-				
-				if (!ActionType.isPrimitive(a.getType()))
-				{
-					throw new RuntimeException("This should never happen, all subactions should be primitives");
-				}
-				if (a.getType() == ActionType.PRIMITIVEATTACK && !(a instanceof TargetedAction)
-						|| a.getType() == ActionType.PRIMITIVEGATHER && !(a instanceof DirectedAction)
-						|| a.getType() == ActionType.PRIMITIVEDEPOSIT && !(a instanceof DirectedAction)
-						|| a.getType() == ActionType.PRIMITIVEPRODUCE&& !(a instanceof ProductionAction)
-						|| a.getType() == ActionType.PRIMITIVEBUILD && !(a instanceof ProductionAction)
-						|| a.getType() == ActionType.PRIMITIVEMOVE && !(a instanceof DirectedAction))
-				{//shouldn't have to do this, should make actions so it is never possible to have the types not match
-					//log a wrong type thing
-					history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDTYPE));
-					//remove it from the queues
-					playerActions.remove();
-				}
-				else
-				{
-					
-					if (a.getType() == ActionType.FAILED || a.getType() == ActionType.FAILEDPERMANENTLY)
+					Entry<Integer,ActionQueue> entry = playerActions.next();;
+					ActionQueue aq =  entry.getValue();
+	//				if (a==null) //Then it failed to calculate primitives, so it fails
+					int uid = entry.getKey();
+					Unit u = state.getUnit(uid);
+					if (u == null || uid!=aq.getFullAction().getUnitId())
 					{
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
+						//unit is dead or never existed
+						playerActions.remove();
+						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDUNIT));
+						
 					}
-					//check if it is a move
-					if (a.getType() == ActionType.PRIMITIVEMOVE)
+					else
 					{
-						//if it can't move, that is a problem
-						if (!u.canMove())
+						aq.resetPrimitives(calculatePrimitives(aq.getFullAction()));
+						Action a = aq.peekPrimitive();
+					if (a==null) //This happens when you try to compound move to where you are, not sure about other cases
+					{
+						playerActions.remove();
+						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.COMPLETED));
+					}
+					else if (!ActionType.isPrimitive(a.getType()))
+					{
+						throw new RuntimeException("This should never happen, all subactions should be primitives");
+					}
+					else if (a.getType() == ActionType.PRIMITIVEATTACK && !(a instanceof TargetedAction)
+							|| a.getType() == ActionType.PRIMITIVEGATHER && !(a instanceof DirectedAction)
+							|| a.getType() == ActionType.PRIMITIVEDEPOSIT && !(a instanceof DirectedAction)
+							|| a.getType() == ActionType.PRIMITIVEPRODUCE&& !(a instanceof ProductionAction)
+							|| a.getType() == ActionType.PRIMITIVEBUILD && !(a instanceof ProductionAction)
+							|| a.getType() == ActionType.PRIMITIVEMOVE && !(a instanceof DirectedAction))
+					{//shouldn't have to do this, should make actions so it is never possible to have the types not match
+						//log a wrong type thing
+						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDTYPE));
+						//remove it from the queues
+						playerActions.remove();
+					}
+					else
+					{
+						
+						if (a.getType() == ActionType.FAILED || a.getType() == ActionType.FAILEDPERMANENTLY)
 						{
 							failed.add(aq);
 							//recalcAndStuff();//This marks a place where recalculation would be called for
 						}
-						else //hasn't failed yet
+						//check if it is a move
+						if (a.getType() == ActionType.PRIMITIVEMOVE)
 						{
-							//find out where it will be next
-							
-							DirectedAction da =(DirectedAction)a;
-							Direction d = da.getDirection();
-							int xdest = u.getxPosition() + d.xComponent();
-							int ydest = u.getyPosition() + d.yComponent();
-							
-							//if it is not empty there is a problem
-							if (!empty(xdest, ydest))
-							{ 
+							//if it can't move, that is a problem
+							if (!u.canMove())
+							{
 								failed.add(aq);
 								//recalcAndStuff();//This marks a place where recalculation would be called for
 							}
 							else //hasn't failed yet
+							{
+								//find out where it will be next
+								
+								DirectedAction da =(DirectedAction)a;
+								Direction d = da.getDirection();
+								int xdest = u.getxPosition() + d.xComponent();
+								int ydest = u.getyPosition() + d.yComponent();
+								
+								//if it is not empty there is a problem
+								if (!empty(xdest, ydest))
+								{ 
+									failed.add(aq);
+									//recalcAndStuff();//This marks a place where recalculation would be called for
+								}
+								else //hasn't failed yet
+								{
+									int newdurativeamount;
+									if (da.equals(u.getActionProgressPrimitive()))
+									{
+										newdurativeamount = u.getActionProgressAmount()+1;
+									}
+									else
+									{
+										newdurativeamount = 1;
+									}
+									boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(), d);
+									//if it will finish, then verify claim stuff
+									if (willcompletethisturn)
+									{
+										Integer dest = getCoordInt(xdest,ydest);
+										//check if the space is a problem
+										if (problemspaces.contains(dest))
+										{
+											failed.add(aq);
+										}
+										else //not a problem space
+										{
+											//check if it is claimed
+											ActionQueue priorclaimant = claimedspaces.get(dest);
+											if (priorclaimant != null)
+											{//it is claimed
+												successfulsofar.remove(priorclaimant);
+												failed.add(priorclaimant);
+												failed.add(aq);
+												problemspaces.add(dest);
+												claimedspaces.remove(dest); //remove all claims, as it is now a problem, not a claim, may be pointless
+											}
+											else
+											{//it is not claimed
+												//so claim it
+												claimedspaces.put(dest,aq);
+												successfulsofar.add(aq);
+											}
+										}
+									}
+									else //won't complete, so passes all claims
+									{
+										successfulsofar.add(aq);
+									}
+								}
+							}
+						}
+					
+					else if (a.getType() == ActionType.PRIMITIVEDEPOSIT)
+					{
+						if (!u.canGather() || u.getCurrentCargoAmount() <= 0)
+						{//if can't gather or isn't carrying anything, then this isn't an acceptible action
+							failed.add(aq);
+							//recalcAndStuff();//This marks a place where recalculation would be called for
+						}
+						else
+						{
+							DirectedAction da =(DirectedAction)a;
+							Direction d = da.getDirection();
+							int xdest = u.getxPosition() + d.xComponent();
+							int ydest = u.getyPosition() + d.yComponent();
+							Unit townHall = state.unitAt(xdest, ydest);
+							if (townHall == null || townHall.getPlayer() != u.getPlayer())
+							{//no unit there on your team
+								failed.add(aq);
+								//recalcAndStuff();//This marks a place where recalculation would be called for
+							}
+							else //there is a unit on your team
+							{
+								//check if the unit can accept the kind of resources that you have
+								boolean canAccept=false;
+								if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
+									canAccept=true;
+								else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
+									canAccept=true;
+								if (!canAccept)
+								{//then it isn't a town hall of the right type
+									failed.add(aq);
+									//recalcAndStuff();//This marks a place where recalculation would be called for
+								}
+								else //there is an appropriate town hall there
+								{
+									//deposit has no chance of conflicts, so this works
+									successfulsofar.add(aq);
+								}
+							}
+						}
+					}
+					else if (a.getType() == ActionType.PRIMITIVEATTACK)
+					{
+						//make sure you can attack and the target exists and is in range in the last state
+						if (!u.canAttack())
+						{
+							failed.add(aq);
+							//recalcAndStuff();//This marks a place where recalculation would be called for
+						}
+						else
+						{
+							TargetedAction ta =(TargetedAction)a;
+							Unit target = state.getUnit(ta.getTargetId());
+							if (target == null || target.getCurrentHealth() <= 0 || !inRange(u, target))
+							{
+								failed.add(aq);
+								//recalcAndStuff();//This marks a place where recalculation would be called for
+							}
+							else //target exists and is in range
+							{
+								//no possibility for conflict, so this succeeds
+								successfulsofar.add(aq);
+							}
+						}
+					}
+					else if (a.getType() == ActionType.PRIMITIVEPRODUCE || a.getType() == ActionType.PRIMITIVEBUILD)
+					{//currently, this adds to productionsuccessfulsofar because they are not processed consistantly
+					//consistancy could be restored by making unit production and building actions require a place or direction for the new unit to go, and then processing it as a move
+						
+						//last state check:
+						ProductionAction pa =(ProductionAction)a;
+						Template t = state.getTemplate(pa.getTemplateId());
+						if (a.getType() == ActionType.PRIMITIVEPRODUCE && u.canBuild()|| a.getType() == ActionType.PRIMITIVEBUILD && !u.canBuild())
+						{//if it should build and is trying to produce or should produce and is trying to build
+							failed.add(aq);
+							//recalcAndStuff();//This marks a place where recalculation would be called for
+						}
+						else if (t==null || !u.getTemplate().canProduce(t) || !t.canProduce(state.getView(Agent.OBSERVER_ID)))
+						{//if the template does not exist or the unit cannot make the template or the template's prerequisites are not met
+							failed.add(aq);
+							//recalcAndStuff();//This marks a place where recalculation would be called for
+						}
+						else //template exists, is producable by the unit, and has it's tech-tree prerequisites met
+						{
+							int newdurativeamount;
+							if (pa.equals(u.getActionProgressPrimitive()))
+							{
+								newdurativeamount = u.getActionProgressAmount()+1;
+							}
+							else
+							{
+								newdurativeamount = 1;
+							}
+							boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateProductionDuration(u,t);
+							if (willcompletethisturn)
+							{
+								if (!problemcosts.containsKey(player))
+									problemcosts.put(player, new HashSet<ResourceType>());
+								if (!claimedcosts.containsKey(player))
+									claimedcosts.put(player, new HashMap<ResourceType, Integer>());
+								if (!claimedcostactions.containsKey(player))
+									claimedcostactions.put(player, new HashMap<ResourceType, Set<ActionQueue>>());
+								boolean failedaclaim=false;
+								
+								//check all the resources, including supply for problems and claims
+								//note that if you don't need any, it doesn't matter if it is overdrawn
+								//do all even if one fails, because if you stop checking when you fail one resource and don't claim the others, then another production that should conflict will not be detected as such
+								{
+									int goldneeded = t.getGoldCost();
+									//if you have a cost, then check the claims
+									if (goldneeded > 0)
+									{
+										//check if it is a problem
+										if (problemcosts.get(player).contains(ResourceType.GOLD))
+										{
+											failedaclaim=true;
+										}
+										else
+										{//not a problem already, check claims
+											//get the amount of the resource that you had before
+											int previousamount = state.getResourceAmount(player, ResourceType.GOLD);
+											// get the previous claim (if there is none, that is zero)
+											Integer previousclaim = claimedcosts.get(player).get(ResourceType.GOLD); if (previousclaim==null) previousclaim=0;
+											int updatedclaim=previousclaim+goldneeded;
+											
+											//check if the total claim is more than the amount the player has
+											if (updatedclaim > previousamount)
+											{
+												//if the claim is more, then this and all others with claims on this resource fail
+												Set<ActionQueue> otherclaimants = claimedcostactions.get(player).get(ResourceType.GOLD);
+												if (otherclaimants != null)
+												{
+													for (ActionQueue otherclaimant : otherclaimants)
+													{
+														productionsuccessfulsofar.remove(otherclaimant);
+														failed.add(otherclaimant);
+													}
+													//since we are marking this as a problem, don't need the claim anymore
+													claimedcostactions.get(player).remove(ResourceType.GOLD);
+												}
+												failedaclaim=true;
+												problemcosts.get(player).add(ResourceType.GOLD);
+											}
+											else
+											{//not too much, so claim it
+												claimedcosts.get(player).put(ResourceType.GOLD, updatedclaim);
+												if (!claimedcostactions.get(player).containsKey(ResourceType.GOLD))
+												{
+													claimedcostactions.get(player).put(ResourceType.GOLD, new HashSet<ActionQueue>());
+												}
+												claimedcostactions.get(player).get(ResourceType.GOLD).add(aq);
+											}
+										}
+									}
+								}
+									{
+										int woodneeded = t.getWoodCost();
+										//if you have a cost, then check the claims
+										if (woodneeded > 0)
+										{
+											//check if it is a problem
+											if (problemcosts.get(player).contains(ResourceType.WOOD))
+											{
+												failedaclaim=true;
+											}
+											else
+											{//not a problem already, check claims
+												//get the amount of the resource that you had before
+												int previousamount = state.getResourceAmount(player, ResourceType.WOOD);
+												// get the previous claim (if there is none, that is zero)
+												Integer previousclaim = claimedcosts.get(player).get(ResourceType.WOOD); if (previousclaim==null) previousclaim=0;
+												int updatedclaim=previousclaim+woodneeded;
+												
+												//check if the total claim is more than the amount the player has
+												if (updatedclaim > previousamount)
+												{
+													//if the claim is more, then this and all others with claims on this resource fail
+													Set<ActionQueue> otherclaimants = claimedcostactions.get(player).get(ResourceType.WOOD);
+													if (otherclaimants != null)
+													{
+														for (ActionQueue otherclaimant : otherclaimants)
+														{
+															productionsuccessfulsofar.remove(otherclaimant);
+															failed.add(otherclaimant);
+														}
+														//since we are marking this as a problem, don't need the claim anymore
+														claimedcostactions.get(player).remove(ResourceType.WOOD);
+													}
+													failedaclaim=true;
+													problemcosts.get(player).add(ResourceType.WOOD);
+												}
+												else
+												{//not too much, so claim it
+													claimedcosts.get(player).put(ResourceType.WOOD, updatedclaim);
+													if (!claimedcostactions.get(player).containsKey(ResourceType.WOOD))
+													{
+														claimedcostactions.get(player).put(ResourceType.WOOD, new HashSet<ActionQueue>());
+													}
+													claimedcostactions.get(player).get(ResourceType.WOOD).add(aq);
+												}
+											}
+										}
+								}
+								{
+									int foodneeded = t.getFoodCost();
+									//if you have a cost, then check the claims
+									if (foodneeded > 0)
+									{
+										//check if it is a problem
+										if (problemfoodcosts.contains(player))
+										{
+											failedaclaim=true;
+										}
+										else
+										{//not a problem already, check claims
+											//get the amount of the resource that you had before
+											int previousamount = state.getSupplyCap(player)-state.getSupplyAmount(player);
+											// get the previous claim (if there is none, that is zero)
+											Integer previousclaim = claimedfoodcosts.get(player); if (previousclaim==null) previousclaim=0;
+											int updatedclaim=previousclaim+foodneeded;
+											
+											//check if the total claim is more than the amount the player has
+											if (updatedclaim > previousamount)
+											{
+												//if the claim is more, then this and all others with claims on this resource fail
+												Set<ActionQueue> otherclaimants = claimedfoodcostactions.get(player);
+												if (otherclaimants != null)
+												{
+													for (ActionQueue otherclaimant : otherclaimants)
+													{
+														productionsuccessfulsofar.remove(otherclaimant);
+														failed.add(otherclaimant);
+													}
+													//since we are marking this as a problem, don't need the claim anymore
+													claimedfoodcostactions.remove(player);
+												}
+												failedaclaim=true;
+												problemfoodcosts.add(player);
+											}
+											else
+											{//not too much, so claim it
+												claimedfoodcosts.put(player, updatedclaim);
+												if (!claimedfoodcostactions.containsKey(player))
+												{
+													claimedfoodcostactions.put(player, new HashSet<ActionQueue>());
+												}
+												claimedfoodcostactions.get(player).add(aq);
+											}
+										}
+									}
+								}
+								
+								if (failedaclaim)
+								{
+									failed.add(aq);
+								}
+								else
+								{
+									productionsuccessfulsofar.add(aq);
+								}
+								
+							}
+							else //won't complete, so passes all claims
+							{
+								successfulsofar.add(aq);
+							}
+						}
+						
+					}
+					else if (a.getType() == ActionType.PRIMITIVEGATHER)
+					{
+						//check if it can gather at all
+						if (!u.canGather())
+						{
+							failed.add(aq);
+							//recalcAndStuff();//This marks a place where recalculation would be called for
+						}
+						else //it can gather
+						{
+							//find the node you want to gather from, and make sure it exists
+							DirectedAction da =(DirectedAction)a;
+							Direction d = da.getDirection();
+							int xdest = u.getxPosition() + d.xComponent();
+							int ydest = u.getyPosition() + d.yComponent();
+							ResourceNode rn  = state.resourceAt(xdest,ydest);
+							//check if the node exists and was not exhausted last turn
+							if (rn==null || rn.getAmountRemaining() <= 0)
+							{
+								failed.add(aq);
+								//recalcAndStuff();//This marks a place where recalculation would be called for
+							}
+							else //there is a node and it has resources
 							{
 								int newdurativeamount;
 								if (da.equals(u.getActionProgressPrimitive()))
@@ -416,35 +765,58 @@ public class LessSimpleModel implements Model {
 								{
 									newdurativeamount = 1;
 								}
-								boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(), d);
-								//if it will finish, then verify claim stuff
+								boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateGatherDuration(u,rn);
 								if (willcompletethisturn)
 								{
-									Integer dest = getCoordInt(xdest,ydest);
-									//check if the space is a problem
-									if (problemspaces.contains(dest))
+									
+									
+									//then check if the node will be a problem
+									if (problemgatherings.contains(rn.ID))
 									{
 										failed.add(aq);
 									}
-									else //not a problem space
+									else //no problem yet
 									{
-										//check if it is claimed
-										ActionQueue priorclaimant = claimedspaces.get(dest);
-										if (priorclaimant != null)
-										{//it is claimed
-											successfulsofar.remove(priorclaimant);
-											failed.add(priorclaimant);
-											failed.add(aq);
-											problemspaces.add(dest);
-											claimedspaces.remove(dest); //remove all claims, as it is now a problem, not a claim, may be pointless
+										
+										
+										//so test out the new claim
+										int previousamount = rn.getAmountRemaining();
+										boolean isotherclaimant=true;
+										Integer otherclaims = claimedgathering.get(rn.ID);
+										//if there is no other claim, then the other claim is 0, and it should be noted that noone else is claiming it
+										if (otherclaims == null)
+										{
+											isotherclaimant=false;
+											otherclaims=0;
 										}
-										else
-										{//it is not claimed
-											//so claim it
-											claimedspaces.put(dest,aq);
+										int updatedclaim = otherclaims + u.getTemplate().getGatherRate(rn.getType());
+										//if the claim is too much, then the node has a problem
+											//but don't fail if this is the only claimant
+												//in that case, the result should be that this mines out the resource
+										if (updatedclaim > previousamount && isotherclaimant)
+										{
+											//the node is a problem, so make all claimants fail and mark it as such
+											problemgatherings.add(rn.ID);
+											for (ActionQueue otherclaimant :claimedgatheringactions.get(rn.ID))
+											{
+												successfulsofar.remove(otherclaimant);
+												failed.add(otherclaimant);
+											}
+											failed.add(aq);
+											claimedgatheringactions.remove(rn.ID);
+										}
+										else //the state isn't a problem
+										{
+											//so make the claim and succeed
+											claimedgathering.put(rn.ID, updatedclaim);
+											//make sure the set is initialized
+											if (!claimedgatheringactions.containsKey(rn.ID))
+												claimedgatheringactions.put(rn.ID, new HashSet<ActionQueue>());
+											claimedgatheringactions.get(rn.ID).add(aq);
 											successfulsofar.add(aq);
 										}
 									}
+									
 								}
 								else //won't complete, so passes all claims
 								{
@@ -453,370 +825,8 @@ public class LessSimpleModel implements Model {
 							}
 						}
 					}
-				
-				else if (a.getType() == ActionType.PRIMITIVEDEPOSIT)
-				{
-					if (!u.canGather() || u.getCurrentCargoAmount() <= 0)
-					{//if can't gather or isn't carrying anything, then this isn't an acceptible action
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
 					}
-					else
-					{
-						DirectedAction da =(DirectedAction)a;
-						Direction d = da.getDirection();
-						int xdest = u.getxPosition() + d.xComponent();
-						int ydest = u.getyPosition() + d.yComponent();
-						Unit townHall = state.unitAt(xdest, ydest);
-						if (townHall == null || townHall.getPlayer() != u.getPlayer())
-						{//no unit there on your team
-							failed.add(aq);
-							//recalcAndStuff();//This marks a place where recalculation would be called for
-						}
-						else //there is a unit on your team
-						{
-							//check if the unit can accept the kind of resources that you have
-							boolean canAccept=false;
-							if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
-								canAccept=true;
-							else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
-								canAccept=true;
-							if (!canAccept)
-							{//then it isn't a town hall of the right type
-								failed.add(aq);
-								//recalcAndStuff();//This marks a place where recalculation would be called for
-							}
-							else //there is an appropriate town hall there
-							{
-								//deposit has no chance of conflicts, so this works
-								successfulsofar.add(aq);
-							}
-						}
 					}
-				}
-				else if (a.getType() == ActionType.PRIMITIVEATTACK)
-				{
-					//make sure you can attack and the target exists and is in range in the last state
-					if (!u.canAttack())
-					{
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
-					}
-					else
-					{
-						TargetedAction ta =(TargetedAction)a;
-						Unit target = state.getUnit(ta.getTargetId());
-						if (target == null || target.getCurrentHealth() <= 0 || !inRange(u, target))
-						{
-							failed.add(aq);
-							//recalcAndStuff();//This marks a place where recalculation would be called for
-						}
-						else //target exists and is in range
-						{
-							//no possibility for conflict, so this succeeds
-							successfulsofar.add(aq);
-						}
-					}
-				}
-				else if (a.getType() == ActionType.PRIMITIVEPRODUCE || a.getType() == ActionType.PRIMITIVEBUILD)
-				{//currently, this adds to productionsuccessfulsofar because they are not processed consistantly
-				//consistancy could be restored by making unit production and building actions require a place or direction for the new unit to go, and then processing it as a move
-					
-					//last state check:
-					ProductionAction pa =(ProductionAction)a;
-					@SuppressWarnings("rawtypes")
-					Template t = state.getTemplate(pa.getTemplateId());
-					if (a.getType() == ActionType.PRIMITIVEPRODUCE && u.canBuild()|| a.getType() == ActionType.PRIMITIVEBUILD && !u.canBuild())
-					{//if it should build and is trying to produce or should produce and is trying to build
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
-					}
-					else if (t==null || !u.getTemplate().canProduce(t) || !t.canProduce(state.getView(Agent.OBSERVER_ID)))
-					{//if the template does not exist or the unit cannot make the template or the template's prerequisites are not met
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
-					}
-					else //template exists, is producable by the unit, and has it's tech-tree prerequisites met
-					{
-						int newdurativeamount;
-						if (pa.equals(u.getActionProgressPrimitive()))
-						{
-							newdurativeamount = u.getActionProgressAmount()+1;
-						}
-						else
-						{
-							newdurativeamount = 1;
-						}
-						boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateProductionDuration(u,t);
-						if (willcompletethisturn)
-						{
-							if (!problemcosts.containsKey(player))
-								problemcosts.put(player, new HashSet<ResourceType>());
-							if (!claimedcosts.containsKey(player))
-								claimedcosts.put(player, new HashMap<ResourceType, Integer>());
-							if (!claimedcostactions.containsKey(player))
-								claimedcostactions.put(player, new HashMap<ResourceType, Set<ActionQueue>>());
-							boolean failedaclaim=false;
-							
-							//check all the resources, including supply for problems and claims
-							//note that if you don't need any, it doesn't matter if it is overdrawn
-							//do all even if one fails, because if you stop checking when you fail one resource and don't claim the others, then another production that should conflict will not be detected as such
-							{
-								int goldneeded = t.getGoldCost();
-								//if you have a cost, then check the claims
-								if (goldneeded > 0)
-								{
-									//check if it is a problem
-									if (problemcosts.get(player).contains(ResourceType.GOLD))
-									{
-										failedaclaim=true;
-									}
-									else
-									{//not a problem already, check claims
-										//get the amount of the resource that you had before
-										int previousamount = state.getResourceAmount(player, ResourceType.GOLD);
-										// get the previous claim (if there is none, that is zero)
-										Integer previousclaim = claimedcosts.get(player).get(ResourceType.GOLD); if (previousclaim==null) previousclaim=0;
-										int updatedclaim=previousclaim+goldneeded;
-										
-										//check if the total claim is more than the amount the player has
-										if (updatedclaim > previousamount)
-										{
-											//if the claim is more, then this and all others with claims on this resource fail
-											Set<ActionQueue> otherclaimants = claimedcostactions.get(player).get(ResourceType.GOLD);
-											if (otherclaimants != null)
-											{
-												for (ActionQueue otherclaimant : otherclaimants)
-												{
-													productionsuccessfulsofar.remove(otherclaimant);
-													failed.add(otherclaimant);
-												}
-												//since we are marking this as a problem, don't need the claim anymore
-												claimedcostactions.get(player).remove(ResourceType.GOLD);
-											}
-											failedaclaim=true;
-											problemcosts.get(player).add(ResourceType.GOLD);
-										}
-										else
-										{//not too much, so claim it
-											claimedcosts.get(player).put(ResourceType.GOLD, updatedclaim);
-											if (!claimedcostactions.get(player).containsKey(ResourceType.GOLD))
-											{
-												claimedcostactions.get(player).put(ResourceType.GOLD, new HashSet<ActionQueue>());
-											}
-											claimedcostactions.get(player).get(ResourceType.GOLD).add(aq);
-										}
-									}
-								}
-							}
-								{
-									int woodneeded = t.getWoodCost();
-									//if you have a cost, then check the claims
-									if (woodneeded > 0)
-									{
-										//check if it is a problem
-										if (problemcosts.get(player).contains(ResourceType.WOOD))
-										{
-											failedaclaim=true;
-										}
-										else
-										{//not a problem already, check claims
-											//get the amount of the resource that you had before
-											int previousamount = state.getResourceAmount(player, ResourceType.WOOD);
-											// get the previous claim (if there is none, that is zero)
-											Integer previousclaim = claimedcosts.get(player).get(ResourceType.WOOD); if (previousclaim==null) previousclaim=0;
-											int updatedclaim=previousclaim+woodneeded;
-											
-											//check if the total claim is more than the amount the player has
-											if (updatedclaim > previousamount)
-											{
-												//if the claim is more, then this and all others with claims on this resource fail
-												Set<ActionQueue> otherclaimants = claimedcostactions.get(player).get(ResourceType.WOOD);
-												if (otherclaimants != null)
-												{
-													for (ActionQueue otherclaimant : otherclaimants)
-													{
-														productionsuccessfulsofar.remove(otherclaimant);
-														failed.add(otherclaimant);
-													}
-													//since we are marking this as a problem, don't need the claim anymore
-													claimedcostactions.get(player).remove(ResourceType.WOOD);
-												}
-												failedaclaim=true;
-												problemcosts.get(player).add(ResourceType.WOOD);
-											}
-											else
-											{//not too much, so claim it
-												claimedcosts.get(player).put(ResourceType.WOOD, updatedclaim);
-												if (!claimedcostactions.get(player).containsKey(ResourceType.WOOD))
-												{
-													claimedcostactions.get(player).put(ResourceType.WOOD, new HashSet<ActionQueue>());
-												}
-												claimedcostactions.get(player).get(ResourceType.WOOD).add(aq);
-											}
-										}
-									}
-							}
-							{
-								int foodneeded = t.getFoodCost();
-								//if you have a cost, then check the claims
-								if (foodneeded > 0)
-								{
-									//check if it is a problem
-									if (problemfoodcosts.contains(player))
-									{
-										failedaclaim=true;
-									}
-									else
-									{//not a problem already, check claims
-										//get the amount of the resource that you had before
-										int previousamount = state.getSupplyCap(player)-state.getSupplyAmount(player);
-										// get the previous claim (if there is none, that is zero)
-										Integer previousclaim = claimedfoodcosts.get(player); if (previousclaim==null) previousclaim=0;
-										int updatedclaim=previousclaim+foodneeded;
-										
-										//check if the total claim is more than the amount the player has
-										if (updatedclaim > previousamount)
-										{
-											//if the claim is more, then this and all others with claims on this resource fail
-											Set<ActionQueue> otherclaimants = claimedfoodcostactions.get(player);
-											if (otherclaimants != null)
-											{
-												for (ActionQueue otherclaimant : otherclaimants)
-												{
-													productionsuccessfulsofar.remove(otherclaimant);
-													failed.add(otherclaimant);
-												}
-												//since we are marking this as a problem, don't need the claim anymore
-												claimedfoodcostactions.remove(player);
-											}
-											failedaclaim=true;
-											problemfoodcosts.add(player);
-										}
-										else
-										{//not too much, so claim it
-											claimedfoodcosts.put(player, updatedclaim);
-											if (!claimedfoodcostactions.containsKey(player))
-											{
-												claimedfoodcostactions.put(player, new HashSet<ActionQueue>());
-											}
-											claimedfoodcostactions.get(player).add(aq);
-										}
-									}
-								}
-							}
-							
-							if (failedaclaim)
-							{
-								failed.add(aq);
-							}
-							else
-							{
-								productionsuccessfulsofar.add(aq);
-							}
-							
-						}
-						else //won't complete, so passes all claims
-						{
-							successfulsofar.add(aq);
-						}
-					}
-					
-				}
-				else if (a.getType() == ActionType.PRIMITIVEGATHER)
-				{
-					//check if it can gather at all
-					if (!u.canGather())
-					{
-						failed.add(aq);
-						//recalcAndStuff();//This marks a place where recalculation would be called for
-					}
-					else //it can gather
-					{
-						//find the node you want to gather from, and make sure it exists
-						DirectedAction da =(DirectedAction)a;
-						Direction d = da.getDirection();
-						int xdest = u.getxPosition() + d.xComponent();
-						int ydest = u.getyPosition() + d.yComponent();
-						ResourceNode rn  = state.resourceAt(xdest,ydest);
-						//check if the node exists and was not exhausted last turn
-						if (rn==null || rn.getAmountRemaining() <= 0)
-						{
-							failed.add(aq);
-							//recalcAndStuff();//This marks a place where recalculation would be called for
-						}
-						else //there is a node and it has resources
-						{
-							int newdurativeamount;
-							if (da.equals(u.getActionProgressPrimitive()))
-							{
-								newdurativeamount = u.getActionProgressAmount()+1;
-							}
-							else
-							{
-								newdurativeamount = 1;
-							}
-							boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateGatherDuration(u,rn);
-							if (willcompletethisturn)
-							{
-								
-								
-								//then check if the node will be a problem
-								if (problemgatherings.contains(rn.ID))
-								{
-									failed.add(aq);
-								}
-								else //no problem yet
-								{
-									
-									
-									//so test out the new claim
-									int previousamount = rn.getAmountRemaining();
-									boolean isotherclaimant=true;
-									Integer otherclaims = claimedgathering.get(rn.ID);
-									//if there is no other claim, then the other claim is 0, and it should be noted that noone else is claiming it
-									if (otherclaims == null)
-									{
-										isotherclaimant=false;
-										otherclaims=0;
-									}
-									int updatedclaim = otherclaims + u.getTemplate().getGatherRate(rn.getType());
-									//if the claim is too much, then the node has a problem
-										//but don't fail if this is the only claimant
-											//in that case, the result should be that this mines out the resource
-									if (updatedclaim > previousamount && isotherclaimant)
-									{
-										//the node is a problem, so make all claimants fail and mark it as such
-										problemgatherings.add(rn.ID);
-										for (ActionQueue otherclaimant :claimedgatheringactions.get(rn.ID))
-										{
-											successfulsofar.remove(otherclaimant);
-											failed.add(otherclaimant);
-										}
-										failed.add(aq);
-										claimedgatheringactions.remove(rn.ID);
-									}
-									else //the state isn't a problem
-									{
-										//so make the claim and succeed
-										claimedgathering.put(rn.ID, updatedclaim);
-										//make sure the set is initialized
-										if (!claimedgatheringactions.containsKey(rn.ID))
-											claimedgatheringactions.put(rn.ID, new HashSet<ActionQueue>());
-										claimedgatheringactions.get(rn.ID).add(aq);
-										successfulsofar.add(aq);
-									}
-								}
-								
-							}
-							else //won't complete, so passes all claims
-							{
-								successfulsofar.add(aq);
-							}
-						}
-					}
-				}
-				}
 				}
 			}
 		}

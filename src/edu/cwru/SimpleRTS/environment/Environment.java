@@ -1,30 +1,105 @@
 package edu.cwru.SimpleRTS.environment;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.agent.ThreadIntermediary;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.model.LessSimpleModel;
 import edu.cwru.SimpleRTS.model.Model;
 public class Environment
 {
 	public void forceNewEpisode() {
 		step = 0;
 		model.createNewWorld();
+		turnTracker.newEpisodeAndStep();
 	}
 	
-	
+	private final int DELAY_MS;
 	private Agent[] connectedagents;
+	private ThreadIntermediary[] agentIntermediaries;
 	private Model model;
 	private int step;
-	public Environment(Agent[] connectedagents, Model model)
-	{
+	private TurnTracker turnTracker;
+	private int seed;
+	public Environment(Agent[] connectedagents, Model model, int seed) {
+		this(connectedagents, model, readTurnTrackerFromPrefs(seed), seed);
+	}
+	/**
+	 * Do some reflection to read the type of tracker to use and call it's constructor with a random if possible, and failing that, no argument.
+	 * @param seed
+	 * @return
+	 */
+	private static TurnTracker readTurnTrackerFromPrefs(int seed) {
+		TurnTracker toReturn=null;
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
+		String trackerName = prefs.get("TurnTracker","edu.cwru.SimpleRTS.environment.SimultaneousTurnTracker");
+		Class<?> trackerClass = null;
+		try {
+			trackerClass = Class.forName(trackerName);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			toReturn = (TurnTracker)trackerClass.getConstructor(Random.class).newInstance(new Random(seed));
+		} catch (NoSuchMethodException e) {
+			try {
+				toReturn = (TurnTracker)trackerClass.getConstructor().newInstance();
+			} catch (NoSuchMethodException e1) {
+				e.printStackTrace();
+			} catch (SecurityException e1) {
+				e.printStackTrace();
+			} catch (InstantiationException e1) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e1) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				e.printStackTrace();
+			}
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		if (toReturn == null)
+			return new SimultaneousTurnTracker(new Random(seed));
+		else
+			return toReturn;
+	}
+	public Environment(Agent[] connectedagents, Model model, TurnTracker turnTracker, int seed) {
 		this.connectedagents = connectedagents;
+		agentIntermediaries = new ThreadIntermediary[connectedagents.length];
+		for (int ag = 0; ag < connectedagents.length; ag++)
+		{
+			agentIntermediaries[ag] = new ThreadIntermediary(connectedagents[ag]);
+			new Thread(agentIntermediaries[ag]).start();
+		}
 		this.model = model;
 		
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
+		DELAY_MS=prefs.getInt("InterruptTime",-1);
+		this.turnTracker = turnTracker;
+		Integer[] players = model.getState(Agent.OBSERVER_ID).getPlayerNumbers();
+		for (Integer player : players)
+		{
+			turnTracker.addPlayer(player);
+		}
+		turnTracker.newEpisodeAndStep();
+		if (model instanceof LessSimpleModel)
+			((LessSimpleModel)model).setTurnTracker(turnTracker);
 	}
-	
 	/*
 	 * I removed these because it seemed like a security hole
 	 */
@@ -42,8 +117,8 @@ public class Environment
 //	}
 	public final void runEpisode() throws InterruptedException
 	{
-		model.createNewWorld();
-		step = 0;
+		forceNewEpisode();
+		
 		while(!isTerminated())
 		{
 			step();
@@ -65,120 +140,66 @@ public class Environment
 	 */
 	public boolean step() throws InterruptedException {
 		//grab states and histories
-		StateView states[] = new StateView[connectedagents.length];
-		History.HistoryView histories[] = new History.HistoryView[connectedagents.length];
-		AgentThreader[] actioncalculators= new AgentThreader[connectedagents.length];
-		for(int i = 0; i<connectedagents.length;i++)
+		StateView[] states = new StateView[connectedagents.length];
+		History.HistoryView[] histories = new History.HistoryView[connectedagents.length];
+		CountDownLatch[] actionLatches = new CountDownLatch[connectedagents.length];
+		boolean[] isAgentsTurn = new boolean[connectedagents.length];
+		long[] endTimes = new long[connectedagents.length];
+		for(int ag = 0; ag<connectedagents.length;ag++)
 		{
-			int playerNumber = connectedagents[i].getPlayerNumber();
-			states[i] = model.getState(playerNumber);
-			histories[i] = model.getHistory(playerNumber);
-		}
-		for(int i = 0; i<connectedagents.length;i++)
-		{
-			actioncalculators[i]= new AgentThreader(connectedagents[i], step==0?WhichStep.INITIAL:WhichStep.MIDDLE, states[i], histories[i]);
-		}
-//		for (Thread t : Thread.getAllStackTraces().keySet())
-//		{
-////			if (t.getName().contains("edu"))
-//				System.out.println("\t"+t.getName()+"\t"+t.getId()+"\t"+ManagementFactory.getThreadMXBean().getThreadCpuTime(t.getId()));
-//		}
-		for (int i = 0; i<connectedagents.length; i++)
-		{
-			Map<Integer,Action> actionMapTemp = actioncalculators[i].getActions();
-			Map<Integer,Action> actionMap = new HashMap<Integer,Action>();
-			for(Integer key : actionMapTemp.keySet())
+			isAgentsTurn[ag]=turnTracker.isAgentsTurn(connectedagents[ag]);
+			if (isAgentsTurn[ag])
 			{
-				actionMap.put(key,actionMapTemp.get(key));
+				int playerNumber = connectedagents[ag].getPlayerNumber();
+				states[ag] = model.getState(playerNumber);
+				histories[ag] = model.getHistory(playerNumber);
+				endTimes[ag] = System.currentTimeMillis() + DELAY_MS;
 			}
-			model.addActions(actionMap, connectedagents[i].getPlayerNumber());
+		}
+		//And run them
+		for (int ag = 0; ag<connectedagents.length; ag++)
+		{
+			if (isAgentsTurn[ag])
+			{
+				System.out.println("Step "+step+": Agent with player number: "+connectedagents[ag].getPlayerNumber() + "'s turn.  "+(turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?"Has had turn":"First turn"));
+				actionLatches[ag] = agentIntermediaries[ag].submitState(states[ag], histories[ag], turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?ThreadIntermediary.StateType.MIDDLE:ThreadIntermediary.StateType.INITIAL);
+			}
+		}
+		for (int ag = 0; ag<connectedagents.length; ag++)
+		{
+			if (isAgentsTurn[ag])
+			{
+				//Wait for the actions to be ready
+				if (DELAY_MS >= 0)
+				{
+					//if there is a positive delay, only give it that long to process
+					actionLatches[ag].await(endTimes[ag] - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+				}
+				else
+				{
+					//if the delay is negative (IE: nonsense), wait as long as you need
+					actionLatches[ag].await();
+				}
+				
+				//Get the responses
+				Map<Integer,Action> actionMapTemp = agentIntermediaries[ag].retrieveActions();
+				if (actionMapTemp != null) //If there were responses
+				{
+					Map<Integer,Action> actionMap = new HashMap<Integer,Action>();
+					for(Integer key : actionMapTemp.keySet())
+					{
+						actionMap.put(key,actionMapTemp.get(key));
+					}
+					model.addActions(actionMap, connectedagents[ag].getPlayerNumber());
+				}
+			}
 		}
 		model.executeStep();
 		step++;
+		turnTracker.newStep();
 		return model.isTerminated();
 	}
 	public int getStepNumber() {
 		return step;
-	}
-	private static enum WhichStep{
-		INITIAL,MIDDLE,TERMINAL;
-	}
-	/**
-	 * A class that starts a thread to run Agent.initialStep, Agent.middleStep, or Agent.terminalStep
-	 *
-	 */
-	private static class AgentThreader {
-		/**
-		 * How many milliseconds to wait before ignoring the agent and forging ahead.  Negative means that it will wait forever.
-		 * May cause concurrency problems in Agents if they aren't well prepared, or, potentially, a pileup of threads
-		 */
-		private long maximumtimetowait=-1;
-		private final long timestarted;
-		private final CountDownLatch latch;
-		private final State.StateView newstate;
-		private final History.HistoryView statehistory;
-		private final Agent agent;
-		private Map<Integer,Action> actions;
-		public AgentThreader(Agent agentin, WhichStep type, State.StateView newstatein, History.HistoryView statehistoryin)
-		{
-			this.newstate = newstatein;
-			this.statehistory = statehistoryin;
-			this.latch = new CountDownLatch(1);
-			this.agent = agentin;
-			switch (type)
-			{
-			case MIDDLE:
-			{
-				Thread t =new Thread(new Runnable(){public void run(){actions=agent.middleStep(newstate, statehistory);latch.countDown();}});
-				t.setName(agent.toString());
-				t.start();
-				break;
-			}
-			case INITIAL:
-			{
-				Thread t = new Thread(new Runnable(){public void run(){actions=agent.initialStep(newstate, statehistory);latch.countDown();}});
-				t.setName(agent.toString());
-				t.start();
-				break;
-			}
-			case TERMINAL:
-			{
-				Thread t = new Thread(new Runnable(){public void run(){agent.terminalStep(newstate, statehistory);latch.countDown();}});
-				t.setName(agent.toString());
-				t.start();
-				break;
-			}
-			}
-			timestarted = System.currentTimeMillis();
-		}
-		
-		@SuppressWarnings("unused")
-		public void setMaximumWaitTime(long time) {//TODO - add this to configuration
-			this.maximumtimetowait = time;
-		}
-		/**
-		 * Waits for the agent step to finish, then returns the actions if the step was not terminal
-		 * @return The actions if the step was not terminal, null if the step was terminal
-		 */
-		public Map<Integer,Action> getActions()
-		{
-			try {
-				if (maximumtimetowait>=0)
-				{
-					latch.await(maximumtimetowait-(System.currentTimeMillis()-timestarted), TimeUnit.MILLISECONDS);
-				}
-				else
-				{
-					latch.await();
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				return null;
-			}
-			if (latch.getCount()==0)
-				return actions;
-			else
-				return new HashMap<Integer,Action>();
-		}
 	}
 }

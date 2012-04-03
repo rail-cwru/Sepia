@@ -86,7 +86,7 @@ public class VisualAgentTest {
 		model.setVerbosity(true);
 		visualAgent = new VisualAgent(player1,new String[]{"false","true"});
 		simpleAgent = new SimpleAgent1(player2);
-		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model);
+		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model, 123456);
 	}
 	@Test
 	public void display() {

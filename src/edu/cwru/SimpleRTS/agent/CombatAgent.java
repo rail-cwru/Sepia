@@ -34,6 +34,15 @@ public class CombatAgent extends Agent{
 	 */
 	private int[] enemies;
 	private boolean wanderwhenidle;
+	
+	
+	private int lastStepMovedIn;
+	
+	/**
+	 * 
+	 * @param playernum
+	 * @param otherargs
+	 */
 	public CombatAgent(int playernum, String[] otherargs) {
 		super(playernum);
 		//copy the list of enemies
@@ -65,88 +74,92 @@ public class CombatAgent extends Agent{
 			}
 			doAggro(newstate);
 		Map<Integer, Action> myAction = getAction(newstate);
+		lastStepMovedIn = newstate.getTurnNumber();
 		return myAction;
 	}
 
 	@Override
 	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
 		
-		//update its list of units
-		for (BirthLog birth : statehistory.getEventLogger().getBirths(newstate.getTurnNumber()-1)) {
-			if (playernum == birth.getPlayer()) {
-				unitOrders.put(birth.getNewUnitID(), null);
+		//Read in the logs for every step that occurred since it was last this player's turn
+		for (int stepToRead = lastStepMovedIn; stepToRead < newstate.getTurnNumber(); stepToRead++)
+		{
+			//update its list of units
+			for (BirthLog birth : statehistory.getEventLogger().getBirths(stepToRead)) {
+				if (playernum == birth.getPlayer()) {
+					unitOrders.put(birth.getNewUnitID(), null);
+				}
 			}
-		}
-		List<Integer> toRemove = new LinkedList<Integer>();
-		List<Integer> toUnorder = new LinkedList<Integer>();
-		for (DeathLog death : statehistory.getEventLogger().getDeaths(newstate.getTurnNumber()-1)) {
-			//Check if the dead unit is mine
-			if (playernum == death.getPlayer()) {
-				toRemove.add(death.getDeadUnitID());
-			}
-			//check if anyone is attacking the dead unit, and tell them to stop
-				for (Map.Entry<Integer, Action> order: unitOrders.entrySet()) {
-					
-					if (order.getValue()!=null)
-					{
-						Action attackthedeadunit = Action.createCompoundAttack(order.getKey(), death.getDeadUnitID());
-						if (attackthedeadunit.equals(order.getValue())) {
-							toUnorder.add(order.getKey());
+			List<Integer> toRemove = new LinkedList<Integer>();
+			List<Integer> toUnorder = new LinkedList<Integer>();
+			for (DeathLog death : statehistory.getEventLogger().getDeaths(stepToRead)) {
+				//Check if the dead unit is mine
+				if (playernum == death.getPlayer()) {
+					toRemove.add(death.getDeadUnitID());
+				}
+				//check if anyone is attacking the dead unit, and tell them to stop
+					for (Map.Entry<Integer, Action> order: unitOrders.entrySet()) {
+						
+						if (order.getValue()!=null)
+						{
+							Action attackthedeadunit = Action.createCompoundAttack(order.getKey(), death.getDeadUnitID());
+							if (attackthedeadunit.equals(order.getValue())) {
+								toUnorder.add(order.getKey());
+							}
 						}
 					}
-				}
-		}
-		for (Integer i : toUnorder){
-			unitOrders.put(i,null);
-		}
-		for (Integer i : toRemove) {
-			unitOrders.remove(i);
-		}
-		
-		if (verbose)
-		{
-			//Report the damage dealt by and to your units
-			for (DamageLog damagereport : statehistory.getEventLogger().getDamage(newstate.getTurnNumber()-1)) {
-				if (damagereport.getAttackerController() == playernum) {
-					System.out.println(damagereport.getAttackerID() + " hit " + damagereport.getDefenderID() + " for " +damagereport.getDamage()+ " damage");
-				}
-				if (damagereport.getDefenderController() == playernum) {
-					System.out.println(damagereport.getDefenderID() + " was hit by " + damagereport.getAttackerID() + " for " +damagereport.getDamage()+ " damage");
-				}
-				
 			}
-		}
-		//Update it's list of orders by checking for completions and failures and removing those
-		List<ActionResult> feedbacks = statehistory.getActionResults(playernum).getActionResults(newstate.getTurnNumber()-1);
-		for (ActionResult feedback : feedbacks)
-		{
+			for (Integer i : toUnorder){
+				unitOrders.put(i,null);
+			}
+			for (Integer i : toRemove) {
+				unitOrders.remove(i);
+			}
 			
-			if (feedback.getResult() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete
+			if (verbose)
 			{
-				//because the feedback mixes primitive feedback on duratives and compound feedback on primitives, need to check if it is the right action
-				Action action = feedback.getAction();
-				int unitid = action.getUnitId();
-				Action order = unitOrders.get(unitid);		//if this gives nullpointer, then there was some failure in registering units with unitOrders
-				//check if the completion is the same level as the order
-				if (action.equals(order))
+				//Report the damage dealt by and to your units
+				for (DamageLog damagereport : statehistory.getEventLogger().getDamage(stepToRead)) {
+					if (damagereport.getAttackerController() == playernum) {
+						writeLineVisual(damagereport.getAttackerID() + " hit " + damagereport.getDefenderID() + " for " +damagereport.getDamage()+ " damage");
+					}
+					if (damagereport.getDefenderController() == playernum) {
+						writeLineVisual(damagereport.getDefenderID() + " was hit by " + damagereport.getAttackerID() + " for " +damagereport.getDamage()+ " damage");
+					}
+					
+				}
+			}
+			//Update it's list of orders by checking for completions and failures and removing those
+			List<ActionResult> feedbacks = statehistory.getActionResults(playernum).getActionResults(stepToRead);
+			for (ActionResult feedback : feedbacks)
+			{
+				
+				if (feedback.getResult() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete
 				{
-					//remove the order, as it is complete or failed
-					unitOrders.put(unitid, null);
+					//because the feedback mixes primitive feedback on duratives and compound feedback on primitives, need to check if it is the right action
+					Action action = feedback.getAction();
+					int unitid = action.getUnitId();
+					Action order = unitOrders.get(unitid);		//if this gives nullpointer, then there was some failure in registering units with unitOrders
+					//check if the completion is the same level as the order
+					if (action.equals(order))
+					{
+						//remove the order, as it is complete or failed
+						unitOrders.put(unitid, null);
+					}
 				}
 			}
 		}
-		
 		//Calculate what the orders should be
 		doAggro(newstate);
 		
-		
+		lastStepMovedIn = newstate.getTurnNumber();
 		return getAction(newstate);
 	}
 
 	@Override
 	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		//A non learning agent needn't do anything at the final step
-		
+		lastStepMovedIn = newstate.getTurnNumber();
 	}
 	
 	
@@ -154,7 +167,7 @@ public class CombatAgent extends Agent{
 		Map<Integer, Action> actions = new HashMap<Integer, Action>();
 		for (Map.Entry<Integer, Action> order : unitOrders.entrySet()) {
 			if (verbose)
-				System.out.println("Combat Agent for plr "+playernum+"'s order: " + order.getKey() + " is to use " + order.getValue());
+				writeLineVisual("Combat Agent for plr "+playernum+"'s order: " + order.getKey() + " is to use " + order.getValue());
 			if (order.getValue() != null) //if it has an order
 			{
 				//Assign the unit its action

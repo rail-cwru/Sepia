@@ -7,10 +7,12 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.agent.ThreadIntermediary.ViewAndNextLatch;
 import edu.cwru.SimpleRTS.agent.visual.VisualLog;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.State.StateView;
 /**
  * The base type for any agent that can interact with the SimpleRTS environment.
  * @author Tim
@@ -126,18 +128,54 @@ public abstract class Agent implements Serializable {
 	public int getPlayerNumber() {
 		return playernum;
 	}
-	@Override
-	public int hashCode() {
+	@Override public int hashCode() {
 		return ID;
 	}
-	@Override
-	public boolean equals(Object o) {
+	@Override public boolean equals(Object o) {
 		if(!(o instanceof Agent))
 			return false;
 		return ID == ((Agent)o).ID;
 	}
 	
 	
+	
+//	private ThreadIntermediary intermediary;
+//	/**
+//	 * Set the shared memory intermediary used in parallelization.
+//	 * @param intermediary
+//	 */
+//	public void setIntermediary(ThreadIntermediary intermediary) {
+//		this.intermediary = intermediary;
+//	}
+//	public void start() throws InterruptedException {
+//		
+//		while (true) {
+//			if (intermediary == null)
+//				throw new IllegalStateException("Intermediary is null, you must set an intermediary");
+//			ViewAndNextLatch viewAndLatch = intermediary.retrieveState();
+//			StateView state = viewAndLatch.stateView;
+//			HistoryView history = viewAndLatch.historyView;
+//			CountDownLatch latch = viewAndLatch.nextStateLatch;
+//			ThreadIntermediary.StateType type = viewAndLatch.stateType;
+//			//If there is a current state
+//			if (state != null && history!=null) {
+//				switch (type) {
+//				case INITIAL:
+//					initialStep(state, history);
+//					break;
+//				case MIDDLE:
+//					middleStep(state, history);
+//					break;
+//				case TERMINAL:
+//					terminalStep(state, history);
+//					break;
+//				default:
+//					throw new IllegalArgumentException("State type \""+type+"\" is not supported by agent.");	
+//				}
+//			}
+//			latch.await();
+//		}
+//	}
 //	//Action selection and such.  Implementers should not have access to this
 //	private Map<Integer,Action> chosenActions;
 //	
@@ -193,6 +231,7 @@ public abstract class Agent implements Serializable {
 //		terminalStep(newstate,statehistory);
 //		onofflatch.countDown();
 //	}
+	
 
 	/**
 	 * Accept the initial state of an episode
