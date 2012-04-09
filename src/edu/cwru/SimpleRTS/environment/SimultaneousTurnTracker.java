@@ -15,6 +15,8 @@ public class SimultaneousTurnTracker implements TurnTracker {
 	HashSet<Integer> currentPlayers;
 	public SimultaneousTurnTracker(Random unused) {
 		currentPlayers = new HashSet<Integer>();
+		playersWhoHaveHadTurns = new HashSet<Integer>();
+		newlyAddedPlayers = new HashSet<Integer>();
 	}
 	@Override
 	public void addPlayer(Integer playerNumber) {
