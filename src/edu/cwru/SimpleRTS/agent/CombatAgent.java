@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,17 +46,42 @@ public class CombatAgent extends Agent{
 	 */
 	public CombatAgent(int playernum, String[] otherargs) {
 		super(playernum);
-		//copy the list of enemies
-		this.verbose = Boolean.parseBoolean(otherargs[2]);
-		String[] enemystrs = otherargs[0].split(" ");
-		this.enemies = new int[enemystrs.length];
-		for (int i = 0; i<enemies.length;i++) {
-			this.enemies[i] = Integer.parseInt(enemystrs[i]);
+		if (otherargs == null || otherargs.length == 0)
+		{
+			setDefaults();
 		}
-		this.wanderwhenidle = Boolean.parseBoolean(otherargs[1]);
+		else
+		{
+			//copy the list of enemies
+			this.verbose = Boolean.parseBoolean(otherargs[2]);
+			String[] enemystrs = otherargs[0].split(" ");
+			this.enemies = new int[enemystrs.length];
+			for (int i = 0; i<enemies.length;i++) {
+				this.enemies[i] = Integer.parseInt(enemystrs[i]);
+			}
+			this.wanderwhenidle = Boolean.parseBoolean(otherargs[1]);
+		}
 	}
-
-
+	
+	/**
+	 * 
+	 * @param playernum
+	 */
+	public CombatAgent(int playernum) {
+		super(playernum);
+		setDefaults();
+	}
+	
+	/**
+	 * Set the parameters to the default values.
+	 * For enemies, they cannot be immediately set, so leave them as null to be interpreted later.
+	 */
+	private void setDefaults()
+	{
+		verbose = false;
+		wanderwhenidle = true;
+		enemies = null;
+	}
 	/**
 	 * Start a new trial.
 	 * Uses the StateView, which contains information in logs, resources, and units
@@ -66,6 +92,30 @@ public class CombatAgent extends Agent{
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
 		//Do setup things for a new game
+		
+		//if no enemies were set, then everyone else is the enemy
+		if (enemies == null)
+		{
+			//actually count the enemies, just in case there is some kind of duplicate or if your player number isn't there
+			int numenemies = 0;
+			for (Integer i : newstate.getPlayerNumbers())
+			{
+				if (i!=getPlayerNumber())
+				{
+					numenemies++;
+				}
+			}
+			enemies = new int[numenemies];
+			int itr = 0;
+			for (Integer i : newstate.getPlayerNumbers())
+			{
+				if (i!=getPlayerNumber())
+				{
+					enemies[itr++]=i;
+				}
+			}
+		}
+		
 			//Clear the unit orders
 			unitOrders = new HashMap<Integer, Action>();
 			//Put all of the units into the orders.
