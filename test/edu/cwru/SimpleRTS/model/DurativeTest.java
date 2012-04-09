@@ -128,8 +128,8 @@ public class DurativeTest {
 	private void testGather(ResourceNode.Type type, Direction d, int basicDuration, int headStart, int numConsecutiveTries) {
 		resetState();
 		//Change the template to make the duration right
-		superUnit.setDurationGoldGather(basicDuration);
-		superUnit.setDurationWoodGather(basicDuration);
+		superUnit.setDurationGatherGold(basicDuration);
+		superUnit.setDurationGatherWood(basicDuration);
 		
 		Unit u = superUnit.produceInstance(state);
 		state.addUnit(u, state.getXExtent()/2, state.getYExtent()/2);
@@ -390,8 +390,8 @@ public class DurativeTest {
 		resetState();
 		int basicDuration = 500;
 		//Change the template to make the duration right
-		superUnit.setDurationGoldGather(basicDuration);
-		superUnit.setDurationWoodGather(basicDuration);
+		superUnit.setDurationGatherGold(basicDuration);
+		superUnit.setDurationGatherWood(basicDuration);
 		
 		Unit u = superUnit.produceInstance(state);
 		state.addUnit(u, state.getXExtent()/2, state.getYExtent()/2);

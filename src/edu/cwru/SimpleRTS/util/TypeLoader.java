@@ -240,11 +240,11 @@ public final class TypeLoader {
 			{
 				throw new IllegalArgumentException("DurationGatherGold must be positive");
 			}
-			template.setDurationGoldGather(duration);
+			template.setDurationGatherGold(duration);
 		}
 		else
 		{
-			template.setDurationGoldGather(1);
+			template.setDurationGatherGold(1);
 		}
 		if(obj.has("DurationGatherWood"))
 		{
@@ -255,11 +255,11 @@ public final class TypeLoader {
 			{
 				throw new IllegalArgumentException("DurationGatherWood must be positive");
 			}
-			template.setDurationWoodGather(duration);
+			template.setDurationGatherWood(duration);
 		}
 		else
 		{
-			template.setDurationWoodGather(1);
+			template.setDurationGatherWood(1);
 		}
 		
 		template.setPlayer(player);
@@ -274,28 +274,60 @@ public final class TypeLoader {
 			for(int i = 0; i < affects.length(); i++)
 				affectslist[i]=affects.getString(i);
 		}
-		int attackchange = 0;
-		int defensechange = 0;
-		if (obj.has("DamageIncrease"))
+		int piercingattackchange = 0;
+		int basicattackchange = 0;
+		int armorchange = 0;
+		int rangechange = 0;
+		int healthchange = 0;
+		if (obj.has("PiercingAttackIncrease"))
 		{
-			attackchange = obj.getInt("DamageIncrease");
+			piercingattackchange = obj.getInt("PiercingAttackIncrease");
+		}
+		if (obj.has("BasicAttackIncrease"))
+		{
+			basicattackchange = obj.getInt("BasicAttackIncrease");
 		}
 		if (obj.has("ArmorIncrease"))
 		{
-			defensechange = obj.getInt("ArmorIncrease");
+			armorchange = obj.getInt("ArmorIncrease");
+		}
+		if (obj.has("HealthIncrease"))
+		{
+			healthchange = obj.getInt("HealthIncrease");
+		}
+		if (obj.has("RangeIncrease"))
+		{
+			rangechange = obj.getInt("RangeIncrease");
 		}
 		
 		UpgradeTemplate template = new UpgradeTemplate(idsource.nextTemplateID());
-		template.setAttackChange(attackchange);
-		template.setDefenseChange(defensechange);
+		template.setPiercingAttackChange(piercingattackchange);
+		template.setBasicAttackChange(basicattackchange);
+		template.setArmorChange(armorchange);
+		template.setRangeChange(rangechange);
+		template.setHealthChange(healthchange);
 		for (String s : affectslist)
 		{
 			template.addAffectedUnit(s);
 		}
 		template.setName(obj.getString("Name"));
-		template.setTimeCost(obj.getInt("TimeCost"));
-		template.setGoldCost(obj.getInt("GoldCost"));
-		template.setWoodCost(obj.getInt("WoodCost"));
+		if (obj.has("TimeCost"))
+		{
+			int timecost = obj.getInt("TimeCost");
+			if (timecost < 1)
+				throw new IllegalArgumentException("Time cost must be a positive integer");
+			template.setTimeCost(timecost);
+		}
+		else
+			template.setTimeCost(1);
+		if (obj.has("GoldCost"))
+			template.setGoldCost(obj.getInt("GoldCost"));
+		else
+			template.setGoldCost(0);
+		if (obj.has("WoodCost"))
+			template.setWoodCost(obj.getInt("WoodCost"));
+		else
+			template.setWoodCost(0);
 		template.setPlayer(player);
 		if(obj.has("BuildPrereq"))
 		{

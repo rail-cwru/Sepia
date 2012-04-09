@@ -5,83 +5,86 @@
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
 <xs:element name="state">
-	<xs:complexType>
+	
+        
+        
+        <xs:complexType>
 		<xs:sequence>
 			<xs:sequence minOccurs="1" maxOccurs="unbounded">
-				<xs:element name="player" type="Player"/>
+				<xs:element name="player" type="Player" />
 			</xs:sequence>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="resourceNode" type="ResourceNode"/>
+				<xs:element name="resourceNode" type="ResourceNode" />
 			</xs:sequence>
 		</xs:sequence>
-		<xs:attribute name="xExtent" type="xs:int"/>
-		<xs:attribute name="yExtent" type="xs:int"/>
-		<xs:attribute name="nextTargetID" type="xs:int"/>
-		<xs:attribute name="nextTemplateID" type="xs:int"/>
-		<xs:attribute name="revealedResources" type="xs:boolean"/>
-		<xs:attribute name="fogOfWar" type="xs:boolean"/>
+		<xs:attribute name="xExtent" type="xs:int" />
+		<xs:attribute name="yExtent" type="xs:int" />
+		<xs:attribute name="nextTargetID" type="xs:int" />
+		<xs:attribute name="nextTemplateID" type="xs:int" />
+		<xs:attribute name="revealedResources" type="xs:boolean" />
+		<xs:attribute name="fogOfWar" type="xs:boolean" />
 	</xs:complexType>
-</xs:element>
+    </xs:element>
 <xs:complexType name="Player">
 	<xs:sequence>
-		<xs:element name="ID" type="xs:int"/>
+		<xs:element name="ID" type="xs:int" />
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="unit" type="Unit" />
 		</xs:sequence>
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="upgrade" type="xs:int"/>
+			<xs:element name="upgrade" type="xs:int" />
 		</xs:sequence>
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="template" type="Template"/>
+			<xs:element name="template" type="Template" />
 		</xs:sequence>
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="resourceAmount" type="ResourceQuantity"/>
+			<xs:element name="resourceAmount" type="ResourceQuantity" />
 		</xs:sequence>
-		<xs:element name="supply" type="xs:int"/>
-		<xs:element name="supplyCap" type="xs:int"/>
+		<xs:element name="supply" type="xs:int" />
+		<xs:element name="supplyCap" type="xs:int" />
 	</xs:sequence>
 	
 </xs:complexType>
 <xs:complexType name="Unit">
 	<xs:all>
-		<xs:element name="ID" type="xs:int"/>
-		<xs:element name="currentHealth" type="xs:int"/>
-		<xs:element name="xPosition" type="xs:int"/>
-		<xs:element name="yPosition" type="xs:int"/>
-		<xs:element name="templateID" type="xs:int"/>
-		<xs:element name="cargoType" type="ResourceType"/>
-		<xs:element name="cargoAmount" type="xs:int"/>
-		<xs:element name="unitTask" type="UnitTask"/>
-		<xs:element name="progressPrimitive" type="Action"/>
-		<xs:element name="progressAmount" type="xs:int"/>
+		<xs:element name="ID" type="xs:int" />
+		<xs:element name="currentHealth" type="xs:int" />
+		<xs:element name="xPosition" type="xs:int" />
+		<xs:element name="yPosition" type="xs:int" />
+		<xs:element name="templateID" type="xs:int" />
+		<xs:element name="cargoType" type="ResourceType" />
+		<xs:element name="cargoAmount" type="xs:int" />
+		<xs:element name="unitTask" type="UnitTask" />
+		<xs:element name="progressPrimitive" type="Action" />
+		<xs:element name="progressAmount" type="xs:int" />
 	</xs:all>
 </xs:complexType>
 <xs:complexType name="UnitTemplate">
 	<xs:complexContent>
 			<xs:extension base="Template">
 			<xs:sequence>
-				<xs:element name="baseHealth" type="xs:int"/>
-				<xs:element name="baseAttack" type="xs:int"/>
-				<xs:element name="piercingAttack" type="xs:int"/>
-				<xs:element name="range" type="xs:int"/>
-				<xs:element name="armor" type="xs:int"/>
-				<xs:element name="sightRange" type="xs:int"/>
-				<xs:element name="canGather" type="xs:boolean"/>
-				<xs:element name="canBuild" type="xs:boolean"/>
-				<xs:element name="canMove" type="xs:boolean"/>
-				<xs:element name="canAcceptGold" type="xs:boolean"/>
-				<xs:element name="canAcceptWood" type="xs:boolean"/>
-				<xs:element name="foodProvided" type="xs:int"/>
-				<xs:element name="character" type="xs:short"/>
-				<xs:element name="goldGatherRate" type="xs:int"/>
-				<xs:element name="woodGatherRate" type="xs:int"/>
-				<xs:element name="durationGatherWood" type="xs:int"/>
-				<xs:element name="durationGatherGold" type="xs:int"/>
-				<xs:element name="durationMove" type="xs:int"/>
-				<xs:element name="durationAttack" type="xs:int"/>
-				<xs:element name="durationDeposit" type="xs:int"/>
+				<xs:element name="baseHealth" type="xs:int" />
+				<xs:element name="baseAttack" type="xs:int" />
+				<xs:element name="piercingAttack" type="xs:int" />
+				<xs:element name="range" type="xs:int" />
+				<xs:element name="armor" type="xs:int" />
+				<xs:element name="sightRange" type="xs:int" />
+				<xs:element name="canGather" type="xs:boolean" />
+				<xs:element name="canBuild" type="xs:boolean" />
+				<xs:element name="canMove" type="xs:boolean" />
+				<xs:element name="canAcceptGold" type="xs:boolean" />
+				<xs:element name="canAcceptWood" type="xs:boolean" />
+				<xs:element name="foodProvided" type="xs:int" />
+				<xs:element name="character" type="xs:short" />
+				<xs:element name="goldGatherRate" type="xs:int" />
+				<xs:element name="woodGatherRate" type="xs:int" />
+				<xs:element name="durationGatherWood" type="xs:int" />
+				<xs:element name="durationGatherGold" type="xs:int" />
+				<xs:element name="durationMove" type="xs:int" />
+				<xs:element name="durationAttack" type="xs:int" />
+				<xs:element name="durationDeposit" type="xs:int" />
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="produces" type="xs:string"/>
+					<xs:element name="produces" type="xs:string" />
 				</xs:sequence>
 			</xs:sequence>
 		</xs:extension>
@@ -89,17 +92,17 @@
 </xs:complexType>
 <xs:complexType name="Template" abstract="true">
 	<xs:sequence>
-		<xs:element name="ID" type="xs:int"/>
-		<xs:element name="foodCost" type="xs:int"/>
-		<xs:element name="goldCost" type="xs:int"/>
-		<xs:element name="woodCost" type="xs:int"/>
-		<xs:element name="timeCost" type="xs:int"/>
-		<xs:element name="name" type="xs:string"/>
+		<xs:element name="ID" type="xs:int" />
+		<xs:element name="foodCost" type="xs:int" />
+		<xs:element name="goldCost" type="xs:int" />
+		<xs:element name="woodCost" type="xs:int" />
+		<xs:element name="timeCost" type="xs:int" />
+		<xs:element name="name" type="xs:string" />
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="upgradePrerequisite" type="xs:string"/>
+			<xs:element name="upgradePrerequisite" type="xs:string" />
 		</xs:sequence>
 		<xs:sequence minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="unitPrerequisite" type="xs:string"/>
+			<xs:element name="unitPrerequisite" type="xs:string" />
 		</xs:sequence>
 	</xs:sequence>
 </xs:complexType>
@@ -107,10 +110,15 @@
 	<xs:complexContent>
 		<xs:extension base="Template">
 			<xs:sequence>
-				<xs:element name="attackChange" type="xs:int"/>
-				<xs:element name="defenseChange" type="xs:int"/>
+				<xs:element name="basicAttackChange" type="xs:int" />
+				<xs:element name="piercingAttackChange" type="xs:int"></xs:element>
+				<xs:element name="armorChange" type="xs:int" />
+				<xs:element name="healthChange" type="xs:int"></xs:element>
+                    <xs:element name="sightRangeChange" type="xs:int"></xs:element>
+                    <xs:element name="rangeChange" type="xs:int"></xs:element>
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="affectedUnitTypes" type="xs:string"/>
+					<xs:element name="affectedUnitTypes"
+						type="xs:string" />
 				</xs:sequence>
 			</xs:sequence>
 		</xs:extension>
@@ -118,15 +126,15 @@
 </xs:complexType>
 <xs:complexType name="Action">
 	<xs:sequence>
-		<xs:element name="unitId" type="xs:int"/>
-		<xs:element name="actionType" type="ActionType"/>
+		<xs:element name="unitId" type="xs:int" />
+		<xs:element name="actionType" type="ActionType" />
 	</xs:sequence>
 </xs:complexType>
 <xs:complexType name="TargetedAction">
 	<xs:complexContent>
 		<xs:extension base="Action">
 			<xs:sequence>
-				<xs:element name="targetId" type="xs:int"/>
+				<xs:element name="targetId" type="xs:int" />
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
@@ -135,7 +143,7 @@
 	<xs:complexContent>
 		<xs:extension base="Action">
 			<xs:sequence>
-				<xs:element name="direction" type="Direction"/>
+				<xs:element name="direction" type="Direction" />
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
@@ -144,8 +152,8 @@
 	<xs:complexContent>
 		<xs:extension base="Action">
 			<xs:sequence>
-				<xs:element name="x" type="xs:int"/>
-				<xs:element name="y" type="xs:int"/>
+				<xs:element name="x" type="xs:int" />
+				<xs:element name="y" type="xs:int" />
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
@@ -154,7 +162,7 @@
 	<xs:complexContent>
 		<xs:extension base="Action">
 			<xs:sequence>
-				<xs:element name="templateId" type="xs:int"/>
+				<xs:element name="templateId" type="xs:int" />
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
@@ -163,37 +171,37 @@
 	<xs:complexContent>
 		<xs:extension base="Action">
 			<xs:sequence>
-				<xs:element name="x" type="xs:int"/>
-				<xs:element name="y" type="xs:int"/>
-				<xs:element name="templateId" type="xs:int"/>
+				<xs:element name="x" type="xs:int" />
+				<xs:element name="y" type="xs:int" />
+				<xs:element name="templateId" type="xs:int" />
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
 </xs:complexType>
 <xs:simpleType name="UnitTask">
 	<xs:restriction base="xs:string">
-		<xs:enumeration value="Wood"/>
-		<xs:enumeration value="Gold"/>
-		<xs:enumeration value="Idle"/>
-		<xs:enumeration value="Build"/>
-		<xs:enumeration value="Move"/>
-		<xs:enumeration value="Attack"/>
+		<xs:enumeration value="Wood" />
+		<xs:enumeration value="Gold" />
+		<xs:enumeration value="Idle" />
+		<xs:enumeration value="Build" />
+		<xs:enumeration value="Move" />
+		<xs:enumeration value="Attack" />
 	</xs:restriction>
 </xs:simpleType>
 <xs:complexType name="ResourceQuantity">
 	<xs:sequence>
-		<xs:element name="quantity" type="xs:int"/>
-		<xs:element name="type" type="ResourceType"/>
+		<xs:element name="quantity" type="xs:int" />
+		<xs:element name="type" type="ResourceType" />
 	</xs:sequence>
 </xs:complexType>
 <xs:complexType name="ResourceNode">
 	<xs:sequence>
-		<xs:element name="ID" type="xs:int"/>
-		<xs:element name="type" type="ResourceNodeType"/>
-		<xs:element name="xPosition" type="xs:int"/>
-		<xs:element name="yPosition" type="xs:int"/>
-		<xs:element name="initialAmount" type="xs:int"/>
-		<xs:element name="amountRemaining" type="xs:int"/>	
+		<xs:element name="ID" type="xs:int" />
+		<xs:element name="type" type="ResourceNodeType" />
+		<xs:element name="xPosition" type="xs:int" />
+		<xs:element name="yPosition" type="xs:int" />
+		<xs:element name="initialAmount" type="xs:int" />
+		<xs:element name="amountRemaining" type="xs:int" />	
 	</xs:sequence>	
 </xs:complexType>
 <xs:simpleType name="ResourceNodeType">

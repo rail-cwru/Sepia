@@ -434,12 +434,6 @@
 								This is an optional field that defaults at 0 (no cost).
 							</li>
 							<li>
-								"FoodCost" : 3<br/>
-								This example denotes that the template will take up 3 food when built or produced.
-								This field may be any nonnegative integer, any other will be rejected.
-								This is an optional field that defaults at 0 (no cost).
-							</li>
-							<li>
 								"UpgradePrereq" : ["SuperWeaponUpgrade","FootUpgrade"]<br/>
 								This example denotes that this template cannot be produced/built unless the player has completed an upgrade of the type with name "SuperWeaponUpgrade" and an upgrade of the type with name "FootUpgrade".
 								This field is a list of strings, each of should correspond to the Name field of a upgrade.
@@ -595,6 +589,52 @@
 								This field is a nonnegative integer*.
 								This field is optional and defaults to 1 (the move will be applied to make the next state).
 								This field is irrelevant if the unit is unable to move (see the Mobile field).
+							</li>
+						</ul>
+						<p>
+							The following features are only read by upgrades:
+						</p>
+						<ul>
+							<li>
+								"PiercingAttackIncrease" : 3<br/>
+								This example denotes that units affected by the upgrade will get +3 piercing (armor-bypassing) attack
+								This field may be any integer.
+								A negative integer will reduce attack.  Negative total amounts of attack are not recommended.
+								This is an optional field that defaults to 0 (no change).
+							</li>
+							<li>
+								"BasicAttackIncrease" : 1<br/>
+								This example denotes that units affected by the upgrade will get +1 basic (armor-reduced) attack
+								This field may be any integer.
+								A negative integer will reduce attack.  Negative total amounts of attack are not recommended.
+								This is an optional field that defaults to 0 (no change).
+							</li>
+							<li>
+								"ArmorIncrease" : 2<br/>
+								This example denotes that units affected by the upgrade will get +2 armor
+								This field may be any integer.
+								A negative integer will reduce armor.  Negative total amounts of armor are not recommended.
+								This is an optional field that defaults to 0 (no change).
+							</li>
+							<li>
+								"HealthIncrease" : 10<br/>
+								This example denotes that units affected by the upgrade will get 10 starting and maximum health.  This also increases current health by the same amount.
+								This field may be any integer.
+								A negative integer will reduce starting and maximum hit points, this is not recommended as negative total amounts of health from upgrades may result in bugs, as they may not be cleaned up.
+								This is an optional field that defaults to 0 (no change).
+							</li>
+							<li>
+								"RangeIncrease" : -1<br/>
+								This example denotes that units affected by the upgrade will get -1 range.
+								This field may be any integer.
+								A negative integer will reduce range.  A range of zero may only hit itself under normal circumstances, and a negative range can't hit anything.
+								This is an optional field that defaults to 0 (no change).
+							</li>
+							<li>
+								"Affects" : ["Footman","Archer"]<br/>
+								This example denotes that the increases noted by the other fields will be applied to the Footman and Archer templates.
+								This field may be any list of Unit Template names.
+								This is an optional field, but will default to affecting nothing.
 							</li>
 						</ul>
 					</li>

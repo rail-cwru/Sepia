@@ -293,8 +293,8 @@ public class DurativePlannerTest {
 		superUnit.setDurationAttack(13);
 		superUnit.setDurationDeposit(17);
 		superUnit.setDurationMove(7);
-		superUnit.setDurationGoldGather(5);
-		superUnit.setDurationWoodGather(11);
+		superUnit.setDurationGatherGold(5);
+		superUnit.setDurationGatherWood(11);
 		superUnit.setCharacter('?');
 		superUnit.setName("TheUnit");
 		superUnit.setPlayer(player1);

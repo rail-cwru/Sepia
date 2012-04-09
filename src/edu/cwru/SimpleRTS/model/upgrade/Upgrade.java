@@ -11,7 +11,7 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 public class Upgrade 
 {
 	private UpgradeTemplate template;
-	public Upgrade(int attackchange, int defensechange, List<UnitTemplate> affectedunits, UpgradeTemplate template)
+	public Upgrade(UpgradeTemplate template)
 	{
 		this.template = template;
 	}

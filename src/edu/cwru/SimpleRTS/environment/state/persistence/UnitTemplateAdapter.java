@@ -33,8 +33,8 @@ public class UnitTemplateAdapter {
 		ut.setDurationAttack(xml.getDurationAttack());
 		ut.setDurationDeposit(xml.getDurationDeposit());
 		ut.setDurationMove(xml.getDurationMove());
-		ut.setDurationGoldGather(xml.getDurationGatherGold());
-		ut.setDurationWoodGather(xml.getDurationGatherWood());
+		ut.setDurationGatherGold(xml.getDurationGatherGold());
+		ut.setDurationGatherWood(xml.getDurationGatherWood());
 		ut.setPlayer(player);
 		for (String s : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
 			ut.addBuildPrereqItem(s);
@@ -80,8 +80,8 @@ public class UnitTemplateAdapter {
 		xml.setDurationAttack(ut.getDurationAttack());
 		xml.setDurationDeposit(ut.getDurationDeposit());
 		xml.setDurationMove(ut.getDurationMove());
-		xml.setDurationGoldGather(ut.getDurationGatherGold());
-		xml.setDurationWoodGather(ut.getDurationGatherWood());
+		xml.setDurationGatherGold(ut.getDurationGatherGold());
+		xml.setDurationGatherWood(ut.getDurationGatherWood());
 		for (String s:ut.getProducesStrings())
 			xml.getProduces().add(s);
 		

@@ -29,7 +29,7 @@ public class PlayerAdapterTest {
 	
 	@Test
 	public void textFromXml() throws FileNotFoundException, JSONException {
-		XmlPlayer xml = AdapterTestUtil.createExamplePlayer(new Random(3));
+		XmlPlayer xml = AdapterTestUtil.createExamplePlayer(new Random(053));
 		PlayerAdapter adapter = new PlayerAdapter();
 		
 		PlayerState player = adapter.fromXml(xml);	
@@ -93,8 +93,12 @@ public class PlayerAdapterTest {
 		{
 			UpgradeTemplate ut = (UpgradeTemplate)t;
 			XmlUpgradeTemplate uxt = (XmlUpgradeTemplate)xt;
-			assertEquals(ut.getAttackChange(),uxt.getAttackChange());
-			assertEquals(ut.getDefenseChange(),uxt.getDefenseChange());
+			assertEquals(ut.getPiercingAttackChange(),uxt.getPiercingAttackChange());
+			assertEquals(ut.getBasicAttackChange(),uxt.getBasicAttackChange());
+			assertEquals(ut.getArmorChange(),uxt.getArmorChange());
+			assertEquals(ut.getHealthChange(),uxt.getHealthChange());
+			assertEquals(ut.getRangeChange(),uxt.getRangeChange());
+			assertEquals(ut.getSightRangeChange(),uxt.getSightRangeChange());
 			
 			assertEquals(ut.getAffectedUnits().size(),uxt.getAffectedUnitTypes().size());
 			for(UnitTemplate affected : ut.getAffectedUnits())

@@ -23,8 +23,12 @@ public class UpgradeTemplateAdapter {
 		for (String s : xml.getAffectedUnitTypes())//if(obj.has("Produces"))
 			ut.addAffectedUnit(s);
 		
-		ut.setAttackChange(xml.getAttackChange());
-		ut.setDefenseChange(xml.getDefenseChange());
+		ut.setPiercingAttackChange(xml.getPiercingAttackChange());
+		ut.setBasicAttackChange(xml.getBasicAttackChange());
+		ut.setArmorChange(xml.getArmorChange());
+		ut.setHealthChange(xml.getHealthChange());
+		ut.setRangeChange(xml.getRangeChange());
+		ut.setSightRangeChange(xml.getSightRangeChange());
 		return ut;
 	}
 		
@@ -37,8 +41,12 @@ public class UpgradeTemplateAdapter {
 		xml.setTimeCost(ut.getTimeCost());
 		xml.setWoodCost(ut.getWoodCost());
 		xml.setGoldCost(ut.getGoldCost());
-		xml.setAttackChange(ut.getAttackChange());
-		xml.setDefenseChange(ut.getDefenseChange());
+		xml.setPiercingAttackChange(ut.getPiercingAttackChange());
+		xml.setBasicAttackChange(ut.getBasicAttackChange());
+		xml.setArmorChange(ut.getArmorChange());
+		xml.setHealthChange(ut.getHealthChange());
+		xml.setRangeChange(ut.getRangeChange());
+		xml.setSightRangeChange(ut.getSightRangeChange());
 		for (String s:ut.getUnitPrerequisiteStrings())
 			xml.getUnitPrerequisite().add(s);
 		for (String s:ut.getUpgradePrerequisiteStrings())

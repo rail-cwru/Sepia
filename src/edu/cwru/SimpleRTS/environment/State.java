@@ -739,23 +739,32 @@ public class State implements Serializable, Cloneable, IDDistributer {
 			int player = upgradetemplate.getPlayer();
 			//Set<Integer> list = upgradesByAgent.get(player);
 			PlayerState playerState = playerStates.get(player);
-			if(playerState == null)
-			{
-//				TODO: see if we can do without this
-				addPlayer(player);
-			}
 			Set<Integer> list = playerState.getUpgrades();
-			/*if(list == null)
-			{
-				upgradesByAgent.put(player, list = new HashSet<Integer>());
-			}*/
+			//make sure it isn't already upgraded
 			if (!list.contains(upgradetemplate.ID))
 			{
 				//upgrade all of the affected units
 				for (UnitTemplate toupgrade : upgradetemplate.getAffectedUnits()) {
-					toupgrade.setBasicAttack(toupgrade.getBasicAttack() + upgradetemplate.getAttackChange());
-					toupgrade.setArmor(toupgrade.getArmor() + upgradetemplate.getDefenseChange());
-					
+					toupgrade.setPiercingAttack(toupgrade.getPiercingAttack() + upgradetemplate.getPiercingAttackChange());
+					toupgrade.setBasicAttack(toupgrade.getBasicAttack() + upgradetemplate.getBasicAttackChange());
+					toupgrade.setArmor(toupgrade.getArmor() + upgradetemplate.getArmorChange());
+					//If there is a health change, you need to update all of the units with that template
+					if (upgradetemplate.getHealthChange() != 0)
+					{
+						//TODO: properly handle the cases where things go negative
+						toupgrade.setBaseHealth(toupgrade.getBaseHealth()+upgradetemplate.getHealthChange());
+						for (Unit u : allUnits.values()) { //check all units, not just that player's, just to be safe
+							if (toupgrade.equals(u.getTemplate())) {
+								u.setHP(u.getCurrentHealth() + upgradetemplate.getHealthChange());
+							}
+						}
+					}
+					toupgrade.setRange(toupgrade.getRange() + upgradetemplate.getRangeChange());
+					toupgrade.setSightRange(toupgrade.getSightRange() + upgradetemplate.getSightRangeChange());
+				}
+				if (upgradetemplate.getSightRangeChange() != 0)
+				{
+					forceRecalculateVision();
 				}
 			}
 			list.add(upgradetemplate.ID);

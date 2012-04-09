@@ -210,8 +210,12 @@ public class AdapterTestUtil {
 	public static XmlUpgradeTemplate createExampleUpgradeTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
 		XmlUpgradeTemplate xml = new XmlUpgradeTemplate();
 		xml.setID(r.nextInt());
-		xml.setAttackChange(r.nextInt());
-		xml.setDefenseChange(r.nextInt());
+		xml.setPiercingAttackChange(r.nextInt());
+		xml.setBasicAttackChange(r.nextInt());
+		xml.setArmorChange(r.nextInt());
+		xml.setHealthChange(r.nextInt());
+		xml.setRangeChange(r.nextInt());
+		xml.setSightRangeChange(r.nextInt());
 		char[] name = new char[r.nextInt(5)+8];
 		for (int i = 0; i<name.length;i++)name[i]=(char)('a'+r.nextInt(26));
 		xml.setName(new String(name));
@@ -260,8 +264,8 @@ public class AdapterTestUtil {
 		xml.setDurationAttack(r.nextInt());
 		xml.setDurationMove(r.nextInt());
 		xml.setDurationDeposit(r.nextInt());
-		xml.setDurationGoldGather(r.nextInt());
-		xml.setDurationWoodGather(r.nextInt());
+		xml.setDurationGatherGold(r.nextInt());
+		xml.setDurationGatherWood(r.nextInt());
 		for (String s : namesofunits)
 		{
 			if (r.nextBoolean())

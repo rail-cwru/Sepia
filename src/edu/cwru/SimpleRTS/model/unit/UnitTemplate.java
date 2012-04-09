@@ -168,7 +168,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * Set the number of steps needed to make a single gather on a mine.
 	 * @param durationGoldGather
 	 */
-	public void setDurationGoldGather(int durationGoldGather) {
+	public void setDurationGatherGold(int durationGoldGather) {
 		this.durationGoldGather = durationGoldGather;
 	}
 	/**
@@ -182,7 +182,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * Set the number of steps needed to make a single gather on a tree.
 	 * @param durationWoodGather
 	 */
-	public void setDurationWoodGather(int durationWoodGather) {
+	public void setDurationGatherWood(int durationWoodGather) {
 		this.durationWoodGather = durationWoodGather;
 	}
 	/**
