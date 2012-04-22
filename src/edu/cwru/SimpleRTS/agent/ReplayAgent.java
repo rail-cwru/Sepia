@@ -28,7 +28,8 @@ public class ReplayAgent extends Agent {
 		this.verbose = Boolean.parseBoolean(args[1]);
 		StateCreator statecreator = new LoadingStateCreator(filename);
 		State state = statecreator.createState();
-		actions = state.getActionLog();
+		actions = null;//state.getActionLog();
+		//StateView view = state.getView(Agent.OBSERVER_ID);
 	}
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
