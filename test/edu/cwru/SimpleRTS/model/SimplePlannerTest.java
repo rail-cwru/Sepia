@@ -78,7 +78,7 @@ public class SimplePlannerTest {
 		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100, state.nextTargetID());
 		builder.addResource(t);
 		model = new LessSimpleModel(state,5536,null);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	
 	public void setUp() throws Exception {

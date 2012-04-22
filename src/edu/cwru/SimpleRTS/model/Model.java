@@ -26,5 +26,5 @@ public interface Model extends Serializable{
 	void executeStep();
 	StateView getState(int player);
 	HistoryView getHistory(int player);
-	void setVerbosity(boolean verbosity);
+	void setVerbose(boolean verbosity);
 }

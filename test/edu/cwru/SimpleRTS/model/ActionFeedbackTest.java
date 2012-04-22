@@ -93,7 +93,7 @@ public class ActionFeedbackTest {
 		GameMap.storeState(tempfile.getPath(), state);
 		StateCreator restartthing = new LoadingStateCreator(tempfile.getPath());
 		model = new LessSimpleModel(state, 6,restartthing);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	@AfterClass
 	public static void removeTempFile()

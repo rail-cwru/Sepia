@@ -49,7 +49,7 @@ public class GameUnitTest {
 			y += 5;
 		}
 		model = new SimpleModel(state, 5336,null);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	/**
 	 * Move unit 1 Southeast

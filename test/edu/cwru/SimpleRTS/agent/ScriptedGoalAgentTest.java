@@ -62,7 +62,7 @@ public class ScriptedGoalAgentTest {
 		
 		planner = new SimplePlanner(state);
 		model=new LessSimpleModel(state, 1235,null);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	
 	public void setUp() throws Exception {
@@ -71,8 +71,8 @@ public class ScriptedGoalAgentTest {
 	@Test
 	public void test() throws InterruptedException {
 		//Get the resources right
-		state.depositResources(player, ResourceType.GOLD, 1200);
-		state.depositResources(player, ResourceType.WOOD, 800);
+		state.addResourceAmount(player, ResourceType.GOLD, 1200);
+		state.addResourceAmount(player, ResourceType.WOOD, 800);
 		String commands="Build:TownHall:0:0//use your starting peasant to build a town hall\n"+
 				"Transfer:1:Idle:Gold//make the builder gather gold\n" +
 				"Wait:Gold:500//wait until you have enough gold for a farm\n" +

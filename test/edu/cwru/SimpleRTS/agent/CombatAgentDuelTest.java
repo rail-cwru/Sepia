@@ -76,7 +76,7 @@ public class CombatAgentDuelTest {
 		
 		planner = new SimplePlanner(state);
 		model=new LessSimpleModel(state, 1235,null);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	
 	public void setUp() throws Exception {

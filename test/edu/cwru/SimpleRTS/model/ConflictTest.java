@@ -808,8 +808,8 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		if (ramount<0)
 			ramount = 0;
-		s.depositResources(player1, ResourceType.GOLD, ramount);
-		s.depositResources(player1, ResourceType.WOOD, expectedwoodatend);
+		s.addResourceAmount(player1, ResourceType.GOLD, ramount);
+		s.addResourceAmount(player1, ResourceType.WOOD, expectedwoodatend);
 		int expectedgoldatend=ramount-pt.getGoldCost()*amountthatwillbemade;
 		
 		
@@ -981,8 +981,8 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		default:
 			throw new RuntimeException(foodamount + " is not supported");	
 		}
-		s.depositResources(player1, ResourceType.GOLD, goldresourcestart);
-		s.depositResources(player1, ResourceType.WOOD, woodresourcestart);
+		s.addResourceAmount(player1, ResourceType.GOLD, goldresourcestart);
+		s.addResourceAmount(player1, ResourceType.WOOD, woodresourcestart);
 		sb.setSupplyCap(player1, foodresourcestart);
 //		System.out.println(s.getSupplyCap(player1));
 		List<UnitTemplate> tunittemplates=new ArrayList<UnitTemplate>();//a temporary array so that we can convert names to ids

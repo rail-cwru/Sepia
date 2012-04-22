@@ -70,43 +70,24 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	 * Observer sight is tracked as the sum of all other sight
 	 * But when it comes time to tell if the observer can see something, it always can
 	 */
-	//private Map<Integer,int[][]> playerCanSee;
 	private boolean hasFogOfWar;
-	//private Map<Integer,Map<Integer, Unit>> unitsByAgent;
 	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
-	//private Map<Pair<Integer,ResourceType>,Integer> currentResources;
-	//private Map<Integer,Integer> currentSupply;
-	//private Map<Integer,Integer> currentSupplyCap;
-	//private Map<Integer, Set<Integer>> upgradesByAgent;
 	private int xextent;
 	private int yextent;
-	//@SuppressWarnings("rawtypes")
-	//private Map<Integer, Map<Integer,Template>> templatesByAgent;
 	@SuppressWarnings("rawtypes")
 	private Map<Integer,Template> allTemplates;
-	//private HashMap<Integer, EventLogger> eventlogs;
 	private Map<Integer,PlayerState> playerStates;
 	private PlayerState observerState;
+	
 	@SuppressWarnings("rawtypes")
 	public State() {
 		nextIDTarget=0;
 		nextIDTemplate=0;
-		//playerCanSee = new HashMap<Integer,int[][]>();
 		allUnits = new HashMap<Integer,Unit>();
-		//unitsByAgent = new HashMap<Integer,Map<Integer,Unit>>();
 		allTemplates = new HashMap<Integer,Template>();
-		//templatesByAgent = new HashMap<Integer,Map<Integer,Template>>();
-		//upgradesByAgent = new HashMap<Integer, Set<Integer>>();
 		resourceNodes = new ArrayList<ResourceNode>();
-		//currentResources = new HashMap<Pair<Integer,ResourceType>,Integer>();
-		//currentSupply = new HashMap<Integer,Integer>();
-		//currentSupplyCap = new HashMap<Integer,Integer>();
-		//views = new HashMap<Integer,StateView>();
-		//eventlogs = new HashMap<Integer, EventLogger>();
-		//eventlogs.put(Agent.OBSERVER_ID, new EventLogger());
 		playerStates = new HashMap<Integer,PlayerState>();
-		//observerState = new PlayerState(Agent.OBSERVER_ID);
 		addPlayer(Agent.OBSERVER_ID);
 		setFogOfWar(false);
 	}
@@ -128,54 +109,6 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			}
 		}
 	}
-//	Commented out because this is neither used nor functional
-//	@Override
-//	protected Object clone() {
-//		State newstate = new State();
-//		newstate.setSize(xextent, yextent);
-//		/*for(Integer i : playerCanSee.keySet())
-//		{
-//			state.playerCanSee.put(i, playerCanSee.get(i).clone());
-//		}	*/
-//		for(Unit u : allUnits.values())
-//		{//takes care of allUnits and unitsByAgent
-//			Unit copy = u.copyOf();
-//			newstate.addUnit(copy, copy.getxPosition(), copy.getyPosition());
-//		}
-//		newstate.allTemplates.putAll(allTemplates);
-//		/*for(Integer i : templatesByAgent.keySet())
-//		{
-//			@SuppressWarnings("rawtypes")
-//			Map<Integer,Template> templates = new HashMap<Integer,Template>();
-//			templates.putAll(templatesByAgent.get(i));
-//			state.templatesByAgent.put(i, templates);
-//		}*//*
-//		for(Integer i : upgradesByAgent.keySet())
-//		{
-//			Set<Integer> upgrades = new HashSet<Integer>();
-//			upgrades.addAll(upgradesByAgent.get(i));
-//			state.upgradesByAgent.put(i, upgradesByAgent.get(i));
-//		}*/
-//		for(ResourceNode node : resourceNodes)
-//		{
-//			newstate.resourceNodes.add(node.copyOf());
-//		}
-//		for(Integer i : playerStates.keySet())
-//		{
-//			newstate.playerStates.put(i, playerStates.get(i).copyOf());
-//		}
-//		//state.currentResources.putAll(currentResources);
-//		//state.currentSupply.putAll(currentSupply);
-//		//state.currentSupplyCap.putAll(currentSupplyCap);
-//		
-//		return newstate;
-//	}
-//	
-//	public StateView getStaticCopy(int player) {
-//		State state = (State)clone();
-//		return state.getView(player);
-//	}
-	
 	
 	/**
 	 * A deep equals method, because the equals methods of many classes have been hijacked into ID comparison for performance reasons
@@ -298,6 +231,10 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		
 		return true;
 	}
+
+/* *************************************************
+ * 				PLAYER METHODS
+ * *************************************************/
 	/**
 	 * Return an array of the players currently in the game
 	 * @return
@@ -306,7 +243,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	{
 		return playerStates.keySet().toArray(new Integer[]{});
 	}
-	//@SuppressWarnings("rawtypes")
+
 	/**
 	 * Add another player
 	 * @param playernumber The player number of the player to add
@@ -324,10 +261,6 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			{
 				observerState = playerState;
 			}
-			/*templatesByAgent.put(playernumber, new HashMap<Integer,Template>());
-			unitsByAgent.put(playernumber, new HashMap<Integer,Unit>());
-			upgradesByAgent.put(playernumber, new HashSet<Integer>());
-			playerCanSee.put(playernumber, new int[getXExtent()][getYExtent()]);*/
 			playerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
 			
 		}
@@ -340,255 +273,91 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	public Collection<PlayerState> getPlayerStates() {
 		return playerStates.values();
 	}
-	
-	public int getTurnNumber() { return turnNumber; }
-	public Map<Integer, Unit> getUnits() {
-		return Collections.unmodifiableMap(allUnits);
-	}
-	public Unit getUnit(int unitId) {
-		return allUnits.get(unitId);
-	}
-	public ResourceNode getResource(int resourceId) {
-		for(ResourceNode r : resourceNodes)
-		{
-			if(resourceId == r.hashCode())
-				return r;
-		}
-		return null;
-	}
-	public void addResource(ResourceNode resource) {
-		resourceNodes.add(resource);
-	}
-	
-	public void setFogOfWar(boolean fogofwar) {
-		if (fogofwar)
-		{
-			hasFogOfWar = true;
-//			recalculateVisionFromScratch();
-		}
-		else
-		{
-			hasFogOfWar = false;
-		}
-	}
-	public boolean getFogOfWar()
-	{
-		return hasFogOfWar;
-	}
 
-	/**
-	 * Returns whether the selected coordinates are visible to the player through the fog of war.
-	 * @param x
-	 * @param y
-	 * @param player
-	 * @return
-	 */
-	public boolean canSee(int x, int y, int player) {
-		if (!hasFogOfWar || player == Agent.OBSERVER_ID)
-		{
-			return true;
-		}
-		if (!inBounds(x, y))
-		{
-			return false;
-		}
-		else
-		{
-			//int[][] cansee = playerCanSee.get(player);
-			int[][] cansee = playerStates.get(player).getVisibilityMatrix();
-			if (cansee==null)
-			{
-				return false;
-			}
-			else
-			{
-				return cansee[x][y]>0;
-			}
-		}
-	}
-	/**
-	 * Recalculate the vision of each unit.  Required for xml loading, as that does not use the normal unit adding methods.
-	 */
-	public void forceRecalculateVision() {
-		recalculateVisionFromScratch();
-		
-	}
-	/**
-	 * Recalculates the vision of each agent from scratch.
-	 */
-	private void recalculateVisionFromScratch() {
-		observerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
-		for (PlayerState player : playerStates.values())
-		{
-			player.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
-		}
-		for (Unit u : allUnits.values())
-		{
-			int player = u.getPlayer();
-			PlayerState state = playerStates.get(player);
-			int x = u.getxPosition();
-			int y = u.getyPosition();
-			int s = u.getTemplate().getSightRange();
-			for (int i = x-s; i<=x+s;i++)
-				for (int j = y-s; j<=y+s;j++)
-					if (inBounds(i,j))
-					{
-						state.getVisibilityMatrix()[i][j]++;
-						//playerCanSee.get(player)[i][j]++;
-						//observersight[i][j]++;
-						observerState.getVisibilityMatrix()[i][j]++;
-					}
-		}
-	}
-	/**
-	 * Find the closest unoccupied position using a spiraling out search pattern
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public int[] getClosestPosition(int x, int y)
-	{
-		//if the space in question is already open
-		if (positionAvailable(x,y))
-			return new int[]{x,y};
-		int maxradius = Math.max(Math.max(x, xextent-x), Math.max(y,yextent-y));
-		for (int r = 1; r<=maxradius;r++)
-		{
-			//go up/left diagonal
-			x = x-1;
-			y = y-1;
-			
-			//go down
-			for (int i = 0; i<2*r;i++) {
-				y = y + 1;
-				if (positionAvailable(x,y))
-					return new int[]{x,y};
-			}
-			//go right
-			for (int i = 0; i<2*r;i++) {
-				x = x + 1;
-				if (positionAvailable(x,y))
-					return new int[]{x,y};
-			}
-			//go up
-			for (int i = 0; i<2*r;i++) {
-				y = y - 1;
-				if (positionAvailable(x,y))
-					return new int[]{x,y};
-			}
-			//go left
-			for (int i = 0; i<2*r;i++) {
-				x = x - 1;
-				if (positionAvailable(x,y))
-					return new int[]{x,y};
-			}
-		}
-		return new int[]{-1,-1};
-	}
-	@SuppressWarnings("rawtypes")
-	public Template getTemplate(int templateId) {
-		return allTemplates.get(templateId);
-	}
-	@SuppressWarnings("rawtypes")
-	public Template getTemplate(int player, String name) {
-		/*
-		Map<Integer,Template> playerstemplates = templatesByAgent.get(player);
-		if (playerstemplates == null)
-		{
-//			System.out.println("Player not found");
-			return null;
-		}
-		for (Template t : playerstemplates.values()) {
-			if (t.getName().equals(name))
-			{
-				return t;
-			}
-		}
-		return null;*/
-		PlayerState playerState = playerStates.get(player);
-		if (playerState == null)
-		{
-			System.out.println("Player not found");
-			return null;
-		}		
-		return playerState.getTemplate(name);
-	}
-	@SuppressWarnings("rawtypes")
-	public Map<Integer,Template> getTemplates(int player) {
-		/*if(templatesByAgent.get(player) == null)
-			return null;
-		return Collections.unmodifiableMap(templatesByAgent.get(player));*/
-		if(playerStates.get(player) == null)
-			return null;
-		return Collections.unmodifiableMap(playerStates.get(player).getTemplates());
-	}
 	public boolean doesPlayerHaveUnit(int player, int templateid) {
-		/*Map<Integer, Template> templates = templatesByAgent.get(player);
-		if (templates != null) {
-			return templates.containsKey(templateid);
-		}
-		
-		return false;*/
 		if(playerStates.get(player) != null)
 		{
 			return playerStates.get(player).getTemplate(templateid) != null;
 		}
 		return false;
 	}
-	public void setSize(int x, int y) {
-		xextent = x;
-		yextent = y;
-		recalculateVisionFromScratch();
-	}
 	
-	public String getTextString() {
-		StringBuilder str = new StringBuilder();
-		for (int i = 0; i<xextent;i++)
-		{
-			str.append('|');
-			for (int j = 0; j < yextent; j++)
-			{
-				Unit u = unitAt(i,j);
-				if (u!=null)
-				{//if there is a unit there
-					str.append(u.getCharacter());
-				}
-				else
-				{
-					ResourceNode r = resourceAt(i, j);
-					if (r != null)
-					{
-						str.append('0');
-					}
-					else
-					{
-						str.append(' ');
-					}
-					
-				}
-				str.append('|');
-			}
-			str.append('\n');
-		}
-		return str.toString();
-	}
-	private static final Map<Integer,Unit> EMPTY_MAP = new HashMap<Integer,Unit>();
+	
 	public Map<Integer,Unit> getUnits(int player) {
-		//if(unitsByAgent.get(player) == null)
 		if(playerStates.get(player) == null)
-			return EMPTY_MAP;
-		//return Collections.unmodifiableMap(unitsByAgent.get(player));
+			return Collections.<Integer,Unit>emptyMap();
 		return Collections.unmodifiableMap(playerStates.get(player).getUnits());
 	}
+
+	public int getResourceAmount(int player, ResourceType type) {
+		Integer amount = playerStates.get(player).getCurrentResourceAmount(type);
+		return amount != null ? amount : 0;			
+	}
+	/**
+	 * Adds an amount of a resource to a player's global amount.
+	 * @param player
+	 * @param type
+	 * @param amount
+	 */
+	public void addResourceAmount(int player, ResourceType type, int amount) {
+		playerStates.get(player).addToCurrentResourceAmount(type, amount);
+	}
+	/**
+	 * Attempts to reduce the player's amount of the given resource by an amount.
+	 * If the player does not have enough of that resource, the transaction fails.
+	 * @param player
+	 * @param type
+	 * @param amount
+	 */
+	private void reduceResourceAmount(int player, ResourceType type, int amount) {
+		addResourceAmount(player, type, -amount);
+	}
+	
+
+	public int getSupplyAmount(int player) {
+		return playerStates.get(player).getCurrentSupply();
+	}
+	public int getSupplyCap(int player) {
+		return Math.min(playerStates.get(player).getCurrentSupplyCap(), MAXSUPPLY);
+	}
+	
+	/**
+	 * Reduce the supply cap of a player (EG: when a farm dies)
+	 * @param player
+	 * @param amount
+	 */
+	private void alterSupplyCapAmount(int player, int amount) {
+		playerStates.get(player).addToCurrentSupplyCap(amount);
+	}
+	/**
+	 * Consume some of the supply
+	 * @param player
+	 * @param amount
+	 */
+	private void alterSupplyAmount(int player, int amount) {
+		playerStates.get(player).addToCurrentSupply(amount);
+	}
+	public boolean checkValidSupplyAddition(int player, int amounttoadd, int offsettingcapgain) {
+		if (amounttoadd<=0)
+		{
+			return true;//it is always valid to make something that takes no or negative supply
+		}
+		else
+		{
+			PlayerState playerState = playerStates.get(player);
+			return Math.min(playerState.getCurrentSupplyCap() + offsettingcapgain, MAXSUPPLY) >=
+						    playerState.getCurrentSupply() + amounttoadd;
+		}
+	}
+
+/* *************************************************
+ * 				UNIT METHODS
+ * *************************************************/	
 	public boolean tryProduceUnit(Unit u,int x, int y) {
 			if (!positionAvailable(x,y))
 				return false;
 			UnitTemplate ut = u.getTemplate();
-			//Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
-			//Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
-			//Integer currentgold = currentResources.get(goldpair);
 			Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
-			//Integer currentwood = currentResources.get(woodpair);
 			Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
 			if (currentgold == null)
 				currentgold = 0;
@@ -606,24 +375,20 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 				return false;
 			}
 	}
+	
 	public void addUnit(Unit u,int x, int y) {
 		
 		int player = u.getPlayer();
 		if (!playerStates.containsKey(player))
 			addPlayer(player);
 		if(!allUnits.containsKey(u.ID)) {
-			//Map<Integer, Unit> map = unitsByAgent.get(player);
 			PlayerState playerState = playerStates.get(player);
 			if(playerState == null)
 			{
-//				TODO: see if we can do without this
+//				TODO: see if we can do without this (what is expected behavior?)
 				addPlayer(player);
 			}
 			Map<Integer, Unit> map = playerState.getUnits();
-			/*if(map == null)
-			{
-				unitsByAgent.put(player, map = new HashMap<Integer, Unit>());
-			}*/
 			allUnits.put(u.ID,u);
 			map.put(u.ID, u);
 			alterSupplyCapAmount(player,u.getTemplate().getFoodProvided());
@@ -636,18 +401,29 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 				{
 					if (inBounds(i,j))
 					{
-						//playerCanSee.get(Agent.OBSERVER_ID)[i][j]++;
 						observerState.getVisibilityMatrix()[i][j]++;
-						//System.out.println(u);
-						//System.out.println(u.getPlayer());
-						//System.out.println(playerCanSee.entrySet());
-						//playerCanSee.get(u.getPlayer())[i][j]++;
 						playerState.getVisibilityMatrix()[i][j]++;
 					}
 				}
-		}
-		
+		}		
 	}
+
+	public Unit getUnit(int unitId) {
+		return allUnits.get(unitId);
+	}	
+	
+	public Map<Integer, Unit> getUnits() {
+		return Collections.unmodifiableMap(allUnits);
+	}
+	
+	public Unit unitAt(int x, int y) {
+		for(Unit u : allUnits.values()) {
+			if(u.getxPosition() == x && u.getyPosition() == y)
+				return u;
+		}
+		return null;
+	}
+	
 	/**
 	 * Move a unit in a direction.
 	 * Does not perform collision checks of any kind
@@ -658,22 +434,9 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		int sightrange = u.getTemplate().getSightRange();
 		int x = u.getxPosition();
 		int y = u.getyPosition();
-		//int[][] playersight=playerCanSee.get(u.getTemplate().getPlayer());
 		int[][] playersight = playerStates.get(u.getPlayer()).getVisibilityMatrix();
-		//int[][] observersight=playerCanSee.get(Agent.OBSERVER_ID);
 		int[][] observersight = observerState.getVisibilityMatrix();
 		
-//		String s="";
-//		for (int i = 0; i<getXExtent();i++)
-//		{
-//			for (int j = 0; j<getYExtent();j++)
-//			{
-//				s+="|"+playersight[i][j];
-//				
-//			}
-//			s+="|\n";
-//		}
-//		System.out.println(s);
 		if (direction.xComponent()!=0)
 		{
 			int xoffset;
@@ -815,35 +578,15 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		}
 		
 	}
-	@SuppressWarnings("rawtypes")
-	public void addTemplate(Template t) {
-		int player = t.getPlayer(); 
-		if (!playerStates.containsKey(player))
-			addPlayer(player);
-		if(!allTemplates.containsKey(t.ID)) {
-			//Map<Integer, Template> map = templatesByAgent.get(player);
-			PlayerState playerState = playerStates.get(player);
-			if(playerState == null)
-			{
-//				TODO: see if we can do without this
-				addPlayer(player);
-			}
-			Map<Integer, Template> map = playerState.getTemplates();
-			/*if(map == null)
-			{
-				templatesByAgent.put(player, map = new HashMap<Integer, Template>());
-			}*/
-			allTemplates.put(t.ID,t);
-			map.put(t.ID, t);
-		}
-	}
+
+
+/* *************************************************
+ * 				UPGRADE METHODS
+ * *************************************************/
+	
 	public boolean tryProduceUpgrade(Upgrade upgrade) {
 		UpgradeTemplate ut = upgrade.getTemplate();
-		//Pair<Integer,ResourceType> goldpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.GOLD);
-		//Pair<Integer,ResourceType> woodpair = new Pair<Integer,ResourceType>(ut.getPlayer(),ResourceType.WOOD);
-		//Integer currentgold = currentResources.get(goldpair);
 		Integer currentgold = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.GOLD);
-		//Integer currentwood = currentResources.get(woodpair);
 		Integer currentwood = playerStates.get(ut.getPlayer()).getCurrentResourceAmount(ResourceType.WOOD);
 		if (currentgold == null)
 			currentgold = 0;
@@ -864,10 +607,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	private void addUpgrade(Upgrade upgrade) {
 			UpgradeTemplate upgradetemplate = upgrade.getTemplate();
 			int player = upgradetemplate.getPlayer();
-			//Set<Integer> list = upgradesByAgent.get(player);
 			PlayerState playerState = playerStates.get(player);
 			Set<Integer> list = playerState.getUpgrades();
-			//make sure it isn't already upgraded
 			if (!list.contains(upgradetemplate.ID))
 			{
 				//upgrade all of the affected units
@@ -891,54 +632,80 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 				}
 				if (upgradetemplate.getSightRangeChange() != 0)
 				{
-					forceRecalculateVision();
+					recalculateVision();
 				}
 			}
 			list.add(upgradetemplate.ID);
 	}
 	public boolean hasUpgrade(Integer upgradetemplateid, int player) {
-		/*Set<Integer> set = upgradesByAgent.get(player);
-		if(set == null)
-		{
-			return false;
-		}
-		return set.contains(upgradetemplateid);*/
 		return playerStates.get(player).getUpgrades().contains(upgradetemplateid);
 	}
-	public List<ResourceNode> getResources() {
-		return Collections.unmodifiableList(resourceNodes);
-	}
-	public void removeResourceNode(int resourceID) {
-		for (int i = 0; i<resourceNodes.size();i++) {
-			if (resourceNodes.get(i).ID == resourceID) {
-				resourceNodes.remove(i);
-				break;
+
+/* *************************************************
+ * 				TEMPLATE METHODS
+ * *************************************************/
+	@SuppressWarnings("rawtypes")
+	public void addTemplate(Template t) {
+		int player = t.getPlayer(); 
+		if (!playerStates.containsKey(player))
+			addPlayer(player);
+		if(!allTemplates.containsKey(t.ID)) {
+			PlayerState playerState = playerStates.get(player);
+			if(playerState == null)
+			{
+//				TODO: see if we can do without this
+				addPlayer(player);
 			}
+			Map<Integer, Template> map = playerState.getTemplates();
+			allTemplates.put(t.ID,t);
+			map.put(t.ID, t);
 		}
 	}
-	public boolean positionAvailable(int x, int y)
-	{
-		return inBounds(x,y) && unitAt(x,y)==null && resourceAt(x,y)==null;
-		
+	@SuppressWarnings("rawtypes")
+	public Template getTemplate(int templateId) {
+		return allTemplates.get(templateId);
 	}
-	public Unit unitAt(int x, int y) {
-		//This could probably be replaced by a 2D boolean array, but then you would need to ensure that things can't move without changing that array 
-		for(Unit u : allUnits.values()) {
-			if(u.getxPosition() == x && u.getyPosition() == y)
-				return u;
+	
+	@SuppressWarnings("rawtypes")
+	public Template getTemplate(int player, String name) {
+		
+		PlayerState playerState = playerStates.get(player);
+		if (playerState == null)
+		{
+			System.out.println("Player not found");
+			return null;
+		}		
+		return playerState.getTemplate(name);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Map<Integer,Template> getTemplates(int player) {		
+		if(playerStates.get(player) == null)
+			return null;
+		return Collections.unmodifiableMap(playerStates.get(player).getTemplates());
+	}
+	
+	
+/* *************************************************
+ * 				RESOURCE NODE METHODS
+ * *************************************************/
+
+	public void addResource(ResourceNode resource) {
+		resourceNodes.add(resource);
+	}
+	public ResourceNode getResource(int resourceId) {
+		for(ResourceNode r : resourceNodes)
+		{
+			if(resourceId == r.hashCode())
+				return r;
 		}
 		return null;
 	}
-	public boolean inBounds(int x, int y)
-	{
-		return x>=0 && y>=0 && x<xextent && y<yextent; 
+
+	public List<ResourceNode> getResources() {
+		return Collections.unmodifiableList(resourceNodes);
 	}
-	public int getXExtent() {
-		return xextent;
-	}
-	public int getYExtent() {
-		return yextent;
-	}
+
 	public ResourceNode resourceAt(int x, int y) {
 		for(ResourceNode r : resourceNodes)
 		{
@@ -947,109 +714,100 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		}
 		return null;
 	}
-	public int getResourceAmount(int player, ResourceType type) {
-		//Integer amount = currentResources.get(new Pair<Integer,ResourceType>(player,type));
-		Integer amount = playerStates.get(player).getCurrentResourceAmount(type);
-		return amount != null ? amount : 0;			
-	}
-	public void depositResources(int player, ResourceType type, int amount)
-	{
-		if (amount > 0)
-		{
-			addResourceAmount(player, type, amount);
+	
+	public void removeResourceNode(int resourceID) {
+		for (int i = 0; i<resourceNodes.size();i++) {
+			if (resourceNodes.get(i).ID == resourceID) {
+				resourceNodes.remove(i);
+				break;
+			}
 		}
 	}
-	/**
-	 * Adds an amount of a resource to a player's global amount.
-	 * @param player
-	 * @param type
-	 * @param amount
-	 */
-	private void addResourceAmount(int player, ResourceType type, int amount) {
-		/*Pair<Integer,ResourceType> pair = new Pair<Integer,ResourceType>(player,type);
-		Integer previous = currentResources.get(pair);
-		if(previous == null)
-			previous = 0;
-		currentResources.put(pair, previous+amount);*/
-		playerStates.get(player).addToCurrentResourceAmount(type, amount);
-	}
-	/**
-	 * Attempts to reduce the player's amount of the given resource by an amount.
-	 * If the player does not have enough of that resource, the transaction fails.
-	 * @param player
-	 * @param type
-	 * @param amount
-	 */
-	private void reduceResourceAmount(int player, ResourceType type, int amount) {
-		addResourceAmount(player, type, -amount);
-	}
-	public int getSupplyAmount(int player) {
-		/*Integer amount = currentSupply.get(player);
-		return amount != null ? amount : 0;*/
-		return playerStates.get(player).getCurrentSupply();
-	}
-	public int getSupplyCap(int player) {
-		/*Integer amount = currentSupplyCap.get(player);
-		return Math.min(amount != null ? amount : 0,MAXSUPPLY);*/
-		return Math.min(playerStates.get(player).getCurrentSupplyCap(), MAXSUPPLY);
-	}
-	
-	/**
-	 * Reduce the supply cap of a player (EG: when a farm dies)
-	 * @param player
-	 * @param amount
-	 */
-	private void alterSupplyCapAmount(int player, int amount) {
-		/*Integer i = currentSupplyCap.get(player);
-		if(i == null) //this should never happen
-			i=0;
-		currentSupplyCap.put(player, i+amount);*/
-		playerStates.get(player).addToCurrentSupplyCap(amount);
-	}
-	/**
-	 * Consume some of the supply
-	 * @param player
-	 * @param amount
-	 */
-	private void alterSupplyAmount(int player, int amount) {
-		/*
-		Integer currentsupply = currentSupply.get(player);
-		if (currentsupply == null)
-			currentsupply = 0;
-		
-		currentSupply.put(player, currentsupply+amount);*/
-		playerStates.get(player).addToCurrentSupply(amount);
-	}
-	public boolean checkValidSupplyAddition(int player, int amounttoadd, int offsettingcapgain) {
-		if (amounttoadd<=0)
+/* *************************************************
+ * 				VISION METHODS
+ * *************************************************/
+	public void setFogOfWar(boolean fogofwar) {
+		if (fogofwar)
 		{
-			//it is always valid to make something that takes no or negative supply
-			return true;
+			hasFogOfWar = true;
+//			recalculateVisionFromScratch();
 		}
 		else
 		{
-			/*Integer currentcap = currentSupplyCap.get(player);
-			if (currentcap == null)
-			{
-				currentcap = 0; //just set it to zero if it isn't set, this way it functions right if for some reason we make it possible to be using a negative amount of supply
-				//set it, because why not
-				currentSupplyCap.put(player, 0);
-			}
-			Integer currentsupply = currentSupply.get(player);
-			if (currentsupply == null)
-			{
-				currentsupply = 0;
-				//set it, because why not
-				currentSupply.put(player, 0);
-			}
-			return Math.min(currentcap+ offsettingcapgain, MAXSUPPLY) >= currentsupply + amounttoadd;*/
-			
-			PlayerState playerState = playerStates.get(player);
-			return Math.min(playerState.getCurrentSupplyCap() + offsettingcapgain, MAXSUPPLY) >=
-						    playerState.getCurrentSupply() + amounttoadd;
-			 
+			hasFogOfWar = false;
 		}
 	}
+	public boolean getFogOfWar()
+	{
+		return hasFogOfWar;
+	}
+
+	/**
+	 * Returns whether the selected coordinates are visible to the player through the fog of war.
+	 * @param x
+	 * @param y
+	 * @param player
+	 * @return
+	 */
+	public boolean canSee(int x, int y, int player) {
+		if (!hasFogOfWar || player == Agent.OBSERVER_ID)
+		{
+			return true;
+		}
+		if (!inBounds(x, y))
+		{
+			return false;
+		}
+		else
+		{
+			//int[][] cansee = playerCanSee.get(player);
+			int[][] cansee = playerStates.get(player).getVisibilityMatrix();
+			if (cansee==null)
+			{
+				return false;
+			}
+			else
+			{
+				return cansee[x][y]>0;
+			}
+		}
+	}
+	
+	/**
+	 * Recalculates the vision of each agent from scratch.
+	 */
+	public void recalculateVision() {
+		observerState.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
+		for (PlayerState player : playerStates.values())
+		{
+			player.setVisibilityMatrix(new int[getXExtent()][getYExtent()]);
+		}
+		for (Unit u : allUnits.values())
+		{
+			int player = u.getPlayer();
+			PlayerState state = playerStates.get(player);
+			int x = u.getxPosition();
+			int y = u.getyPosition();
+			int s = u.getTemplate().getSightRange();
+			for (int i = x-s; i<=x+s;i++)
+				for (int j = y-s; j<=y+s;j++)
+					if (inBounds(i,j))
+					{
+						state.getVisibilityMatrix()[i][j]++;
+						//playerCanSee.get(player)[i][j]++;
+						//observersight[i][j]++;
+						observerState.getVisibilityMatrix()[i][j]++;
+					}
+		}
+	}
+
+/* *************************************************
+ * 				MISCELLANEOUS METHODS
+ * *************************************************/
+	public int getTurnNumber() { 
+		return turnNumber; 
+	}
+
 	/**
 	 * Go to the next turn.
 	 * Increases the turn number and tells the logs to go to the next turn
@@ -1057,6 +815,109 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	public void incrementTurn() {
 		turnNumber++;
 	}
+	
+	public String getTextString() {
+		StringBuilder str = new StringBuilder();
+		for (int i = 0; i<xextent;i++)
+		{
+			str.append('|');
+			for (int j = 0; j < yextent; j++)
+			{
+				Unit u = unitAt(i,j);
+				if (u!=null)
+				{//if there is a unit there
+					str.append(u.getCharacter());
+				}
+				else
+				{
+					ResourceNode r = resourceAt(i, j);
+					if (r != null)
+					{
+						str.append('0');
+					}
+					else
+					{
+						str.append(' ');
+					}
+					
+				}
+				str.append('|');
+			}
+			str.append('\n');
+		}
+		return str.toString();
+	}
+	
+	/**
+	 * Find the closest unoccupied position using a spiraling out search pattern
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public int[] getClosestPosition(int x, int y)
+	{
+		//if the space in question is already open
+		if (positionAvailable(x,y))
+			return new int[]{x,y};
+		int maxradius = Math.max(Math.max(x, xextent-x), Math.max(y,yextent-y));
+		for (int r = 1; r<=maxradius;r++)
+		{
+			//go up/left diagonal
+			x = x-1;
+			y = y-1;
+			
+			//go down
+			for (int i = 0; i<2*r;i++) {
+				y = y + 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go right
+			for (int i = 0; i<2*r;i++) {
+				x = x + 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go up
+			for (int i = 0; i<2*r;i++) {
+				y = y - 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+			//go left
+			for (int i = 0; i<2*r;i++) {
+				x = x - 1;
+				if (positionAvailable(x,y))
+					return new int[]{x,y};
+			}
+		}
+		return new int[]{-1,-1};
+	}
+
+	public boolean positionAvailable(int x, int y)
+	{
+		return inBounds(x,y) && unitAt(x,y)==null && resourceAt(x,y)==null;
+		
+	}
+		
+	public boolean inBounds(int x, int y)
+	{
+		return x>=0 && y>=0 && x<xextent && y<yextent; 
+	}
+
+	public int getXExtent() {
+		return xextent;
+	}
+	public int getYExtent() {
+		return yextent;
+	}
+	
+	public void setSize(int x, int y) {
+		xextent = x;
+		yextent = y;
+		recalculateVision();
+	}
+	
 	
 	@SuppressWarnings("rawtypes")
 	/**

@@ -54,7 +54,7 @@ public class PrereqTest {
 		builder.setResourceAmount(player, ResourceType.WOOD, 1000);
 		planner = new SimplePlanner(state);
 		model = new SimpleModel(state, 5536,null);
-		model.setVerbosity(true);
+		model.setVerbose(true);
 	}
 	
 	public void setUp() throws Exception {

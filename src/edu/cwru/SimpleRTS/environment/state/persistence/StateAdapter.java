@@ -60,7 +60,7 @@ public class StateAdapter {
 		builder.setIDDistributerTemplateMax(xml.getNextTemplateID());
 		State state = builder.build();
 		state.updateGlobalListsFromPlayers();
-		state.forceRecalculateVision();
+		state.recalculateVision();
 		state.setFogOfWar(xml.isFogOfWar());
 //		state.setRevealedResources(xml.isRevealedResources());
 		return state;

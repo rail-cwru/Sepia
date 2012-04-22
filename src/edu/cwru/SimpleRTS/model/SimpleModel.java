@@ -42,11 +42,8 @@ import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
  * </pre>
  */
 public class SimpleModel implements Model {
-	
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -8289868580233478749L;
+	
 	private Random rand;
 	private History history;
 	private State state;
@@ -55,6 +52,7 @@ public class SimpleModel implements Model {
 	private StateCreator restartTactic;
 	private boolean verbose;
 	private Configuration configuration;
+	
 	public SimpleModel(State init, int seed, StateCreator restartTactic) {
 		state = init;
 		history = new History();
@@ -67,7 +65,8 @@ public class SimpleModel implements Model {
 		verbose = false;
 		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
-	public void setVerbosity(boolean verbose) {
+	
+	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
 	public void setConfiguration(Configuration configuration) {
@@ -267,349 +266,334 @@ public class SimpleModel implements Model {
 				t.deprecateOldView();
 		
 		//Run the Action
-		for(ActionQueue queuedact : queuedActions.values()) 
+		for(ActionQueue queuedAct : queuedActions.values()) 
 		{
 			if (verbose)
-				System.out.println("Doing full action: "+queuedact.getFullAction());
+				System.out.println("Doing full action: "+queuedAct.getFullAction());
 			//Pull out the primitive
-			if (queuedact.hasNext()) 
-				// should it be "while" instead of "if" ?? 
-				// well, do you mean that every round, only one primitive action can be taken by one agent?
-				// so, even the agent returns a compound action, only the first primitive action will be executed?
-				// ---Feng
-				//if is right, it pops the first each time -Scott
-			{
-				Action a = queuedact.popPrimitive();
-				if (verbose)
-					System.out.println("Doing primative action: "+a);
-				//Execute it
-				Unit u = state.getUnit(a.getUnitId());
-				
-				if (u != null)
+			if (!queuedAct.hasNext()) 
+				continue;
+			Action a = queuedAct.popPrimitive();
+			if (verbose)
+				System.out.println("Doing primitive action: "+a);
+			//Execute it
+			Unit u = state.getUnit(a.getUnitId());			
+			if (u == null)
+				continue;
+			//Set the tasks and grab the common features
+			int x = u.getxPosition();
+			int y = u.getyPosition();
+			int xPrime = 0;
+			int yPrime = 0;
+			Action fullact = queuedAct.getFullAction();
+			switch (fullact.getType()) {
+				case PRIMITIVEMOVE:
 				{
-					//Set the tasks and grab the common features
-					int x = u.getxPosition();
-					int y = u.getyPosition();
-					int xPrime = 0;
-					int yPrime = 0;
-					Action fullact = queuedact.getFullAction();
-					switch (fullact.getType()) {
+					u.setTask(UnitTask.Move);
+					break;
+				}
+				case PRIMITIVEGATHER:
+				{
+					Direction d = ((DirectedAction)a).getDirection();
+					xPrime = x + d.xComponent();
+					yPrime = y + d.yComponent();				
+					ResourceNode r = state.resourceAt(xPrime,yPrime);
+					if (r!=null)
+						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+				case COMPOUNDMOVE:
+				{
+					u.setTask(UnitTask.Move);
+					break;
+				}
+				case COMPOUNDPRODUCE:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case PRIMITIVEPRODUCE:
+				{
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case COMPOUNDBUILD:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case PRIMITIVEBUILD:
+				{	
+					u.setTask(UnitTask.Build);
+					break;
+				}
+				case COMPOUNDATTACK:
+				{
+					u.setTask(UnitTask.Attack);
+					break;
+				}
+				case PRIMITIVEATTACK:
+				{
+					u.setTask(UnitTask.Attack);
+					break;
+				}
+				case PRIMITIVEDEPOSIT:
+				{
+					if (u.getCurrentCargoAmount() > 0)
+						u.setTask(u.getCurrentCargoType()==ResourceType.GOLD?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+				case COMPOUNDGATHER:
+				{
+					TargetedAction thisact = ((TargetedAction)fullact);
+					ResourceNode r = state.getResource(thisact.getTargetId());
+					if (r != null)
+						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
+					else
+						u.setTask(UnitTask.Idle);
+					break;
+				}
+			}
+			if(a instanceof DirectedAction)
+			{
+				Direction d = ((DirectedAction)a).getDirection();
+				xPrime = x + d.xComponent();
+				yPrime = y + d.yComponent();
+			}
+			else if(a instanceof LocatedAction)
+			{
+				xPrime = x + ((LocatedAction)a).getX();
+				yPrime = y + ((LocatedAction)a).getY();
+			}
+			
+			
+			//Gather the last of the information and actually execute the actions
+			int timesTried=0;
+			boolean failedTry=true;
+			boolean wrongType=false;
+			boolean fullIsPrimitive=ActionType.isPrimitive(a.getType());
+			/*recalculate and try again once if it has failed, so long as the full action 
+			  is not primitive (since primitives will recalculate to the same as before) 
+			  and not the wrong type (since something is wrong if it is the wrong type)*/
+			do
+			{
+				timesTried++;
+				failedTry = false;
+				switch(a.getType())
+				{
 					case PRIMITIVEMOVE:
-					{
-						u.setTask(UnitTask.Move);
+						if (!(a instanceof DirectedAction))
+						{
+							wrongType=true;
+							break;
+						}
+						if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
+							state.moveUnit(u, ((DirectedAction)a).getDirection());
+						}
+						else {
+							failedTry=true;
+							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+						}
 						break;
-					}
 					case PRIMITIVEGATHER:
-					{
-						Direction d = ((DirectedAction)a).getDirection();
-						xPrime = x + d.xComponent();
-						yPrime = y + d.yComponent();				
-						ResourceNode r = state.resourceAt(xPrime,yPrime);
-						if (r!=null)
-							u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
+						if (!(a instanceof DirectedAction))
+						{
+							wrongType=true;
+							break;
+						}
+						boolean failed=false;
+						ResourceNode resource = state.resourceAt(xPrime, yPrime);
+						if(resource == null) {
+							failed=true;
+						}
+						else if(!u.canGather()) {
+							failed=true;
+						}
+						else {
+							int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
+							u.setCargo(resource.getResourceType(), amountPickedUp);
+							history.recordPickupResource(u, resource, amountPickedUp, state);
+						}
+						if (failed) {
+							failedTry=true;
+							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+						}
+						break;
+					case PRIMITIVEDEPOSIT:
+						if (!(a instanceof DirectedAction))
+						{
+							wrongType=true;
+							break;
+						}
+						//only can do a primitive if you are in the right position
+						Unit townHall = state.unitAt(xPrime, yPrime);
+						boolean canAccept=false;
+						if (townHall!=null && townHall.getPlayer() == u.getPlayer())
+						{
+							if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
+								canAccept=true;
+							else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
+								canAccept=true;
+						}
+						if(!canAccept)
+						{
+							failedTry=true;
+							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+							break;
+						}
+						else {
+							int agent = u.getPlayer();
+							history.recordDropoffResource(u, townHall, state);
+							state.addResourceAmount(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
+							u.clearCargo();
+							
+							break;
+						}
+					case PRIMITIVEATTACK:
+						if (!(a instanceof TargetedAction))
+						{
+							wrongType=true;
+							break;
+						}
+						Unit target = state.getUnit(((TargetedAction)a).getTargetId());
+						if (target!=null)
+						{
+							if (u.getTemplate().getRange() >= DistanceMetrics.chebyshevDistance(u.getxPosition(),u.getyPosition(), target.getxPosition(), target.getyPosition()))
+							{
+								int damage = calculateDamage(u,target);
+								history.recordDamage(u, target, damage, state);
+								target.setHP(Math.max(target.getCurrentHealth()-damage,0));
+							}
+							else //out of range
+							{
+								failedTry=true;
+								queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+							}
+						}
 						else
-							u.setTask(UnitTask.Idle);
+						{
+							failedTry=true;
+							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+						}
 						break;
-					}
-					case COMPOUNDMOVE:
+					case PRIMITIVEBUILD:
 					{
-						u.setTask(UnitTask.Move);
-						break;
-					}
-					case COMPOUNDPRODUCE:
-					{	
-						u.setTask(UnitTask.Build);
+						if (!(a instanceof ProductionAction))
+						{
+							wrongType=true;
+							break;
+						}
+						if (queuedAct.getFullAction().getType() == ActionType.COMPOUNDBUILD && queuedAct.getFullAction() instanceof LocatedProductionAction)
+						{
+							LocatedProductionAction fullbuild = (LocatedProductionAction) queuedAct.getFullAction();
+							if (fullbuild.getX() != u.getxPosition() || fullbuild.getY() != u.getyPosition())
+							{
+								failedTry=true;
+								queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+								break;
+							}
+						}
+						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
+						if (u.getTemplate().canProduce(template) && 
+								template.canProduce(state.getView(Agent.OBSERVER_ID)))
+						{
+							Unit building = template.produceInstance(state);
+							int[] newxy = state.getClosestPosition(x,y);
+							if (state.tryProduceUnit(building,newxy[0],newxy[1]))
+							{
+								history.recordBirth(building, u, state);
+							}
+						}
+						else //it can't produce the appropriate thing, or the thing's prereqs aren't met
+						{
+							failedTry=true;
+						}
+						
 						break;
 					}
 					case PRIMITIVEPRODUCE:
 					{
-						u.setTask(UnitTask.Build);
-						break;
-					}
-					case COMPOUNDBUILD:
-					{	
-						u.setTask(UnitTask.Build);
-						break;
-					}
-					case PRIMITIVEBUILD:
-					{	
-						u.setTask(UnitTask.Build);
-						break;
-					}
-					case COMPOUNDATTACK:
-					{
-						u.setTask(UnitTask.Attack);
-						break;
-					}
-					case PRIMITIVEATTACK:
-					{
-						u.setTask(UnitTask.Attack);
-						break;
-					}
-					case PRIMITIVEDEPOSIT:
-					{
-						if (u.getCurrentCargoAmount() > 0)
-							u.setTask(u.getCurrentCargoType()==ResourceType.GOLD?UnitTask.Gold:UnitTask.Wood);
-						else
-							u.setTask(UnitTask.Idle);
-						break;
-					}
-					case COMPOUNDGATHER:
-					{
-						TargetedAction thisact = ((TargetedAction)fullact);
-						ResourceNode r = state.getResource(thisact.getTargetId());
-						if (r != null)
-							u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
-						else
-							u.setTask(UnitTask.Idle);
-						break;
-					}
-					}
-					if(a instanceof DirectedAction)
-					{
-						Direction d = ((DirectedAction)a).getDirection();
-						xPrime = x + d.xComponent();
-						yPrime = y + d.yComponent();
-					}
-					else if(a instanceof LocatedAction)
-					{
-						xPrime = x + ((LocatedAction)a).getX();
-						yPrime = y + ((LocatedAction)a).getY();
-					}
-					
-					
-					//Gather the last of the information and actually execute the actions
-					int timestried=0;
-					boolean failedtry=true;
-					boolean wrongtype=false;
-					boolean fullisprimitive=ActionType.isPrimitive(a.getType());
-					//recalculate and try again once if it has failed, so long as the full action is not primitive (since primitives will recalculate to the same as before) and not the wrong type (since something is wrong if it is the wrong type)
-					while ((timestried<1 || timestried<2&&failedtry && !fullisprimitive) &&!wrongtype)
-					{
-						timestried++;
-						failedtry = false;
-						switch(a.getType())
+						if (!(a instanceof ProductionAction))
 						{
-							case PRIMITIVEMOVE:
-								if (!(a instanceof DirectedAction))
-								{
-									wrongtype=true;
-									break;
-								}
-								if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
-									state.moveUnit(u, ((DirectedAction)a).getDirection());
-								}
-								else {
-									failedtry=true;
-									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-								}
-								break;
-							case PRIMITIVEGATHER:
-								if (!(a instanceof DirectedAction))
-								{
-									wrongtype=true;
-									break;
-								}
-								boolean failed=false;
-								ResourceNode resource = state.resourceAt(xPrime, yPrime);
-								if(resource == null) {
-									failed=true;
-								}
-								else if(!u.canGather()) {
-									failed=true;
-								}
-								else {
-									int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
-									u.setCargo(resource.getResourceType(), amountPickedUp);
-									history.recordPickupResource(u, resource, amountPickedUp, state);
-								}
-								if (failed) {
-									failedtry=true;
-									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-								}
-								break;
-							case PRIMITIVEDEPOSIT:
-								if (!(a instanceof DirectedAction))
-								{
-									wrongtype=true;
-									break;
-								}
-								//only can do a primative if you are in the right position
-									Unit townHall = state.unitAt(xPrime, yPrime);
-									boolean canAccept=false;
-									if (townHall!=null && townHall.getPlayer() == u.getPlayer())
-									{
-										if (u.getCurrentCargoType() == ResourceType.GOLD && townHall.getTemplate().canAcceptGold())
-											canAccept=true;
-										else if (u.getCurrentCargoType() == ResourceType.WOOD && townHall.getTemplate().canAcceptWood())
-											canAccept=true;
-									}
-									if(!canAccept)
-									{
-										failedtry=true;
-										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-										break;
-									}
-									else {
-										int agent = u.getPlayer();
-										history.recordDropoffResource(u, townHall, state);
-										state.depositResources(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
-										u.clearCargo();
-										
-										break;
-									}
-							case PRIMITIVEATTACK:
-								if (!(a instanceof TargetedAction))
-								{
-									wrongtype=true;
-									break;
-								}
-								Unit target = state.getUnit(((TargetedAction)a).getTargetId());
-								if (target!=null)
-								{
-									if (u.getTemplate().getRange() >= DistanceMetrics.chebyshevDistance(u.getxPosition(),u.getyPosition(), target.getxPosition(), target.getyPosition()))
-									{
-										int damage = calculateDamage(u,target);
-										history.recordDamage(u, target, damage, state);
-										target.setHP(Math.max(target.getCurrentHealth()-damage,0));
-									}
-									else //out of range
-									{
-										failedtry=true;
-										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-									}
-								}
-								else
-								{
-									failedtry=true;
-									queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-								}
-								break;
-							case PRIMITIVEBUILD:
+							wrongType=true;
+							break;
+						}
+						@SuppressWarnings("rawtypes")
+						Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
+						//check if it is even capable of producing the
+						if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
+						{
+							if (template instanceof UnitTemplate)
 							{
-								if (!(a instanceof ProductionAction))
+								Unit produced = ((UnitTemplate)template).produceInstance(state);
+								int[] newxy = state.getClosestPosition(x,y);
+								if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
 								{
-									wrongtype=true;
-									break;
+									history.recordBirth(produced, u, state);
 								}
-								if (queuedact.getFullAction().getType() == ActionType.COMPOUNDBUILD && queuedact.getFullAction() instanceof LocatedProductionAction)
-								{
-									LocatedProductionAction fullbuild = (LocatedProductionAction) queuedact.getFullAction();
-									if (fullbuild.getX() != u.getxPosition() || fullbuild.getY() != u.getyPosition())
-									{
-										failedtry=true;
-										queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-										break;
-									}
-								}
-								UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
-								{
-									
-										Unit building = template.produceInstance(state);
-	//									System.out.println("Checking on bug: unit with id "+u.ID);
-	//									System.out.println(state.getUnit(u.ID));
-										int[] newxy = state.getClosestPosition(x,y);
-										if (state.tryProduceUnit(building,newxy[0],newxy[1]))
-										{
-	//									System.out.println(state.getUnit(u.ID));
-										history.recordBirth(building, u, state);
-										
-	//									System.out.println(state.getUnit(u.ID));
-										}
-									
-								}
-								else //it can't produce the appropriate thing, or the thing's prereqs aren't met
-								{
-									failedtry=true;
-								}
-								
-								break;
 							}
-							case PRIMITIVEPRODUCE:
-							{
-								if (!(a instanceof ProductionAction))
+							else if (template instanceof UpgradeTemplate) {
+								UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
+								if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
 								{
-									wrongtype=true;
-									break;
+									history.recordUpgrade(upgradetemplate,u, state);
 								}
-								@SuppressWarnings("rawtypes")
-								Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-								//check if it is even capable of producing the
-								if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
-								{
-									if (template instanceof UnitTemplate)
-									{
-										Unit produced = ((UnitTemplate)template).produceInstance(state);
-										int[] newxy = state.getClosestPosition(x,y);
-										if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
-										{
-											history.recordBirth(produced, u, state);
-										}
-									}
-									else if (template instanceof UpgradeTemplate) {
-										UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-										if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
-										{
-											history.recordUpgrade(upgradetemplate,u, state);
-										}
-									}
-								}
-								else//can't produce it, or prereqs aren't met
-								{
-									failedtry=true;
-								}
-//								System.out.println(template.getName() + " takes "+template.timeCost);
-//								System.out.println("Produced"+u.getAmountProduced());
-								
-								
-								break;
-							}
-							case FAILED:
-							{
-								failedtry=true;
-								queuedact.resetPrimitives(calculatePrimitives(queuedact.getFullAction()));
-								break;
-							}
-							case FAILEDPERMANENTLY:
-							{
-								u.setTask(UnitTask.Idle);
-								break;
 							}
 						}
-						if (wrongtype)
+						else//can't produce it, or prereqs aren't met
 						{
-							//if it had the wrong type, then either the planner is bugged (unlikely) or the user provided a bad primitive action
-							//either way, record it as failed and toss it
-							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INVALIDTYPE));
-							queuedActions.remove(queuedact.getFullAction());
+							failedTry=true;
 						}
-						else if (!failedtry && a.getType() != ActionType.FAILEDPERMANENTLY)
-						{
-							history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
-							if (!queuedact.hasNext())
-							{
-								history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.COMPLETED));
-								queuedActions.remove(queuedact.getFullAction());
-							}
-							else
-							{
-								history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INCOMPLETE));
-							}
-						}
-						else if (a.getType()==ActionType.FAILEDPERMANENTLY || failedtry && fullisprimitive)
-						{
-							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.FAILED));
-							queuedActions.remove(queuedact.getFullAction());
-							
-						}
-						else
-						{
-							history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedact.getFullAction(),ActionFeedback.INCOMPLETEMAYBESTUCK));
-						}
+						break;
+					}
+					case FAILED:
+					{
+						failedTry=true;
+						queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
+						break;
+					}
+					case FAILEDPERMANENTLY:
+					{
+						u.setTask(UnitTask.Idle);
+						break;
 					}
 				}
+				if (wrongType)
+				{
+					//if it had the wrong type, then either the planner is bugged (unlikely) or the user provided a bad primitive action
+					//either way, record it as failed and toss it
+					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INVALIDTYPE));
+					queuedActions.remove(queuedAct.getFullAction());
+				}
+				else if (!failedTry && a.getType() != ActionType.FAILEDPERMANENTLY)
+				{
+					history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
+					if (!queuedAct.hasNext())
+					{
+						history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.COMPLETED));
+						queuedActions.remove(queuedAct.getFullAction());
+					}
+					else
+					{
+						history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETE));
+					}
+				}
+				else if (a.getType()==ActionType.FAILEDPERMANENTLY || failedTry && fullIsPrimitive)
+				{
+					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.FAILED));
+					queuedActions.remove(queuedAct.getFullAction());
+					
+				}
+				else
+				{
+					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETEMAYBESTUCK));
+				}
 			}
+			while (timesTried < 2 && failedTry && !fullIsPrimitive && !wrongType);
 		}
 		
 		

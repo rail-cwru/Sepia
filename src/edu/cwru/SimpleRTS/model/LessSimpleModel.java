@@ -89,7 +89,7 @@ public class LessSimpleModel implements Model {
 		verbose = false;
 		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
-	public void setVerbosity(boolean verbose) {
+	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
 	
@@ -952,7 +952,7 @@ public class LessSimpleModel implements Model {
 					//do the atomic action
 					int player = townHall.getPlayer();
 					history.recordDropoffResource(u, townHall, state);
-					state.depositResources(player, u.getCurrentCargoType(), u.getCurrentCargoAmount());
+					state.addResourceAmount(player, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 					u.clearCargo();
 					//you completed the action, so reset the durative progress
 					u.resetDurative();
