@@ -1,5 +1,8 @@
 package edu.cwru.SimpleRTS.environment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +21,9 @@ import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
 
-public class State implements Serializable, Cloneable, IDDistributer {
+public class State implements Serializable, Cloneable, IDDistributer, DeepEquatable {
 	/**
 	 * 
 	 */
@@ -171,6 +175,129 @@ public class State implements Serializable, Cloneable, IDDistributer {
 //		State state = (State)clone();
 //		return state.getView(player);
 //	}
+	
+	
+	/**
+	 * A deep equals method, because the equals methods of many classes have been hijacked into ID comparison for performance reasons
+	 * @param other
+	 * @return
+	 */
+	public boolean deepEquals(Object other)
+	{
+		
+		if (other==null || !this.getClass().equals(other.getClass()))
+			return false;
+		
+		State o = (State)other;
+		if (this.MAXSUPPLY != o.MAXSUPPLY)
+			return false;
+		if (this.hasFogOfWar != o.hasFogOfWar)
+			return false;
+		if (this.nextIDTarget != o.nextIDTarget)
+			return false;
+		if (this.nextIDTemplate != o.nextIDTemplate)
+			return false;
+		if (this.xextent != o.xextent || this.yextent != o.yextent)
+			return false;
+		if (this.turnNumber != o.turnNumber)
+			return false;
+		
+		{
+			boolean thisnull = this.resourceNodes == null;
+			boolean othernull = o.resourceNodes == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.resourceNodes.size() != o.resourceNodes.size())
+					return false;
+				for (int i = 0; i<this.resourceNodes.size();i++)
+				{
+					if (!resourceNodes.get(i).deepEquals(o.resourceNodes.get(i)))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.allTemplates == null;
+			boolean othernull = o.allTemplates == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.allTemplates.size() != o.allTemplates.size())
+					return false;
+				for (Integer i : allTemplates.keySet())
+				{
+					if (!allTemplates.get(i).deepEquals(o.allTemplates.get(i)))
+						return false;
+				}
+			}
+		}
+		
+		
+		{
+			boolean thisnull = this.allUnits == null;
+			boolean othernull = o.allUnits == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.allUnits.size() != o.allUnits.size())
+					return false;
+				for (Integer i : allUnits.keySet())
+				{
+					if (!allUnits.get(i).deepEquals(o.allUnits.get(i)))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.playerStates == null;
+			boolean othernull = o.playerStates == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.playerStates.size() != o.playerStates.size())
+					return false;
+				for (Integer i : playerStates.keySet())
+				{
+					if (!playerStates.get(i).deepEquals(o.playerStates.get(i)))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.observerState == null;
+			boolean othernull = o.observerState == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (!this.observerState.deepEquals(o.observerState))
+					return false;
+			}
+		}
+		
+		
+		return true;
+	}
 	/**
 	 * Return an array of the players currently in the game
 	 * @return
@@ -1058,6 +1185,32 @@ public class State implements Serializable, Cloneable, IDDistributer {
 //		public StateView getStaticCopy() {
 //			return state.getStaticCopy(player);
 //		}
+		
+		
+		
+		/**
+		 * If the player can see the whole state, get a StateCreator that will rebuild the state as it is when this is called.<br/>
+		 * This can be used as an immutable and repeatable deep copy of the underlying state.
+		 * @return When fog of war is on and the player is not an observer: null;<br/>otherwise: A StateCreator that rebuilds the underlying state.
+		 * @throws IOException
+		 */
+		public StateCreator getStateCreator() throws IOException {
+			if (!state.hasFogOfWar || player == Agent.OBSERVER_ID)
+			{
+				ByteArrayOutputStream bos=new ByteArrayOutputStream();
+				ObjectOutputStream o = new ObjectOutputStream(bos);
+				o.writeObject(state);
+				o.flush();
+				o.close();
+				byte[] stateData = bos.toByteArray();
+				bos.close();
+				return new RawStateCreator(stateData);
+			}
+			else
+			{
+				return null;
+			}
+		}
 		/**
 		 * Get all of the unit ids that you can see
 		 * @return

@@ -1,5 +1,6 @@
 package edu.cwru.SimpleRTS.model;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
@@ -10,8 +11,10 @@ import java.io.ObjectOutputStream;
 
 import org.junit.Test;
 
+import edu.cwru.SimpleRTS.environment.RawStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateBuilder;
+import edu.cwru.SimpleRTS.environment.StateCreator;
 
 public class ModelSerializationTest {
 
@@ -26,6 +29,10 @@ public class ModelSerializationTest {
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bais);
 		State state2 = (State) ois.readObject();
-		assertEquals("State did not come out the same!",state,state2);
+		assertTrue("State did not come out the same in direct serialization!",state.deepEquals(state2));
+		
+		StateCreator sc = new RawStateCreator(baos.toByteArray());
+		State newstate = sc.createState();
+		
 	}
 }

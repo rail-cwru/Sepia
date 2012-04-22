@@ -26,4 +26,13 @@ public class BuildingPrerequisite implements Prerequisite{
 		return "BuildingPrereq, requires player " + player + " to have built template " + buildingtemplateid;
 	}
 	
+	@Override
+	public boolean deepEquals(Object other) {
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		BuildingPrerequisite o = (BuildingPrerequisite)other;
+		return this.buildingtemplateid == o.buildingtemplateid && this.player == o.player;
+		
+	}
+	
 }

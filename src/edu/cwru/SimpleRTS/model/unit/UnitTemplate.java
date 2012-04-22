@@ -3,8 +3,11 @@ package edu.cwru.SimpleRTS.model.unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.model.prerequisite.PrerequisiteHolder;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 /**
@@ -443,5 +446,181 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 */
 	public List<String> getProducesStrings() {
 		return produces;
+	}
+	@Override
+	public boolean deepEquals(Object other) {
+		//note, this method ignores the view.  Hopefully that is not an issue
+		
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		UnitTemplate o = (UnitTemplate)other;
+		
+		
+		//Stuff common to all templates
+		if (this.ID != o.ID)
+			return false;
+		
+		if (this.timeCost != o.timeCost)
+			return false;
+		if (this.goldCost != o.timeCost)
+			return false;
+		if (this.woodCost != o.woodCost)
+			return false;
+		if (this.foodCost != o.foodCost)
+			return false;
+		if (this.player != o.player)
+			return false;
+		{
+			boolean thisnull = this.prereqs == null;
+			boolean othernull = o.prereqs == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (!prereqs.deepEquals(o))
+					return false;
+			}
+		}
+		{
+			boolean thisnull = this.buildPrereq == null;
+			boolean othernull = o.buildPrereq == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.buildPrereq.size() != o.buildPrereq.size())
+					return false;
+				for (String s : this.buildPrereq)
+				{
+					if (!o.buildPrereq.contains(s))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.upgradePrereq == null;
+			boolean othernull = o.upgradePrereq == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.upgradePrereq.size() != o.upgradePrereq.size())
+					return false;
+				for (String s : this.upgradePrereq)
+				{
+					if (!o.upgradePrereq.contains(s))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.name== null;
+			boolean othernull = o.name == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (!this.name.equals(o.name))
+					return false;
+			}
+		}
+		
+		
+		//UnitTemplate specific stuff
+		if (this.baseHealth != o.baseHealth)
+			return false;
+		if (this.basicAttack != o.basicAttack)
+			return false;
+		if (this.piercingAttack != o.piercingAttack)
+			return false;
+		if (this.range != o.range)
+			return false;
+		if (this.armor != o.armor)
+			return false;
+		if (this.sightRange != o.sightRange)
+			return false;
+		if (this.canGather != o.canGather)
+			return false;
+		if (this.canBuild != o.canMove)
+			return false;
+		if (this.canAcceptGold != o.canAcceptGold)
+			return false;
+		if (this.canAcceptWood != o.canAcceptWood)
+			return false;
+		if (this.foodProvided != o.foodProvided)
+			return false;
+		if (this.character != o.character)
+			return false;
+		if (this.goldCapacity != o.goldCapacity)
+			return false;
+		if (this.woodCapacity != o.woodCapacity)
+			return false;
+		if (this.goldGatherRate != o.goldGatherRate)
+			return false;
+		if (this.woodGatherRate != o.woodGatherRate)
+			return false;
+		if (this.durationGoldGather != o.durationGoldGather)
+			return false;
+		if (this.durationWoodGather != o.durationWoodGather)
+			return false;
+		if (this.durationMove != o.durationMove)
+			return false;
+		if (this.durationAttack != o.durationAttack)
+			return false;
+		if (this.durationDeposit != o.durationDeposit)
+			return false;
+		
+		
+		{
+			boolean thisnull = this.produces == null;
+			boolean othernull = o.produces == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.produces.size() != o.produces.size())
+					return false;
+				for (String s : this.produces)
+				{
+					if (!o.produces.contains(s))
+						return false;
+				}
+			}
+		}
+		{
+			boolean thisnull = this.producesID == null;
+			boolean othernull = o.producesID == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (this.producesID.size() != o.producesID.size())
+					return false;
+				for (Integer i : this.producesID)
+				{
+					if (!o.producesID.contains(i))
+						return false;
+				}
+			}
+		}
+		return true;
 	}
 }

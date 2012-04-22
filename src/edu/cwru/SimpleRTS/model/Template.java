@@ -11,6 +11,7 @@ import edu.cwru.SimpleRTS.model.prerequisite.PrerequisiteHolder;
 import edu.cwru.SimpleRTS.model.prerequisite.UpgradePrerequisite;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
 
 /**
  * Signifies that an implementing class provides generic details about a specific object.
@@ -19,19 +20,19 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
  *
  * @param <T>
  */
-public abstract class Template<T> implements Serializable{
+public abstract class Template<T> implements Serializable, DeepEquatable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int timeCost;
-	private int goldCost;
-	private int woodCost;
-	private int foodCost;
-	private int player;
-	private PrerequisiteHolder prereqs;
-	private Set<String> buildPrereq;
-	private Set<String> upgradePrereq;
+	protected int timeCost;
+	protected int goldCost;
+	protected int woodCost;
+	protected int foodCost;
+	protected int player;
+	protected PrerequisiteHolder prereqs;
+	protected Set<String> buildPrereq;
+	protected Set<String> upgradePrereq;
 	protected String name;
 	public final int ID;
 	/**

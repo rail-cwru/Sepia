@@ -56,7 +56,7 @@ public class AdapterTestUtil {
 			xml.setCargoAmount(r.nextInt());
 			xml.setCargoType(ResourceType.values()[r.nextInt(ResourceType.values().length)]);
 		}
-		xml.setCurrentHealth(r.nextInt(chosentemplate.getBaseHealth()));
+		xml.setCurrentHealth(r.nextInt(chosentemplate.getBaseHealth())+1);
 		
 //		//random template it can make:
 //		boolean invalidproduction = true;

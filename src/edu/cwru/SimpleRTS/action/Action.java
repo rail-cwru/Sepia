@@ -3,6 +3,7 @@ package edu.cwru.SimpleRTS.action;
 import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.model.Direction;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
 /**
  * The primary class of issued commands.
  * Action is immutable and it's subtypes should be as well.
@@ -10,14 +11,20 @@ import edu.cwru.SimpleRTS.model.Direction;
  * @author The Condor
  *
  */
-public class Action implements Serializable{
+public class Action implements Serializable, DeepEquatable{
 
 	protected final ActionType type;
 	protected final int unitId;
-	public Action(int untId, ActionType type)
+	public Action(int unitId, ActionType type)
 	{
 		this.type = type;
-		this.unitId = untId;
+		this.unitId = unitId;
+	}
+	
+	@Override public boolean deepEquals(Object other)
+	{
+		//Since equals is already implemented as an equivalent, just return that
+		return this.equals(other);
 	}
 	/**
 	 * Get the id of the unit doing the action.

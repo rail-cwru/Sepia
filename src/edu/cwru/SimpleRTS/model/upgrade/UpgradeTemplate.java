@@ -181,7 +181,152 @@ public class UpgradeTemplate extends Template<Upgrade>
 			return affectedUnitTypes;
 		}
 	}
-
+	@Override
+	public boolean deepEquals(Object other) {
+		//note, this method ignores the view.  Hopefully that is not an issue
+		
+				if (other == null || !this.getClass().equals(other.getClass()))
+					return false;
+				UpgradeTemplate o = (UpgradeTemplate)other;
+				
+				
+				//Stuff common to all templates
+				if (this.ID != o.ID)
+					return false;
+				
+				if (this.timeCost != o.timeCost)
+					return false;
+				if (this.goldCost != o.timeCost)
+					return false;
+				if (this.woodCost != o.woodCost)
+					return false;
+				if (this.foodCost != o.foodCost)
+					return false;
+				if (this.player != o.player)
+					return false;
+				{
+					boolean thisnull = this.prereqs == null;
+					boolean othernull = o.prereqs == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (!prereqs.deepEquals(o))
+							return false;
+					}
+				}
+				{
+					boolean thisnull = this.buildPrereq == null;
+					boolean othernull = o.buildPrereq == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (this.buildPrereq.size() != o.buildPrereq.size())
+							return false;
+						for (String s : this.buildPrereq)
+						{
+							if (!o.buildPrereq.contains(s))
+								return false;
+						}
+					}
+				}
+				{
+					boolean thisnull = this.upgradePrereq == null;
+					boolean othernull = o.upgradePrereq == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (this.upgradePrereq.size() != o.upgradePrereq.size())
+							return false;
+						for (String s : this.upgradePrereq)
+						{
+							if (!o.upgradePrereq.contains(s))
+								return false;
+						}
+					}
+				}
+				{
+					boolean thisnull = this.name== null;
+					boolean othernull = o.name == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (!this.name.equals(o.name))
+							return false;
+					}
+				}
+				
+				
+				//UpgradeTemplate specific methods
+				if (this.piercingAttackChange != o.piercingAttackChange)
+					return false;
+				if (this.basicAttackChange != o.basicAttackChange)
+					return false;
+				if (this.armorChange != o.armorChange)
+					return false;
+				if (this.healthChange != o.healthChange)
+					return false;
+				if (this.rangeChange != o.rangeChange)
+					return false;
+				if (this.sightRangeChange != o.sightRangeChange)
+					return false;
+				{
+					boolean thisnull = this.unitTemplatesAffected == null;
+					boolean othernull = o.unitTemplatesAffected == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (this.unitTemplatesAffected.size() != o.unitTemplatesAffected.size())
+							return false;
+						for (int i = 0; i<this.unitTemplatesAffected.size(); i++)
+						{
+							if (!this.unitTemplatesAffected.get(i).deepEquals(o.unitTemplatesAffected.get(i)))
+								return false;
+						}
+					}
+				}
+				{
+					boolean thisnull = this.stringUnitsAffected == null;
+					boolean othernull = o.stringUnitsAffected == null;
+					if ((thisnull == othernull)==false)
+					{
+						return false;
+					}
+					//if both aren't null, need to check deeper
+					if (!thisnull && !othernull)
+					{
+						if (this.stringUnitsAffected.length != o.stringUnitsAffected.length)
+							return false;
+						for (int i = 0; i<this.stringUnitsAffected.length; i++)
+						{
+							if (!this.stringUnitsAffected[i].equals(o.stringUnitsAffected[i]))
+								return false;
+						}
+					}
+				}
+				return true;
+	}
+	
+	
 	
 	
 }

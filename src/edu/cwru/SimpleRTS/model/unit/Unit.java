@@ -5,8 +5,9 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
 
-public class Unit extends Target implements Cloneable {
+public class Unit extends Target /*implements Cloneable*/ {
 	private static final long serialVersionUID = 1L;
 	
 	private UnitView view;
@@ -24,9 +25,39 @@ public class Unit extends Target implements Cloneable {
 		this.template = template;
 		this.currentHealth = template.getBaseHealth();
 		currentDurativeProgress = 0;
+		currentDurativePrimitive = null;
 		task = UnitTask.Idle;
 	}
-	
+	public boolean deepEquals(Object other) {
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		Unit o = (Unit)other;
+		if (this.ID != o.ID)
+			return false;
+		if (this.currentHealth != o.currentHealth)
+			return false;
+		if (this.xPosition != o.xPosition)
+			return false;
+		if (this.yPosition != o.yPosition)
+			return false;
+		if ((this.template == null) != (o.template == null) ||!this.template.deepEquals(o.template))
+			return false;
+		if (this.cargoType != o.cargoType)
+			return false;
+		if (this.task != o.getTask())
+			return false;
+		if (this.cargoAmount != o.cargoAmount)
+			return false;
+		if ((this.currentDurativePrimitive == null) != (o.currentDurativePrimitive == null) || !this.currentDurativePrimitive.deepEquals(o.currentDurativePrimitive))
+			return false;
+		if (this.currentDurativeProgress != o.currentDurativeProgress)
+			return false;
+		return true;
+		
+	}
+	/*
+	 removed because it is unused
+	 also, it isn't clear whether the template should be a clone
 	@Override
 	protected Object clone() {
 		Unit unit = new Unit(template, ID);
@@ -45,7 +76,7 @@ public class Unit extends Target implements Cloneable {
 		Unit copy = (Unit)clone();		
 		return copy;
 	}
-
+	*/
 	public int getPlayer() {
 		return template.getPlayer();
 	}

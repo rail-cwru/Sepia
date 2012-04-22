@@ -20,6 +20,9 @@
 			<li><a href="#Config">Configuration</a>
 			<li><a href="#VisualAgent">Visual Agent and Unit Overview</a>
 			<li><a href="#Agent">Writing An Agent</a>
+			<ol>
+				<li><a href="#AgentSimulation">Running Look-Ahead/Simulations</a></li>
+			</ol>
 			<li><a href="#FogofWar">Making Maps</a>
 			<li><a href="#ScripAgent">Using The Scripted Agent</a>
 			<li><a href="#Engine">The Engine</a>
@@ -211,7 +214,7 @@
 		If it does not match this (or just "int playernum"), it will not be loaded by the main method.  In order to pass the arguments in, each is put sequentially as --agentparam x.  More details in the How To Run section.
 		If you do add additional parameters, please override the static String getUsage() to explain their usage, as that will be called if it is used wrong.
 		</p>
-		<h3>Actions</h3>
+		<h3 id="Actions">Actions</h3>
 		<p>In order to send commands to your units, you must construct a map from the IDs of your units to the actions that you want them to do.
 		Actions may be constructed by calling various static factory methods in <code>edu.cwru.SimpleRTS.action.Action</code>, such as <code>createCompoundAttack</code>.
 		The actions are divided into two groups, primitive actions and compound actions.  The primitive actions represent basic commands to individual units, whereas the compound actions are higher level, requesting a series of primitive actions over the course of several turns as part of a larger command. 
@@ -260,6 +263,21 @@
 		</p>
 		<h3>Accessing The State</h3>
 		<p>
+		</p>
+		<h3 id="AgentSimulation">Running Look-Ahead/Simulations</h3>
+		<p>
+			A simulation may need to be run for purposes of replaying a previous game for viewing or further learning or as a lookahead method in planning.<br/>
+			This can be done by interacting directly with the model, taking the place of the environment.
+			<code>//Written 4/13/2012
+				//Get a state
+				
+					//If you are doing lookahead
+					StateCreator stateCreator = stateView.getStateCreator();
+					//Loading from basic serialization
+					StateCreator stateCreator = stateView.getStateCreator();
+					//Loading from an xml serialization
+					StateCreator stateCreator = new XmlStateCreator(); 
+			</code>
 		</p>
 		<h2 id="MapEditor">7. Making your own Map</h2>
 		<p>

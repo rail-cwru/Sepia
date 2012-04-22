@@ -42,4 +42,28 @@ public class PrerequisiteHolder implements Prerequisite {
 	public void addPrerequisite(Prerequisite prereq) {
 		prerequisites.add(prereq);
 	}
+	@Override
+	public boolean deepEquals(Object other) {
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		PrerequisiteHolder o = (PrerequisiteHolder)other;
+		{
+			boolean thisnull = this.prerequisites == null;
+			boolean othernull = o.prerequisites == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull) {
+				if (this.prerequisites.size() != o.prerequisites.size())
+					return false;
+				for (int i = 0; i<prerequisites.size();i++) {
+					if (!prerequisites.get(i).deepEquals(o.prerequisites.get(i)))
+						return false;
+				}
+			}
+		}
+		return true;
+	}
 }

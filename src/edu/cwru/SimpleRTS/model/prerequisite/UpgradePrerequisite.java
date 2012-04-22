@@ -21,5 +21,13 @@ public class UpgradePrerequisite implements Prerequisite{
 	public String toString() {
 		return "UpgradePrereq, requires player " + playerid + " to have upgraded template " + upgradeid;
 	}
+	@Override
+	public boolean deepEquals(Object other) {
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		UpgradePrerequisite o = (UpgradePrerequisite)other;
+		return this.upgradeid == o.upgradeid && this.playerid == o.playerid;
+		
+	}
 
 }

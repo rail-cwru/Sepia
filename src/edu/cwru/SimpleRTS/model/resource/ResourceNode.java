@@ -113,4 +113,21 @@ public class ResourceNode extends Target implements Cloneable {
 			return node.yPosition;
 		}
 	}
+	@Override
+	public boolean deepEquals(Object other) {
+		if (other == null || !this.getClass().equals(other))
+			return false;
+		ResourceNode o = (ResourceNode)other;
+		if (this.type != o.type)
+			return false;
+		if (this.xPosition != o.xPosition)
+			return false;
+		if (this.yPosition != o.yPosition)
+			return false;
+		if (this.initialAmount != o.initialAmount)
+			return false;
+		if (this.amountRemaining != o.amountRemaining)
+			return false;
+		return true;
+	}
 }
