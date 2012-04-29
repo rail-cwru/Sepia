@@ -58,4 +58,9 @@ public class Configuration {
 	public boolean containsKey(String key) {
 		return settings.containsKey(key);
 	}
+	
+	@Override
+	public String toString() {
+		return settings.toString();
+	}
 }
