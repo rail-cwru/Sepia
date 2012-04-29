@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -42,6 +43,16 @@ public class PreferencesConfigurationLoader {
 				config.put(value.key, subprefs.getDouble(subkey, 0));
 			} 
 		}
+		try
+		{
+			Preferences model  = prefs.node("model");
+			for(String key : model.keys())
+			{
+				if(key.startsWith("Required"))
+					config.put(key, model.getInt(key, 0));
+			}
+		}
+		catch(Exception ex) {}
 		return config;
 	}
 	private static boolean loadPrefs(String arg) {
