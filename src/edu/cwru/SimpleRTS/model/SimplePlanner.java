@@ -238,11 +238,12 @@ public class SimplePlanner implements Serializable {
 	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, UnitTemplate template) {
 		LinkedList<Action> plan = new LinkedList<Action>();
 		//it must go to the right place
-		if (actor.getxPosition() != targetX && actor.getyPosition() != targetY)
+		if (actor.getxPosition() != targetX || actor.getyPosition() != targetY)
 		{//if it is not in the same place
 			//Then bring it there
 			plan = planMove(actor, getDirections(state.getView(Agent.OBSERVER_ID), actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, false));
 		}
+		plan.addLast(Action.createPrimitiveBuild(actor.ID, template.ID));
 		return plan;
 	}
 	public LinkedList<Action> planBuild(int actor, int targetX, int targetY, int template) {
