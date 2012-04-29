@@ -491,5 +491,23 @@
 		"Affects" : ["TownHall"],
 		"UpgradePrereq" : ["Keep"],
 		"BuildPrereq" : ["LumberMill","Stables","Blacksmith"],
+	},	
+	"SpawnPoint" : {
+		"Name" : "SpawnPoint",
+		"TemplateType" : "Unit",
+		"TimeCost" : 99999,
+		"StratagusTime" : 99999,
+		"GoldCost" : 99999,
+		"WoodCost" : 99999,
+		"HitPoints" : 99999,
+		"Armor" : 99999,
+		"Character" : 'S',
+		"BasicAttack" : 0,
+		"Piercing" : 0,
+		"Range" : 0,
+		"SightRange" : 1,
+		"FoodGiven" : 200,
+		"Produces" : ["Footman","Archer","Knight","Ballista"],
+		"Mobile" : false
 	}
 }
