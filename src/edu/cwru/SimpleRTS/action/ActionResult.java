@@ -16,7 +16,7 @@ public class ActionResult {
 	{
 		return action;
 	}
-	public ActionFeedback getResult()
+	public ActionFeedback getFeedback()
 	{
 		return result;
 	}

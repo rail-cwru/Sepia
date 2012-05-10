@@ -29,7 +29,7 @@ public class LocatedAction extends Action
 		{
 			return true;
 		}
-		else if (!(other instanceof LocatedAction))
+		else if (other == null || !this.getClass().equals(other.getClass()))
 		{
 			return false;
 		}

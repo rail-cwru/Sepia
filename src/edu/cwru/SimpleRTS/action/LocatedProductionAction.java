@@ -34,7 +34,7 @@ public class LocatedProductionAction extends Action{
 		{
 			return true;
 		}
-		else if (!(other instanceof LocatedProductionAction))
+		else if (other == null || !this.getClass().equals(other.getClass()))
 		{
 			return false;
 		}

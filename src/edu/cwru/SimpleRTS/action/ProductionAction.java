@@ -23,7 +23,7 @@ public class ProductionAction extends Action
 		{
 			return true;
 		}
-		else if (!(other instanceof ProductionAction))
+		else if (other == null || !this.getClass().equals(other.getClass()))
 		{
 			return false;
 		}

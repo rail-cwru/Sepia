@@ -51,7 +51,7 @@ public class Action implements Serializable, DeepEquatable{
 		{
 			return true;
 		}
-		else if (!(other instanceof Action))
+		else if (other == null || !this.getClass().equals(other.getClass()))
 		{
 			return false;
 		}
