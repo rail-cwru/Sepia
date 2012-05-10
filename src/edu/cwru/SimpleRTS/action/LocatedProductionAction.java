@@ -42,12 +42,12 @@ public class LocatedProductionAction extends Action{
 		{
 			
 			LocatedProductionAction aother = (LocatedProductionAction)other;
-			return super.equals(aother) && aother.x == x && aother.y == y && aother.templateid == templateid;
+			return aother.type == type && aother.unitId == unitId && aother.x == x && aother.y == y && aother.templateid == templateid;
 		}
 	}
 	@Override public int hashCode()
 	{
 		int prime = 61;
-		return prime*prime*prime*x + prime*prime*y+prime * templateid + super.hashCode();
+		return prime*prime*prime*prime*x + prime*prime*prime*y+prime *prime* templateid + prime * type.hashCode() + unitId;
 	}
 }

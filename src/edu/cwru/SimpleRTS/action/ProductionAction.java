@@ -31,12 +31,12 @@ public class ProductionAction extends Action
 		{
 			
 			ProductionAction aother = (ProductionAction)other;
-			return super.equals(aother) && aother.templateid == templateid;
+			return aother.type == type && aother.unitId == unitId && aother.templateid == templateid;
 		}
 	}
 	@Override public int hashCode()
 	{
 		int prime = 61;
-		return prime * templateid + super.hashCode();
+		return prime*prime * templateid + prime * type.hashCode() + unitId;
 	}
 }

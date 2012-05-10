@@ -31,12 +31,12 @@ public class TargetedAction extends Action
 		{
 			
 			TargetedAction aother = (TargetedAction)other;
-			return super.equals(aother) && aother.targetid == targetid;
+			return aother.type == type && aother.unitId == unitId && aother.targetid == targetid;
 		}
 	}
 	@Override public int hashCode()
 	{
 		int prime = 61;
-		return prime * targetid + super.hashCode();
+		return prime*prime * targetid + prime * type.hashCode() + unitId;
 	}
 }

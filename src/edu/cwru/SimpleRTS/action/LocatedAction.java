@@ -37,12 +37,12 @@ public class LocatedAction extends Action
 		{
 			
 			LocatedAction aother = (LocatedAction)other;
-			return super.equals(aother) && aother.x == x && aother.y == y;
+			return aother.type == type && aother.unitId == unitId && aother.x == x && aother.y == y;
 		}
 	}
 	@Override public int hashCode()
 	{
 		int prime = 61;
-		return prime * prime * x + prime * y + super.hashCode();
+		return prime * prime * prime * x + prime * prime * y + prime * type.hashCode() + unitId;
 	}
 }

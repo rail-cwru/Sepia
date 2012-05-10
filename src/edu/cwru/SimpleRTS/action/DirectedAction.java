@@ -33,12 +33,12 @@ public class DirectedAction extends Action {
 		{
 			
 			DirectedAction aother = (DirectedAction)other;
-			return super.equals(aother) && aother.direction == direction;
+			return aother.type == type && aother.unitId == unitId && aother.direction == direction;
 		}
 	}
 	@Override public int hashCode()
 	{
 		int prime = 61;
-		return prime * direction.hashCode() + super.hashCode();
+		return prime * prime * direction.hashCode() + prime * type.hashCode() + unitId;
 	}
 }
