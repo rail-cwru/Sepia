@@ -435,13 +435,17 @@ public class DurativePlanner implements Serializable {
 	public static int calculateProductionDuration(Unit u, @SuppressWarnings("rawtypes") Template t) {
 		return t.getTimeCost();
 	}
-	
+	/**
+	 * A simple structure used in the construction of plans. 
+	 * @author The Condor
+	 *
+	 */
 	public static class MovePlan
 	{
-		private final boolean succeeded;
-		private LinkedList<Action> actions;
-		private int finalx;
-		private int finaly;
+		public final boolean succeeded;
+		public LinkedList<Action> actions;
+		public int finalx;
+		public int finaly;
 		public MovePlan()
 		{
 			succeeded = false;
