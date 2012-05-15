@@ -322,10 +322,8 @@ public class History implements DeepEquatable {
 		}
 		public ActionResultLoggerView getPrimitiveFeedback(int playerNumber)
 		{
-			if (this.player == Agent.OBSERVER_ID)
-				return observerHistory.getPrimitiveFeedback().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!hasFogOfWar() || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
 				return playerHistories.get(playerNumber).getPrimitiveFeedback().getView();
 			}
@@ -336,10 +334,8 @@ public class History implements DeepEquatable {
 		}
 		public ActionLoggerView getCommandsIssued(int playerNumber)
 		{
-			if (this.player == Agent.OBSERVER_ID)
-				return observerHistory.getCommandsIssued().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!hasFogOfWar() || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
 				return playerHistories.get(playerNumber).getCommandsIssued().getView();
 			}
@@ -350,10 +346,8 @@ public class History implements DeepEquatable {
 		}
 		public ActionResultLoggerView getCommandFeedback(int playerNumber)
 		{
-			if (this.player == Agent.OBSERVER_ID)
-				return observerHistory.getCommandFeedback().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!hasFogOfWar() || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
 				return playerHistories.get(playerNumber).getCommandFeedback().getView();
 			}
