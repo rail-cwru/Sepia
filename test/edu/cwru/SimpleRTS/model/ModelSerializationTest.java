@@ -33,6 +33,13 @@ public class ModelSerializationTest {
 		
 		StateCreator sc = new RawStateCreator(baos.toByteArray());
 		State newstate = sc.createState();
+		State newstate2 = sc.createState();
+		State newstate3 = sc.createState();
+		State newstate4 = sc.createState();
+		assertTrue("State did not come out the same in serialization with rawstatecreator!",state.deepEquals(newstate));
+		assertTrue("State did not come out the same in serialization with rawstatecreator!",state.deepEquals(newstate2));
+		assertTrue("State did not come out the same in serialization with rawstatecreator!",state.deepEquals(newstate3));
+		assertTrue("State did not come out the same in serialization with rawstatecreator!",state.deepEquals(newstate4));
 		
 	}
 }

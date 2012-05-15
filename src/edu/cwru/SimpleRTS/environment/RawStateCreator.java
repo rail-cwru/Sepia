@@ -22,17 +22,20 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate.UpgradeTemplateView;
 /**
- * A core component of simulating 
+ * A core component of simulating. <br>
+ * RawStateCreator is used to repeatedly clone an existing state from an array of bytes representing a serialization.
  * @author The Condor
  *
  */
 public class RawStateCreator implements StateCreator{
 	private static final long	serialVersionUID	= 1L;
 	private ObjectInputStream stateStream;
+	private ByteArrayInputStream underlyingStream;
 	public RawStateCreator(byte[] stateData) throws IOException {
 		ByteArrayInputStream bis = new ByteArrayInputStream(stateData);
-		ObjectInputStream stateStream = new ObjectInputStream(bis);
-		stateStream.mark(Integer.MAX_VALUE);
+		stateStream = new ObjectInputStream(bis);
+		underlyingStream = bis;
+		underlyingStream.mark(Integer.MAX_VALUE);
 		
 	}
 	@Override
@@ -40,7 +43,8 @@ public class RawStateCreator implements StateCreator{
 		
 		
 		try {
-			stateStream.reset();
+			boolean b = stateStream.markSupported();
+			underlyingStream.reset();
 			return (State)stateStream.readObject();
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("The data in the State cannot be read as a state.");
