@@ -694,7 +694,7 @@ public class DurativeTest {
 			//examine the results
 			{
 				int lastround = state.getTurnNumber()-1;
-				HistoryView history = model.getHistory(Agent.OBSERVER_ID);
+				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
 				List<ActionResult> feedbacklist = history.getCommandFeedback(player1).getActionResults(lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
@@ -749,7 +749,7 @@ public class DurativeTest {
 			//examine the results
 			{
 				int lastround = state.getTurnNumber()-1;
-				HistoryView history = model.getHistory(Agent.OBSERVER_ID);
+				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
 				List<ActionResult> feedbacklist = history.getCommandFeedback(player1).getActionResults(lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
@@ -790,7 +790,7 @@ public class DurativeTest {
 			//examine the results
 			{
 				int lastround = state.getTurnNumber()-1;
-				HistoryView history = model.getHistory(Agent.OBSERVER_ID);
+				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
 				List<ActionResult> feedbacklist = history.getCommandFeedback(player1).getActionResults(lastround);
 				assertTrue("Problem (maybe not fully related to duration), should have only no feedback as nothing was done",feedbacklist.size()==0);
 				assertTrue("The "+i+"th attempt should leave progress of "+expectedDuration+", but the progress was "+toAct.getActionProgressAmount(),toAct.getActionProgressAmount()==expectedDuration);

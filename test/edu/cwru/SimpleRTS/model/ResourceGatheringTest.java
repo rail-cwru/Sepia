@@ -99,15 +99,15 @@ public class ResourceGatheringTest {
 			model.addActions(actions, player);
 		}
 		model.executeStep();
-		UnitView u = model.getState(player).getUnit(1);
+		UnitView u = model.getState().getView(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.WOOD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",20,u.getCargoAmount());
 	}
 	@Test
 	public void test2()  {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.SOUTHWEST);
-		UnitView u = model.getState(player).getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD);
+		UnitView u = model.getState().getView(player).getUnit(a.getUnitId());
+		int oldTreeAmount = model.getState().getView(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD);
 		int cargoAmount = u.getCargoAmount();
 //		model.setActions(new Action[]{a});
 		{
@@ -117,7 +117,7 @@ public class ResourceGatheringTest {
 		}
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD));
+						(int)model.getState().getView(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.WOOD));
 	}
 	@Test
 	public void test3() {
@@ -145,15 +145,15 @@ public class ResourceGatheringTest {
 			model.addActions(actions, player);
 		}
 		model.executeStep();
-		UnitView u = model.getState(player).getUnit(1);
+		UnitView u = model.getState().getView(player).getUnit(1);
 		assertEquals("Unit did not receive the correct resource!",ResourceType.GOLD,u.getCargoType());
 		assertEquals("Unit did not receive the correct amount of resource!",50,u.getCargoAmount());
 	}
 	@Test
 	public void test4() {
 		Action a = new DirectedAction(1,ActionType.PRIMITIVEDEPOSIT,Direction.NORTHWEST);
-		UnitView u = model.getState(player).getUnit(a.getUnitId());
-		int oldTreeAmount = model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD);
+		UnitView u = model.getState().getView(player).getUnit(a.getUnitId());
+		int oldTreeAmount = model.getState().getView(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD);
 		int cargoAmount = u.getCargoAmount();
 //		model.setActions(new Action[]{a});
 		{
@@ -163,6 +163,6 @@ public class ResourceGatheringTest {
 		}
 		model.executeStep();
 		assertEquals("Resource amount did not increase by expected amount!", oldTreeAmount+cargoAmount,
-						(int)model.getState(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD));
+						(int)model.getState().getView(player).getResourceAmount(u.getTemplateView().getPlayer(), ResourceType.GOLD));
 	}
 }

@@ -662,12 +662,12 @@ public class SimpleModel implements Model {
 		return state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
 	}
 	@Override
-	public State.StateView getState(int player) {
-		return state.getView(player);
+	public State getState() {
+		return state;
 	}
 	@Override
-	public History.HistoryView getHistory(int player) {
-		return history.getView(player);
+	public History getHistory() {
+		return history;
 	}
 	public void save(String filename) {
 		GameMap.storeState(filename, state);

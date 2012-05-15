@@ -2,7 +2,9 @@ package edu.cwru.SimpleRTS.model;
 import java.io.Serializable;
 import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 public interface Model extends Serializable{
 	/**
@@ -24,7 +26,7 @@ public interface Model extends Serializable{
 	 * Execute actions and do anything else that needs to be done
 	 */
 	void executeStep();
-	StateView getState(int player);
-	HistoryView getHistory(int player);
+	State getState();
+	History getHistory();
 	void setVerbose(boolean verbosity);
 }

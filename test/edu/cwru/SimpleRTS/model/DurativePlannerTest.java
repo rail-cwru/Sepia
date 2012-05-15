@@ -211,9 +211,9 @@ public class DurativePlannerTest {
 			if (visualize)
 			{
 				if (niterations==0)
-					vagent.initialStep(state.getView(player1), model.getHistory(player1));
+					vagent.initialStep(state.getView(player1), model.getHistory().getView(player1));
 				else
-					vagent.middleStep(state.getView(player1), model.getHistory(player1));
+					vagent.middleStep(state.getView(player1), model.getHistory().getView(player1));
 			}
 			//continue running the compound action
 			model.executeStep();
@@ -221,7 +221,7 @@ public class DurativePlannerTest {
 			//examine the results
 			{
 				int lastround = state.getTurnNumber()-1;
-				HistoryView history = model.getHistory(Agent.OBSERVER_ID);
+				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
 				List<ActionResult> feedbacklist = history.getCommandFeedback(player1).getActionResults(lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 //				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);

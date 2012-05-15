@@ -101,7 +101,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("One should have succeeded, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
+		assertTrue("One should have succeeded, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
 		
 	}
 	public void twoMoves(int player1, int player2) throws FileNotFoundException, JSONException {
@@ -138,8 +138,8 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("They should have failed, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
-		assertTrue("They should have failed, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
+		assertTrue("They should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
+		assertTrue("They should have failed, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
 	}
 	public void threeMoves(int player1, int player2, int player3) throws FileNotFoundException, JSONException {
 		
@@ -190,9 +190,9 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("They should have failed, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
-		assertTrue("They should have failed, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
-		assertTrue("They should have failed, but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==0);
+		assertTrue("They should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
+		assertTrue("They should have failed, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
+		assertTrue("They should have failed, but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==0);
 	}
 	/**
 	 * Test the situation where one unit moves out of range as the other tries to attack it.
@@ -237,9 +237,9 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("They should have succeeded, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
-		assertTrue("They should have succeeded, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
-		assertNull("The target should be dead but isn't",model.getState(player1).getUnit(u2.ID));
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
+		assertNull("The target should be dead but isn't",model.getState().getView(player1).getUnit(u2.ID));
 	}
 	/**
 	 * Test the situation where two units are on a collision course, but one will be shot dead.
@@ -301,10 +301,10 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("They should have succeeded, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
-		assertTrue("Move should have failed, but did not. it is now at "+u2.getxPosition()+","+u2.getyPosition(),model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
-		assertTrue("Move should have failed, but did not. it is now at "+u3.getxPosition()+","+u3.getyPosition(),model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==0);
-		assertNull("The target should be dead but isn't",model.getState(player1).getUnit(u2.ID));
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
+		assertTrue("Move should have failed, but did not. it is now at "+u2.getxPosition()+","+u2.getyPosition(),model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==0);
+		assertTrue("Move should have failed, but did not. it is now at "+u3.getxPosition()+","+u3.getyPosition(),model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==0);
+		assertNull("The target should be dead but isn't",model.getState().getView(player1).getUnit(u2.ID));
 	}
 	/**
 	 * Test the situation where a unit moves to a place with a unit that will move out of the way.
@@ -363,9 +363,9 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
-		assertTrue("One should have failed, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
-		assertTrue("They should have succeeded, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
+		assertTrue("One should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
 	}
 	/**
 	 * Test the situation where a unit is trying to move into a space containing a unit that is about to die.
@@ -424,10 +424,10 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
-		assertTrue("One should have failed, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
-		assertTrue("They should have succeeded, but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
-		assertNull("The target should be dead but isn't",model.getState(Agent.OBSERVER_ID).getUnit(u2.ID));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
+		assertTrue("One should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
+		assertNull("The target should be dead but isn't",model.getState().getView(Agent.OBSERVER_ID).getUnit(u2.ID));
 	}
 	/**
 	 * Test the situation where a unit is trying to move into a space containing a node that is about to be exhausted.
@@ -485,12 +485,12 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
 //		System.out.println(u1.getxPosition()+","+u1.getyPosition());
 //		System.out.println(r2.getxPosition()+","+r2.getyPosition());
-		assertTrue("Move should have failed, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
-		assertTrue("Gather should have succeeded, but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
-		assertNull("The node should be exhausted but isn't",model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID));
+		assertTrue("Move should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==0);
+		assertTrue("Gather should have succeeded, but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
+		assertNull("The node should be exhausted but isn't",model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID));
 	}
 	
 	/**
@@ -541,11 +541,11 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
 //		System.out.println(u1.getxPosition()+","+u1.getyPosition());
 //		System.out.println(r2.getxPosition()+","+r2.getyPosition());
-		assertTrue("Gather should have succeeded, but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
-		assertNull("The node should be exhausted but isn't",model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID));
+		assertTrue("Gather should have succeeded, but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==1);
+		assertNull("The node should be exhausted but isn't",model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID));
 	}
 	@Test
 	public void twoGather() throws FileNotFoundException, JSONException
@@ -631,15 +631,15 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player1).getActionResults(lastturn).toArray(new ActionResult[0])));
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player1).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
 //		System.out.println(u1.getxPosition()+","+u1.getyPosition());
 //		System.out.println(r2.getxPosition()+","+r2.getyPosition());
 		boolean shouldhavesucceeded = amount == Amount.MORETHANATTEMPT || amount == Amount.THESAMEASATTEMPT;
 		boolean nodeshouldremain = amount != Amount.THESAMEASATTEMPT;
-		assertTrue("On "+amount+" Gather1 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
-		assertTrue("On "+amount+" Gather2 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
-		assertTrue("On "+amount+" The node should be "+(nodeshouldremain?"still there":"exhausted")+" but isn't",(nodeshouldremain?model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID)!=null:model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID)==null));
+		assertTrue("On "+amount+" Gather1 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
+		assertTrue("On "+amount+" Gather2 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
+		assertTrue("On "+amount+" The node should be "+(nodeshouldremain?"still there":"exhausted")+" but isn't",(nodeshouldremain?model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID)!=null:model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID)==null));
 	}
 	@Test
 	public void threeGather() throws FileNotFoundException, JSONException
@@ -730,16 +730,16 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player1).getActionResults(lastturn).toArray(new ActionResult[0])));
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player1).getActionResults(lastturn).toArray(new ActionResult[0])));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player3).getActionResults(lastturn).toArray(new ActionResult[0])));
 //		System.out.println(u1.getxPosition()+","+u1.getyPosition());
 //		System.out.println(r2.getxPosition()+","+r2.getyPosition());
 		boolean shouldhavesucceeded = amount == Amount.MORETHANATTEMPT || amount == Amount.THESAMEASATTEMPT;
 		boolean nodeshouldremain = amount != Amount.THESAMEASATTEMPT;
-		assertTrue("On "+amount+" Gather1 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
-		assertTrue("On "+amount+" Gather2 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
-		assertTrue("On "+amount+" Gather3 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
-		assertTrue("On "+amount+" The node should be "+(nodeshouldremain?"still there":"exhausted")+" but isn't",(nodeshouldremain?model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID)!=null:model.getState(Agent.OBSERVER_ID).getResourceNode(r2.ID)==null));
+		assertTrue("On "+amount+" Gather1 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
+		assertTrue("On "+amount+" Gather2 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
+		assertTrue("On "+amount+" Gather3 should have "+(shouldhavesucceeded?"succeeded":"failed")+", but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3).getActionResults(lastturn).size()==(shouldhavesucceeded?1:0));
+		assertTrue("On "+amount+" The node should be "+(nodeshouldremain?"still there":"exhausted")+" but isn't",(nodeshouldremain?model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID)!=null:model.getState().getView(Agent.OBSERVER_ID).getResourceNode(r2.ID)==null));
 	}
 	/**
 	 * Test the situation where you try to produce with two units and there is no room left.
@@ -848,8 +848,8 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		model.addActions(acts, player1);
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		int amountactuallysucceeded=model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size();
-//		new VisualAgent(player1,new String[]{"true","true"}).initialStep(model.getState(player1), model.getHistory(player1));
+		int amountactuallysucceeded=model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size();
+//		new VisualAgent(player1,new String[]{"true","true"}).initialStep(model.getState().getView(player1), model.getHistory().getView(player1));
 		assertTrue(amountthatwillbemade+" should have been made, but "+amountactuallysucceeded+" did",amountactuallysucceeded==amountthatwillbemade);
 		assertTrue(expectedgoldatend+" gold should be left",expectedgoldatend == s.getResourceAmount(player1, ResourceType.GOLD));
 		assertTrue(expectedwoodatend+" wood should be left",expectedwoodatend == s.getResourceAmount(player1, ResourceType.WOOD));
@@ -1101,8 +1101,8 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 			expectedtomake[i]=((!resourcesused[i][0]||!notenoughgold)&&(!resourcesused[i][1]||!notenoughwood)&&(!resourcesused[i][2]||!notenoughfood))?numofeachtypetomake[i]:0;
 		}
 		int totalexpected=0;for (int i = 0; i<expectedtomake.length;i++) totalexpected+=expectedtomake[i];
-//		new VisualAgent(player1,new String[]{"true","true"}).initialStep(model.getState(player1), model.getHistory(player1));
-		int totalactuallydone = model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size();
+//		new VisualAgent(player1,new String[]{"true","true"}).initialStep(model.getState().getView(player1), model.getHistory().getView(player1));
+		int totalactuallydone = model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size();
 		assertTrue(totalexpected+" should have succeeded, but "+totalactuallydone+" did",totalactuallydone==totalexpected);
 	}
 	
@@ -1187,10 +1187,10 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-//		System.out.println(Arrays.toString(model.getHistory(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
-		assertTrue("They should have succeeded, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
-		assertTrue("They should have succeeded, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
-		assertNull("The target should be dead but isn't",model.getState(Agent.OBSERVER_ID).getUnit(u3.ID));
+//		System.out.println(Arrays.toString(model.getHistory().getView(Agent.OBSERVER_ID).getActionResults(player2).getActionResults(lastturn).toArray(new ActionResult[0])));
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
+		assertNull("The target should be dead but isn't",model.getState().getView(Agent.OBSERVER_ID).getUnit(u3.ID));
 	}
 	/**
 	 * Test the situation where two units each shoot each other, both weak enough to die.
@@ -1237,10 +1237,10 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		}
 		model.executeStep();
 		int lastturn = s.getTurnNumber()-1;
-		assertTrue("They should have succeeded, but did not",model.getHistory(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
-		assertTrue("They should have succeeded, but did not",model.getHistory(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
-		assertNull("The target should be dead but isn't",model.getState(Agent.OBSERVER_ID).getUnit(u1.ID));
-		assertNull("The target should be dead but isn't",model.getState(Agent.OBSERVER_ID).getUnit(u2.ID));
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1).getActionResults(lastturn).size()==1);
+		assertTrue("They should have succeeded, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2).getActionResults(lastturn).size()==1);
+		assertNull("The target should be dead but isn't",model.getState().getView(Agent.OBSERVER_ID).getUnit(u1.ID));
+		assertNull("The target should be dead but isn't",model.getState().getView(Agent.OBSERVER_ID).getUnit(u2.ID));
 	}
 	
 	private static enum Amount{

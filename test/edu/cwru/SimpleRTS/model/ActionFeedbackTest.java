@@ -105,7 +105,7 @@ public class ActionFeedbackTest {
 	public void testOtherPlayerAct() {
 		model.createNewWorld();
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
-		StateView st = model.getState(Agent.OBSERVER_ID);
+		StateView st = model.getState().getView(Agent.OBSERVER_ID);
 		
 		assertTrue("Initialization failed, player1 should have more units",st.getUnitIds(player1).size()>=2);
 		UnitView u = st.getUnit(st.getUnitIds(player1).get(0));
@@ -113,11 +113,11 @@ public class ActionFeedbackTest {
 		actions.put(u.getID(), actionsent);
 		model.addActions(actions, player2);
 		model.executeStep();
-		int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+		int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 		
-		HistoryView v1 = model.getHistory(player1);
-		HistoryView v2 = model.getHistory(player2);
-		HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+		HistoryView v1 = model.getHistory().getView(player1);
+		HistoryView v2 = model.getHistory().getView(player2);
+		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
@@ -152,7 +152,7 @@ public class ActionFeedbackTest {
 	public void testOtherUnitAct() {
 		model.createNewWorld();
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
-		StateView st = model.getState(Agent.OBSERVER_ID);
+		StateView st = model.getState().getView(Agent.OBSERVER_ID);
 		
 		assertTrue("Initialization failed, player2 should have more units",st.getUnitIds(player2).size()>=2);
 		UnitView u = st.getUnit(st.getUnitIds(player2).get(0));
@@ -161,11 +161,11 @@ public class ActionFeedbackTest {
 		actions.put(u2.getID(), actionsent);
 		model.addActions(actions, player2);
 		model.executeStep();
-		int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+		int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 		
-		HistoryView v1 = model.getHistory(player1);
-		HistoryView v2 = model.getHistory(player2);
-		HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+		HistoryView v1 = model.getHistory().getView(player1);
+		HistoryView v2 = model.getHistory().getView(player2);
+		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
@@ -200,7 +200,7 @@ public class ActionFeedbackTest {
 	public void testNoUnitAct() {
 		model.createNewWorld();
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
-		StateView st = model.getState(Agent.OBSERVER_ID);
+		StateView st = model.getState().getView(Agent.OBSERVER_ID);
 		
 //		assertTrue("Initialization failed, player1 should have more units",st.getUnitIds(player1).size()>=2);
 		int fakeid = -343443;
@@ -209,11 +209,11 @@ public class ActionFeedbackTest {
 		actions.put(fakeid, actionsent);
 		model.addActions(actions, player2);
 		model.executeStep();
-		int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+		int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 		
-		HistoryView v1 = model.getHistory(player1);
-		HistoryView v2 = model.getHistory(player2);
-		HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+		HistoryView v1 = model.getHistory().getView(player1);
+		HistoryView v2 = model.getHistory().getView(player2);
+		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
@@ -248,7 +248,7 @@ public class ActionFeedbackTest {
 	public void testPrimitiveFail() {
 		model.createNewWorld();
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
-		StateView st = model.getState(Agent.OBSERVER_ID);
+		StateView st = model.getState().getView(Agent.OBSERVER_ID);
 		
 		assertTrue("Initialization failed, player2 should have more units",st.getUnitIds(player2).size()>=2);
 		UnitView u = st.getUnit(st.getUnitIds(player2).get(0));
@@ -258,11 +258,11 @@ public class ActionFeedbackTest {
 		actions.put(u.getID(), actionsent);
 		model.addActions(actions, player2);
 		model.executeStep();
-		int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+		int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 		
-		HistoryView v1 = model.getHistory(player1);
-		HistoryView v2 = model.getHistory(player2);
-		HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+		HistoryView v1 = model.getHistory().getView(player1);
+		HistoryView v2 = model.getHistory().getView(player2);
+		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
@@ -299,7 +299,7 @@ public class ActionFeedbackTest {
 	public void testCompound2Step() {
 		model.createNewWorld();
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
-		StateView st = model.getState(Agent.OBSERVER_ID);
+		StateView st = model.getState().getView(Agent.OBSERVER_ID);
 		
 		assertTrue("Initialization failed, player2 should have more units",st.getUnitIds(player2).size()>=2);
 		
@@ -318,11 +318,11 @@ public class ActionFeedbackTest {
 		model.executeStep();
 		
 		{
-		int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+		int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 		Action thisprimitive = firstprimitive;
-		HistoryView v1 = model.getHistory(player1);
-		HistoryView v2 = model.getHistory(player2);
-		HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+		HistoryView v1 = model.getHistory().getView(player1);
+		HistoryView v2 = model.getHistory().getView(player2);
+		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
@@ -358,11 +358,11 @@ public class ActionFeedbackTest {
 		}
 		model.executeStep();
 		{
-			int roundnumber = model.getState(Agent.OBSERVER_ID).getTurnNumber()-1;
+			int roundnumber = model.getState().getView(Agent.OBSERVER_ID).getTurnNumber()-1;
 			Action thisprimitive = secondprimitive;
-			HistoryView v1 = model.getHistory(player1);
-			HistoryView v2 = model.getHistory(player2);
-			HistoryView vo = model.getHistory(Agent.OBSERVER_ID);
+			HistoryView v1 = model.getHistory().getView(player1);
+			HistoryView v2 = model.getHistory().getView(player2);
+			HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
 			assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
 			assertEquals("For CommandIssued: Player 2 should see exactly nothing sent by himself",0,v2.getCommandsIssued(player2).getActions(roundnumber).size());
 			assertEquals("For CommandIssued: Observer should see exactly nothing for player 2",0,vo.getCommandsIssued(player2).getActions(roundnumber).size());

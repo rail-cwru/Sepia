@@ -65,7 +65,7 @@ public class GameUnitTest {
 		}
 //		model.setActions(new Action[]{a});
 		model.executeStep();
-		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(1);
+		Unit.UnitView u = model.getState().getView(Agent.OBSERVER_ID).getUnit(1);
 		assertEquals("Unit was not in expected row!",6,u.getXPosition());
 		assertEquals("Unit was not in expected column!",6,u.getYPosition());		
 	}
@@ -85,7 +85,7 @@ public class GameUnitTest {
 			
 		}
 		model.executeStep();
-		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		Unit.UnitView u = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",9,u.getXPosition());
 		assertEquals("Unit was not in expected row!",9,u.getYPosition());
 //		model.setActions(actions);
@@ -95,7 +95,7 @@ public class GameUnitTest {
 			model.addActions(actions, 0);
 		}
 		model.executeStep();
-		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		u = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",8,u.getXPosition());
 		assertEquals("Unit was not in expected row!",8,u.getYPosition());
 //		model.setActions(actions);
@@ -105,7 +105,7 @@ public class GameUnitTest {
 			model.addActions(actions, 0);
 		}
 		model.executeStep();
-		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		u = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",7,u.getYPosition());
 //		model.setActions(actions);
@@ -115,7 +115,7 @@ public class GameUnitTest {
 			model.addActions(actions, 0);
 		}
 		model.executeStep();
-		u = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		u = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",7,u.getYPosition());
 		
@@ -126,7 +126,7 @@ public class GameUnitTest {
 	 */
 	@Test
 	public void test3() {
-		Unit.UnitView u1 = model.getState(Agent.OBSERVER_ID).getUnit(1);
+		Unit.UnitView u1 = model.getState().getView(Agent.OBSERVER_ID).getUnit(1);
 		int hp = u1.getHP();
 		Action a = new TargetedAction(2, ActionType.PRIMITIVEATTACK, 1);
 		{
@@ -137,7 +137,7 @@ public class GameUnitTest {
 //		Action[] actions = new Action[]{a};
 //		model.setActions(actions);
 		model.executeStep();
-		u1 = model.getState(Agent.OBSERVER_ID).getUnit(1);
+		u1 = model.getState().getView(Agent.OBSERVER_ID).getUnit(1);
 		assertTrue("Attack failed!",hp > u1.getHP());
 		System.out.printf("Attack reduced unit 1's HP from %d to %d\n",hp,u1.getHP());		
 	}
@@ -156,10 +156,10 @@ public class GameUnitTest {
 			model.addActions(actions, 0);
 		}
 		model.executeStep();
-		Unit.UnitView u = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		Unit.UnitView u = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		assertEquals("Unit was not in expected column!",7,u.getXPosition());
 		assertEquals("Unit was not in expected row!",8,u.getYPosition());		
-		Unit.UnitView u2 = model.getState(Agent.OBSERVER_ID).getUnit(2);
+		Unit.UnitView u2 = model.getState().getView(Agent.OBSERVER_ID).getUnit(2);
 		int hp = u2.getHP();
 		a = new TargetedAction(1, ActionType.PRIMITIVEATTACK, 2);
 //		actions = new Action[]{a};

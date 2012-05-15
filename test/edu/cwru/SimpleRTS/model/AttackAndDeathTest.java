@@ -182,8 +182,8 @@ public class AttackAndDeathTest {
 		unit2.setyPosition(99);
 		assertTrue("Damage was not dealt by unit 1",unit1.getCurrentHealth() <= 1);
 		assertTrue("Damage was not dealt by unit 2",unit2.getCurrentHealth() <= 1);
-		assertTrue("Unit 1 was not cleaned up", model.getState(player).getUnit(unit1.ID) == null);
-		assertTrue("Unit 2 was not cleaned up", model.getState(player).getUnit(unit2.ID) == null);
+		assertTrue("Unit 1 was not cleaned up", model.getState().getUnit(unit1.ID) == null);
+		assertTrue("Unit 2 was not cleaned up", model.getState().getUnit(unit2.ID) == null);
 
 	}
 }

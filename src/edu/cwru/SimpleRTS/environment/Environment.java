@@ -91,7 +91,7 @@ public class Environment
 		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
 		DELAY_MS=prefs.getInt("InterruptTime",-1);
 		this.turnTracker = turnTracker;
-		Integer[] players = model.getState(Agent.OBSERVER_ID).getPlayerNumbers();
+		Integer[] players = model.getState().getView(Agent.OBSERVER_ID).getPlayerNumbers();
 		for (Integer player : players)
 		{
 			turnTracker.addPlayer(player);
@@ -111,9 +111,9 @@ public class Environment
 //		return model;
 //	}
 //	
-//	public final State.StateView getState()
+//	public final State.StateView getState().getView()
 //	{
-//		return model.getState();
+//		return model.getState().getView();
 //	}
 	public final void runEpisode() throws InterruptedException
 	{
@@ -126,7 +126,7 @@ public class Environment
 		for (int i = 0; i<connectedagents.length;i++)
 		{
 			int playerNumber = connectedagents[i].getPlayerNumber();
-			connectedagents[i].terminalStep(model.getState(playerNumber), model.getHistory(playerNumber));
+			connectedagents[i].terminalStep(model.getState().getView(playerNumber), model.getHistory().getView(playerNumber));
 		}
 		
 	}
@@ -151,8 +151,8 @@ public class Environment
 			if (isAgentsTurn[ag])
 			{
 				int playerNumber = connectedagents[ag].getPlayerNumber();
-				states[ag] = model.getState(playerNumber);
-				histories[ag] = model.getHistory(playerNumber);
+				states[ag] = model.getState().getView(playerNumber);
+				histories[ag] = model.getHistory().getView(playerNumber);
 				endTimes[ag] = System.currentTimeMillis() + DELAY_MS;
 			}
 		}

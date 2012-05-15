@@ -92,13 +92,13 @@ public class CombatAgentDuelTest {
 			Map<Integer,Action> acts2;
 			if (step == 0)
 			{
-				acts1=agent1.initialStep(model.getState(player1),model.getHistory(player1));
-				acts2=agent2.initialStep(model.getState(player2),model.getHistory(player2));
+				acts1=agent1.initialStep(model.getState().getView(player1),model.getHistory().getView(player1));
+				acts2=agent2.initialStep(model.getState().getView(player2),model.getHistory().getView(player2));
 			}
 			else
 			{
-				acts1=agent1.middleStep(model.getState(player1),model.getHistory(player1));
-				acts2=agent2.middleStep(model.getState(player2),model.getHistory(player2));
+				acts1=agent1.middleStep(model.getState().getView(player1),model.getHistory().getView(player1));
+				acts2=agent2.middleStep(model.getState().getView(player2),model.getHistory().getView(player2));
 			}
 			Collection<Action> actionsimmut1 = acts1.values();
 			Collection<Action> actionsimmut2 = acts2.values();

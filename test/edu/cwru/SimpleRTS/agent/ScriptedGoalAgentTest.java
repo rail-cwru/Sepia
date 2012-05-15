@@ -104,13 +104,13 @@ public class ScriptedGoalAgentTest {
 			Map<Integer, Action> actionsimmut;
 			if (step == 0)
 			{
-				actionsimmut = agent.initialStep(model.getState(player), model.getHistory(player));
-				vagent.initialStep(model.getState(player), model.getHistory(player));
+				actionsimmut = agent.initialStep(model.getState().getView(player), model.getHistory().getView(player));
+				vagent.initialStep(model.getState().getView(player), model.getHistory().getView(player));
 			}
 			else
 			{
-				actionsimmut = agent.middleStep(model.getState(player), model.getHistory(player));
-				vagent.middleStep(model.getState(player), model.getHistory(player));
+				actionsimmut = agent.middleStep(model.getState().getView(player), model.getHistory().getView(player));
+				vagent.middleStep(model.getState().getView(player), model.getHistory().getView(player));
 			}
 			Action[] actions = new Action[actionsimmut.size()];
 			{
