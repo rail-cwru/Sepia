@@ -207,28 +207,6 @@ public class GamePanel extends JPanel {
         	
         }
         g.setColor(lastcolor);
-        //Check commands\
-        {
-        	System.out.println("Orders issued");
-	        for (Action a : latestHistory.getCommandsIssued(agent.getPlayerNumber()).getActions(currentState.getTurnNumber()-1))
-	        {
-	        	System.out.println("\t"+a);
-	        }
-        }
-        {
-        	System.out.println("Actions Executed");
-	        for (Action a : latestHistory.getActionsExecuted(agent.getPlayerNumber()).getActions(currentState.getTurnNumber()-1))
-	        {
-	        	System.out.println("\t"+a);
-	        }
-        }
-        {
-        	System.out.println("Action feedback");
-	        for (ActionResult a : latestHistory.getActionResults(agent.getPlayerNumber()).getActionResults(currentState.getTurnNumber()-1))
-	        {
-	        	System.out.println("\t"+a);
-	        }
-        }
         }
        
         //draw fog of war
