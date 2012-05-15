@@ -242,11 +242,11 @@ public class DurativePlannerTest {
 				}
 				if (done)
 				{
-					assertTrue("The "+niterations+"th attempt should have finished the compound action, so feedback should have been COMPLETE, but it was "+feedback.getResult(),ActionFeedback.COMPLETED==feedback.getResult());
+					assertTrue("The "+niterations+"th attempt should have finished the compound action, so feedback should have been COMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.COMPLETED==feedback.getFeedback());
 				}
 				else
 				{
-					assertTrue("The "+niterations+"th attempt should not have finished the compound action, so feedback should have been INCOMPLETE, but it was "+feedback.getResult(),ActionFeedback.INCOMPLETE==feedback.getResult());
+					assertTrue("The "+niterations+"th attempt should not have finished the compound action, so feedback should have been INCOMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.INCOMPLETE==feedback.getFeedback());
 				}
 				
 			}

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-	jxb:version="2.0"
 	elementFormDefault="qualified" 
 	attributeFormDefault="unqualified">
 <xs:element name="state">
@@ -21,7 +20,7 @@
 		<xs:attribute name="yExtent" type="xs:int" />
 		<xs:attribute name="nextTargetID" type="xs:int" />
 		<xs:attribute name="nextTemplateID" type="xs:int" />
-		<xs:attribute name="revealedResources" type="xs:boolean" />
+		<xs:attribute name="RevealedResourceNodes" type="xs:boolean" />
 		<xs:attribute name="fogOfWar" type="xs:boolean" />
 	</xs:complexType>
     </xs:element>
@@ -246,4 +245,224 @@
 		<xs:enumeration value="FAILEDPERMANENTLY" />
 	</xs:restriction>
 </xs:simpleType>
+<xs:simpleType name="ActionFeedback">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="COMPLETED" />
+		<xs:enumeration value="INCOMPLETE" />
+		<xs:enumeration value="FAILED" />
+		<xs:enumeration value="INCOMPLETEMAYBESTUCK" />
+		<xs:enumeration value="INVALIDCONTROLLER" />
+		<xs:enumeration value="INVALIDUNIT" />
+		<xs:enumeration value="INVALIDTYPE" />
+	</xs:restriction>
+</xs:simpleType>
+
+<!--Event Logging Structures-->
+<xs:element name="History">
+<xs:complexType>
+	<xs:sequence>
+		<xs:element name="fogOfWar" type="xs:boolean" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="playerHistories" type="PlayerHistory" />
+		</xs:sequence>
+		<xs:element name="observerHistory" type="PlayerHistory" />
+	</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:complexType name="PlayerHistory">
+	<xs:sequence>
+		<xs:element name="playerNumber" type="xs:int" />
+		<xs:element name="eventLogger" type="EventLogger" />
+		<xs:element name="commandsIssued" type="ActionLogger" />
+		<xs:element name="commandResults" type="ActionResultLogger" />
+		<xs:element name="primitivesExecuted" type="ActionLogger" />
+	</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="ActionLogger">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+		<xs:element name="actionList" type="ActionList" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ActionList">
+	<xs:sequence>
+	<xs:element name="roundNumber" type="xs:int" />
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+		<xs:element name="action" type="Action" />
+	</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ActionResultLogger">
+	<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="actionResultList" type="ActionResultList" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ActionResultList">
+	<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="actionResult" type="ActionResult" />
+		</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ActionResult">
+	<xs:sequence>
+		<xs:element name="action" type="Action" />
+		<xs:element name="feedback" type="ActionFeedback" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="EventLogger">
+	<xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="birthLogList" type="BirthLogList" />
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="deathLogList" type="DeathLogList" />
+		</xs:sequence>
+		
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="damageLogList" type="DamageLogList" />
+		</xs:sequence>		
+		
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="ResourceNodeExhaustionLogList" type="ResourceNodeExhaustionLogList" />
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="resourcePickupLogList" type="ResourcePickupLogList" />
+		</xs:sequence>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="resourceDropoffLogList" type="ResourceDropoffLogList" />
+		</xs:sequence>
+		
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="RevealedResourceNodeLog" type="RevealedResourceNodeLog" />
+		</xs:sequence>
+				
+				
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="upgradeLogList" type="UpgradeLogList" />
+		</xs:sequence>		
+				
+	</xs:sequence>
+</xs:complexType>
+
+			<xs:complexType name="BirthLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="birthLog" type="BirthLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="DeathLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="deathLog" type="DeathLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+		
+			<xs:complexType name="DamageLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="damageLog" type="DamageLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+		<xs:complexType name="UpgradeLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="upgradeLog" type="UpgradeLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ResourceNodeExhaustionLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="ResourceNodeExhaustionLog" type="ResourceNodeExhaustionLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ResourcePickupLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="resourcePickupLog" type="ResourcePickupLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="ResourceDropoffLogList">
+				<xs:sequence>
+		<xs:element name="roundNumber" type="xs:int" />
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="resourceDropoffLog" type="ResourceDropoffLog" />
+				</xs:sequence>
+		</xs:sequence>
+			</xs:complexType>
+		
+<xs:complexType name="BirthLog">
+	<xs:sequence>
+		<xs:element name="newUnitID" type="xs:int" />
+		<xs:element name="controller" type="xs:int" />
+		<xs:element name="parentID" type="xs:int" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="DamageLog">
+	<xs:sequence>
+		<xs:element name="attackerID" type="xs:int" />
+		<xs:element name="attackerController" type="xs:int" />
+		<xs:element name="defenderID" type="xs:int" />
+		<xs:element name="defenderController" type="xs:int" />
+		<xs:element name="damage" type="xs:int" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="UpgradeLog">
+	<xs:sequence>
+		<xs:element name="UpgradeTemplateID" type="xs:int" />
+		<xs:element name="ProducingUnitID" type="xs:int" />
+		<xs:element name="Controller" type="xs:int" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ResourceDropoffLog">
+	<xs:sequence>
+		<xs:element name="depositAmount" type="xs:int" />
+		<xs:element name="gathererID" type="xs:int" />
+		<xs:element name="depotID" type="xs:int" />
+		<xs:element name="controller" type="xs:int" />
+		<xs:element name="resourceType" type="ResourceType" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ResourceNodeExhaustionLog">
+	<xs:sequence>
+		<xs:element name="exhaustedNodeID" type="xs:int" />
+		<xs:element name="exhaustedNodeType" type="ResourceNodeType" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="ResourcePickupLog">
+	<xs:sequence>
+		<xs:element name="pickupAmount" type="xs:int" />
+		<xs:element name="gathererID" type="xs:int" />
+		<xs:element name="controller" type="xs:int" />
+		<xs:element name="nodeID" type="xs:int" />
+		<xs:element name="nodeType" type="ResourceNodeType" />
+		<xs:element name="resourceType" type="ResourceType" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="RevealedResourceNodeLog">
+	<xs:sequence>
+		<xs:element name="xPosition" type="xs:int" />
+		<xs:element name="yPosition" type="xs:int" />
+		<xs:element name="nodeType" type="ResourceNodeType" />
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="DeathLog">
+	<xs:sequence>
+		<xs:element name="deadUnitID" type="xs:int" />
+		<xs:element name="controller" type="xs:int" />
+	</xs:sequence>
+</xs:complexType>
 </xs:schema>

@@ -6,9 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.cwru.SimpleRTS.Log.BirthLog;
-import edu.cwru.SimpleRTS.Log.DamageLog;
-import edu.cwru.SimpleRTS.Log.DeathLog;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.action.ActionResult;
@@ -16,6 +13,9 @@ import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.log.BirthLog;
+import edu.cwru.SimpleRTS.log.DamageLog;
+import edu.cwru.SimpleRTS.log.DeathLog;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
@@ -136,7 +136,7 @@ public class CombatAgent extends Agent{
 		{
 			//update its list of units
 			for (BirthLog birth : statehistory.getEventLogger().getBirths(stepToRead)) {
-				if (playernum == birth.getPlayer()) {
+				if (playernum == birth.getController()) {
 					unitOrders.put(birth.getNewUnitID(), null);
 				}
 			}
@@ -144,7 +144,7 @@ public class CombatAgent extends Agent{
 			List<Integer> toUnorder = new LinkedList<Integer>();
 			for (DeathLog death : statehistory.getEventLogger().getDeaths(stepToRead)) {
 				//Check if the dead unit is mine
-				if (playernum == death.getPlayer()) {
+				if (playernum == death.getController()) {
 					toRemove.add(death.getDeadUnitID());
 				}
 				//check if anyone is attacking the dead unit, and tell them to stop
@@ -184,7 +184,7 @@ public class CombatAgent extends Agent{
 			for (ActionResult feedback : feedbacks)
 			{
 				
-				if (feedback.getResult() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete
+				if (feedback.getFeedback() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete
 				{
 					//because the feedback mixes primitive feedback on duratives and compound feedback on primitives, need to check if it is the right action
 					Action action = feedback.getAction();

@@ -704,12 +704,12 @@ public class DurativeTest {
 				if (expectedDuration==0)
 				{
 					assertNull("The "+i+"th attempt should have finished the action, resetting progress (so the primitive should be null), but the primitive showing is "+toAct.getActionProgressPrimitive(),toAct.getActionProgressPrimitive());
-					assertTrue("The "+i+"th attempt should have finished the action, so feedback should have been COMPLETE, but it was "+feedback.getResult(),ActionFeedback.COMPLETED==feedback.getResult());
+					assertTrue("The "+i+"th attempt should have finished the action, so feedback should have been COMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.COMPLETED==feedback.getFeedback());
 				}
 				else
 				{
 					assertTrue("The "+i+"th attempt should not have finished the action, and thus there should be some progress, but the action given was "+action + " and the progress was on "+toAct.getActionProgressPrimitive(),action.equals(toAct.getActionProgressPrimitive()));
-					assertTrue("The "+i+"th attempt should not have finished the action, so feedback should have been INCOMPLETE, but it was "+feedback.getResult(),ActionFeedback.INCOMPLETE==feedback.getResult());
+					assertTrue("The "+i+"th attempt should not have finished the action, so feedback should have been INCOMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.INCOMPLETE==feedback.getFeedback());
 				}
 				
 			}
@@ -759,12 +759,12 @@ public class DurativeTest {
 				if (expectedDuration==0)
 				{
 					assertNull("The "+i+"th attempt should have finished the action, resetting progress (so the primitive should be null), but the primitive showing is "+toAct.getActionProgressPrimitive(),toAct.getActionProgressPrimitive());
-					assertTrue("The "+i+"th attempt should have finished the action, so feedback should have been COMPLETE, but it was "+feedback.getResult(),ActionFeedback.COMPLETED==feedback.getResult());
+					assertTrue("The "+i+"th attempt should have finished the action, so feedback should have been COMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.COMPLETED==feedback.getFeedback());
 				}
 				else
 				{
 					assertTrue("The "+i+"th attempt should not have finished the action, and thus there should be some progress, but the action given was "+interruptingAction + " and the progress was on "+toAct.getActionProgressPrimitive(),interruptingAction.equals(toAct.getActionProgressPrimitive()));
-					assertTrue("The "+i+"th attempt should not have finished the action, so feedback should have been INCOMPLETE, but it was "+feedback.getResult(),ActionFeedback.INCOMPLETE==feedback.getResult());
+					assertTrue("The "+i+"th attempt should not have finished the action, so feedback should have been INCOMPLETE, but it was "+feedback.getFeedback(),ActionFeedback.INCOMPLETE==feedback.getFeedback());
 				}
 				
 			}

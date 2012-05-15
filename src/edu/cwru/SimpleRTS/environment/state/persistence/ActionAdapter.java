@@ -106,6 +106,12 @@ public class ActionAdapter {
 			xml = txml;
 			
 		}
+		else if (c.equals(Action.class))
+		{
+			XmlAction txml = new XmlAction();
+			xml = txml;
+			
+		}
 		else
 		{
 			throw new RuntimeException("The class "+c+" is not supported in saving to xml");

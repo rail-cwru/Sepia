@@ -12,8 +12,14 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionFeedback;
+import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
+import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.environment.History;
+import edu.cwru.SimpleRTS.environment.PlayerHistory;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.state.persistence.ActionAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlAction;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlDirectedAction;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlLocatedAction;
@@ -26,8 +32,12 @@ import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnitTemplate;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUpgradeTemplate;
+import edu.cwru.SimpleRTS.log.ActionLogger;
+import edu.cwru.SimpleRTS.log.ActionResultLogger;
+import edu.cwru.SimpleRTS.log.EventLogger;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
@@ -380,5 +390,222 @@ public class AdapterTestUtil {
 		}
 		
 		return xml;
+	}
+	
+	public static History createExampleHistory(Random r) {
+		final int playerDiff = 20;
+		final int minPlayers = 5;
+		History h = new History();
+		h.setFogOfWar(r.nextBoolean());
+		h.setObserverHistory(createExamplePlayerHistory(r,Agent.OBSERVER_ID));
+		int numPlayers = r.nextInt(playerDiff)+minPlayers;
+		for (int i = 0; i<numPlayers; i++)
+		{
+			//Give it an unused random number
+			int newplayernum;
+			while (h.getPlayerHistory(newplayernum = r.nextInt(Integer.MAX_VALUE))!=null)
+				;
+			
+			h.setPlayerHistory(createExamplePlayerHistory(r,newplayernum));
+		}
+		return h;
+	}
+
+	private static PlayerHistory createExamplePlayerHistory(Random r,
+			int newplayernum) {
+		PlayerHistory h = new PlayerHistory(newplayernum);
+		h.setEventLogger(createExampleEventLogger(r));
+		h.setActionProgress(createExampleActionResultLogger(r));
+		h.setActionsExecuted(createExampleActionLogger(r));
+		h.setCommandsIssued(createExampleActionLogger(r));
+		return h;
+	}
+
+	private static ActionLogger createExampleActionLogger(Random r) {
+		ActionLogger al = new ActionLogger();
+		final double zeroChanceSteps = 0.1;
+		final int numStepsDiff = 100;
+		final double zeroChanceActions = 0.1;
+		final int numActionsDiff = 100;
+		
+		int numSteps;
+		if (r.nextDouble()<zeroChanceSteps)
+			numSteps = 0;
+		else
+			numSteps= r.nextInt(numStepsDiff);
+		
+		for (int i = 0; i<numSteps; i++) {
+			int numActions;
+			if (r.nextDouble()<zeroChanceActions)
+				numActions = 0;
+			else
+				numActions= r.nextInt(numActionsDiff);
+			for (int j = 0; j<numActions; j++)
+				al.addAction(i, ActionAdapter.fromXml(createExampleAction(r.nextInt(), r)));
+		}
+		return al;
+	}
+
+	private static ActionResultLogger createExampleActionResultLogger(Random r) {
+		ActionResultLogger al = new ActionResultLogger();
+		final double zeroChanceSteps = 0.1;
+		final int numStepsDiff = 100;
+		final double zeroChanceActions = 0.1;
+		final int numActionsDiff = 100;
+		
+		int numSteps;
+		if (r.nextDouble()<zeroChanceSteps)
+			numSteps = 0;
+		else
+			numSteps= r.nextInt(numStepsDiff);
+		
+		for (int i = 0; i<numSteps; i++) {
+			int numActions;
+			if (r.nextDouble()<zeroChanceActions)
+				numActions = 0;
+			else
+				numActions= r.nextInt(numActionsDiff);
+			for (int j = 0; j<numActions; j++)
+				al.addActionResult(i, new ActionResult(ActionAdapter.fromXml(createExampleAction(r.nextInt(), r)),ActionFeedback.values()[r.nextInt(ActionFeedback.values().length)]));
+		}
+		return al;
+	}
+
+	private static EventLogger createExampleEventLogger(Random r) {
+		EventLogger el = new EventLogger();
+		final double zeroChanceSteps = 0.1;
+		final int numStepsDiff = 100;
+		final double zeroChanceLogs = 0.1;
+		final int numLogsDiff = 100;
+		
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordBirth(i, r.nextInt(), r.nextInt(), r.nextInt());
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordDamage(i, r.nextInt(), r.nextInt(), r.nextInt(), r.nextInt(), r.nextInt());
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordDeath(i, r.nextInt(), r.nextInt());
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordResourceDropoff(i, r.nextInt(), r.nextInt(), r.nextInt(), ResourceType.values()[r.nextInt(ResourceType.values().length)], r.nextInt());
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordResourceNodeExhaustion(i, r.nextInt(), ResourceNode.Type.values()[r.nextInt(ResourceNode.Type.values().length)]);
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordResourcePickup(i, r.nextInt(), r.nextInt(), ResourceType.values()[r.nextInt(ResourceType.values().length)], r.nextInt(), r.nextInt(), ResourceNode.Type.values()[r.nextInt(ResourceNode.Type.values().length)]);
+			}
+		}
+		{
+			int numSteps;
+			if (r.nextDouble()<zeroChanceSteps)
+				numSteps = 0;
+			else
+				numSteps= r.nextInt(numStepsDiff);
+			
+			for (int i = 0; i<numSteps; i++) {
+				int numLogs;
+				if (r.nextDouble()<zeroChanceLogs)
+					numLogs = 0;
+				else
+					numLogs= r.nextInt(numLogsDiff);
+				for (int j = 0; j<numLogs; j++)
+					el.recordUpgrade(i, r.nextInt(), r.nextInt(), r.nextInt());
+			}
+		}
+		{
+			int numLogs;
+			if (r.nextDouble()<zeroChanceLogs)
+				numLogs = 0;
+			else
+				numLogs= r.nextInt(numLogsDiff);
+			for (int j = 0; j<numLogs; j++)
+				el.recordRevealedResourceNode(r.nextInt(), r.nextInt(), ResourceNode.Type.values()[r.nextInt(ResourceNode.Type.values().length)]);
+		}
+		return el;
 	}
 }

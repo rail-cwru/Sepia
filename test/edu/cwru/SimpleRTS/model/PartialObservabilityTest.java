@@ -11,10 +11,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import org.json.JSONException;
 import org.junit.Test;
-import edu.cwru.SimpleRTS.Log.EventLogger.EventLoggerView;
-import edu.cwru.SimpleRTS.Log.RevealedResourceLog;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.log.RevealedResourceNodeLog;
+import edu.cwru.SimpleRTS.log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -319,7 +319,7 @@ public String printView(List<Unit> myunits,StateView v)
 private void revealedStatusChecker(int step, EventLoggerView e, Map<Pair,Pair> actualpositioning, boolean shouldberevealed)
 {
 	System.out.println("Step "+step + ": " + (shouldberevealed?"revealed":"hidden"));
-	List<RevealedResourceLog> revealedResources= e.getRevealedResources();
+	List<RevealedResourceNodeLog> revealedResources= e.getRevealedResources();
 	if (!shouldberevealed)
 	{
 		assertTrue("Step " + step + ": Resources were revealed when they should have been hidden",revealedResources.size()==0);
@@ -328,7 +328,7 @@ private void revealedStatusChecker(int step, EventLoggerView e, Map<Pair,Pair> a
 	{
 		Map<Pair, Pair> revealedResourcePositioning=new HashMap<Pair, Pair>();;
 		//Make it a map
-		for (RevealedResourceLog log : revealedResources)
+		for (RevealedResourceNodeLog log : revealedResources)
 		{
 			Pair pos = new Pair(log.getResourceNodeXPosition(), log.getResourceNodeYPosition());
 			int numgoldalreadythere = 0;

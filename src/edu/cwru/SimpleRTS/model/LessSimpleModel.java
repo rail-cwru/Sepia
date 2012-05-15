@@ -951,7 +951,7 @@ public class LessSimpleModel implements Model {
 				{
 					//do the atomic action
 					int player = townHall.getPlayer();
-					history.recordDropoffResource(u, townHall, state);
+					history.recordResourceDropoff(u, townHall, state);
 					state.addResourceAmount(player, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 					u.clearCargo();
 					//you completed the action, so reset the durative progress
@@ -1078,7 +1078,7 @@ public class LessSimpleModel implements Model {
 					//do the atomic action
 					int amountPickedUp = rn.reduceAmountRemaining(u.getTemplate().getGatherRate(rn.getType()));
 					u.setCargo(rn.getResourceType(), amountPickedUp);
-					history.recordPickupResource(u, rn, amountPickedUp, state);
+					history.recordResourcePickup(u, rn, amountPickedUp, state);
 					//you have finished the primitive, so progress resets
 					u.resetDurative();
 				}
@@ -1138,7 +1138,7 @@ public class LessSimpleModel implements Model {
 		for (ResourceNode r : allnodes) {
 			if (r.getAmountRemaining() <= 0)
 			{
-				history.recordExhaustedResourceNode(r, state);
+				history.recordResourceNodeExhaustion(r, state);
 				usedup.add(r.ID);
 			}
 		}

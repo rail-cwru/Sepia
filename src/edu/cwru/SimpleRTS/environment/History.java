@@ -1,18 +1,21 @@
 package edu.cwru.SimpleRTS.environment;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import edu.cwru.SimpleRTS.Log.ActionLogger.ActionLoggerView;
-import edu.cwru.SimpleRTS.Log.ActionResultLogger.ActionResultLoggerView;
-import edu.cwru.SimpleRTS.Log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.log.ActionLogger.ActionLoggerView;
+import edu.cwru.SimpleRTS.log.ActionResultLogger.ActionResultLoggerView;
+import edu.cwru.SimpleRTS.log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
-public class History {
+public class History implements DeepEquatable {
 	//partial observability for actions, needn't be the same as for states (state partial observability determines eventlogger stuff)
 	private boolean fogOfWar;
 	private Map<Integer,PlayerHistory> playerHistories;
@@ -25,6 +28,50 @@ public class History {
 	}
 	public void addPlayer(int i) {
 		playerHistories.put(i, new PlayerHistory(i));
+	}
+	/**
+	 * Set/Add a playerHistory directly.<br>
+	 * Used internally for loading.
+	 * @param ph
+	 */
+	public void setPlayerHistory(PlayerHistory ph) {
+		playerHistories.put(ph.playerNumber, ph);		
+	}
+	/**
+	 * Get the PlayerHistory for a specific player
+	 * @param playerNumber
+	 * @return The PlayerHistory for the player if it exists, null otherwise.
+	 */
+	public PlayerHistory getPlayerHistory(int playerNumber) {
+		return playerHistories.get(playerNumber);		
+	}
+	/**
+	 * Get all of the player histories 
+	 * @return A collection of all non-observer PlayerHistory objects.
+	 */
+	public Collection<PlayerHistory> getPlayerHistories() {
+		return playerHistories.values();		
+	}
+	/**
+	 * Set the playerHistory for the observer directly.<br>
+	 * Used internally for loading.
+	 * @param oh A player history for the observer.
+	 */
+	public void setObserverHistory(PlayerHistory oh) {
+		observerHistory = oh;		
+	}
+	/**
+	 * The observer history.  This is expected to be at least as complete as the union of all other PlayerHistory objects.
+	 * @return A PlayerHistory representing the view of an observer.
+	 */
+	public PlayerHistory getObserverHistory() {
+		return observerHistory;
+	}
+	public boolean hasFogOfWar() {
+		return fogOfWar;
+	}
+	public void setFogOfWar(boolean fogOfWar) {
+		this.fogOfWar = fogOfWar;
 	}
 //	
 //	public void setRevealedResources(boolean revealedResources) {
@@ -120,10 +167,10 @@ public class History {
 		{
 			if (state.canSee(x, y, playerHistory.playerNumber))
 			{
-				playerHistory.getEventLogger().recordUpgrade(state.getTurnNumber(), upgradetemplate.ID, upgradetemplate.getPlayer());
+				playerHistory.getEventLogger().recordUpgrade(state.getTurnNumber(), upgradetemplate.ID, creator.ID, upgradetemplate.getPlayer());
 			}
 		}
-		observerHistory.getEventLogger().recordUpgrade(state.getTurnNumber(), upgradetemplate.ID, upgradetemplate.getPlayer());		
+		observerHistory.getEventLogger().recordUpgrade(state.getTurnNumber(), upgradetemplate.ID, creator.ID, upgradetemplate.getPlayer());		
 	}
 	public void recordDamage(Unit u, Unit target, int damage, State state) {
 		
@@ -149,7 +196,7 @@ public class History {
 		}
 		observerHistory.getEventLogger().recordDamage(state.getTurnNumber(), u.ID, u.getPlayer(), target.ID, target.getPlayer(), damage);		
 	}
-	public void recordPickupResource(Unit u, ResourceNode resource, int amountPickedUp, State state) {
+	public void recordResourcePickup(Unit u, ResourceNode resource, int amountPickedUp, State state) {
 		int x = resource.getxPosition();
 		int y = resource.getyPosition();
 		int x2 = u.getxPosition();
@@ -167,7 +214,7 @@ public class History {
 			int player = playerHistory.playerNumber;
 			if (state.canSee(x, y, player) || state.canSee(x2, y2, player))
 			{
-				playerHistory.getEventLogger().recordPickupResource(state.getTurnNumber(), u.ID, 
+				playerHistory.getEventLogger().recordResourcePickup(state.getTurnNumber(), u.ID, 
 																  u.getPlayer(), 
 																  resource.getResourceType(), 
 																  amountPickedUp, 
@@ -175,7 +222,7 @@ public class History {
 																  resource.getType());
 			}
 		}
-		observerHistory.getEventLogger().recordPickupResource(state.getTurnNumber(), u.ID, 
+		observerHistory.getEventLogger().recordResourcePickup(state.getTurnNumber(), u.ID, 
 														    u.getPlayer(), 
 														    resource.getResourceType(), 
 														    amountPickedUp, 
@@ -204,7 +251,7 @@ public class History {
 		}
 		observerHistory.getEventLogger().recordDeath(state.getTurnNumber(), u.ID,u.getPlayer());
 	}
-	public void recordExhaustedResourceNode(ResourceNode r, State state) {
+	public void recordResourceNodeExhaustion(ResourceNode r, State state) {
 		
 		int x = r.getxPosition();
 		int y = r.getyPosition();
@@ -220,12 +267,12 @@ public class History {
 		{
 			if (state.canSee(x, y, playerHistory.playerNumber))
 			{
-				playerHistory.getEventLogger().recordExhaustedResourceNode(state.getTurnNumber(), r.ID, r.getType());
+				playerHistory.getEventLogger().recordResourceNodeExhaustion(state.getTurnNumber(), r.ID, r.getType());
 			}
 		}
-		observerHistory.getEventLogger().recordExhaustedResourceNode(state.getTurnNumber(), r.ID, r.getType());
+		observerHistory.getEventLogger().recordResourceNodeExhaustion(state.getTurnNumber(), r.ID, r.getType());
 	}
-	public void recordDropoffResource(Unit u, Unit townHall, State state) {
+	public void recordResourceDropoff(Unit u, Unit townHall, State state) {
 		int x = townHall.getxPosition();
 		int y = townHall.getyPosition();
 		int x2 = u.getxPosition();
@@ -243,15 +290,16 @@ public class History {
 			int player = playerHistory.playerNumber;
 			if (state.canSee(x, y, player) || state.canSee(x2, y2, player))
 			{
-				playerHistory.getEventLogger().recordDropoffResource(state.getTurnNumber(), u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
+				playerHistory.getEventLogger().recordResourceDropoff(state.getTurnNumber(), u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
 			}
 		}
-		observerHistory.getEventLogger().recordDropoffResource(state.getTurnNumber(), u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
+		observerHistory.getEventLogger().recordResourceDropoff(state.getTurnNumber(), u.ID, townHall.ID, u.getPlayer(), u.getCurrentCargoType(), u.getCurrentCargoAmount());
 		
 	}
 	public HistoryView getView(int player) {
 		return new HistoryView(player);
 	}
+
 	public class HistoryView
 	{
 		private int player;
@@ -259,6 +307,8 @@ public class History {
 		{
 			this.player = player;
 		}
+		
+		
 		/**
 		 * Get a logger containing all events observable to the agent.  Contents depend on the observability of the State
 		 * @return
@@ -275,7 +325,7 @@ public class History {
 			if (this.player == Agent.OBSERVER_ID)
 				return observerHistory.getActionsExecuted().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getActionsExecuted().getView();
 			}
@@ -289,7 +339,7 @@ public class History {
 			if (this.player == Agent.OBSERVER_ID)
 				return observerHistory.getCommandsIssued().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getCommandsIssued().getView();
 			}
@@ -303,7 +353,7 @@ public class History {
 			if (this.player == Agent.OBSERVER_ID)
 				return observerHistory.getActionProgress().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
-			if (!fogOfWar || this.player == playerNumber)
+			if (!hasFogOfWar() || this.player == playerNumber)
 			{
 				return playerHistories.get(playerNumber).getActionProgress().getView();
 			}
@@ -314,5 +364,21 @@ public class History {
 		}
 	
 	}
+
+	public boolean deepEquals(Object other) {
+		if (this == other)
+			return true;
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		History o = (History)other;
+		if (this.fogOfWar != o.fogOfWar)
+			return false;
+		if (!DeepEquatableUtil.deepEquals(this.observerHistory, o.observerHistory))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsMap(playerHistories, o.playerHistories))
+			return false;
+		return true;
+	}
+	
 	
 }

@@ -12,6 +12,10 @@
 			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceType" 
 			 	parseMethod="ResourceType.valueOf"/>
 		</jxb:bindings>
+		<jxb:bindings node="xs:simpleType[@name='ActionFeedback']">
+			 <jxb:javaType name="edu.cwru.SimpleRTS.action.ActionFeedback" 
+			 	parseMethod="ActionFeedback.valueOf"/>
+		</jxb:bindings>
 		<jxb:bindings node="xs:simpleType[@name='ResourceNodeType']">
 			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceNode.Type" 
 			 	parseMethod="Type.valueOf"/>

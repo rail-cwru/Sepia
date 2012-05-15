@@ -16,8 +16,6 @@ import javax.swing.ActionMap;
 import javax.swing.JComponent;
 
 
-import edu.cwru.SimpleRTS.Log.DamageLog;
-import edu.cwru.SimpleRTS.Log.RevealedResourceLog;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
@@ -25,6 +23,8 @@ import edu.cwru.SimpleRTS.action.LocatedAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.log.DamageLog;
+import edu.cwru.SimpleRTS.log.RevealedResourceNodeLog;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
@@ -128,7 +128,7 @@ public class GamePanel extends JPanel {
         //draw revealed resources
         DrawingStrategy revealedTree = DrawingStrategy.revealedTreeGraphic();
         DrawingStrategy revealedMine = DrawingStrategy.revealedMineGraphic();
-        for (RevealedResourceLog rrl : latestHistory.getEventLogger().getRevealedResources())
+        for (RevealedResourceNodeLog rrl : latestHistory.getEventLogger().getRevealedResources())
         {
         	int x = scaleX(rrl.getResourceNodeXPosition());
         	int y = scaleY(rrl.getResourceNodeYPosition());

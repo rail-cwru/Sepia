@@ -416,7 +416,7 @@ public class SimpleModel implements Model {
 						else {
 							int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
 							u.setCargo(resource.getResourceType(), amountPickedUp);
-							history.recordPickupResource(u, resource, amountPickedUp, state);
+							history.recordResourcePickup(u, resource, amountPickedUp, state);
 						}
 						if (failed) {
 							failedTry=true;
@@ -447,7 +447,7 @@ public class SimpleModel implements Model {
 						}
 						else {
 							int agent = u.getPlayer();
-							history.recordDropoffResource(u, townHall, state);
+							history.recordResourceDropoff(u, townHall, state);
 							state.addResourceAmount(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
 							u.clearCargo();
 							
@@ -619,7 +619,7 @@ public class SimpleModel implements Model {
 		for (ResourceNode r : allnodes) {
 			if (r.getAmountRemaining() <= 0)
 			{
-				history.recordExhaustedResourceNode(r, state);
+				history.recordResourceNodeExhaustion(r, state);
 				usedup.add(r.ID);
 			}
 		}

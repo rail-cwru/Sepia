@@ -145,8 +145,8 @@ public class ActionFeedbackTest {
 		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-		assertEquals("For Feedback: Observer should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+		assertEquals("For Feedback: Player 2 should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testOtherUnitAct() {
@@ -193,8 +193,8 @@ public class ActionFeedbackTest {
 		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testNoUnitAct() {
@@ -241,8 +241,8 @@ public class ActionFeedbackTest {
 		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testPrimitiveFail() {
@@ -275,8 +275,8 @@ public class ActionFeedbackTest {
 		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was a fail",ActionFeedback.FAILED,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-		assertEquals("For Feedback: Observer should see it was a fail",ActionFeedback.FAILED,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+		assertEquals("For Feedback: Player 2 should see it was a fail",ActionFeedback.FAILED,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was a fail",ActionFeedback.FAILED,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 		
 		{
 			HistoryView t = v1;
@@ -333,8 +333,8 @@ public class ActionFeedbackTest {
 		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was an incomplete",ActionFeedback.INCOMPLETE,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-		assertEquals("For Feedback: Observer should see it was an incomplete",ActionFeedback.INCOMPLETE,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+		assertEquals("For Feedback: Player 2 should see it was an incomplete",ActionFeedback.INCOMPLETE,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was an incomplete",ActionFeedback.INCOMPLETE,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 		
 		{
 			HistoryView t = v1;
@@ -373,8 +373,8 @@ public class ActionFeedbackTest {
 			assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getActionResults(player1).getActionResults(roundnumber).size());
 			assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
 			assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getAction());
-			assertEquals("For Feedback: Player 2 should see it was a complete",ActionFeedback.COMPLETED,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
-			assertEquals("For Feedback: Observer should see it was a complete",ActionFeedback.COMPLETED,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getResult());
+			assertEquals("For Feedback: Player 2 should see it was a complete",ActionFeedback.COMPLETED,v2.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
+			assertEquals("For Feedback: Observer should see it was a complete",ActionFeedback.COMPLETED,vo.getActionResults(player2).getActionResults(roundnumber).get(0).getFeedback());
 			
 			{
 				HistoryView t = v1;

@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import edu.cwru.SimpleRTS.Log.BirthLog;
-import edu.cwru.SimpleRTS.Log.DeathLog;
-import edu.cwru.SimpleRTS.Log.EventLogger;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.log.BirthLog;
+import edu.cwru.SimpleRTS.log.DeathLog;
+import edu.cwru.SimpleRTS.log.EventLogger;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;

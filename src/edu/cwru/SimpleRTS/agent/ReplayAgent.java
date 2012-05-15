@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import edu.cwru.SimpleRTS.Log.ActionLogger;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.LoadingStateCreator;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.environment.StateCreator;
+import edu.cwru.SimpleRTS.log.ActionLogger;
 
 /**
  * A non-functional agent that will, upon completion, act as an example for implementing the capability of learning through actions done in old states

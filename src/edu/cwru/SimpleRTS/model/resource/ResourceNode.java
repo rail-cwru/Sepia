@@ -101,7 +101,7 @@ public class ResourceNode extends Target implements Cloneable {
 			return node.ID;
 		}
 		public int getAmountRemaining() {
-			return node.amountRemaining;
+			return node.amountRemaining; 
 		}
 		public ResourceNode.Type getType() {
 			return node.type;
