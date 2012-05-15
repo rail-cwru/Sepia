@@ -1,8 +1,10 @@
-package edu.cwru.SimpleRTS.Log;
+package edu.cwru.SimpleRTS.log;
 
 import java.io.Serializable;
 
-public class BirthLog implements Serializable {
+import edu.cwru.SimpleRTS.util.DeepEquatable;
+
+public class BirthLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
 	private int unitid;
 	private int player;
@@ -15,10 +17,34 @@ public class BirthLog implements Serializable {
 	public int getNewUnitID() {
 		return unitid;
 	}
-	public int getPlayer() {
+	public int getController() {
 		return player;
 	}
 	public int getParentID() {
 		return parent;
+	}
+	@Override public boolean equals(Object other) {
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		BirthLog o = (BirthLog)other;
+		if (unitid != o.unitid)
+			return false;
+		if (player != o.player)
+			return false;
+		if (parent != o.parent)
+			return false;
+		return true;
+	}
+	@Override public int hashCode() {
+		int product = 1;
+		int sum = 0;
+		int prime = 31;
+		sum += (product = product*prime)*unitid;
+		sum += (product = product*prime)*player;
+		sum += (product = product*prime)*parent;
+		return sum;
+	}
+	@Override public boolean deepEquals(Object other) {
+		return equals(other);
 	}
 }

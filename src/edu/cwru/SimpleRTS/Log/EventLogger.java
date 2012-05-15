@@ -1,4 +1,4 @@
-package edu.cwru.SimpleRTS.Log;
+package edu.cwru.SimpleRTS.log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,10 @@ import java.util.List;
 
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
-public class EventLogger implements Serializable { 
+public class EventLogger implements Serializable, DeepEquatable { 
 	/**
 	 * 
 	 */
@@ -16,11 +18,10 @@ public class EventLogger implements Serializable {
 	private List<List<DeathLog>> deathlog;
 	private List<List<BirthLog>> birthlog;
 	private List<List<UpgradeLog>> upgradelog;
-	private List<List<ResourceExhaustionLog>> exhaustlog;
+	private List<List<ResourceNodeExhaustionLog>> exhaustlog;
 	private List<List<ResourcePickupLog>> gatherlog;
 	private List<List<ResourceDropoffLog>> depositlog;
-	private List<RevealedResourceLog> reveallog;
-	
+	private List<RevealedResourceNodeLog> reveallog;
 	private EventLoggerView view = null;
 	public EventLogger() {
 		damagelog = new ArrayList<List<DamageLog>>();
@@ -29,13 +30,62 @@ public class EventLogger implements Serializable {
 		upgradelog = new ArrayList<List<UpgradeLog>>();
 		gatherlog = new ArrayList<List<ResourcePickupLog>>();
 		depositlog = new ArrayList<List<ResourceDropoffLog>>();
-		exhaustlog = new ArrayList<List<ResourceExhaustionLog>>();
-		reveallog = new ArrayList<RevealedResourceLog>();
+		exhaustlog = new ArrayList<List<ResourceNodeExhaustionLog>>();
+		reveallog = new ArrayList<RevealedResourceNodeLog>();
 	}
 	public EventLoggerView getView() {
 		if (view == null)
 			view = new EventLoggerView(this);
 		return view;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundDamage() {
+		return damagelog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundDeath() {
+		return deathlog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundBirth() {
+		return birthlog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundUpgrade() {
+		return upgradelog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundResourcePickup() {
+		return gatherlog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundResourceDropoff() {
+		return depositlog.size() - 1;
+	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRoundResourceNodeExhaustion() {
+		return exhaustlog.size() - 1;
 	}
 	public void recordDamage(int turnnumber, int attackerid, int attackercontroller, int defenderid, int defendercontroller, int damage) {
 		while (turnnumber+1>damagelog.size())
@@ -58,39 +108,39 @@ public class EventLogger implements Serializable {
 		}
 		birthlog.get(turnnumber).add(new BirthLog(newunitid,parentunitid,controller));
 	}
-	public void recordUpgrade(int turnnumber, int deadunitid, int controller) {
+	public void recordUpgrade(int turnnumber, int upgradetemplateid, int producingunitid, int controller) {
 		while (turnnumber+1>upgradelog.size())
 		{
 			upgradelog.add(new ArrayList<UpgradeLog>());
 		}
-		upgradelog.get(turnnumber).add(new UpgradeLog(deadunitid,controller));
+		upgradelog.get(turnnumber).add(new UpgradeLog(upgradetemplateid,producingunitid, controller));
 	}
-	public void recordExhaustedResourceNode(int turnnumber, int exhaustednodeid, ResourceNode.Type type) {
+	public void recordResourceNodeExhaustion(int turnnumber, int exhaustednodeid, ResourceNode.Type type) {
 		while (turnnumber+1>exhaustlog.size())
 		{
-			exhaustlog.add(new ArrayList<ResourceExhaustionLog>());
+			exhaustlog.add(new ArrayList<ResourceNodeExhaustionLog>());
 		}
-		exhaustlog.get(turnnumber).add(new ResourceExhaustionLog(exhaustednodeid,type));
+		exhaustlog.get(turnnumber).add(new ResourceNodeExhaustionLog(exhaustednodeid,type));
 	}
-	public void recordPickupResource(int turnnumber, int gathererid, int controller, ResourceType type, int amount, int nodeid, ResourceNode.Type nodetype) {
+	public void recordResourcePickup(int turnnumber, int gathererid, int controller, ResourceType type, int amount, int nodeid, ResourceNode.Type nodetype) {
 		while (turnnumber+1>gatherlog.size())
 		{
 			gatherlog.add(new ArrayList<ResourcePickupLog>());
 		}
 		gatherlog.get(turnnumber).add(new ResourcePickupLog(gathererid,controller, type, amount, nodeid, nodetype));
 	}
-	public void recordDropoffResource(int turnnumber, int depositerid, int depositplaceid, int controller, ResourceType type, int amount) {
+	public void recordResourceDropoff(int turnnumber, int depositerid, int depositplaceid, int controller, ResourceType type, int amount) {
 		while (turnnumber+1>depositlog.size())
 		{
 			depositlog.add(new ArrayList<ResourceDropoffLog>());
 		}
 		depositlog.get(turnnumber).add(new ResourceDropoffLog(depositerid, controller, amount, type, depositplaceid));
 	}
-	public void recordResourceNodeReveal(int resourcenodex, int resourcenodey, ResourceNode.Type resourcenodetype) {
-		reveallog.add(new RevealedResourceLog(resourcenodex, resourcenodey, resourcenodetype));
+	public void recordRevealedResourceNode(int resourcenodex, int resourcenodey, ResourceNode.Type resourcenodetype) {
+		reveallog.add(new RevealedResourceNodeLog(resourcenodex, resourcenodey, resourcenodetype));
 	}
 	public void eraseResourceNodeReveals() {
-		reveallog = new ArrayList<RevealedResourceLog>();
+		reveallog = new ArrayList<RevealedResourceNodeLog>();
 	}
 	
 	public List<DeathLog> getDeaths(int roundnumber) {
@@ -117,9 +167,9 @@ public class EventLogger implements Serializable {
 		else 
 			return Collections.unmodifiableList(upgradelog.get(roundnumber));
 	}
-	public List<ResourceExhaustionLog> getResourceExhaustions(int roundnumber) {
+	public List<ResourceNodeExhaustionLog> getResourceNodeExhaustions(int roundnumber) {
 		if (roundnumber < 0 || roundnumber >= exhaustlog.size())
-			return new ArrayList<ResourceExhaustionLog>();
+			return new ArrayList<ResourceNodeExhaustionLog>();
 		else 
 			return Collections.unmodifiableList(exhaustlog.get(roundnumber));
 	}
@@ -135,7 +185,7 @@ public class EventLogger implements Serializable {
 		else 
 			return Collections.unmodifiableList(gatherlog.get(roundnumber));
 	}
-	public List<RevealedResourceLog> getRevealedResources() {
+	public List<RevealedResourceNodeLog> getRevealedResourceNodes() {
 		return Collections.unmodifiableList(reveallog);
 	}
 
@@ -157,6 +207,8 @@ public class EventLogger implements Serializable {
 				+ ((gatherlog == null) ? 0 : gatherlog.hashCode());
 		result = prime * result
 				+ ((upgradelog == null) ? 0 : upgradelog.hashCode());
+		result = prime * result
+				+ ((reveallog == null) ? 0 : reveallog.hashCode());
 		return result;
 	}
 	@Override
@@ -203,6 +255,11 @@ public class EventLogger implements Serializable {
 				return false;
 		} else if (!upgradelog.equals(other.upgradelog))
 			return false;
+		if (reveallog == null) {
+			if (other.reveallog != null)
+				return false;
+		} else if (!reveallog.equals(other.reveallog))
+			return false;
 		return true;
 	}
 	
@@ -232,8 +289,8 @@ public class EventLogger implements Serializable {
 		public List<UpgradeLog> getUpgrades(int roundnumber) {
 			return master.getUpgrades(roundnumber);
 		}
-		public List<ResourceExhaustionLog> getResourceExhaustions(int roundnumber) {
-			return master.getResourceExhaustions(roundnumber);
+		public List<ResourceNodeExhaustionLog> getResourceExhaustions(int roundnumber) {
+			return master.getResourceNodeExhaustions(roundnumber);
 		}
 		public List<ResourceDropoffLog> getResourceDropoffs(int roundnumber) {
 			return master.getResourceDropoffs(roundnumber);
@@ -241,8 +298,35 @@ public class EventLogger implements Serializable {
 		public List<ResourcePickupLog> getResourcePickups(int roundnumber) {
 			return master.getResourcePickups(roundnumber);
 		}
-		public List<RevealedResourceLog> getRevealedResources() {
-			return master.getRevealedResources();
+		public List<RevealedResourceNodeLog> getRevealedResources() {
+			return master.getRevealedResourceNodes();
 		}
+	}
+
+	@Override
+	public boolean deepEquals(Object other) {
+		if (this == other)
+			return true;
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return false;
+		EventLogger o = (EventLogger)other;
+		
+		if (!DeepEquatableUtil.deepEqualsListList(damagelog, o.damagelog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(deathlog, o.deathlog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(birthlog, o.birthlog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(upgradelog, o.upgradelog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(exhaustlog, o.exhaustlog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(gatherlog, o.gatherlog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsListList(depositlog, o.depositlog))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsList(reveallog, o.reveallog))
+			return false;
+		return true;
 	}
 }

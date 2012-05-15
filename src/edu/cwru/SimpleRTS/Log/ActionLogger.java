@@ -1,16 +1,18 @@
-package edu.cwru.SimpleRTS.Log;
+package edu.cwru.SimpleRTS.log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.util.DeepEquatable;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 /**
  * Logs the results for a single player.
  * @author The Condor
  *
  */
-public class ActionLogger implements Serializable {
+public class ActionLogger implements Serializable, DeepEquatable {
 	/**
 	 * 
 	 */
@@ -39,6 +41,13 @@ public class ActionLogger implements Serializable {
 			return Collections.unmodifiableList(actions.get(roundnumber));
 		}
 	}
+	/**
+	 * Get the number of the highest round for which this logger has recorded data.
+	 * @return The highest recorded round
+	 */
+	public int getHighestRound() {
+		return actions.size()-1;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -62,6 +71,20 @@ public class ActionLogger implements Serializable {
 			return false;
 		return true;
 	}
+	@Override public boolean deepEquals(Object other) {
+		if (this == other)
+			return true;
+		if (other == null || !this.getClass().equals(other.getClass()))
+			return true;
+		
+		ActionLogger o = (ActionLogger) other;
+		
+		
+		if (!DeepEquatableUtil.deepEqualsListList(this.actions, o.actions))
+			return false;
+		
+		return true;
+	}
 	public ActionLoggerView getView()
 	{
 		return new ActionLoggerView();
@@ -83,4 +106,5 @@ public class ActionLogger implements Serializable {
 			return Collections.unmodifiableList(ActionLogger.this.getActions(roundnumber));
 		}
 	}
+	
 }
