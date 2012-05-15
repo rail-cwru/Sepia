@@ -30,7 +30,7 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 public class ActionFeedbackTest {
 
 	static State state;
-	static LessSimpleModel model;
+	static SimpleModel model;
 	private static final int player1=0;
 	private static final int player2=1;
 	private static File tempfile;
@@ -92,7 +92,7 @@ public class ActionFeedbackTest {
 		tempfile = File.createTempFile("idontcare", ".map");
 		GameMap.storeState(tempfile.getPath(), state);
 		StateCreator restartthing = new LoadingStateCreator(tempfile.getPath());
-		model = new LessSimpleModel(state, 6,restartthing);
+		model = new SimpleModel(state, 6,restartthing);
 		model.setVerbose(true);
 	}
 	@AfterClass
@@ -281,17 +281,17 @@ public class ActionFeedbackTest {
 		{
 			HistoryView t = v1;
 			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player1 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
 		}
 		{
 			HistoryView t = v2;
 			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player2 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
 		}
 		{
 			HistoryView t = vo;
 			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Observer should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
 		}
 		
 	}
@@ -302,7 +302,9 @@ public class ActionFeedbackTest {
 		StateView st = model.getState(Agent.OBSERVER_ID);
 		
 		assertTrue("Initialization failed, player2 should have more units",st.getUnitIds(player2).size()>=2);
+		
 		UnitView u = st.getUnit(st.getUnitIds(player2).get(0));
+		assertTrue("Precondition not satisfied, actions are too durative",u.getTemplateView().getDurationMove()==1);
 		int stx = u.getXPosition();
 		int sty = u.getYPosition();
 		int enx = stx+2;
@@ -345,7 +347,7 @@ public class ActionFeedbackTest {
 			HistoryView t = v2;
 			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
 			assertEquals("Player2 see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
-			assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0));
+			assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0).getAction());
 		}
 		{
 			HistoryView t = vo;
