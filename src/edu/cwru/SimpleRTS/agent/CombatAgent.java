@@ -180,7 +180,7 @@ public class CombatAgent extends Agent{
 				}
 			}
 			//Update it's list of orders by checking for completions and failures and removing those
-			List<ActionResult> feedbacks = statehistory.getActionResults(playernum).getActionResults(stepToRead);
+			List<ActionResult> feedbacks = statehistory.getCommandFeedback(playernum).getActionResults(stepToRead);
 			for (ActionResult feedback : feedbacks)
 			{
 				

@@ -8,8 +8,8 @@ import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlPlayerHisto
 public class PlayerHistoryAdapter {
 	public static XmlPlayerHistory toXml(PlayerHistory history) {
 		XmlPlayerHistory xml = new XmlPlayerHistory();
-		xml.setCommandResults(ActionResultLoggerAdapter.toXml(history.getActionProgress()));
-		xml.setPrimitivesExecuted(ActionLoggerAdapter.toXml(history.getActionsExecuted()));
+		xml.setCommandFeedback(ActionResultLoggerAdapter.toXml(history.getCommandFeedback()));
+		xml.setPrimitiveFeedback(ActionResultLoggerAdapter.toXml(history.getPrimitiveFeedback()));
 		xml.setCommandsIssued(ActionLoggerAdapter.toXml(history.getCommandsIssued()));
 		xml.setEventLogger(EventLoggerAdapter.toXml(history.getEventLogger()));
 		xml.setPlayerNumber(history.getPlayerNumber());
@@ -18,8 +18,8 @@ public class PlayerHistoryAdapter {
 	
 	public static PlayerHistory fromXml(XmlPlayerHistory xml) {
 		PlayerHistory ph = new PlayerHistory(xml.getPlayerNumber());
-		ph.setActionProgress(ActionResultLoggerAdapter.fromXml(xml.getCommandResults()));
-		ph.setActionsExecuted(ActionLoggerAdapter.fromXml(xml.getPrimitivesExecuted()));
+		ph.setCommandFeedback(ActionResultLoggerAdapter.fromXml(xml.getCommandFeedback()));
+		ph.setPrimitivesExecuted(ActionResultLoggerAdapter.fromXml(xml.getPrimitiveFeedback()));
 		ph.setCommandsIssued(ActionLoggerAdapter.fromXml(xml.getCommandsIssued()));
 		ph.setEventLogger(EventLoggerAdapter.fromXml(xml.getEventLogger()));
 		return ph;

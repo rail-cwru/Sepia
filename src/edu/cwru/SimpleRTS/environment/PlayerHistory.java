@@ -15,15 +15,15 @@ public class PlayerHistory implements DeepEquatable
 	final int playerNumber;
 	private EventLogger eventsSeen;
 	private ActionLogger commandsIssued;
-	private ActionLogger actionsExecuted;
-	private ActionResultLogger actionProgress;
+	private ActionResultLogger primitiveFeedback;
+	private ActionResultLogger commandFeedback;
 	public PlayerHistory(int playerNumber)
 	{
 		this.playerNumber = playerNumber;
 		this.eventsSeen = new EventLogger();
-		this.actionsExecuted = new ActionLogger();
+		this.primitiveFeedback = new ActionResultLogger();
 		this.commandsIssued = new ActionLogger();
-		this.actionProgress = new ActionResultLogger();
+		this.commandFeedback = new ActionResultLogger();
 	}
 	public ActionLogger getCommandsIssued()
 	{
@@ -37,29 +37,29 @@ public class PlayerHistory implements DeepEquatable
 	public void setCommandsIssued(ActionLogger commandsIssued) {
 		this.commandsIssued = commandsIssued;
 	}
-	public ActionLogger getActionsExecuted()
+	public ActionResultLogger getPrimitiveFeedback()
 	{
-		return actionsExecuted;
+		return primitiveFeedback;
 	}
 	/**
 	 * Directly set the actions executed log.
 	 * Useful for saving/loading.
 	 * @param actionsExecuted
 	 */
-	public void setActionsExecuted(ActionLogger actionsExecuted) {
-		this.actionsExecuted = actionsExecuted;
+	public void setPrimitivesExecuted(ActionResultLogger actionsExecuted) {
+		this.primitiveFeedback = actionsExecuted;
 	}
-	public ActionResultLogger getActionProgress()
+	public ActionResultLogger getCommandFeedback()
 	{
-		return actionProgress;
+		return commandFeedback;
 	}
 	/**
 	 * Directly set the action progress/results log.
 	 * Useful for saving/loading.
-	 * @param actionProgress
+	 * @param commandFeedback
 	 */
-	public void setActionProgress(ActionResultLogger actionProgress) {
-		this.actionProgress = actionProgress;
+	public void setCommandFeedback(ActionResultLogger commandFeedback) {
+		this.commandFeedback = commandFeedback;
 	}
 	public EventLogger getEventLogger()
 	{
@@ -118,8 +118,8 @@ public class PlayerHistory implements DeepEquatable
 			}
 		}
 		{
-			boolean thisnull = this.actionsExecuted == null;
-			boolean othernull = o.actionsExecuted == null;
+			boolean thisnull = this.primitiveFeedback == null;
+			boolean othernull = o.primitiveFeedback == null;
 			if ((thisnull == othernull)==false)
 			{
 				return false;
@@ -127,13 +127,13 @@ public class PlayerHistory implements DeepEquatable
 			//if both aren't null, need to check deeper
 			if (!thisnull && !othernull)
 			{
-				if (!actionsExecuted.deepEquals(o.actionsExecuted))
+				if (!primitiveFeedback.deepEquals(o.primitiveFeedback))
 					return false;
 			}
 		}
 		{
-			boolean thisnull = this.actionProgress == null;
-			boolean othernull = o.actionProgress == null;
+			boolean thisnull = this.commandFeedback == null;
+			boolean othernull = o.commandFeedback == null;
 			if ((thisnull == othernull)==false)
 			{
 				return false;
@@ -141,7 +141,7 @@ public class PlayerHistory implements DeepEquatable
 			//if both aren't null, need to check deeper
 			if (!thisnull && !othernull)
 			{
-				if (!actionProgress.deepEquals(o.actionProgress))
+				if (!commandFeedback.deepEquals(o.commandFeedback))
 					return false;
 			}
 		}

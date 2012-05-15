@@ -175,19 +175,19 @@ public class SimpleModel implements Model {
 			//If the unit is not the same as in the action, ignore the action
 			if (a.getUnitId() != unitId)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit does not exist, ignore the action
 			else if (state.getUnit(unitId) == null)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit is not the player's, ignore the action
 			else if(state.getUnit(unitId).getPlayer() != sendingPlayerNumber)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
 				continue;
 			}
 			else
@@ -566,31 +566,35 @@ public class SimpleModel implements Model {
 				{
 					//if it had the wrong type, then either the planner is bugged (unlikely) or the user provided a bad primitive action
 					//either way, record it as failed and toss it
-					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INVALIDTYPE));
+					history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INVALIDTYPE));
 					queuedActions.remove(queuedAct.getFullAction());
 				}
 				else if (!failedTry && a.getType() != ActionType.FAILEDPERMANENTLY)
 				{
-					history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
+					
 					if (!queuedAct.hasNext())
 					{
-						history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.COMPLETED));
+						history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.COMPLETED));
+						history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.COMPLETED));
 						queuedActions.remove(queuedAct.getFullAction());
 					}
 					else
 					{
-						history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETE));
+						history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETE));
+						history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.COMPLETED));
 					}
 				}
 				else if (a.getType()==ActionType.FAILEDPERMANENTLY || failedTry && fullIsPrimitive)
 				{
-					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.FAILED));
+					history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.FAILED));
+					history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.FAILED));
 					queuedActions.remove(queuedAct.getFullAction());
 					
 				}
 				else
 				{
-					history.recordActionFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETEMAYBESTUCK));
+					history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETEMAYBESTUCK));
+					history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.FAILED));
 				}
 			}
 			while (timesTried < 2 && failedTry && !fullIsPrimitive && !wrongType);

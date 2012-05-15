@@ -210,19 +210,19 @@ public class LessSimpleModel implements Model {
 			//If the unit is not the same as in the action, ignore the action
 			if (a.getUnitId() != unitId)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit does not exist, ignore the action
 			else if (state.getUnit(unitId) == null)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit is not the player's, ignore the action
 			else if(state.getUnit(unitId).getPlayer() != sendingPlayerNumber)
 			{
-				history.recordActionFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
+				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
 				continue;
 			}
 			else
@@ -355,7 +355,7 @@ public class LessSimpleModel implements Model {
 					{
 						//unit is dead or never existed
 						playerActions.remove();
-						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDUNIT));
+						history.recordCommandFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDUNIT));
 						
 					}
 					else
@@ -365,7 +365,7 @@ public class LessSimpleModel implements Model {
 					if (a==null) //This happens when you try to compound move to where you are, not sure about other cases
 					{
 						playerActions.remove();
-						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.COMPLETED));
+						history.recordCommandFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.COMPLETED));
 					}
 					else if (!ActionType.isPrimitive(a.getType()))
 					{
@@ -379,7 +379,7 @@ public class LessSimpleModel implements Model {
 							|| a.getType() == ActionType.PRIMITIVEMOVE && !(a instanceof DirectedAction))
 					{//shouldn't have to do this, should make actions so it is never possible to have the types not match
 						//log a wrong type thing
-						history.recordActionFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDTYPE));
+						history.recordCommandFeedback(player, state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.INVALIDTYPE));
 						//remove it from the queues
 						playerActions.remove();
 					}
@@ -1090,7 +1090,6 @@ public class LessSimpleModel implements Model {
 
 			}
 			}
-			history.recordPrimitiveExecuted(u.getPlayer(), state.getTurnNumber(), a);
 			
 			ActionFeedback feedback;
 			if (!aq.hasNext())
@@ -1104,14 +1103,14 @@ public class LessSimpleModel implements Model {
 			{
 				feedback = ActionFeedback.INCOMPLETE;
 			}
-			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),feedback));
-			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(a,feedback));
+			history.recordCommandFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),feedback));
+			history.recordPrimitiveFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(a,feedback));
 		}
 		for (ActionQueue aq : failed)
 		{
 			//should be safe to get the unitid, as it should have not been put into failed if the player was bad
-			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.FAILED));
-			history.recordActionFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.peekPrimitive(),ActionFeedback.FAILED));
+			history.recordCommandFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),ActionFeedback.FAILED));
+			history.recordPrimitiveFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.peekPrimitive(),ActionFeedback.FAILED));
 			queuedActions.get(state.getUnit(aq.getFullAction().getUnitId()).getPlayer()).remove(aq.getFullAction().getUnitId());
 		}
 		

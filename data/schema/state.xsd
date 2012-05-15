@@ -274,8 +274,8 @@
 		<xs:element name="playerNumber" type="xs:int" />
 		<xs:element name="eventLogger" type="EventLogger" />
 		<xs:element name="commandsIssued" type="ActionLogger" />
-		<xs:element name="commandResults" type="ActionResultLogger" />
-		<xs:element name="primitivesExecuted" type="ActionLogger" />
+		<xs:element name="commandFeedback" type="ActionResultLogger" />
+		<xs:element name="primitiveFeedback" type="ActionResultLogger" />
 	</xs:sequence>
 </xs:complexType>
 

@@ -415,8 +415,8 @@ public class AdapterTestUtil {
 			int newplayernum) {
 		PlayerHistory h = new PlayerHistory(newplayernum);
 		h.setEventLogger(createExampleEventLogger(r));
-		h.setActionProgress(createExampleActionResultLogger(r));
-		h.setActionsExecuted(createExampleActionLogger(r));
+		h.setCommandFeedback(createExampleActionResultLogger(r));
+		h.setPrimitivesExecuted(createExampleActionResultLogger(r));
 		h.setCommandsIssued(createExampleActionLogger(r));
 		return h;
 	}

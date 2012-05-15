@@ -110,12 +110,12 @@ public class History implements DeepEquatable {
 //																resource.getType());
 //	}
 	
-	public void recordPrimitiveExecuted(int player, int stepnumber, Action actionExecuted)
+	public void recordPrimitiveFeedback(int player, int stepnumber, ActionResult primitiveFeedback)
 	{
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
-		playerHistories.get(player).getActionsExecuted().addAction(stepnumber, actionExecuted);
-		observerHistory.getActionsExecuted().addAction(stepnumber, actionExecuted);
+		playerHistories.get(player).getPrimitiveFeedback().addActionResult(stepnumber, primitiveFeedback);
+		observerHistory.getPrimitiveFeedback().addActionResult(stepnumber, primitiveFeedback);
 	}
 	public void recordCommandRecieved(int player, int stepnumber, Action actionRecieved)
 	{
@@ -124,12 +124,12 @@ public class History implements DeepEquatable {
 		playerHistories.get(player).getCommandsIssued().addAction(stepnumber, actionRecieved);
 		observerHistory.getCommandsIssued().addAction(stepnumber, actionRecieved);
 	}
-	public void recordActionFeedback(int player, int stepnumber, ActionResult actionFeedback)
+	public void recordCommandFeedback(int player, int stepnumber, ActionResult commandFeedback)
 	{
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
-		playerHistories.get(player).getActionProgress().addActionResult(stepnumber, actionFeedback);
-		observerHistory.getActionProgress().addActionResult(stepnumber, actionFeedback);
+		playerHistories.get(player).getCommandFeedback().addActionResult(stepnumber, commandFeedback);
+		observerHistory.getCommandFeedback().addActionResult(stepnumber, commandFeedback);
 	}
 	public void recordBirth(Unit newunit, Unit builder, State state) {
 		int x = newunit.getxPosition();
@@ -320,14 +320,14 @@ public class History implements DeepEquatable {
 			//Observability is put in the calculation
 			return new EventLoggerView(playerHistories.get(player).getEventLogger());
 		}
-		public ActionLoggerView getActionsExecuted(int playerNumber)
+		public ActionResultLoggerView getPrimitiveFeedback(int playerNumber)
 		{
 			if (this.player == Agent.OBSERVER_ID)
-				return observerHistory.getActionsExecuted().getView();
+				return observerHistory.getPrimitiveFeedback().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber)
 			{
-				return playerHistories.get(playerNumber).getActionsExecuted().getView();
+				return playerHistories.get(playerNumber).getPrimitiveFeedback().getView();
 			}
 			//otherwise, you get nothing
 			{
@@ -348,14 +348,14 @@ public class History implements DeepEquatable {
 				return null;
 			}
 		}
-		public ActionResultLoggerView getActionResults(int playerNumber)
+		public ActionResultLoggerView getCommandFeedback(int playerNumber)
 		{
 			if (this.player == Agent.OBSERVER_ID)
-				return observerHistory.getActionProgress().getView();
+				return observerHistory.getCommandFeedback().getView();
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber)
 			{
-				return playerHistories.get(playerNumber).getActionProgress().getView();
+				return playerHistories.get(playerNumber).getCommandFeedback().getView();
 			}
 			//otherwise, you get nothing
 			{

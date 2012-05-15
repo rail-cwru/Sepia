@@ -222,7 +222,7 @@ public class DurativePlannerTest {
 			{
 				int lastround = state.getTurnNumber()-1;
 				HistoryView history = model.getHistory(Agent.OBSERVER_ID);
-				List<ActionResult> feedbacklist = history.getActionResults(player1).getActionResults(lastround);
+				List<ActionResult> feedbacklist = history.getCommandFeedback(player1).getActionResults(lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 //				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
 //				ActionResult feedback = feedbacklist.get(0);
