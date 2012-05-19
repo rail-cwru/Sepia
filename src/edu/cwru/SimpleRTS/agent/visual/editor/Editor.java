@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -480,14 +481,36 @@ public class Editor extends JFrame {
 		gamePanel.updateState(state.getView(Agent.OBSERVER_ID), null);
 	}
 	public static void main(String[] args) throws FileNotFoundException, JSONException {
+		String templates = "data/unit_templates";
+		
 		State state = null;
-		if(args.length > 0)
+		for (int argInd = 0; argInd < args.length; argInd++)
 		{
-			try {
-			state = GameMap.loadState(args[0]);
+			if (args[argInd].equals("--loadstate"))
+			{
+				if (argInd+1 >= args.length)
+				{
+					System.err.println("--loadstate must be followed by a file name");
+					System.exit(ERROR);
+				}
+				argInd++;
+				try {
+				state = GameMap.loadState(args[argInd]);
+				}
+				catch(Exception e) {
+					System.err.println("Problem loading state.");
+					e.printStackTrace();
+				}
 			}
-			catch(Exception e) {
-				e.printStackTrace();
+			if (args[argInd].equals("--templates"))
+			{
+				if (argInd+1 >= args.length)
+				{
+					System.err.println("--templates must be followed by a file name");
+					System.exit(ERROR);
+				}
+				argInd++;
+				templates=args[argInd];
 			}
 		}
 		if(state == null)
@@ -499,14 +522,18 @@ public class Editor extends JFrame {
         final State fstate = state;
         final GamePanel gamePanel = new GamePanel(null);
 		final GameScreen screen = new GameScreen(gamePanel);
-        
+        final String ftemplates = templates;
 		SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 screen.pack();
-                Editor editor = new Editor(screen, gamePanel, fstate, "data/unit_templates");
+                Editor editor = new Editor(screen, gamePanel, fstate, ftemplates);
                 editor.setVisible(true);
             }
         });
+	}
+	private static void printUsage(PrintStream err) {
+		err.println("Usage is Editor [--loadstate statefilename] [--templates templatefilename]");
+		err.println("The order is interchangable and they default to a new 25x19 blank map and data/unit_templates respectively");
 	}
 }
