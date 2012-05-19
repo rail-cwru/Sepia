@@ -14,7 +14,6 @@ import org.junit.Test;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.log.RevealedResourceNodeLog;
-import edu.cwru.SimpleRTS.log.EventLogger.EventLoggerView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -316,10 +315,9 @@ public String printView(List<Unit> myunits,StateView v)
  * A repeated call from checkReveal
  */
 @SuppressWarnings("unused")
-private void revealedStatusChecker(int step, EventLoggerView e, Map<Pair,Pair> actualpositioning, boolean shouldberevealed)
+private void revealedStatusChecker(int step, List<RevealedResourceNodeLog> revealedResources, Map<Pair,Pair> actualpositioning, boolean shouldberevealed)
 {
 	System.out.println("Step "+step + ": " + (shouldberevealed?"revealed":"hidden"));
-	List<RevealedResourceNodeLog> revealedResources= e.getRevealedResources();
 	if (!shouldberevealed)
 	{
 		assertTrue("Step " + step + ": Resources were revealed when they should have been hidden",revealedResources.size()==0);

@@ -2,13 +2,19 @@ package edu.cwru.SimpleRTS.environment;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.log.ActionLogger.ActionLoggerView;
-import edu.cwru.SimpleRTS.log.ActionResultLogger.ActionResultLoggerView;
-import edu.cwru.SimpleRTS.log.EventLogger.EventLoggerView;
+import edu.cwru.SimpleRTS.log.BirthLog;
+import edu.cwru.SimpleRTS.log.DamageLog;
+import edu.cwru.SimpleRTS.log.DeathLog;
+import edu.cwru.SimpleRTS.log.ResourceDropoffLog;
+import edu.cwru.SimpleRTS.log.ResourceNodeExhaustionLog;
+import edu.cwru.SimpleRTS.log.ResourcePickupLog;
+import edu.cwru.SimpleRTS.log.RevealedResourceNodeLog;
+import edu.cwru.SimpleRTS.log.UpgradeLog;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
@@ -309,47 +315,176 @@ public class History implements DeepEquatable {
 		}
 		
 		
+		
 		/**
-		 * Get a logger containing all events observable to the agent.  Contents depend on the observability of the State
-		 * @return
+		 * Return a list of UpgradeLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of UpgradeLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
 		 */
-		public EventLoggerView getEventLogger()
+		public List<UpgradeLog> getUpgradeLogs(int stepNumber)
 		{
+			PlayerHistory playerHistory;
 			if (this.player == Agent.OBSERVER_ID)
-				return new EventLoggerView(observerHistory.getEventLogger());
-			//Observability is put in the calculation
-			return new EventLoggerView(playerHistories.get(player).getEventLogger());
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getUpgrades(stepNumber);
 		}
-		public ActionResultLoggerView getPrimitiveFeedback(int playerNumber)
+		/**
+		 * Return a list of BirthLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of BirthLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<BirthLog> getBirthLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getBirths(stepNumber);
+		}
+		/**
+		 * Return a list of DeathLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of DeathLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<DeathLog> getDeathLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getDeaths(stepNumber);
+		}
+		/**
+		 * Return a list of DamageLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of DamageLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<DamageLog> getDamageLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getDamage(stepNumber);
+		}
+		/**
+		 * Return a list of ResourceNodeExhaustionLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of ResourceNodeExhaustionLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<ResourceNodeExhaustionLog> getResourceNodeExhaustionLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getResourceNodeExhaustions(stepNumber);
+		}
+		/**
+		 * Return a list of ResourcePickupLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of ResourcePickupLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<ResourcePickupLog> getResourcePickupLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getResourcePickups(stepNumber);
+		}
+		/**
+		 * Return a list of ResourceDropoffLog corresponding to events witnessed by this player during the specified step. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of ResourceDropoffLog objects that occurred during the specified step and were observed by the player whose HistoryView this is. 
+		 */
+		public List<ResourceDropoffLog> getResourceDropoffLogs(int stepNumber)
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getResourceDropoffs(stepNumber);
+		}
+		/**
+		 * Return a list of RevealedResourceNodeLog corresponding to events witnessed by this player. 
+		 * @param stepNumber
+		 * @return An unmodifiable list of RevealedResourceNodeLog objects observed by the player whose HistoryView this is. 
+		 */
+		public List<RevealedResourceNodeLog> getRevealedResourceNodeLogs()
+		{
+			PlayerHistory playerHistory;
+			if (this.player == Agent.OBSERVER_ID)
+				playerHistory = observerHistory;
+			else
+				playerHistory = playerHistories.get(player);
+			return playerHistory.getEventLogger().getRevealedResourceNodes();
+		}
+		/**
+		 * Get a list of ActionResult objects that correspond to the primitive Actions attempted by the Model in resolving the commands issued by the specifed playerNumber during execution of the specified stepNumber. <br>
+		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
+		 * <br>The primitive actions covered in these results are used to execute a (possibly non-strict) subset of the actions covered in the CommandResults for the same step, as some commands may be so flawed as to not correspond to any primitives.
+		 * <br>Primitive actions used to execute commands will be displayed here even if the command is a primitive action itself.
+		 * @param playerNumber the player number whose feedback should be returned
+		 * @param stepNumber the step number that the feedback occurred in.
+		 * @return null if the playerNumber is not visible to the viewing player, a list of ActionResult objects corresponding to the primitive Actions used during the specified stepNumber to execute the commands of the specified playerNumber otherwise.
+		 */
+		public List<ActionResult> getPrimitiveFeedback(int playerNumber, int stepNumber)
 		{
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
-				return playerHistories.get(playerNumber).getPrimitiveFeedback().getView();
+				return playerHistories.get(playerNumber).getPrimitiveFeedback().getActionResults(stepNumber);
 			}
 			//otherwise, you get nothing
 			{
 				return null;
 			}
 		}
-		public ActionLoggerView getCommandsIssued(int playerNumber)
+		/**
+		 * Get a list of Action objects that were received by the Model during the specified stepNumber from agents controlling the specified playerNumber
+		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
+		 * <br>The actions in the list are a subset of the actions covered by CommandFeedback, as the model may use and generate feedback for commands issued during previous steps.
+		 * @param playerNumber the player number issuing commands
+		 * @param stepNumber the step number when commands were issued
+		 * @return null if the playerNumber is not visible to the viewing player, a list of Action objects received as commands during the specified stepNumber from agents controlling the specified playerNumber otherwise.
+		 */
+		public List<Action> getCommandsIssued(int playerNumber, int stepNumber)
 		{
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
-				return playerHistories.get(playerNumber).getCommandsIssued().getView();
+				return playerHistories.get(playerNumber).getCommandsIssued().getActions(stepNumber);
 			}
 			//otherwise, you get nothing
 			{
 				return null;
 			}
 		}
-		public ActionResultLoggerView getCommandFeedback(int playerNumber)
-		{
+		/**
+		 * Get a list of ActionResult objects covering commands from agents controlling the specified playerNumber that the Model attempted to execute during the specified stepNumber.
+		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
+		 * <br>The actions in the list are a superset of the actions covered by CommandsIssued, as the model may use and generate feedback for commands issued during previous steps.
+		 * <br>The actions in the list are a superset of the actions whose primitive components are covered in PrmitiveFeedback, as some commands may be too flawed to lead to primitive components being calculated.
+		 * <br>The commands that the model attempts to execute will be included here even if they are primitive actions.
+		 * 
+		 * @param playerNumber the player number whose commands this list is based on
+		 * @param stepNumber the step number when the commands' execution was attempted
+		 * @return null if the playerNumber is not visible to the viewing player, a list of ActionResult objects corresponding the commands of the specified playerNumber that the Model attempted to execute during the specified stepNumber
+		 */
+		public List<ActionResult> getCommandFeedback(int playerNumber, int stepNumber) {
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{
-				return playerHistories.get(playerNumber).getCommandFeedback().getView();
+				return playerHistories.get(playerNumber).getCommandFeedback().getActionResults(stepNumber);
 			}
 			//otherwise, you get nothing
 			{

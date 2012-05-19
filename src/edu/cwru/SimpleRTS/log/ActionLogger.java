@@ -85,26 +85,4 @@ public class ActionLogger implements Serializable, DeepEquatable {
 		
 		return true;
 	}
-	public ActionLoggerView getView()
-	{
-		return new ActionLoggerView();
-	}
-	public class ActionLoggerView
-	{
-		private ActionLoggerView()
-		{
-			
-		}
-		
-		/**
-		 * Get the actions for a specific round.
-		 * @param roundnumber
-		 * @return an unmodifiable list of Actions
-		 */
-		public List<Action> getActions(int roundnumber) {
-			//Grab the version in the containing class, then make it unmodifiable
-			return Collections.unmodifiableList(ActionLogger.this.getActions(roundnumber));
-		}
-	}
-	
 }

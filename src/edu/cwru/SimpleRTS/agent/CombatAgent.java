@@ -135,14 +135,14 @@ public class CombatAgent extends Agent{
 		for (int stepToRead = lastStepMovedIn; stepToRead < newstate.getTurnNumber(); stepToRead++)
 		{
 			//update its list of units
-			for (BirthLog birth : statehistory.getEventLogger().getBirths(stepToRead)) {
+			for (BirthLog birth : statehistory.getBirthLogs(stepToRead)) {
 				if (playernum == birth.getController()) {
 					unitOrders.put(birth.getNewUnitID(), null);
 				}
 			}
 			List<Integer> toRemove = new LinkedList<Integer>();
 			List<Integer> toUnorder = new LinkedList<Integer>();
-			for (DeathLog death : statehistory.getEventLogger().getDeaths(stepToRead)) {
+			for (DeathLog death : statehistory.getDeathLogs(stepToRead)) {
 				//Check if the dead unit is mine
 				if (playernum == death.getController()) {
 					toRemove.add(death.getDeadUnitID());
@@ -169,7 +169,7 @@ public class CombatAgent extends Agent{
 			if (verbose)
 			{
 				//Report the damage dealt by and to your units
-				for (DamageLog damagereport : statehistory.getEventLogger().getDamage(stepToRead)) {
+				for (DamageLog damagereport : statehistory.getDamageLogs(stepToRead)) {
 					if (damagereport.getAttackerController() == playernum) {
 						writeLineVisual(damagereport.getAttackerID() + " hit " + damagereport.getDefenderID() + " for " +damagereport.getDamage()+ " damage");
 					}
@@ -180,7 +180,7 @@ public class CombatAgent extends Agent{
 				}
 			}
 			//Update it's list of orders by checking for completions and failures and removing those
-			List<ActionResult> feedbacks = statehistory.getCommandFeedback(playernum).getActionResults(stepToRead);
+			List<ActionResult> feedbacks = statehistory.getCommandFeedback(playernum, stepToRead);
 			for (ActionResult feedback : feedbacks)
 			{
 				

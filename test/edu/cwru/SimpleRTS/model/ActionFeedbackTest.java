@@ -118,35 +118,35 @@ public class ActionFeedbackTest {
 		HistoryView v1 = model.getHistory().getView(player1);
 		HistoryView v2 = model.getHistory().getView(player2);
 		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
+		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
 		{
 			HistoryView t = v1;
-			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = v2;
-			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = vo;
-			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
-		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-		assertEquals("For Feedback: Observer should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Player 2 should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid controller",ActionFeedback.INVALIDCONTROLLER,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testOtherUnitAct() {
@@ -166,35 +166,35 @@ public class ActionFeedbackTest {
 		HistoryView v1 = model.getHistory().getView(player1);
 		HistoryView v2 = model.getHistory().getView(player2);
 		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
+		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
 		{
 			HistoryView t = v1;
-			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = v2;
-			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = vo;
-			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
-		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testNoUnitAct() {
@@ -214,35 +214,35 @@ public class ActionFeedbackTest {
 		HistoryView v1 = model.getHistory().getView(player1);
 		HistoryView v2 = model.getHistory().getView(player2);
 		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
+		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
 		{
 			HistoryView t = v1;
-			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player1 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = v2;
-			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player2 shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = vo;
-			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Observer shouldn't see player 2 executing anything",0,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
-		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Player 2 should see it was invalid unit",ActionFeedback.INVALIDUNIT,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was invalid unit",ActionFeedback.INVALIDUNIT,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 	}
 	@Test
 	public void testPrimitiveFail() {
@@ -263,35 +263,35 @@ public class ActionFeedbackTest {
 		HistoryView v1 = model.getHistory().getView(player1);
 		HistoryView v2 = model.getHistory().getView(player2);
 		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was a fail",ActionFeedback.FAILED,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-		assertEquals("For Feedback: Observer should see it was a fail",ActionFeedback.FAILED,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Player 2 should see it was a fail",ActionFeedback.FAILED,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was a fail",ActionFeedback.FAILED,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 		
 		{
 			HistoryView t = v1;
-			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player1 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player1 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = v2;
-			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player2 should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		{
 			HistoryView t = vo;
-			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
+			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Observer should see player 2 having feedback for exactly one thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
 		}
 		
 	}
@@ -323,37 +323,37 @@ public class ActionFeedbackTest {
 		HistoryView v1 = model.getHistory().getView(player1);
 		HistoryView v2 = model.getHistory().getView(player2);
 		HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
-		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-		assertEquals("For Feedback: Player 2 should see it was an incomplete",ActionFeedback.INCOMPLETE,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-		assertEquals("For Feedback: Observer should see it was an incomplete",ActionFeedback.INCOMPLETE,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+		assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see exactly one thing",1,v2.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly one thing for player 2",1,vo.getCommandsIssued(player2, roundnumber).size());
+		assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+		assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
+		assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+		assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+		assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+		assertEquals("For Feedback: Player 2 should see it was an incomplete",ActionFeedback.INCOMPLETE,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+		assertEquals("For Feedback: Observer should see it was an incomplete",ActionFeedback.INCOMPLETE,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 		
 		{
 			HistoryView t = v1;
-			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
+			assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
 			//whether player 1 should see player 2 doing something is dependant on whether partial observability is on
 		}
 		{
 			HistoryView t = v2;
-			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Player2 see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
-			assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0).getAction());
+			assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Player2 see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
+			assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2, roundnumber).get(0).getAction());
 		}
 		{
 			HistoryView t = vo;
-			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("Observer see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
-			assertEquals("Observer should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0).getAction());
+			assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+			assertEquals("Observer see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
+			assertEquals("Observer should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2, roundnumber).get(0).getAction());
 		}
 		}
 		model.executeStep();
@@ -363,37 +363,37 @@ public class ActionFeedbackTest {
 			HistoryView v1 = model.getHistory().getView(player1);
 			HistoryView v2 = model.getHistory().getView(player2);
 			HistoryView vo = model.getHistory().getView(Agent.OBSERVER_ID);
-			assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1).getActions(roundnumber).size());
-			assertEquals("For CommandIssued: Player 2 should see exactly nothing sent by himself",0,v2.getCommandsIssued(player2).getActions(roundnumber).size());
-			assertEquals("For CommandIssued: Observer should see exactly nothing for player 2",0,vo.getCommandsIssued(player2).getActions(roundnumber).size());
-			assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1).getActions(roundnumber).size());
-//			assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2).getActions(roundnumber).get(0));
-//			assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2).getActions(roundnumber).get(0));
-			assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2).getActionResults(roundnumber).size());
-			assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2).getActionResults(roundnumber).size());
-			assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1).getActionResults(roundnumber).size());
-			assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-			assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getAction());
-			assertEquals("For Feedback: Player 2 should see it was a complete",ActionFeedback.COMPLETED,v2.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
-			assertEquals("For Feedback: Observer should see it was a complete",ActionFeedback.COMPLETED,vo.getCommandFeedback(player2).getActionResults(roundnumber).get(0).getFeedback());
+			assertEquals("For CommandIssued: Player 1 should see nothing sent by himself",0,v1.getCommandsIssued(player1, roundnumber).size());
+			assertEquals("For CommandIssued: Player 2 should see exactly nothing sent by himself",0,v2.getCommandsIssued(player2, roundnumber).size());
+			assertEquals("For CommandIssued: Observer should see exactly nothing for player 2",0,vo.getCommandsIssued(player2, roundnumber).size());
+			assertEquals("For CommandIssued: Observer should see exactly nothing for player 1",0,vo.getCommandsIssued(player1, roundnumber).size());
+//			assertEquals("For CommandIssued: Player 2 should see what he sent",actionsent,v2.getCommandsIssued(player2, roundnumber).get(0));
+//			assertEquals("For CommandIssued: Observer should see what player 2 sent",actionsent,vo.getCommandsIssued(player2, roundnumber).get(0));
+			assertEquals("For Feedback: Player 1 should see nothing sent by himself",0,v1.getCommandFeedback(player1, roundnumber).size());
+			assertEquals("For Feedback: Player 2 should see exactly one thing",1,v2.getCommandFeedback(player2, roundnumber).size());
+			assertEquals("For Feedback: Observer should see exactly one thing for player 2",1,vo.getCommandFeedback(player2, roundnumber).size());
+			assertEquals("For Feedback: Observer should see exactly nothing for player 1",0,vo.getCommandFeedback(player1, roundnumber).size());
+			assertEquals("For Feedback: Player 2 should see what he sent",actionsent,v2.getCommandFeedback(player2, roundnumber).get(0).getAction());
+			assertEquals("For Feedback: Observer should see what player 2 sent",actionsent,vo.getCommandFeedback(player2, roundnumber).get(0).getAction());
+			assertEquals("For Feedback: Player 2 should see it was a complete",ActionFeedback.COMPLETED,v2.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
+			assertEquals("For Feedback: Observer should see it was a complete",ActionFeedback.COMPLETED,vo.getCommandFeedback(player2, roundnumber).get(0).getFeedback());
 			
 			{
 				HistoryView t = v1;
-				assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
+				assertEquals("Player1 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
 				//whether player 1 should see player 2 doing something is dependant on whether partial observability is on
 			}
 			{
 				HistoryView t = v2;
-				assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-				assertEquals("Player2 see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
-				assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0).getAction());
+				assertEquals("Player2 shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+				assertEquals("Player2 see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
+				assertEquals("Player2 should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2, roundnumber).get(0).getAction());
 			}
 			{
 				HistoryView t = vo;
-				assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1).getActionResults(roundnumber).size());
-				assertEquals("Observer see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).size());
-				assertEquals("Observer should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2).getActionResults(roundnumber).get(0).getAction());
+				assertEquals("Observer shouldn't see player 1 executing anything",0,t.getPrimitiveFeedback(player1, roundnumber).size());
+				assertEquals("Observer see player 2 executing 1 thing",1,t.getPrimitiveFeedback(player2, roundnumber).size());
+				assertEquals("Observer should see the thing being executed as a primitive move",thisprimitive,t.getPrimitiveFeedback(player2, roundnumber).get(0).getAction());
 			}
 			}
 		

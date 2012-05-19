@@ -70,27 +70,6 @@ public class ActionResultLogger implements Serializable, DeepEquatable {
 			return false;
 		return true;
 	}
-	public ActionResultLoggerView getView()
-	{
-		return new ActionResultLoggerView();
-	}
-	public class ActionResultLoggerView
-	{
-		private ActionResultLoggerView()
-		{
-			
-		}
-		
-		/**
-		 * Get the actions for a specific round.
-		 * @param roundnumber
-		 * @return an unmodifiable list of Actions
-		 */
-		public List<ActionResult> getActionResults(int roundnumber) {
-			//Grab the version in the containing class, then make it unmodifiable
-			return Collections.unmodifiableList(ActionResultLogger.this.getActionResults(roundnumber));
-		}
-	}
 	public boolean deepEquals(Object other) {
 		if (this == other)
 			return true;

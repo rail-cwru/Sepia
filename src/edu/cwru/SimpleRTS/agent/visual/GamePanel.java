@@ -128,7 +128,7 @@ public class GamePanel extends JPanel {
         //draw revealed resources
         DrawingStrategy revealedTree = DrawingStrategy.revealedTreeGraphic();
         DrawingStrategy revealedMine = DrawingStrategy.revealedMineGraphic();
-        for (RevealedResourceNodeLog rrl : latestHistory.getEventLogger().getRevealedResources())
+        for (RevealedResourceNodeLog rrl : latestHistory.getRevealedResourceNodeLogs())
         {
         	int x = scaleX(rrl.getResourceNodeXPosition());
         	int y = scaleY(rrl.getResourceNodeYPosition());
@@ -182,7 +182,7 @@ public class GamePanel extends JPanel {
         if (latestHistory!=null)
         {
         Color lastcolor = g.getColor();
-        for (DamageLog damage :latestHistory.getEventLogger().getDamage(currentState.getTurnNumber()-1))
+        for (DamageLog damage :latestHistory.getDamageLogs(currentState.getTurnNumber()-1))
         {
         	UnitView attacker = currentState.getUnit(damage.getAttackerID());
         	UnitView defender = currentState.getUnit(damage.getDefenderID());

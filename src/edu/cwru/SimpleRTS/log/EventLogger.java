@@ -22,7 +22,6 @@ public class EventLogger implements Serializable, DeepEquatable {
 	private List<List<ResourcePickupLog>> gatherlog;
 	private List<List<ResourceDropoffLog>> depositlog;
 	private List<RevealedResourceNodeLog> reveallog;
-	private EventLoggerView view = null;
 	public EventLogger() {
 		damagelog = new ArrayList<List<DamageLog>>();
 		deathlog = new ArrayList<List<DeathLog>>();
@@ -32,11 +31,6 @@ public class EventLogger implements Serializable, DeepEquatable {
 		depositlog = new ArrayList<List<ResourceDropoffLog>>();
 		exhaustlog = new ArrayList<List<ResourceNodeExhaustionLog>>();
 		reveallog = new ArrayList<RevealedResourceNodeLog>();
-	}
-	public EventLoggerView getView() {
-		if (view == null)
-			view = new EventLoggerView(this);
-		return view;
 	}
 	/**
 	 * Get the number of the highest round for which this logger has recorded data.
@@ -263,46 +257,6 @@ public class EventLogger implements Serializable, DeepEquatable {
 		return true;
 	}
 	
-	/**
-	 * A read-only version of the Event Log, which is used to keep track of all events that the player has seen.
-	 * @author The Condor
-	 *
-	 */
-	public static class EventLoggerView implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		EventLogger master;
-		public EventLoggerView(EventLogger master) {
-			this.master = master;
-		}
-		public List<DeathLog> getDeaths(int roundnumber) {
-			return master.getDeaths(roundnumber);
-		}
-		public List<DamageLog> getDamage(int roundnumber) {
-			return master.getDamage(roundnumber);
-		}
-		public List<BirthLog> getBirths(int roundnumber) {
-			return master.getBirths(roundnumber);
-		}
-		public List<UpgradeLog> getUpgrades(int roundnumber) {
-			return master.getUpgrades(roundnumber);
-		}
-		public List<ResourceNodeExhaustionLog> getResourceExhaustions(int roundnumber) {
-			return master.getResourceNodeExhaustions(roundnumber);
-		}
-		public List<ResourceDropoffLog> getResourceDropoffs(int roundnumber) {
-			return master.getResourceDropoffs(roundnumber);
-		}
-		public List<ResourcePickupLog> getResourcePickups(int roundnumber) {
-			return master.getResourcePickups(roundnumber);
-		}
-		public List<RevealedResourceNodeLog> getRevealedResources() {
-			return master.getRevealedResourceNodes();
-		}
-	}
-
 	@Override
 	public boolean deepEquals(Object other) {
 		if (this == other)

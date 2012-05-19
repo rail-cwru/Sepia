@@ -426,10 +426,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	public Map<Integer, Action> act(StateView state, HistoryView statehistory) throws IOException {
 		if (verbose)
 			System.out.println("ScriptedGoalAgent starting another action");
-		EventLogger.EventLoggerView eventlog = statehistory.getEventLogger();
 		int lastturn= state.getTurnNumber()-1;
-		List<BirthLog> births = eventlog.getBirths(lastturn);
-		List<DeathLog> deaths = eventlog.getDeaths(lastturn);
+		List<BirthLog> births = statehistory.getBirthLogs(lastturn);
+		List<DeathLog> deaths = statehistory.getDeathLogs(lastturn);
 		for (BirthLog birth : births) {
 			if (
 				state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
