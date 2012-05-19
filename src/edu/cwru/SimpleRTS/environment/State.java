@@ -22,6 +22,7 @@ import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
 public class State implements Serializable, Cloneable, IDDistributer, DeepEquatable {
 	/**
@@ -135,98 +136,17 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		if (this.turnNumber != o.turnNumber)
 			return false;
 		
-		{
-			boolean thisnull = this.resourceNodes == null;
-			boolean othernull = o.resourceNodes == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.resourceNodes.size() != o.resourceNodes.size())
-					return false;
-				for (int i = 0; i<this.resourceNodes.size();i++)
-				{
-					if (!resourceNodes.get(i).deepEquals(o.resourceNodes.get(i)))
-						return false;
-				}
-			}
-		}
-		{
-			boolean thisnull = this.allTemplates == null;
-			boolean othernull = o.allTemplates == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.allTemplates.size() != o.allTemplates.size())
-					return false;
-				for (Integer i : allTemplates.keySet())
-				{
-					if (!allTemplates.get(i).deepEquals(o.allTemplates.get(i)))
-						return false;
-				}
-			}
-		}
+		if (!DeepEquatableUtil.deepEqualsList(this.resourceNodes, o.resourceNodes))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsMap(this.allTemplates, o.allTemplates))
+			return false;
 		
-		
-		{
-			boolean thisnull = this.allUnits == null;
-			boolean othernull = o.allUnits == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.allUnits.size() != o.allUnits.size())
-					return false;
-				for (Integer i : allUnits.keySet())
-				{
-					if (!allUnits.get(i).deepEquals(o.allUnits.get(i)))
-						return false;
-				}
-			}
-		}
-		{
-			boolean thisnull = this.playerStates == null;
-			boolean othernull = o.playerStates == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.playerStates.size() != o.playerStates.size())
-					return false;
-				for (Integer i : playerStates.keySet())
-				{
-					if (!playerStates.get(i).deepEquals(o.playerStates.get(i)))
-						return false;
-				}
-			}
-		}
-		{
-			boolean thisnull = this.observerState == null;
-			boolean othernull = o.observerState == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (!this.observerState.deepEquals(o.observerState))
-					return false;
-			}
-		}
+		if (!DeepEquatableUtil.deepEqualsMap(this.allUnits, o.allUnits))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsMap(this.playerStates, o.playerStates))
+			return false;
+		if (!DeepEquatableUtil.deepEquals(this.observerState, o.observerState))
+			return false;
 		
 		
 		return true;

@@ -11,6 +11,7 @@ import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
 public class PlayerState implements Serializable, DeepEquatable {
 	private static final long serialVersionUID = 1L;
@@ -148,45 +149,11 @@ public class PlayerState implements Serializable, DeepEquatable {
 		
 		if (this.playerNum != o.playerNum)
 			return false;
-		{
-			boolean thisnull = this.units == null;
-			boolean othernull = o.units == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.units.size() != o.units.size())
-					return false;
-				for (Integer i : units.keySet())
-				{
-					if (!units.get(i).deepEquals(o.units.get(i)))
-						return false;
-				}
-			}
-		}
+		if (!DeepEquatableUtil.deepEqualsMap(this.units, o.units))
+			return false;
+		if (!DeepEquatableUtil.deepEqualsMap(this.templates, o.templates))
+			return false;
 		
-		{
-			boolean thisnull = this.templates == null;
-			boolean othernull = o.templates == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.templates.size() != o.templates.size())
-					return false;
-				for (Integer i : templates.keySet())
-				{
-					if (!templates.get(i).deepEquals(o.templates.get(i)))
-						return false;
-				}
-			}
-		}
 		{
 			boolean thisnull = this.upgrades == null;
 			boolean othernull = o.upgrades == null;
