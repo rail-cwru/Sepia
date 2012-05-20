@@ -194,11 +194,10 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		return playerStates.values();
 	}
 
-	public boolean doesPlayerHaveUnit(int player, int templateid) {
-		if(playerStates.get(player) != null)
-		{
-			return playerStates.get(player).getTemplate(templateid) != null;
-		}
+	public boolean hasUnit(int player, int templateid) {
+		for (Unit u : getUnits(player).values())
+			if (u.getTemplate().ID == templateid)
+				return true;
 		return false;
 	}
 	
@@ -524,7 +523,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return false;
 		}
 	}
-	private void addUpgrade(Upgrade upgrade) {
+	public void addUpgrade(Upgrade upgrade) {
 			UpgradeTemplate upgradetemplate = upgrade.getTemplate();
 			int player = upgradetemplate.getPlayer();
 			PlayerState playerState = playerStates.get(player);
@@ -557,7 +556,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			}
 			list.add(upgradetemplate.ID);
 	}
-	public boolean hasUpgrade(Integer upgradetemplateid, int player) {
+	public boolean hasUpgrade(int player, Integer upgradetemplateid) {
 		return playerStates.get(player).getUpgrades().contains(upgradetemplateid);
 	}
 
@@ -1225,14 +1224,14 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		/**
 		 * Get whether a player has a unit of a certain type.  (Say, a tech building).
 		 * If you are not an observer, then this will not work on other players with fog of war on
-		 * @param player
+		 * @param playerNumber
 		 * @param buildingtemplateid
 		 * @return Whether the player with id playerid has a unit with a template with the template id templateid, or false if the player is not you
 		 */
-		public boolean doesPlayerHaveUnit(int playerid, int templateid) {
-			if (state.hasFogOfWar && playerid!=this.player && this.player != Agent.OBSERVER_ID)
+		public boolean hasUnit(int playerNumber, int templateid) {
+			if (state.hasFogOfWar && playerNumber!=this.player && this.player != Agent.OBSERVER_ID)
 				return false;
-			return state.doesPlayerHaveUnit(playerid, templateid);
+			return state.hasUnit(playerNumber, templateid);
 		}
 		/**
 		 * Get whether a player has researched a specific upgrade.
@@ -1244,7 +1243,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		public boolean hasUpgrade(int upgradeid, int playerid) {
 			if (state.hasFogOfWar && playerid!=this.player && this.player != Agent.OBSERVER_ID)
 				return false;
-			return state.hasUpgrade(upgradeid, playerid);
+			return state.hasUpgrade(playerid, upgradeid);
 		}
 		
 		/**

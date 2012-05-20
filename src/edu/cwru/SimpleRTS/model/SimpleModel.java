@@ -498,17 +498,38 @@ public class SimpleModel implements Model {
 							}
 						}
 						UnitTemplate template = (UnitTemplate)state.getTemplate(((ProductionAction)a).getTemplateId());
-						if (u.getTemplate().canProduce(template) && 
-								template.canProduce(state.getView(Agent.OBSERVER_ID)))
+						if (u.getTemplate().canProduce(template))
 						{
-							Unit building = template.produceInstance(state);
-							int[] newxy = state.getClosestPosition(x,y);
-							if (state.tryProduceUnit(building,newxy[0],newxy[1]))
+							boolean prerequisitesMet = true;
+							//check if the prerequisites for the template's production are met
+							for (Integer buildingtemplateid : template.getBuildPrerequisites()) {
+								if (!state.hasUnit(u.getPlayer(), buildingtemplateid)) {
+									prerequisitesMet = false;
+									break;
+								}
+							}
+							if (prerequisitesMet) {
+								for (Integer upgradetemplateid : template.getUpgradePrerequisites()) {
+									if (!state.hasUpgrade(u.getPlayer(),upgradetemplateid)) {
+										prerequisitesMet = false;
+										break;
+									}
+								}
+							}
+							if (prerequisitesMet) {
+								Unit building = template.produceInstance(state);
+								int[] newxy = state.getClosestPosition(x,y);
+								if (state.tryProduceUnit(building,newxy[0],newxy[1]))
+								{
+									history.recordBirth(building, u, state);
+								}
+							}
+							else //didn't meet prerequisites
 							{
-								history.recordBirth(building, u, state);
+								failedTry=true;
 							}
 						}
-						else //it can't produce the appropriate thing, or the thing's prereqs aren't met
+						else //it can't produce the appropriate thing
 						{
 							failedTry=true;
 						}
@@ -522,29 +543,49 @@ public class SimpleModel implements Model {
 							wrongType=true;
 							break;
 						}
-						@SuppressWarnings("rawtypes")
-						Template template = state.getTemplate(((ProductionAction)a).getTemplateId());
-						//check if it is even capable of producing the
-						if (u.getTemplate().canProduce(template) && template.canProduce(state.getView(Agent.OBSERVER_ID)))
+						Template<?> template = state.getTemplate(((ProductionAction)a).getTemplateId());
+						//check if it is even capable of producing the template
+						if (u.getTemplate().canProduce(template))
 						{
-							if (template instanceof UnitTemplate)
-							{
-								Unit produced = ((UnitTemplate)template).produceInstance(state);
-								int[] newxy = state.getClosestPosition(x,y);
-								if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
-								{
-									history.recordBirth(produced, u, state);
+							boolean prerequisitesMet = true;
+							//check if the prerequisites for the template's production are met
+							for (Integer buildingtemplateid : template.getBuildPrerequisites()) {
+								if (!state.hasUnit(u.getPlayer(), buildingtemplateid)) {
+									prerequisitesMet = false;
+									break;
 								}
 							}
-							else if (template instanceof UpgradeTemplate) {
-								UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
-								if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
-								{
-									history.recordUpgrade(upgradetemplate,u, state);
+							if (prerequisitesMet) {
+								for (Integer upgradetemplateid : template.getUpgradePrerequisites()) {
+									if (!state.hasUpgrade(u.getPlayer(), upgradetemplateid)) {
+										prerequisitesMet = false;
+										break;
+									}
 								}
+							}
+							if (prerequisitesMet) {
+								if (template instanceof UnitTemplate)
+								{
+									Unit produced = ((UnitTemplate)template).produceInstance(state);
+									int[] newxy = state.getClosestPosition(x,y);
+									if (state.tryProduceUnit(produced,newxy[0],newxy[1]))
+									{
+										history.recordBirth(produced, u, state);
+									}
+								}
+								else if (template instanceof UpgradeTemplate) {
+									UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
+									if (state.tryProduceUpgrade(upgradetemplate.produceInstance(state)))
+									{
+										history.recordUpgrade(upgradetemplate,u, state);
+									}
+								}
+							}
+							else { //prerequisites not met
+								failedTry=true;
 							}
 						}
-						else//can't produce it, or prereqs aren't met
+						else//can't produce it
 						{
 							failedTry=true;
 						}

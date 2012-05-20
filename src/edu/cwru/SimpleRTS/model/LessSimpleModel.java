@@ -540,7 +540,7 @@ public class LessSimpleModel implements Model {
 							failed.add(aq);
 							//recalcAndStuff();//This marks a place where recalculation would be called for
 						}
-						else if (t==null || !u.getTemplate().canProduce(t) || !t.canProduce(state.getView(Agent.OBSERVER_ID)))
+						else if (t==null || !u.getTemplate().canProduce(t) || !(prerequisitesMet(t,u.getPlayer())))
 						{//if the template does not exist or the unit cannot make the template or the template's prerequisites are not met
 							failed.add(aq);
 							//recalcAndStuff();//This marks a place where recalculation would be called for
@@ -1172,6 +1172,24 @@ public class LessSimpleModel implements Model {
 
 	
 	
+	private boolean prerequisitesMet(Template<?> t, int playerNumber) {
+		
+		boolean prerequisitesMet = true;
+		//check if the prerequisites for the template's production are met
+		for (Integer buildingtemplateid : t.getBuildPrerequisites()) {
+			if (!state.hasUnit(playerNumber, buildingtemplateid)) {
+				return false;
+			}
+		}
+		if (prerequisitesMet) {
+			for (Integer upgradetemplateid : t.getUpgradePrerequisites()) {
+				if (!state.hasUpgrade(playerNumber,upgradetemplateid)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	/**
 	 * More or less duplicates the functionality of getClosestPosition in state, with claims.
 	 * Also returns null instead of -1,-1 if nothing is available.

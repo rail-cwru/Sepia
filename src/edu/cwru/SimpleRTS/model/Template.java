@@ -30,7 +30,8 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	protected int woodCost;
 	protected int foodCost;
 	protected int player;
-	protected PrerequisiteHolder prereqs;
+	protected Set<Integer> buildPrerequisites;
+	protected Set<Integer> upgradePrerequisites;
 	protected Set<String> buildPrereq;
 	protected Set<String> upgradePrereq;
 	protected String name;
@@ -45,14 +46,6 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 		this.ID = ID;
 		buildPrereq = new HashSet<String>();
 		upgradePrereq = new HashSet<String>();
-	}
-	/**
-	 * Find whether the prerequisites are met for making this template.
-	 * @param state
-	 * @return
-	 */
-	public boolean canProduce(StateView state) {
-		return prereqs.isFulfilled(state);
 	}
 	public int getTimeCost() {
 		return timeCost;
@@ -110,25 +103,41 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	public Set<String> getUpgradePrerequisiteStrings() {
 		return upgradePrereq;
 	}
+	
+	/**
+	 * Get the set of template ids of buildings (or units in general) that are required before this template can be made.
+	 * <br>This list is mutable, changing it will alter the things needed to make this template.
+	 * @return A set of template ids for prerequisite buildings/units
+	 */
+	public Set<Integer> getBuildPrerequisites() {
+		return buildPrerequisites;
+	}
+	/**
+	 * Get the set of template ids of upgrades that must be researched before this template can be made.
+	 * <br>This list is mutable, changing it will alter the things needed to make this template.
+	 * @return A set of template ids for prerequisite upgrades.
+	 */
+	public Set<Integer> getUpgradePrerequisites() {
+		return upgradePrerequisites;
+	}
 	/**
 	 * Turn this template's list of prerequisites and things it produces into their ids
 	 */
 	public void namesToIds(List<UnitTemplate> untemplates, List<UpgradeTemplate> uptemplates) {
-		prereqs = new PrerequisiteHolder();
+		buildPrerequisites = new HashSet<Integer>(buildPrereq.size());
 		for (String s : buildPrereq) {
 			for (UnitTemplate template : untemplates) {
 				if (template.getName().equals(s)) {
-//					System.out.println(getName()+" requires building " + s);
-					prereqs.addPrerequisite(new BuildingPrerequisite(getPlayer(), template.ID));
+					buildPrerequisites.add(template.ID);
 					break;
 				}
 			}
 		}
+		upgradePrerequisites = new HashSet<Integer>(upgradePrereq.size());
 		for (String s : upgradePrereq) {
 			for (UpgradeTemplate template : uptemplates) {
 				if (template.getName().equals(s)) {
-//					System.out.println(getName()+" requires upgrade " + s);
-					prereqs.addPrerequisite(new UpgradePrerequisite(getPlayer(), template.hashCode()));
+					upgradePrerequisites.add(template.ID);
 					break;
 				}
 			}

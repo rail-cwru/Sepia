@@ -6,6 +6,7 @@ import java.util.List;
 import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 public class UpgradeTemplate extends Template<Upgrade>
 {
 	
@@ -204,20 +205,10 @@ public class UpgradeTemplate extends Template<Upgrade>
 					return false;
 				if (this.player != o.player)
 					return false;
-				{
-					boolean thisnull = this.prereqs == null;
-					boolean othernull = o.prereqs == null;
-					if ((thisnull == othernull)==false)
-					{
-						return false;
-					}
-					//if both aren't null, need to check deeper
-					if (!thisnull && !othernull)
-					{
-						if (!prereqs.deepEquals(o))
-							return false;
-					}
-				}
+				if (!DeepEquatableUtil.deepEqualsIntSet(this.buildPrerequisites, o.buildPrerequisites))
+					return false;
+				if (!DeepEquatableUtil.deepEqualsIntSet(this.upgradePrerequisites, o.upgradePrerequisites))
+					return false;
 				{
 					boolean thisnull = this.buildPrereq == null;
 					boolean othernull = o.buildPrereq == null;

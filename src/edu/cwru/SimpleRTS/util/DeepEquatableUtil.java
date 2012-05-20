@@ -1,7 +1,9 @@
 package edu.cwru.SimpleRTS.util;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.cwru.SimpleRTS.action.Action;
 
@@ -117,6 +119,35 @@ public class DeepEquatableUtil {
 			}
 		}
 		
+		return true;
+	}
+	/**
+	 * A method to compare the deep equality of two Sets of Integer objects.
+	 * @param obj1
+	 * @param obj2
+	 * @return True if both arguments are null or if both are non-null, of the same size, and each .  False otherwise.
+	 */
+	public static boolean deepEqualsIntSet(Set<Integer> obj1, Set<Integer> obj2) {
+		//This method is more specific because Sets are wierd, basing themselves on hashCode() and compareTo()
+		//Thus restricting to a known type makes sense.
+		//This might be a little overly specific, but no other kinds of Set need comparing at this point.
+		boolean obj1null = obj1 == null;
+		boolean obj2null = obj2 == null;
+		if ((obj1null == obj2null)==false)
+		{
+			return false;
+		}
+		//if both aren't null, need to check deeper
+		if (!obj1null && !obj2null)
+		{
+			if (obj1.size() != obj2.size())
+				return false;
+			for (Integer i : obj1)
+			{
+				if (!obj2.contains(i))
+					return false;
+			}
+		}
 		return true;
 	}
 }

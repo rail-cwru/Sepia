@@ -20,7 +20,7 @@ public class BuildingPrerequisite implements Prerequisite{
 	}
 	@Override
 	public boolean isFulfilled(StateView state) {
-		return state.doesPlayerHaveUnit(player, buildingtemplateid);
+		return state.hasUnit(player, buildingtemplateid);
 	}
 	public String toString() {
 		return "BuildingPrereq, requires player " + player + " to have built template " + buildingtemplateid;
