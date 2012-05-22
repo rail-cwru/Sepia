@@ -23,8 +23,10 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode.Type;
 import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
+import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
 public class PlayerAdapterTest {
+	
 	
 	
 	@Test
@@ -34,6 +36,20 @@ public class PlayerAdapterTest {
 		
 		PlayerState player = adapter.fromXml(xml);	
 		checkEquality(xml, player);
+	}
+	/**
+	 * Starts with a randomly generated xmlplayer, then goes to normal (which is assumed to work)
+	 * Then it goes to and from again, and compares the first normal to the second using deepequals.
+	 */
+	@Test
+	public void testToXmlAssumingFromWorks()
+	{
+		XmlPlayer xml = AdapterTestUtil.createExamplePlayer(new Random(053));
+		PlayerAdapter adapter = new PlayerAdapter();
+		
+		PlayerState playerFirstTry = adapter.fromXml(xml);
+		PlayerState playerSecondTry = adapter.fromXml(adapter.toXml(playerFirstTry));
+		assertTrue("The once and thrice converted don't match, therefore either toXml or fromXml is not working (or the deepEquals, but hopefully not that)",DeepEquatableUtil.deepEquals(playerFirstTry, playerSecondTry));
 	}
 	public void checkEquality(XmlPlayer xml, PlayerState player)
 	{
@@ -78,15 +94,15 @@ public class PlayerAdapterTest {
 		assertEquals(t.getName(),xt.getName());
 		assertEquals(t.getPlayer(),playernum);
 		assertEquals(t.getTimeCost(),xt.getTimeCost());
-		assertEquals(t.getUnitPrerequisiteStrings().size(),xt.getUnitPrerequisite().size());
-		for(String s : xt.getUnitPrerequisite())
+		assertEquals(t.getBuildPrerequisites().size(),xt.getUnitPrerequisite().size());
+		for(Integer s : xt.getUnitPrerequisite())
 		{
-			assertTrue(t.getUnitPrerequisiteStrings().contains(s));
+			assertTrue(t.getBuildPrerequisites().contains(s));
 		}
-		assertEquals(t.getUpgradePrerequisiteStrings().size(),xt.getUpgradePrerequisite().size());
-		for(String s : xt.getUpgradePrerequisite())
+		assertEquals(t.getUpgradePrerequisites().size(),xt.getUpgradePrerequisite().size());
+		for(Integer s : xt.getUpgradePrerequisite())
 		{
-			assertTrue(t.getUpgradePrerequisiteStrings().contains(s));
+			assertTrue(t.getUpgradePrerequisites().contains(s));
 		}
 		assertEquals(t.getWoodCost(),xt.getWoodCost());
 		if (t instanceof UpgradeTemplate)
@@ -101,9 +117,9 @@ public class PlayerAdapterTest {
 			assertEquals(ut.getSightRangeChange(),uxt.getSightRangeChange());
 			
 			assertEquals(ut.getAffectedUnits().size(),uxt.getAffectedUnitTypes().size());
-			for(UnitTemplate affected : ut.getAffectedUnits())
+			for(Integer affected : ut.getAffectedUnits())
 			{
-				assertTrue("xml:"+uxt.getAffectedUnitTypes()+" normal:"+ut.getAffectedUnits(),uxt.getAffectedUnitTypes().contains(affected.getName()));
+				assertTrue("xml:"+uxt.getAffectedUnitTypes()+" normal:"+ut.getAffectedUnits(),uxt.getAffectedUnitTypes().contains(affected));
 			}
 		}
 		if (t instanceof UnitTemplate)
@@ -128,10 +144,10 @@ public class PlayerAdapterTest {
 			assertEquals(ut.getDurationGatherWood(),uxt.getDurationGatherWood());
 			assertEquals(ut.getDurationDeposit(),uxt.getDurationDeposit());
 			assertEquals(ut.getDurationMove(),uxt.getDurationMove());
-			assertEquals(ut.getProducesStrings().size(),uxt.getProduces().size());
-			for(String s : uxt.getProduces())
+			assertEquals(ut.getProduces().size(),uxt.getProduces().size());
+			for(Integer s : uxt.getProduces())
 			{
-				assertTrue(ut.getProducesStrings().contains(s));
+				assertTrue(ut.getProduces().contains(s));
 			}
 			assertEquals(ut.getRange(),uxt.getRange());
 			assertEquals(ut.getSightRange(),uxt.getSightRange());

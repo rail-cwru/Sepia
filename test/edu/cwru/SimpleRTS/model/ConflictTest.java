@@ -1034,15 +1034,13 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 				template.setFoodCost(resourcesused[i][2]?foodeach:0);
 				template.setName((resourcesused[i][0]?"g":"")+(resourcesused[i][1]?"w":"")+(resourcesused[i][2]?"f":""));
 				template.setPlayer(player1);
-				btemplate.addProductionItem(template.getName());
+				btemplate.addProductionItem(template.ID);
 				s.addTemplate(template);
 				tunittemplates.add(template);
 				idofeachtype[i]=template.ID;
 			}
 		s.addTemplate(btemplate);
 		tunittemplates.add(btemplate);
-		for (UnitTemplate t : tunittemplates)
-			t.namesToIds(tunittemplates, new ArrayList<UpgradeTemplate>());
 		
 		
 	

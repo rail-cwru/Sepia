@@ -201,22 +201,23 @@ public class Editor extends JFrame {
 //		}.setThings(state,this));
 //		revealResourcesOff.setSelected(true);
 		
-		String[] unitnames;
-		List<UnitTemplate> tempunittemplates=null;
+		ArrayList<String> unitnames;
+		List<Template<?>> alltemplates=null;
 		try {
-			tempunittemplates = TypeLoader.loadUnitsFromFile(templatefilename, -3, new State());
+			alltemplates = TypeLoader.loadFromFile(templatefilename, -3, new State());
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		if(tempunittemplates == null)
-			tempunittemplates = new ArrayList<UnitTemplate>(0);
-		unitnames = new String[tempunittemplates.size()];
-		for (int i = 0; i<unitnames.length;i++) {
-			unitnames[i] = tempunittemplates.get(i).getName();
+		if(alltemplates == null)
+			alltemplates = new ArrayList<Template<?>>(0);
+		unitnames = new ArrayList<String>();
+		for (int i = 0; i<alltemplates.size();i++) {
+			if (alltemplates.get(i) instanceof UnitTemplate)
+				unitnames.add(alltemplates.get(i).getName());
 		}
-		templateSelector = new JComboBox(unitnames);		
+		templateSelector = new JComboBox(unitnames.toArray(new String[0]));
 		templateSelector.addActionListener(new ActionListener() {
 			JRadioButton button;
 			public ActionListener setButton(JRadioButton button) {

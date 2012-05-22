@@ -308,7 +308,7 @@ public class DurativePlannerTest {
 			targetProduceUnit.setFoodCost(0);
 			targetProduceUnit.setName("ProducedUnit");
 			targetProduceUnit.setPlayer(player1);
-			superUnit.addProductionItem(targetProduceUnit.getName());
+			superUnit.addProductionItem(targetProduceUnit.ID);
 			unittemplates.add(targetProduceUnit);
 		}
 		{
@@ -319,7 +319,7 @@ public class DurativePlannerTest {
 			targetProduceUpgrade.setFoodCost(0);
 			targetProduceUpgrade.setName("ProducedUpgrade");
 			targetProduceUpgrade.setPlayer(player1);
-			superUnit.addProductionItem(targetProduceUpgrade.getName());
+			superUnit.addProductionItem(targetProduceUpgrade.ID);
 			upgradetemplates.add(targetProduceUpgrade);
 		}
 		
@@ -329,11 +329,6 @@ public class DurativePlannerTest {
 		
 		
 		
-		//convert the names to ids
-		for(UnitTemplate u : unittemplates)
-			u.namesToIds(unittemplates, upgradetemplates);
-		for(UpgradeTemplate u : upgradetemplates)
-			u.namesToIds(unittemplates, upgradetemplates);
 		
 		//toss the templates into the state
 		for(UnitTemplate u : unittemplates)

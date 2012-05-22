@@ -49,7 +49,7 @@ public class AdapterTestUtil {
 	@BeforeClass
 	public static Map<Integer,Template> loadTemplates() throws FileNotFoundException, JSONException {
 		Map<Integer,Template> templates = new HashMap<Integer,Template>();
-		List<UnitTemplate> templateList = TypeLoader.loadUnitsFromFile("data/unit_templates", 0,new State());
+		List<Template<?>> templateList = TypeLoader.loadFromFile("data/unit_templates", 0,new State());
 		for(Template t : templateList)
 		{
 			templates.put(t.ID,t);
@@ -217,7 +217,7 @@ public class AdapterTestUtil {
 		}
 		
 	}
-	public static XmlUpgradeTemplate createExampleUpgradeTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
+	public static XmlUpgradeTemplate createExampleUpgradeTemplate(Random r, List<Integer> idsofunits, List<Integer> idsofupgrades) {
 		XmlUpgradeTemplate xml = new XmlUpgradeTemplate();
 		xml.setID(r.nextInt());
 		xml.setPiercingAttackChange(r.nextInt());
@@ -231,24 +231,24 @@ public class AdapterTestUtil {
 		xml.setName(new String(name));
 		xml.setTimeCost(r.nextInt());
 		xml.setWoodCost(r.nextInt());
-		for (String s : namesofunits)
+		for (Integer i : idsofunits)
 		{
 			if (r.nextBoolean())
-				xml.getAffectedUnitTypes().add(s);
+				xml.getAffectedUnitTypes().add(i);
 		}
-		for (String s : namesofunits)
+		for (Integer i : idsofunits)
 		{
 			if (r.nextBoolean())
-				xml.getUnitPrerequisite().add(s);
+				xml.getUnitPrerequisite().add(i);
 		}
-		for (String s : namesofupgrades)
+		for (Integer i : idsofupgrades)
 		{
 			if (r.nextBoolean())
-				xml.getUpgradePrerequisite().add(s);
+				xml.getUpgradePrerequisite().add(i);
 		}
 		return xml;
 	}
-	public static XmlUnitTemplate createExampleUnitTemplate(Random r, List<String> namesofunits, List<String> namesofupgrades) {
+	public static XmlUnitTemplate createExampleUnitTemplate(Random r, List<Integer> idsofunits, List<Integer> idsofupgrades) {
 		XmlUnitTemplate xml = new XmlUnitTemplate();
 		xml.setID(r.nextInt());
 		char[] name = new char[r.nextInt(4)+3];
@@ -276,25 +276,25 @@ public class AdapterTestUtil {
 		xml.setDurationDeposit(r.nextInt());
 		xml.setDurationGatherGold(r.nextInt());
 		xml.setDurationGatherWood(r.nextInt());
-		for (String s : namesofunits)
+		for (Integer i : idsofunits)
 		{
 			if (r.nextBoolean())
-				xml.getProduces().add(s);
+				xml.getProduces().add(i);
 		}
-		for (String s : namesofupgrades)
+		for (Integer i : idsofupgrades)
 		{
 			if (r.nextBoolean())
-				xml.getProduces().add(s);
+				xml.getProduces().add(i);
 		}
-		for (String s : namesofunits)
+		for (Integer i : idsofunits)
 		{
 			if (r.nextBoolean())
-				xml.getUnitPrerequisite().add(s);
+				xml.getUnitPrerequisite().add(i);
 		}
-		for (String s : namesofupgrades)
+		for (Integer i : idsofupgrades)
 		{
 			if (r.nextBoolean())
-				xml.getUpgradePrerequisite().add(s);
+				xml.getUpgradePrerequisite().add(i);
 		}
 		
 		return xml;
@@ -303,8 +303,8 @@ public class AdapterTestUtil {
 		XmlPlayer xml = new XmlPlayer();
 		
 		List<Integer> targetidssofar = new ArrayList<Integer>();
-		List<String> unitnamessofar=new ArrayList<String>();
-		List<String> upgradenamessofar=new ArrayList<String>();
+		List<Integer> unitidssofar=new ArrayList<Integer>();
+		List<Integer> upgradeidssofar=new ArrayList<Integer>();
 		List<Integer> unittemplateidssofar = new ArrayList<Integer>();
 		List<Integer> alltemplateidssofar = new ArrayList<Integer>();
 		List<XmlTemplate> alltemplatessofar = new ArrayList<XmlTemplate>();
@@ -314,18 +314,18 @@ public class AdapterTestUtil {
 		{
 			if  (r.nextBoolean())
 			{
-				XmlUpgradeTemplate toadd = createExampleUpgradeTemplate(r,unitnamessofar,upgradenamessofar);
+				XmlUpgradeTemplate toadd = createExampleUpgradeTemplate(r,unitidssofar,upgradeidssofar);
 				xml.getTemplate().add(toadd);
-				upgradenamessofar.add(toadd.getName());
+				upgradeidssofar.add(toadd.getID());
 				alltemplateidssofar.add(toadd.getID());
 				alltemplatessofar.add(toadd);
 				upgradetemplateidssofar.add(toadd.getID());
 			}
 			else
 			{
-				XmlUnitTemplate toadd = createExampleUnitTemplate(r,unitnamessofar,upgradenamessofar);
+				XmlUnitTemplate toadd = createExampleUnitTemplate(r,unitidssofar,upgradeidssofar);
 				xml.getTemplate().add(toadd);
-				unitnamessofar.add(toadd.getName());
+				unitidssofar.add(toadd.getID());
 				alltemplateidssofar.add(toadd.getID());
 				alltemplatessofar.add(toadd);
 				unittemplateidssofar.add(toadd.getID());
@@ -340,16 +340,16 @@ public class AdapterTestUtil {
 				return createExamplePlayer(r);
 			}
 		}
-		for (String name : unitnamessofar)
+		for (Integer id: unitidssofar)
 		{
-			if (unitnamessofar.indexOf(name) != unitnamessofar.lastIndexOf(name) || upgradenamessofar.contains(name))
+			if (unitidssofar.indexOf(id) != unitidssofar.lastIndexOf(id) || upgradeidssofar.contains(id))
 			{
 				return createExamplePlayer(r);
 			}
 		}
-		for (String name : upgradenamessofar)
+		for (Integer id : upgradeidssofar)
 		{
-			if (upgradenamessofar.indexOf(name) != upgradenamessofar.lastIndexOf(name) || unitnamessofar.contains(name))
+			if (upgradeidssofar.indexOf(id) != upgradeidssofar.lastIndexOf(id) || unitidssofar.contains(id))
 			{
 				return createExamplePlayer(r);
 			}

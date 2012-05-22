@@ -2,6 +2,7 @@ package edu.cwru.SimpleRTS.model.unit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -46,13 +47,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected int durationAttack;
 	protected int durationDeposit;
 	private UnitTemplateView view;
-	private List<String> produces;
 	private List<Integer> producesID;
 	public UnitTemplate(int ID)
 	{
 		super(ID);
 		producesID = new ArrayList<Integer>();
-		produces = new ArrayList<String>();
 	}
 	@Override
 	public Unit produceInstance(IDDistributer idsource) {
@@ -231,8 +230,16 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setDurationDeposit(int durationDeposit) {
 		this.durationDeposit = durationDeposit;
 	}
-	public void addProductionItem(String item) {
-		this.produces.add(item);
+	public void addProductionItem(Integer item) {
+		this.producesID.add(item);
+	}
+	/**
+	 * Get a list of IDs of templates that this unit can make.
+	 * <br>Changing this list will alter the data of this template.
+	 * @return A list of IDs for templates that can be produced/built by this unit. 
+	 */
+	public List<Integer> getProduces() {
+		return this.producesID;
 	}
 	/**
 	 * Return whether the unit is capable of producing a specific template
@@ -246,27 +253,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			if (t.ID == i)
 				return true;
 		return false;
-	}
-	@Override
-	public void namesToIds(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
-		super.namesToIds(unittemplates, upgradetemplates);
-		producesID.clear();
-		for (String s : produces) {
-			for (@SuppressWarnings("rawtypes") Template t : unittemplates) {
-				if (s.equals(t.getName())) {
-					producesID.add(t.ID);
-					break;
-				}
-				
-			}
-			for (@SuppressWarnings("rawtypes") Template t : upgradetemplates) {
-				if (s.equals(t.getName())) {
-					producesID.add(t.ID);
-					break;
-				}
-				
-			}
-		}
 	}
 	public String toString() {
 		return name;
@@ -324,9 +310,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			range = template.getRange();
 			armor = template.getArmor();
 			sightRange = template.getSightRange();
-			producesID = new ArrayList<Integer>(template.producesID.size());
+			List<Integer> tproducesID = new ArrayList<Integer>(template.producesID.size());
 			for (Integer i : template.producesID)
-				producesID.add(i);
+				tproducesID.add(i);
+				//note: get method currently relies on producesID being unmodifiable (as it returns it directly), so change that if you change this
+			producesID = Collections.unmodifiableList(tproducesID);
 			character = template.getCharacter();
 			acceptsGold = template.canAcceptGold;
 			acceptsWood = template.canAcceptWood;
@@ -386,10 +374,19 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public int getSightRange() { return sightRange;	}
 		/**
 		 * Get whether units with this template are able to make a specific other template.  This includes making by either building or producing.
+		 * <br>Currently just a List.contains()
 		 * @param templateID The ID of the template that may be able to BE produced.
 		 * @return Whether this template can make the template in the parameter.
 		 */
 		public boolean canProduce(Integer templateID) {return producesID.contains(templateID);};
+		/**
+		 * Get a list of template ids that can be produced by this unit. 
+		 * <br>The list is unmodifiable.
+		 * @return A list of ids of templates this unit can make.
+		 */
+		public List<Integer> getProduces() {
+			return producesID;
+			}
 		/**
 		 * Get the character to be used in visualization.
 		 * @return The character to be used in visualization.
@@ -441,13 +438,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		 */
 		public int getDurationDeposit() {return durationDeposit;};
 	}
-	/**
-	 * For xml saving
-	 * @return
-	 */
-	public List<String> getProducesStrings() {
-		return produces;
-	}
 	@Override
 	public boolean deepEquals(Object other) {
 		//note, this method ignores the view.  Hopefully that is not an issue
@@ -463,7 +453,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		
 		if (this.timeCost != o.timeCost)
 			return false;
-		if (this.goldCost != o.timeCost)
+		if (this.goldCost != o.goldCost)
 			return false;
 		if (this.woodCost != o.woodCost)
 			return false;
@@ -475,44 +465,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			return false;
 		if (!DeepEquatableUtil.deepEqualsIntSet(this.upgradePrerequisites, o.upgradePrerequisites))
 			return false;
-		{
-			boolean thisnull = this.buildPrereq == null;
-			boolean othernull = o.buildPrereq == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.buildPrereq.size() != o.buildPrereq.size())
-					return false;
-				for (String s : this.buildPrereq)
-				{
-					if (!o.buildPrereq.contains(s))
-						return false;
-				}
-			}
-		}
-		{
-			boolean thisnull = this.upgradePrereq == null;
-			boolean othernull = o.upgradePrereq == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.upgradePrereq.size() != o.upgradePrereq.size())
-					return false;
-				for (String s : this.upgradePrereq)
-				{
-					if (!o.upgradePrereq.contains(s))
-						return false;
-				}
-			}
-		}
 		{
 			boolean thisnull = this.name== null;
 			boolean othernull = o.name == null;
@@ -544,7 +496,9 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			return false;
 		if (this.canGather != o.canGather)
 			return false;
-		if (this.canBuild != o.canMove)
+		if (this.canBuild != o.canBuild)
+			return false;
+		if (this.canMove != o.canMove)
 			return false;
 		if (this.canAcceptGold != o.canAcceptGold)
 			return false;
@@ -574,25 +528,6 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			return false;
 		
 		
-		{
-			boolean thisnull = this.produces == null;
-			boolean othernull = o.produces == null;
-			if ((thisnull == othernull)==false)
-			{
-				return false;
-			}
-			//if both aren't null, need to check deeper
-			if (!thisnull && !othernull)
-			{
-				if (this.produces.size() != o.produces.size())
-					return false;
-				for (String s : this.produces)
-				{
-					if (!o.produces.contains(s))
-						return false;
-				}
-			}
-		}
 		{
 			boolean thisnull = this.producesID == null;
 			boolean othernull = o.producesID == null;

@@ -18,8 +18,8 @@ public class UnitTemplateAdapter {
 		ut.setGoldGatherRate(xml.getGoldGatherRate());//if(obj.has("GoldPerTrip"))
 		ut.setName(xml.getName());//template.setName(obj.getString("Name"));
 		ut.setPiercingAttack(xml.getPiercingAttack());//if(obj.has("Piercing"))
-		for (String s : xml.getProduces())//if(obj.has("Produces"))
-			ut.addProductionItem(s);
+		for (Integer i : xml.getProduces())//if(obj.has("Produces"))
+			ut.addProductionItem(i);
 		ut.setRange(xml.getRange());//if(obj.has("Range"))
 		ut.setSightRange(xml.getSightRange());//template.setSightRange(obj.getInt("SightRange"));
 		ut.setTimeCost(xml.getTimeCost());//template.setTimeCost(obj.getInt("TimeCost"));
@@ -36,10 +36,10 @@ public class UnitTemplateAdapter {
 		ut.setDurationGatherGold(xml.getDurationGatherGold());
 		ut.setDurationGatherWood(xml.getDurationGatherWood());
 		ut.setPlayer(player);
-		for (String s : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
-			ut.addBuildPrereqItem(s);
-		for (String s : xml.getUpgradePrerequisite())//if(obj.has("UpgradePrereq"))
-			ut.addUpgradePrereqItem(s);
+		for (Integer i : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
+			ut.addBuildPrerequisite(i);
+		for (Integer i : xml.getUpgradePrerequisite())//if(obj.has("UpgradePrereq"))
+			ut.addUpgradePrerequisite(i);
 		
 		
 		
@@ -56,10 +56,10 @@ public class UnitTemplateAdapter {
 		xml.setWoodCost(ut.getWoodCost());
 		xml.setGoldCost(ut.getGoldCost());
 		
-		for (String s:ut.getUnitPrerequisiteStrings())
-			xml.getUnitPrerequisite().add(s);
-		for (String s:ut.getUpgradePrerequisiteStrings())
-			xml.getUpgradePrerequisite().add(s);
+		for (Integer i : ut.getBuildPrerequisites())
+			xml.getUnitPrerequisite().add(i);
+		for (Integer i : ut.getUpgradePrerequisites())
+			xml.getUpgradePrerequisite().add(i);
 		
 		xml.setArmor(ut.getArmor());
 		xml.setBaseAttack(ut.getBasicAttack());
@@ -82,8 +82,8 @@ public class UnitTemplateAdapter {
 		xml.setDurationMove(ut.getDurationMove());
 		xml.setDurationGatherGold(ut.getDurationGatherGold());
 		xml.setDurationGatherWood(ut.getDurationGatherWood());
-		for (String s:ut.getProducesStrings())
-			xml.getProduces().add(s);
+		for (Integer i : ut.getProduces())
+			xml.getProduces().add(i);
 		
 		return xml;
 	}

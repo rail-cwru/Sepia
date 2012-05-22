@@ -531,7 +531,13 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			if (!list.contains(upgradetemplate.ID))
 			{
 				//upgrade all of the affected units
-				for (UnitTemplate toupgrade : upgradetemplate.getAffectedUnits()) {
+				for (Integer toupgradeid : upgradetemplate.getAffectedUnits()) {
+					Template t = getTemplate(toupgradeid);
+					if (t==null || !t.getClass().equals(UnitTemplate.class))
+					{
+						throw new RuntimeException("Upgrade has \"affected unit\" is not unit or isn't in the state");
+					}
+					UnitTemplate toupgrade = (UnitTemplate)t;
 					toupgrade.setPiercingAttack(toupgrade.getPiercingAttack() + upgradetemplate.getPiercingAttackChange());
 					toupgrade.setBasicAttack(toupgrade.getBasicAttack() + upgradetemplate.getBasicAttackChange());
 					toupgrade.setArmor(toupgrade.getArmor() + upgradetemplate.getArmorChange());

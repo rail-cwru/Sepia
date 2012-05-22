@@ -134,7 +134,7 @@ public class PrereqTest {
 			producertemplate = new UnitTemplate(state.nextTemplateID());
 			producertemplate.setName("Producer");
 			builder.addTemplate(producertemplate);
-			producertemplate.addProductionItem(producee.getName());
+			producertemplate.addProductionItem(producee.ID);
 			unittemplates.add(producertemplate);
 				numearlier++;
 		}
@@ -143,27 +143,21 @@ public class PrereqTest {
 			UpgradeTemplate newTemplate = new UpgradeTemplate(state.nextTemplateID());
 			newTemplate.setName("Upgrade"+i);
 			newTemplate.setPlayer(player);
-			producee.addUpgradePrereqItem(newTemplate.getName());
+			producee.addUpgradePrerequisite(newTemplate.ID);
 			builder.addTemplate(newTemplate);
 			upgradetemplates.add(newTemplate);
-			producertemplate.addUpgradePrereqItem(newTemplate.getName());
+			producertemplate.addUpgradePrerequisite(newTemplate.ID);
 		}
 		for (int i = 0; i<whichunits.length;i++)
 		{
 			UnitTemplate newTemplate = new UnitTemplate(state.nextTemplateID());
 			newTemplate.setName("Unit"+i);
 			newTemplate.setPlayer(player);
-			producee.addBuildPrereqItem(newTemplate.getName());
+			producee.addBuildPrerequisite(newTemplate.ID);
 			builder.addTemplate(newTemplate);
 			unittemplates.add(newTemplate);
-			producertemplate.addBuildPrereqItem(newTemplate.getName());
+			producertemplate.addBuildPrerequisite(newTemplate.ID);
 		}
-		producertemplate.namesToIds(unittemplates, upgradetemplates);
-		producee.namesToIds(unittemplates, upgradetemplates);
-		for (UpgradeTemplate t : upgradetemplates)
-			t.namesToIds(unittemplates, upgradetemplates);
-		for (UnitTemplate t : unittemplates)
-			t.namesToIds(unittemplates, upgradetemplates);
 		for (int i = 0; i<whichupgrades.length;i++)
 			if (whichupgrades[i])
 				state.addUpgrade(upgradetemplates.get(i).produceInstance(state));

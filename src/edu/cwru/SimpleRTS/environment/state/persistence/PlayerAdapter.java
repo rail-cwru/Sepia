@@ -82,12 +82,10 @@ public class PlayerAdapter {
 		}
 		for (UnitTemplate t : myunittemplates)
 		{
-			t.namesToIds(myunittemplates,myupgradetemplates);
 			player.addTemplate(t);
 		}
 		for (UpgradeTemplate t : myupgradetemplates)
 		{
-			t.namesToIds(myunittemplates,myupgradetemplates);
 			player.addTemplate(t);
 		}
 		

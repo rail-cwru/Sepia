@@ -20,20 +20,18 @@ public class UpgradeTemplate extends Template<Upgrade>
 	private int healthChange;
 	private int rangeChange;
 	private int sightRangeChange;
-	private List<UnitTemplate> unitTemplatesAffected;
-	private String[] stringUnitsAffected;
+	private List<Integer> unitTemplatesAffected;
 	private UpgradeTemplateView view;
 	public UpgradeTemplate(int ID)
 	{
 		super(ID);
-		stringUnitsAffected=new String[0];
-		
+		unitTemplatesAffected = new ArrayList<Integer>();
 	}
 	public Upgrade produceInstance(IDDistributer idsource)
 	{
 		return new Upgrade(this);
 	}
-	public List<UnitTemplate> getAffectedUnits()
+	public List<Integer> getAffectedUnits()
 	{
 		return unitTemplatesAffected;
 	}
@@ -73,28 +71,9 @@ public class UpgradeTemplate extends Template<Upgrade>
 	public int getSightRangeChange() {
 		return sightRangeChange;
 	}
-	public void addAffectedUnit(String templatename)
+	public void addAffectedUnit(Integer templateID)
 	{//needs to be list, kept as array to avoid breaking serialized stuff,hopefully
-		String[] newstringunitsaffected = new String[stringUnitsAffected.length+1];
-		System.arraycopy(stringUnitsAffected, 0, newstringunitsaffected, 0, stringUnitsAffected.length);
-		newstringunitsaffected[newstringunitsaffected.length-1]=templatename;
-		stringUnitsAffected=newstringunitsaffected;
-	}
-	@Override
-	public void namesToIds(List<UnitTemplate> unittemplates, List<UpgradeTemplate> upgradetemplates) {
-		super.namesToIds(unittemplates, upgradetemplates);
-		unitTemplatesAffected = new LinkedList<UnitTemplate>();
-		if (stringUnitsAffected != null) {
-			for (int i = 0; i<stringUnitsAffected.length;i++) {
-				for (UnitTemplate t : unittemplates) {
-					if (stringUnitsAffected[i].equals(t.getName())) {
-						unitTemplatesAffected.add((UnitTemplate)t);
-					}
-				}
-			}
-		}
-		
-		
+		unitTemplatesAffected.add(templateID);
 	}
 	@Override
 	public UpgradeTemplateView getView() {
@@ -126,8 +105,7 @@ public class UpgradeTemplate extends Template<Upgrade>
 			sightRangeChange = template.sightRangeChange;
 			healthChange = template.healthChange;
 			List<Integer> taffectedUnitTypes = new ArrayList<Integer>(template.unitTemplatesAffected.size());
-			for (UnitTemplate u : template.unitTemplatesAffected)
-				taffectedUnitTypes.add(u.ID);
+			taffectedUnitTypes.addAll(template.unitTemplatesAffected);
 			affectedUnitTypes = Collections.unmodifiableList(taffectedUnitTypes);
 		}
 		/**
@@ -197,7 +175,7 @@ public class UpgradeTemplate extends Template<Upgrade>
 				
 				if (this.timeCost != o.timeCost)
 					return false;
-				if (this.goldCost != o.timeCost)
+				if (this.goldCost != o.goldCost)
 					return false;
 				if (this.woodCost != o.woodCost)
 					return false;
@@ -209,44 +187,6 @@ public class UpgradeTemplate extends Template<Upgrade>
 					return false;
 				if (!DeepEquatableUtil.deepEqualsIntSet(this.upgradePrerequisites, o.upgradePrerequisites))
 					return false;
-				{
-					boolean thisnull = this.buildPrereq == null;
-					boolean othernull = o.buildPrereq == null;
-					if ((thisnull == othernull)==false)
-					{
-						return false;
-					}
-					//if both aren't null, need to check deeper
-					if (!thisnull && !othernull)
-					{
-						if (this.buildPrereq.size() != o.buildPrereq.size())
-							return false;
-						for (String s : this.buildPrereq)
-						{
-							if (!o.buildPrereq.contains(s))
-								return false;
-						}
-					}
-				}
-				{
-					boolean thisnull = this.upgradePrereq == null;
-					boolean othernull = o.upgradePrereq == null;
-					if ((thisnull == othernull)==false)
-					{
-						return false;
-					}
-					//if both aren't null, need to check deeper
-					if (!thisnull && !othernull)
-					{
-						if (this.upgradePrereq.size() != o.upgradePrereq.size())
-							return false;
-						for (String s : this.upgradePrereq)
-						{
-							if (!o.upgradePrereq.contains(s))
-								return false;
-						}
-					}
-				}
 				{
 					boolean thisnull = this.name== null;
 					boolean othernull = o.name == null;
@@ -276,44 +216,8 @@ public class UpgradeTemplate extends Template<Upgrade>
 					return false;
 				if (this.sightRangeChange != o.sightRangeChange)
 					return false;
-				{
-					boolean thisnull = this.unitTemplatesAffected == null;
-					boolean othernull = o.unitTemplatesAffected == null;
-					if ((thisnull == othernull)==false)
-					{
-						return false;
-					}
-					//if both aren't null, need to check deeper
-					if (!thisnull && !othernull)
-					{
-						if (this.unitTemplatesAffected.size() != o.unitTemplatesAffected.size())
-							return false;
-						for (int i = 0; i<this.unitTemplatesAffected.size(); i++)
-						{
-							if (!this.unitTemplatesAffected.get(i).deepEquals(o.unitTemplatesAffected.get(i)))
-								return false;
-						}
-					}
-				}
-				{
-					boolean thisnull = this.stringUnitsAffected == null;
-					boolean othernull = o.stringUnitsAffected == null;
-					if ((thisnull == othernull)==false)
-					{
-						return false;
-					}
-					//if both aren't null, need to check deeper
-					if (!thisnull && !othernull)
-					{
-						if (this.stringUnitsAffected.length != o.stringUnitsAffected.length)
-							return false;
-						for (int i = 0; i<this.stringUnitsAffected.length; i++)
-						{
-							if (!this.stringUnitsAffected[i].equals(o.stringUnitsAffected[i]))
-								return false;
-						}
-					}
-				}
+				if (!DeepEquatableUtil.deepEqualsIntList(unitTemplatesAffected, o.unitTemplatesAffected))
+					return false;
 				return true;
 	}
 	

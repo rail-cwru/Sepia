@@ -15,13 +15,13 @@ public class UpgradeTemplateAdapter {
 		ut.setTimeCost(xml.getTimeCost());//template.setTimeCost(obj.getInt("TimeCost"));
 		ut.setWoodCost(xml.getWoodCost());//template.setWoodCost(obj.getInt("WoodCost"));
 		ut.setPlayer(player);
-		for (String s : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
-			ut.addBuildPrereqItem(s);
-		for (String s : xml.getUpgradePrerequisite())//if(obj.has("UpgradePrereq"))
-			ut.addUpgradePrereqItem(s);
+		for (Integer i : xml.getUnitPrerequisite())//if(obj.has("BuildPrereq"))
+			ut.addBuildPrerequisite(i);
+		for (Integer i : xml.getUpgradePrerequisite())//if(obj.has("UpgradePrereq"))
+			ut.addUpgradePrerequisite(i);
 		
-		for (String s : xml.getAffectedUnitTypes())//if(obj.has("Produces"))
-			ut.addAffectedUnit(s);
+		for (Integer i : xml.getAffectedUnitTypes())//if(obj.has("Produces"))
+			ut.addAffectedUnit(i);
 		
 		ut.setPiercingAttackChange(xml.getPiercingAttackChange());
 		ut.setBasicAttackChange(xml.getBasicAttackChange());
@@ -47,13 +47,13 @@ public class UpgradeTemplateAdapter {
 		xml.setHealthChange(ut.getHealthChange());
 		xml.setRangeChange(ut.getRangeChange());
 		xml.setSightRangeChange(ut.getSightRangeChange());
-		for (String s:ut.getUnitPrerequisiteStrings())
-			xml.getUnitPrerequisite().add(s);
-		for (String s:ut.getUpgradePrerequisiteStrings())
-			xml.getUpgradePrerequisite().add(s);
+		for (Integer i :ut.getBuildPrerequisites())
+			xml.getUnitPrerequisite().add(i);
+		for (Integer i:ut.getUpgradePrerequisites())
+			xml.getUpgradePrerequisite().add(i);
 		
-		for (UnitTemplate affected :ut.getAffectedUnits())
-			xml.getAffectedUnitTypes().add(affected.getName());
+		for (Integer affected :ut.getAffectedUnits())
+			xml.getAffectedUnitTypes().add(affected);
 		
 		return xml;
 	}

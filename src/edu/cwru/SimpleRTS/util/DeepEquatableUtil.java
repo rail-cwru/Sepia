@@ -122,6 +122,45 @@ public class DeepEquatableUtil {
 		return true;
 	}
 	/**
+	 * A method to compare the deep equality of two Lists of Integers. <BR>
+	 * @param obj1
+	 * @param obj2
+	 * @return True if both arguments are null or if both are non-null, of the same size, and objects with the same indices are equals to eachother.  False otherwise.
+	 */
+	public static <T> boolean deepEqualsIntList(List<Integer> obj1, List<Integer> obj2)
+	{
+		boolean obj1null = obj1 == null;
+		boolean obj2null = obj2 == null;
+		if ((obj1null == obj2null)==false)
+		{
+			return false;
+		}
+		//if both aren't null, need to check deeper
+		if (!obj1null && !obj2null)
+		{
+			if (obj1.size() != obj2.size())
+				return false;
+			for (int i = 0; i<obj1.size();i++)
+			{
+				Integer obj2inner = obj2.get(i);
+				Integer obj1inner = obj1.get(i);
+				boolean obj1innernull = obj1inner == null;
+				boolean obj2innernull = obj2inner == null;
+				if ((obj1innernull == obj2innernull)==false)
+				{
+					return false;
+				}
+				if (!obj1innernull && !obj2innernull)
+				{
+					if (!obj1inner.equals(obj2inner))
+						return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	/**
 	 * A method to compare the deep equality of two Sets of Integer objects.
 	 * @param obj1
 	 * @param obj2

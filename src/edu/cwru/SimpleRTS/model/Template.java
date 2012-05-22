@@ -32,8 +32,6 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	protected int player;
 	protected Set<Integer> buildPrerequisites;
 	protected Set<Integer> upgradePrerequisites;
-	protected Set<String> buildPrereq;
-	protected Set<String> upgradePrereq;
 	protected String name;
 	public final int ID;
 	/**
@@ -44,8 +42,8 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	public Template(int ID)
 	{
 		this.ID = ID;
-		buildPrereq = new HashSet<String>();
-		upgradePrereq = new HashSet<String>();
+		buildPrerequisites = new HashSet<Integer>();
+		upgradePrerequisites = new HashSet<Integer>();
 	}
 	public int getTimeCost() {
 		return timeCost;
@@ -83,26 +81,6 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	public int getPlayer() {
 		return this.player;
 	}
-	public void addBuildPrereqItem(String name) {
-		buildPrereq.add(name);
-	}
-	public void addUpgradePrereqItem(String name) {
-		upgradePrereq.add(name);
-	}
-	/**
-	 * For xml saving
-	 * @return
-	 */
-	public Set<String> getUnitPrerequisiteStrings() {
-		return buildPrereq;
-	}
-	/**
-	 * For xml saving
-	 * @return
-	 */
-	public Set<String> getUpgradePrerequisiteStrings() {
-		return upgradePrereq;
-	}
 	
 	/**
 	 * Get the set of template ids of buildings (or units in general) that are required before this template can be made.
@@ -119,29 +97,6 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 	 */
 	public Set<Integer> getUpgradePrerequisites() {
 		return upgradePrerequisites;
-	}
-	/**
-	 * Turn this template's list of prerequisites and things it produces into their ids
-	 */
-	public void namesToIds(List<UnitTemplate> untemplates, List<UpgradeTemplate> uptemplates) {
-		buildPrerequisites = new HashSet<Integer>(buildPrereq.size());
-		for (String s : buildPrereq) {
-			for (UnitTemplate template : untemplates) {
-				if (template.getName().equals(s)) {
-					buildPrerequisites.add(template.ID);
-					break;
-				}
-			}
-		}
-		upgradePrerequisites = new HashSet<Integer>(upgradePrereq.size());
-		for (String s : upgradePrereq) {
-			for (UpgradeTemplate template : uptemplates) {
-				if (template.getName().equals(s)) {
-					upgradePrerequisites.add(template.ID);
-					break;
-				}
-			}
-		}
 	}
 	@Override
 	public int hashCode() {
@@ -195,5 +150,19 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 		{
 			return name;
 		}
+	}
+	/**
+	 * Add an upgrade prerequisite (An upgrade that must be done before this template can be made)
+	 * @param templateID
+	 */
+	public void addUpgradePrerequisite(Integer templateID) {
+		upgradePrerequisites.add(templateID);
+	}
+	/**
+	 * Add a building prerequisite (A unit that must be built before this template can be made)
+	 * @param templateID
+	 */
+	public void addBuildPrerequisite(Integer templateID) {
+		buildPrerequisites.add(templateID);
 	}
 }
