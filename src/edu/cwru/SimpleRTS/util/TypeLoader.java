@@ -245,6 +245,14 @@ public final class TypeLoader {
 			template.setFoodCost(obj.getInt("FoodCost"));
 		else
 			template.setFoodCost(0);
+		if (obj.has("GoldCost"))
+			template.setGoldCost(obj.getInt("GoldCost"));
+		else
+			template.setGoldCost(0);
+		if (obj.has("WoodCost"))
+			template.setWoodCost(obj.getInt("WoodCost"));
+		else
+			template.setWoodCost(0);
 		if(obj.has("FoodGiven"))
 			template.setFoodProvided(obj.getInt("FoodGiven"));
 		else
