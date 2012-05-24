@@ -8,7 +8,6 @@ import java.util.Set;
 
 import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.prerequisite.PrerequisiteHolder;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
