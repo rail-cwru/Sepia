@@ -15,6 +15,10 @@ public class Configuration {
 		settings = new HashMap<String,Object>();
 	}
 	
+	public Object get(String key) {
+		return settings.get(key);
+	}
+	
 	public String getString(String key) {
 		return (String)settings.get(key);
 	}
