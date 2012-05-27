@@ -88,7 +88,7 @@ public class SimplePlanner implements Serializable {
 			}
 		}
 		if (bestnode == null)
-			return null;
+			return new LinkedList<Direction>();
 		else
 		{
 //			System.out.println("Found best at:" + bestnode.x + "," + bestnode.y);
