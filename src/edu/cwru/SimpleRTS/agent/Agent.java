@@ -42,7 +42,7 @@ public abstract class Agent implements Serializable {
 	 * Assigns this Agent the next available auto-incrementing ID and sets the playernum to the argument.
 	 * @param playernum
 	 */
-	protected Agent(int playernum) {
+	public Agent(int playernum) {
 		this(playernum, true);
 	}
 	
