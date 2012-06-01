@@ -15,9 +15,11 @@ import java.util.Set;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Template;
+import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
+import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.Upgrade;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
@@ -1012,6 +1014,17 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return ids;
 		}
 		/**
+		 * Get views of all of the units that you can see
+		 * @return
+		 */
+		public List<UnitView> getAllUnits() {
+			List<UnitView> views = new ArrayList<UnitView>();
+			for(Entry<Integer, Unit> e: state.allUnits.entrySet())
+				if (canSee(e.getValue().getxPosition(), e.getValue().getyPosition()))
+					views.add(e.getValue().getView());
+			return views;
+		}
+		/**
 		 * Get whether fog of war (partial observability) is activated
 		 * @return
 		 */
@@ -1061,6 +1074,23 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return ids;
 		}
 		/**
+		 * Get the unit views of those units owned by the selected players.
+		 * Will give only your units when fog of war is on, unless you are an observer
+		 * @param player
+		 * @return
+		 */
+		public List<UnitView> getUnits(int player) {
+			List<UnitView> views = new ArrayList<UnitView>();
+			Map<Integer, Unit> units = state.getUnits(player);
+			if(units != null)
+				for(Entry<Integer, Unit> e: units.entrySet())
+				{
+					if (canSee(e.getValue().getxPosition(), e.getValue().getyPosition()))
+						views.add(e.getValue().getView());
+				}
+			return views;
+		}
+		/**
 		 * Get the unit with the selected id if you can see it.
 		 * @param unitID
 		 * @return The unit with that ID, null if you can't see it or if it doesn't exist
@@ -1085,6 +1115,29 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return i;
 		}
 		/**
+		 * Get the views of all of the resource nodes of a type that you can see
+		 * @param type Gold mine or Tree
+		 * @return
+		 */
+		public List<ResourceNode.ResourceView> getResourceNodes(ResourceNode.Type type) {
+			List<ResourceNode.ResourceView> i = new ArrayList<ResourceNode.ResourceView>();
+			for(ResourceNode r : state.resourceNodes)
+				if (r.getType() == type && canSee(r.getxPosition(), r.getyPosition()))
+					i.add(r.getView());
+			return i;
+		}
+		/**
+		 * Get the views of all of the resource nodes that you can see
+		 * @return
+		 */
+		public List<ResourceNode.ResourceView> getAllResourceNodes() {
+			List<ResourceNode.ResourceView> i = new ArrayList<ResourceNode.ResourceView>();
+			for(ResourceNode r : state.resourceNodes)
+				if (canSee(r.getxPosition(),r.getyPosition()))
+					i.add(r.getView());
+			return i;
+		}
+		/**
 		 * Get the IDs of all of the resource nodes of a type that you can see
 		 * @param type Gold mine or Tree
 		 * @return
@@ -1096,7 +1149,6 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 					i.add(r.getID());
 			return i;
 		}
-		
 		/**
 		 * Get the resource node with the selected ID (if you can see it)
 		 * @param resourceID
@@ -1143,7 +1195,39 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 				}
 			return ids;
 		}
+		/**
+		 * Get the views of all the templates.
+		 * If you are not an observer, it will only give you yours if fog of war is on
+		 * @return
+		 */
+		public List<TemplateView> getAllTemplates() {
+			List<TemplateView> views = new ArrayList<TemplateView>();
+			for(Entry<Integer, Template> e : state.allTemplates.entrySet())
+			{
+				if (!state.hasFogOfWar || e.getValue().getPlayer() == player || player == Agent.OBSERVER_ID)
+					views.add(e.getValue().getView());
+			}
+			return views;
+		}
 		
+		/**
+		 * Get a player's template views
+		 * If you are not an observer, you can't get other people's templates if fog of war is on
+		 * @param playerid
+		 * @return
+		 */
+		public List<TemplateView> getTemplates(int playerid) {
+			if (state.hasFogOfWar && playerid != player && player != Agent.OBSERVER_ID)
+				return null;
+			List<TemplateView> views = new ArrayList<TemplateView>();
+			Map<Integer, Template> templates = state.getTemplates(playerid);
+			if(templates != null)
+				for(Template templ : templates.values())
+				{
+					views.add(templ.getView());
+				}
+			return views;
+		}
 		/**
 		 * Get a template with a specific ID
 		 * If you are not an observer, it won't work with somebody else's template with fog of war on
