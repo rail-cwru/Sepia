@@ -239,6 +239,9 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	public int getSupplyCap(int player) {
 		return Math.min(playerStates.get(player).getCurrentSupplyCap(), MAXSUPPLY);
 	}
+	public int getSupplyCapEarned(int player) {
+		return playerStates.get(player).getCurrentSupplyCap();
+	}
 	
 	/**
 	 * Reduce the supply cap of a player (EG: when a farm dies)
@@ -1193,7 +1196,16 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return state.getSupplyAmount(playerid);
 		}
 		/**
+		 * Get the maximum amount of supply that could ever be available to any player.
+		 * <br>This should be used in conjunction with getSupplyCapEarned to determine the effect of building a new farm/townhall.  
+		 * @return
+		 */
+		public int getSupplyCapMaximum() {
+			return state.MAXSUPPLY;
+		}
+		/**
 		 * Get the maximum amount of supply (food) available to a specific player.
+		 * <br>This should be used for calculating whether another unit can be made.
 		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @return
@@ -1202,6 +1214,19 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			if (state.hasFogOfWar && player != playerid && player != Agent.OBSERVER_ID)
 				return null;
 			return state.getSupplyCap(playerid);
+		}
+		/**
+		 * Get the maximum amount of supply (food) earned by a specific player.
+		 * <br>This is the amount given by the farms and town halls or their alternatives.
+		 * <br>This should be used for calculating effect of farms/townhalls dying, not for calculating whether you can make a unit.  
+		 * If you are not an observer, it will not work on other people with fog of war on
+		 * @param player
+		 * @return
+		 */
+		public Integer getSupplyCapEarned(int playerid) {
+			if (state.hasFogOfWar && player != playerid && player != Agent.OBSERVER_ID)
+				return null;
+			return state.getSupplyCapEarned(playerid);
 		}
 		/**
 		 * Gets the closest position that you can see.
