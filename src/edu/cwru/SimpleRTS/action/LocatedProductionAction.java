@@ -25,7 +25,7 @@ public class LocatedProductionAction extends Action{
 	}
 	@Override
 	public String toString() {
-		return "ProductionAction [x="+x+", y="+y+", templateid=" + templateid + ", type=" + type
+		return "LocatedProductionAction [x="+x+", y="+y+", templateid=" + templateid + ", type=" + type
 				+ ", unitIdOfBuilder=" + unitId + "]";
 	}
 	@Override public boolean equals(Object other)
