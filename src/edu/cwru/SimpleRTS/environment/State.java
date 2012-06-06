@@ -457,6 +457,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		int[][] observersight = observerState.getVisibilityMatrix();
 		int oldx = u.getxPosition();
 		int oldy = u.getyPosition();
+		u.setxPosition(newx);
+		u.setyPosition(newy);
 		int sightrange = u.getTemplate().getSightRange();
 		for (int i = oldx-sightrange; i<= oldx+sightrange;i++)
 			for (int j = oldy-sightrange; j<= oldy+sightrange;j++)

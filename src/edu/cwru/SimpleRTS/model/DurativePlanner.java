@@ -312,14 +312,14 @@ public class DurativePlanner implements Serializable {
 	 * @return
 	 */
 	public LinkedList<Action> planBuild(Unit actor, int targetX, int targetY, UnitTemplate template) {
-		MovePlan plan = getDirections(actor, actor.getxPosition(), actor.getyPosition(), targetX, targetY, 1, true);
+		MovePlan plan = getDirections(actor, actor.getxPosition(), actor.getyPosition(), targetX, targetY, 0, true);
 		if (!plan.succeeded)
 		{//No path to the unit
 			return planFail(actor.ID);
 		}
 		boolean noPreviousProgress = plan.actions.isEmpty();
 		//needs to know how much building on the target template the unit already has done
-		Action primitivetorepeat = Action.createPrimitiveProduction(actor.ID, template.ID);
+		Action primitivetorepeat = Action.createPrimitiveBuild(actor.ID, template.ID);
 		int nrepeats = calculateProductionDuration(actor,template);
 		doDuratives(plan.actions,actor,primitivetorepeat, nrepeats, noPreviousProgress, false);
 		return plan.actions;

@@ -109,7 +109,10 @@ public class PlayerState implements Serializable, DeepEquatable {
 	public void addToCurrentSupply(int increase) {
 		setCurrentSupply(getCurrentSupply() + increase);
 	}
-	
+	/**
+	 * Returns the maximum supply earned by the player.
+	 * @return
+	 */
 	public int getCurrentSupplyCap() {
 		return currentSupplyCap;
 	}
