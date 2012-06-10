@@ -1,13 +1,9 @@
 package edu.cwru.SimpleRTS.environment;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
@@ -29,9 +25,8 @@ public class Environment
 	private Model model;
 	private int step;
 	private TurnTracker turnTracker;
-	private int seed;
 	public Environment(Agent[] connectedagents, Model model, int seed) {
-		this(connectedagents, model, readTurnTrackerFromPrefs(seed), seed);
+		this(connectedagents, model, readTurnTrackerFromPrefs(seed));
 	}
 	/**
 	 * Do some reflection to read the type of tracker to use and call it's constructor with a random if possible, and failing that, no argument.
@@ -43,42 +38,35 @@ public class Environment
 		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
 		String trackerName = prefs.get("TurnTracker","edu.cwru.SimpleRTS.environment.SimultaneousTurnTracker");
 		Class<?> trackerClass = null;
-		try {
+		try 
+		{
 			trackerClass = Class.forName(trackerName);
-		} catch (ClassNotFoundException e) {
+		} 
+		catch (ClassNotFoundException e) 
+		{
 			e.printStackTrace();
 		}
-		try {
+		try 
+		{
 			toReturn = (TurnTracker)trackerClass.getConstructor(Random.class).newInstance(new Random(seed));
-		} catch (NoSuchMethodException e) {
-			try {
+		} 
+		catch (Exception e) 
+		{
+			try 
+			{
 				toReturn = (TurnTracker)trackerClass.getConstructor().newInstance();
-			} catch (NoSuchMethodException e1) {
-				e.printStackTrace();
-			} catch (SecurityException e1) {
-				e.printStackTrace();
-			} catch (InstantiationException e1) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e1) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e1) {
+			} 
+			catch (Exception e1) 
+			{
 				e.printStackTrace();
 			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
 		}
 		if (toReturn == null)
 			return new SimultaneousTurnTracker(new Random(seed));
 		else
 			return toReturn;
 	}
-	public Environment(Agent[] connectedagents, Model model, TurnTracker turnTracker, int seed) {
+	public Environment(Agent[] connectedagents, Model model, TurnTracker turnTracker) {
 		this.connectedagents = connectedagents;
 		agentIntermediaries = new ThreadIntermediary[connectedagents.length];
 		for (int ag = 0; ag < connectedagents.length; ag++)
@@ -100,21 +88,14 @@ public class Environment
 		if (model instanceof LessSimpleModel)
 			((LessSimpleModel)model).setTurnTracker(turnTracker);
 	}
-	/*
-	 * I removed these because it seemed like a security hole
-	 */
-//	public final Agent[] getAgents() {
-//		return connectedagents;
-//	}
-//	
-//	public final Model getModel() {
-//		return model;
-//	}
-//	
-//	public final State.StateView getState().getView()
-//	{
-//		return model.getState().getView();
-//	}
+	public final Agent[] getAgents() {
+		return connectedagents;
+	}
+	
+	public final Model getModel() {
+		return model;
+	}
+	
 	public final void runEpisode() throws InterruptedException
 	{
 		forceNewEpisode();
