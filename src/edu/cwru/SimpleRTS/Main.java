@@ -93,69 +93,6 @@ public class Main {
 				return;
 			}
 			
-//			@SuppressWarnings("rawtypes")
-//			Map<Integer,Map<Integer,Template>> templates = new HashMap<Integer,Map<Integer,Template>>();
-//			
-//			Preferences preferences = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("agent").node("templatefiles");
-//			String global = preferences.get("Global", "");
-//			
-//			for(String key : preferences.keys())
-//			{
-//				int playernum = -1;
-//				try
-//				{
-//					playernum = Integer.parseInt(key);
-//				}
-//				catch(Exception ex)
-//				{
-//					continue;
-//				}
-//				String filename = preferences.get(key, statefilename);
-//				@SuppressWarnings("rawtypes")
-//				List<Template> templateList;
-//				try {
-//					templateList = TypeLoader.loadFromFile(filename, playernum,templatemakingstate);
-//				} catch (JSONException e) {
-//					printUsage("File " + filename + " was not a valid template file.");
-//					return;
-//				}
-//				@SuppressWarnings("rawtypes")
-//				Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
-//				for(@SuppressWarnings("rawtypes") Template t : templateList)
-//					templateMap.put(t.ID, t);
-//				templates.put(playernum, templateMap);
-//			}
-//			@SuppressWarnings("rawtypes")
-//			HashMap<Integer,Template> emptyTemplateMap = new HashMap<Integer,Template>();
-//			for(Integer id : XmlStateUtil.playerIds(xml))
-//			{
-//				if(templates.keySet().contains(id))
-//				{
-//					continue;
-//				}
-//				if(!global.equals(""))
-//				{
-//					@SuppressWarnings("rawtypes")
-//					List<Template> templateList;
-//					try {
-//						templateList = TypeLoader.loadFromFile(global, id,templatemakingstate);
-//					} catch (JSONException e) {
-//						printUsage("File " + global + " was not a valid template file.");
-//						return;
-//					}
-//					@SuppressWarnings("rawtypes")
-//					Map<Integer,Template> templateMap = new HashMap<Integer,Template>();
-//					for(@SuppressWarnings("rawtypes") Template t : templateList)
-//						templateMap.put(t.ID, t);
-//					templates.put(id, templateMap);
-//				}
-//				else
-//				{
-//					templates.put(id, emptyTemplateMap);
-//				}
-//			}
-			//StateAdapter adapter = new StateAdapter();
-			//initState = adapter.fromXml(xml, templates);
 			stateCreator = new XmlStateCreator(xml);
 			initState = stateCreator.createState();
 		}
@@ -267,7 +204,6 @@ public class Main {
 					agents.add(agent);
 				} catch (Exception e) {
 					try {
-//						e.printStackTrace();
 						Agent agent = (Agent) agentClass.getConstructor(int.class).newInstance(playerNum);
 						agents.add(agent);
 					}
@@ -275,8 +211,7 @@ public class Main {
 					{
 					try
 					{
-//						e1.printStackTrace();
-					printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName() + "\n"+"It requires the following additional parameters: " + (String)agentClass.getMethod("getUsage").invoke(null));
+						printUsage("Unable to instantiate a new instance of "+agentClass.getSimpleName() + "\n"+"It requires the following additional parameters: " + (String)agentClass.getMethod("getUsage").invoke(null));
 					}
 					catch (Exception e2)
 					{
@@ -306,7 +241,7 @@ public class Main {
 		Environment env = new Environment(agents.toArray(new Agent[0]),model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
-			System.out.println("\n=======> Start running episode " + episode);
+			//System.out.println("\n=======> Start running episode " + episode);
 			env.runEpisode();
 			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
 			{
