@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	elementFormDefault="qualified" 
+	attributeFormDefault="unqualified">
+<xs:element name="Configuration">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="Map" type="xs:string"/>
+			<xs:sequence minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="Player" type="Player"/>
+			</xs:sequence>
+			<xs:element name="ModelParameters" type="ModelParameters"/>
+			<xs:element name="Runner" type="Runner"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:element>
+<xs:complexType name="Player">
+	<xs:sequence>
+		<xs:element name="AgentClass">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="ClassName" type="xs:string"/>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="Argument" type="xs:string"/>
+					</xs:sequence>
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
+		<xs:choice>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="Parameter" type="xs:string"/>
+			</xs:sequence>
+			<xs:element name="PropertyFile" type="xs:string"/>
+		</xs:choice>
+	</xs:sequence>
+	<xs:attribute name="Id" type="xs:int"/>
+</xs:complexType>
+<xs:complexType name="ModelParameters">
+	<xs:sequence>
+		<xs:element name="Conquest" type="xs:boolean"/>
+		<xs:element name="Midas" type="xs:boolean"/>
+		<xs:element name="ManifestDestiny" type="xs:boolean"/>
+		<xs:element name="TimeLimit" type="xs:int"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Requirement" type="Requirement"/>	
+		</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
+<xs:complexType name="Requirement">
+	<xs:attribute name="Name" type="xs:string"/>
+	<xs:attribute name="Value" type="xs:anySimpleType"/>
+</xs:complexType>
+<xs:complexType name="Runner">
+	<xs:sequence>
+		<xs:element name="RunnerClass" type="xs:string"/>
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="Parameter" type="xs:anySimpleType"/> 
+		</xs:sequence>
+	</xs:sequence>
+</xs:complexType>
+</xs:schema>
