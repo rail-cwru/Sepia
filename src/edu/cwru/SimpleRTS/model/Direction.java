@@ -8,6 +8,9 @@ package edu.cwru.SimpleRTS.model;
 public enum Direction {
 	NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST;
 	
+	/**
+	 * @return x component of the direction: -1, 0, 1
+	 */
 	public int xComponent() {
 		switch(this)
 		{
@@ -23,6 +26,10 @@ public enum Direction {
 				return 0;
 		}
 	}
+	
+	/**
+	 * @return y component of the direction: -1, 0, 1
+	 */
 	public int yComponent() {
 		switch(this)
 		{

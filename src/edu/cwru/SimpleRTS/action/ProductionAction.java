@@ -1,7 +1,13 @@
 package edu.cwru.SimpleRTS.action;
 
-public class ProductionAction extends Action
-{
+/**
+ * A subtype of Action, include CompoundProduction, PrimitiveProduction, PrimitiveBuild
+ *
+ */
+public class ProductionAction extends Action {
+	
+	private static final long serialVersionUID = -2225942140919623162L;
+	
 	private final int templateid;
 	public ProductionAction(int unitid, ActionType type, int templateid)
 	{

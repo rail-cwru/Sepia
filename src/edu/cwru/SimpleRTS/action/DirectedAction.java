@@ -3,7 +3,14 @@ package edu.cwru.SimpleRTS.action;
 
 import edu.cwru.SimpleRTS.model.Direction;
 
+/**
+ * A subtype of Action, include PrimitiveMove, PrimitiveGather, PrimitiveDeposit
+ *
+ */
 public class DirectedAction extends Action {
+	
+	private static final long serialVersionUID = -8274872242806705391L;
+	
 	private final Direction direction;
 	public DirectedAction(int unitid, ActionType type, Direction direction)
 	{

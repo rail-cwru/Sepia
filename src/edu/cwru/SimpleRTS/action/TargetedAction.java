@@ -1,7 +1,13 @@
 package edu.cwru.SimpleRTS.action;
 
-public class TargetedAction extends Action
-{
+/**
+ * A subtype of Action, include CompoundAttack, PrimitiveAttack, CompoundGather, CompoundDeposit
+ *
+ */
+public class TargetedAction extends Action {
+	
+	private static final long serialVersionUID = 5319275698704767319L;
+	
 	private final int targetid;
 	public TargetedAction(int unitid, ActionType type, int targetid)
 	{

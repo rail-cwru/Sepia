@@ -1,6 +1,13 @@
 package edu.cwru.SimpleRTS.action;
 
+/**
+ * A subtype of Action, include CompoundBuild
+ *
+ */
 public class LocatedProductionAction extends Action{
+	
+	private static final long serialVersionUID = 6137732739465321081L;
+	
 	private final int templateid;
 	private final int x;
 	private final int y;

@@ -1,5 +1,9 @@
 package edu.cwru.SimpleRTS.action;
 
+/**
+ * A subtype of Action, include CompoundMove
+ *
+ */
 public class LocatedAction extends Action
 {
 	private final int x;

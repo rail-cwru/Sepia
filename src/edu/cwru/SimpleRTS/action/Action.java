@@ -13,6 +13,8 @@ import edu.cwru.SimpleRTS.util.DeepEquatable;
  */
 public class Action implements Serializable, DeepEquatable{
 
+	private static final long serialVersionUID = -7097546794691647171L;
+	
 	protected final ActionType type;
 	protected final int unitId;
 	public Action(int unitId, ActionType type)
