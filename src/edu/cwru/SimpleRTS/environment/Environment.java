@@ -11,6 +11,12 @@ import edu.cwru.SimpleRTS.agent.ThreadIntermediary;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.LessSimpleModel;
 import edu.cwru.SimpleRTS.model.Model;
+
+/**
+ * Simulates the environment component in a standard Reinforcement Learning setting. 
+ * One can run episodes from this class.
+ *
+ */
 public class Environment
 {
 	public void forceNewEpisode() {

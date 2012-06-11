@@ -26,10 +26,12 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
+/**
+ * Represents the state
+ *
+ */
 public class State implements Serializable, Cloneable, IDDistributer, DeepEquatable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	 
 	

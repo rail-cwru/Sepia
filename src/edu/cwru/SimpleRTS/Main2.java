@@ -8,10 +8,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import edu.cwru.SimpleRTS.agent.Agent;
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateCreator;
-import edu.cwru.SimpleRTS.environment.state.persistence.StateAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
 import edu.cwru.SimpleRTS.util.config.xml.Configuration;
 import edu.cwru.SimpleRTS.util.config.xml.ModelParameters;
