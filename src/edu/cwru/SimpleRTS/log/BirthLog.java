@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 
+/**
+ * A read only class that represents the birth of something
+ * 
+ */
 public class BirthLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
 	private int unitid;

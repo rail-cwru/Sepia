@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 
+/**
+ * Logs the upgrade of something
+ *
+ */
 public class UpgradeLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
 	private int upgradetemplateid;

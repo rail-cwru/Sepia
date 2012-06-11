@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 import edu.cwru.SimpleRTS.util.DeepEquatableUtil;

@@ -9,6 +9,10 @@ import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 
+/**
+ * Logs all the primitive logs including damage, death, birth, upgrade, etc. 
+ *
+ */
 public class EventLogger implements Serializable, DeepEquatable { 
 	/**
 	 * 
