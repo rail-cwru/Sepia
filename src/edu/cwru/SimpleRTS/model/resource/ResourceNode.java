@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import edu.cwru.SimpleRTS.model.Target;
 
+/**
+ * A subtype of Target that contains all information of a resource.
+ *
+ */
 public class ResourceNode extends Target implements Cloneable {
 	private static final long serialVersionUID = 1L;
 	

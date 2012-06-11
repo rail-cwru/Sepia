@@ -3,9 +3,12 @@ import java.io.Serializable;
 import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;
-import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State;
-import edu.cwru.SimpleRTS.environment.State.StateView;
+
+/**
+ * The interface for model, which transitions its state as executing given actions.
+ *
+ */
 public interface Model extends Serializable{
 	/**
 	 * Have the model create a new world.
@@ -26,6 +29,10 @@ public interface Model extends Serializable{
 	 * Execute actions and do anything else that needs to be done
 	 */
 	void executeStep();
+	/**
+	 * Get current state of the model
+	 * @return current state of the model
+	 */
 	State getState();
 	History getHistory();
 	void setVerbose(boolean verbosity);

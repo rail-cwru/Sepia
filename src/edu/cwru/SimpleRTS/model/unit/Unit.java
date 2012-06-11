@@ -5,7 +5,6 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.model.Target;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate.UnitTemplateView;
-import edu.cwru.SimpleRTS.util.DeepEquatable;
 
 public class Unit extends Target /*implements Cloneable*/ {
 	private static final long serialVersionUID = 1L;

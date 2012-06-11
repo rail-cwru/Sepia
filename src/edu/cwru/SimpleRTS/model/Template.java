@@ -2,12 +2,8 @@ package edu.cwru.SimpleRTS.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import edu.cwru.SimpleRTS.environment.IDDistributer;
-import edu.cwru.SimpleRTS.environment.State.StateView;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
-import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
 
 /**

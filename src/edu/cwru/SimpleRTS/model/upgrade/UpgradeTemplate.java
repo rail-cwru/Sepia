@@ -1,11 +1,9 @@
 package edu.cwru.SimpleRTS.model.upgrade;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import edu.cwru.SimpleRTS.environment.IDDistributer;
 import edu.cwru.SimpleRTS.model.Template;
-import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 public class UpgradeTemplate extends Template<Upgrade>
 {

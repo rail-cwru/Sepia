@@ -17,7 +17,6 @@ import edu.cwru.SimpleRTS.action.LocatedAction;
 import edu.cwru.SimpleRTS.action.LocatedProductionAction;
 import edu.cwru.SimpleRTS.action.ProductionAction;
 import edu.cwru.SimpleRTS.action.TargetedAction;
-import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
