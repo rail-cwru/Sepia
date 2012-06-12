@@ -148,7 +148,7 @@ public class Environment
 		{
 			if (isAgentsTurn[ag])
 			{
-				System.out.println("Step "+step+": Agent with player number: "+connectedagents[ag].getPlayerNumber() + "'s turn.  "+(turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?"Has had turn":"First turn"));
+//				System.out.println("Step "+step+": Agent with player number: "+connectedagents[ag].getPlayerNumber() + "'s turn.  "+(turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?"Has had turn":"First turn"));
 				actionLatches[ag] = agentIntermediaries[ag].submitState(states[ag], histories[ag], turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?ThreadIntermediary.StateType.MIDDLE:ThreadIntermediary.StateType.INITIAL);
 			}
 		}
