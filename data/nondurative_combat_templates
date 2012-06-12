@@ -40,7 +40,6 @@
 		"Builder" : false,
 		"DurationMove" : 1,
 		"DurationAttack" : 1,
-		"BuildPrereq" : ["LumberMill"]
 	},
 	"Ballista" : {
 		"Name" : "Ballista",
@@ -63,7 +62,6 @@
 		"Builder" : false,
 		"DurationMove" : 1,
 		"DurationAttack" : 1,
-		"BuildPrereq" : ["Blacksmith","LumberMill"]
 	},
 	"Knight" : {
 		"Name" : "Knight",
@@ -85,7 +83,6 @@
 		"Builder" : false,
 		"DurationMove" : 1,
 		"DurationAttack" : 1,
-		"BuildPrereq" : ["Stables","Blacksmith"]
 	},
 	"Gryphon" : {
 		"Name" : "Gryphon",
@@ -122,7 +119,6 @@
 		"Range" : 6,
 		"SightRange" : 9,
 		"Character" : "T",
-		"Produces" : ["GuardTower"],
 		"Mobile" : false,
 		"DurationAttack" : 1
 	},
