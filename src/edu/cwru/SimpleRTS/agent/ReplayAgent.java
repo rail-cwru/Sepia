@@ -1,9 +1,7 @@
 package edu.cwru.SimpleRTS.agent;
 
-import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;

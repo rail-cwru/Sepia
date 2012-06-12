@@ -22,8 +22,9 @@ import edu.cwru.SimpleRTS.model.unit.UnitTask;
  * UNABLE TO HANDLE UNITS THAT DO ONE OR THE OTHER OF BUILDING AND GATHERING
  *
  */
-public class BasicGatheringCoordinator implements Serializable
-{
+public class BasicGatheringCoordinator implements Serializable {
+	private static final long serialVersionUID = 3922892996550559953L;
+	
 	private int playerID;
 	private List<Integer> miners;
 	private List<Integer> others;

@@ -1,6 +1,5 @@
 package edu.cwru.SimpleRTS.agent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,8 +8,6 @@ import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
 import edu.cwru.SimpleRTS.action.ActionResult;
-import edu.cwru.SimpleRTS.action.ActionType;
-import edu.cwru.SimpleRTS.action.DirectedAction;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.log.BirthLog;

@@ -35,9 +35,6 @@ public class RCAgent extends Agent {
 	
 	public RCAgent(int playernum) {
 		super(playernum);
-		/*Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("model");
-		goldRequired = prefs.getInt("RequiredGold", 0);
-		woodRequired = prefs.getInt("RequiredWood", 0);*/
 		Configuration config = PreferencesConfigurationLoader.loadConfiguration();
 		goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
 		woodRequired = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(config);

@@ -17,6 +17,9 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
  *
  */
 public class PrimitiveAttackCoordinator implements Serializable {
+	
+	private static final long serialVersionUID = -8583438202310015079L;
+	
 	int playernum;
 	List<Integer> attackers;
 	private final static int NOTARGET = Integer.MIN_VALUE;

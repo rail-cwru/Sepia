@@ -10,6 +10,9 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 public class BusynessCoordinator implements Serializable {
+	
+	private static final long serialVersionUID = 7410381053814236332L;
+	
 	private List<Integer> busy;
 	private List<Integer> lazy;
 	private int player;

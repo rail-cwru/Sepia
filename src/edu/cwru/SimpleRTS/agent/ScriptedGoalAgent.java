@@ -16,7 +16,6 @@ import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.log.BirthLog;
 import edu.cwru.SimpleRTS.log.DeathLog;
-import edu.cwru.SimpleRTS.log.EventLogger;
 import edu.cwru.SimpleRTS.model.Template.TemplateView;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;

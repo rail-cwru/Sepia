@@ -8,9 +8,7 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.agent.CombatAgent;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
-import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.State.StateView;
-import edu.cwru.SimpleRTS.model.unit.Unit;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 /**
  * Takes advantage of a hole in the structure circa revision 270 to turn footmen into unstoppable killing machines 
