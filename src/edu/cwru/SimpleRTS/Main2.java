@@ -8,14 +8,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import edu.cwru.SimpleRTS.agent.Agent;
+import edu.cwru.SimpleRTS.environment.Runner;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateCreator;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
-import edu.cwru.SimpleRTS.util.config.xml.Configuration;
-import edu.cwru.SimpleRTS.util.config.xml.ModelParameters;
-import edu.cwru.SimpleRTS.util.config.xml.Player;
-import edu.cwru.SimpleRTS.util.config.xml.Player.AgentClass;
-import edu.cwru.SimpleRTS.util.config.xml.Runner;
+import edu.cwru.SimpleRTS.util.config.xml.XmlConfiguration;
+import edu.cwru.SimpleRTS.util.config.xml.XmlModelParameters;
+import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer;
+import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer.AgentClass;
+import edu.cwru.SimpleRTS.util.config.xml.XmlRunner;
 
 public class Main2 {
 
@@ -27,11 +28,11 @@ public class Main2 {
 		}
 				
 		JAXBContext context;
-		Configuration xmlConfig = null;
+		XmlConfiguration xmlConfig = null;
 		try 
 		{
 			context = JAXBContext.newInstance(XmlState.class);
-			xmlConfig = (Configuration)context.createUnmarshaller().unmarshal(new File(args[0]));
+			xmlConfig = (XmlConfiguration)context.createUnmarshaller().unmarshal(new File(args[0]));
 		} 
 		catch (JAXBException e1) 
 		{
@@ -54,7 +55,7 @@ public class Main2 {
 		if(agents == null)
 			return;
 		
-		edu.cwru.SimpleRTS.environment.Runner runner;
+		Runner runner;
 		try
 		{
 			runner = getRunner(xmlConfig, stateCreator, agents);
@@ -69,25 +70,25 @@ public class Main2 {
 		runner.run();
 	}
 	
-	private static StateCreator getStateCreator(Configuration xmlConfig) throws JAXBException {
+	private static StateCreator getStateCreator(XmlConfiguration xmlConfig) throws JAXBException {
 		String mapFilename = xmlConfig.getMap();
 		JAXBContext context = JAXBContext.newInstance(XmlState.class);
 		XmlState state = (XmlState)context.createUnmarshaller().unmarshal(new File(mapFilename));
 		return new XmlStateCreator(state);
 	}
 	
-	private static void getModelParameters(Configuration xmlConfig) {
-		ModelParameters modelParameters = xmlConfig.getModelParameters();
+	private static void getModelParameters(XmlConfiguration xmlConfig) {
+		XmlModelParameters modelParameters = xmlConfig.getModelParameters();
 		//TODO
 	}
 	
-	private static Agent[] getAgents(Configuration xmlConfig) {
-		List<Player> players = xmlConfig.getPlayer();
+	private static Agent[] getAgents(XmlConfiguration xmlConfig) {
+		List<XmlPlayer> players = xmlConfig.getPlayer();
 		Agent[] agents = new Agent[players.size()];
 		
 		for(int i = 0; i < players.size(); i++)
 		{
-			Player player = players.get(i);
+			XmlPlayer player = players.get(i);
 			AgentClass agentClass = player.getAgentClass();
 			try
 			{
@@ -115,9 +116,9 @@ public class Main2 {
 		return agents;
 	}
 	
-	private static edu.cwru.SimpleRTS.environment.Runner getRunner(Configuration xmlConfig, StateCreator stateCreator, Agent[] agents) throws ClassNotFoundException, IllegalArgumentException, 
+	private static Runner getRunner(XmlConfiguration xmlConfig, StateCreator stateCreator, Agent[] agents) throws ClassNotFoundException, IllegalArgumentException, 
 													SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Runner runner = xmlConfig.getRunner();
+		XmlRunner runner = xmlConfig.getRunner();
 		Class<?> runnerClass = Class.forName(runner.getRunnerClass());
 		edu.cwru.SimpleRTS.util.Configuration config = new edu.cwru.SimpleRTS.util.Configuration();
 		//TODO - fill configuration from runner parameters
