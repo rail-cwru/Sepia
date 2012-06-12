@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Random;
 
 import edu.cwru.SimpleRTS.action.Action;
+import edu.cwru.SimpleRTS.action.ActionFeedback;
+import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
@@ -53,6 +55,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	private BusynessCoordinator busycoordinator;
 	private int[] centeroftown;
 	private boolean verbose;
+	private int lastturncalled;
 	public ScriptedGoalAgent(int playernumber, BufferedReader commandSource, Random r, boolean verbose) {
 		super(playernumber);
 		this.verbose = verbose;
@@ -75,7 +78,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		attackcoordinator = new PrimitiveAttackCoordinator(playernumber);
 		gathercoordinator = new BasicGatheringCoordinator(playernumber, r);
 		busycoordinator = new BusynessCoordinator(playernumber);
+		gathercoordinator.setVerbose(verbose);
 		centeroftown=null;
+		lastturncalled = 0;
 	}
 	
 	/**
@@ -111,7 +116,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 				assert split.length == 1 || split.length ==2;
 				type = GoalType.Attack;
 				//Attacking, may have argument All, anything 
-				if (split.length < 1 || !split[1].equals("All")) {
+				if (split.length <= 1 || !split[1].equals("All")) {
 					//Attack with only military units
 					attackwithall = false;
 				}
@@ -280,7 +285,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 						
 						if (agent.gathercoordinator.hasIdleWorker(id) && agent.busycoordinator.isIdle(id))
 						{
-							agent.gathercoordinator.assignOther(id);
+							agent.gathercoordinator.assignOther(id,newact);
 							agent.busycoordinator.assignBusy(id);
 						}
 						else
@@ -298,6 +303,10 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 					if (agent.busycoordinator.isIdle(id) && state.getUnit(id).getTemplateView().canProduce(template.getID())) {
 						actions.put(id,Action.createCompoundProduction(id, template.getID()));
 						agent.busycoordinator.assignBusy(id);
+						//and reduce the amount of resources you have to distribute
+						relstate.ngold-=template.getGoldCost();
+						relstate.nwood-=template.getWoodCost();
+						relstate.nfoodremaining-=template.getFoodCost();
 						break;
 					}
 				}
@@ -305,12 +314,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 			case Attack:
 				if (attackwithall) {
 					for (Integer i : relstate.myUnitIDs) {
-						agent.attackcoordinator.addAttacker(i);
+						if (state.getUnit(i).getTemplateView().canAttack())
+							agent.attackcoordinator.addAttacker(i);
 					}
 				}
 				else {
 					for (Integer id : relstate.myUnitIDs) {
-						if (!state.getUnit(id).getTemplateView().canGather())
+						if (state.getUnit(id).getTemplateView().canAttack() && !state.getUnit(id).getTemplateView().canGather())
 							agent.attackcoordinator.addAttacker(id);
 					}
 				}
@@ -387,9 +397,13 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	}
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate, History.HistoryView statehistory) {
-		//Put all units into the gathering coordinator, that they might 
-		gathercoordinator.initialize(newstate);
-		busycoordinator.initialize(newstate);
+		//Put all of this player's units into the gathering coordinator, that they might 
+		for (UnitView u : newstate.getUnits(getPlayerNumber()))
+		{
+			busycoordinator.assignIdle(u.getID());
+			if (u.getTemplateView().canGather())
+				gathercoordinator.assignIdle(u.getID());
+		}
 		
 		//Find the center of units, to use as a baseline
 		List<Integer> myunits = newstate.getUnitIds(playernum);
@@ -425,22 +439,49 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	public Map<Integer, Action> act(StateView state, HistoryView statehistory) throws IOException {
 		if (verbose)
 			System.out.println("ScriptedGoalAgent starting another action");
-		int lastturn= state.getTurnNumber()-1;
-		List<BirthLog> births = statehistory.getBirthLogs(lastturn);
-		List<DeathLog> deaths = statehistory.getDeathLogs(lastturn);
-		for (BirthLog birth : births) {
-			if (
-				state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
-				gathercoordinator.assignIdle(birth.getNewUnitID());
+		int mostrecentturn = state.getTurnNumber()-1;
+		for (int turn = lastturncalled; turn<=mostrecentturn;turn++)
+		{
+			List<BirthLog> births = statehistory.getBirthLogs(turn);
+			List<DeathLog> deaths = statehistory.getDeathLogs(turn);
+			for (BirthLog birth : births) {
+				if (birth.getController()==getPlayerNumber())
+				{
+					if (
+						state.getUnit(birth.getNewUnitID()).getTemplateView().canGather()) {
+						gathercoordinator.assignIdle(birth.getNewUnitID());
+					}
+					busycoordinator.assignIdle(birth.getNewUnitID());
+				}
 			}
-			busycoordinator.assignIdle(birth.getNewUnitID());
+			for (DeathLog death : deaths) {
+				if (death.getController() == getPlayerNumber())
+				{
+					gathercoordinator.removeUnit(death.getDeadUnitID());
+					busycoordinator.removeUnit(death.getDeadUnitID());
+				}
+			}
+			for (ActionResult result : statehistory.getCommandFeedback(getPlayerNumber(), turn))
+			{ //don't need to check controller, since command feedback is only for your orders and invalid units don't give failed or completed, but invalidcontroller or invalidunits
+				ActionFeedback feedback = result.getFeedback();
+				Integer unit = result.getAction().getUnitId();
+				//completion makes you idle from non-gather, but Nothing but death can save you from mining/chopping
+				if (feedback == ActionFeedback.COMPLETED)
+				{
+					
+					//TODO: replace with some kind of contains thing
+					if (gathercoordinator.hasOtherWorker(unit))
+						gathercoordinator.assignIdle(unit);
+				}
+				//completion or failure makes you not busy
+				if (feedback == ActionFeedback.COMPLETED || feedback == ActionFeedback.FAILED)
+				{
+					//Should probably have contains thing for this too, but all possible units should be in there already
+					if (!busycoordinator.isIdle(unit))
+						busycoordinator.assignIdle(unit);
+				}
+			}
 		}
-		for (DeathLog death : deaths) {
-			gathercoordinator.removeUnit(death.getDeadUnitID());
-			busycoordinator.removeUnit(death.getDeadUnitID());
-		}
-		gathercoordinator.checkWorkersForIdleness(state);
-		busycoordinator.checkForIdleness(state);
 		RelevantStateView rsv = new RelevantStateView(playernum, state);
 		Map<Integer,Action> actions = new HashMap<Integer,Action>();
 		//while there are still commands to be found
@@ -481,6 +522,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		gathercoordinator.assignActions(state, rsv, actions);
 		attackcoordinator.coordinate(state, actions);
 		
+		
+		
+		lastturncalled=state.getTurnNumber();
 		return actions;
 		
 	}

@@ -2,9 +2,11 @@ package edu.cwru.SimpleRTS.agent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import edu.cwru.SimpleRTS.action.Action;
@@ -19,45 +21,30 @@ import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 /**
  * A basic AI that does simple commanding of gatherer units
- * UNABLE TO HANDLE UNITS THAT DO ONE OR THE OTHER OF BUILDING AND GATHERING
  *
  */
 public class BasicGatheringCoordinator implements Serializable {
 	private static final long serialVersionUID = 3922892996550559953L;
 	
+	private boolean verbose;
+	public void setVerbose(boolean verbosity) {
+		this.verbose=verbosity;
+	}
+	public boolean getVerbose() {
+		return this.verbose;
+	}
 	private int playerID;
 	private List<Integer> miners;
-	private List<Integer> others;
+	private Map<Integer, Action> others;
 	private List<Integer> idles;
 	private List<Integer> lumberjacks;
 	private Random r;
 	public BasicGatheringCoordinator(int playerID, Random r) {
 		miners = new ArrayList<Integer>();
 		lumberjacks = new ArrayList<Integer>();
-		others = new ArrayList<Integer>();
+		others = new HashMap<Integer,Action>();
 		idles = new ArrayList<Integer>();
 		this.r=r;
-	}
-	public void initialize(StateView state) {
-		for (Integer id : state.getAllUnitIds()) {
-			UnitView u = state.getUnit(id);
-			switch(u.getTask()) {
-			case Attack:
-			case Build:
-			case Move:
-				others.add(id);
-				break;
-			case Idle:
-				idles.add(id);
-				break;
-			case Gold:
-				miners.add(id);
-				break;
-			case Wood:
-				lumberjacks.add(id);
-				break;
-			}
-		}
 	}
 	public Integer getGoldWorker() {
 		return miners.get(r.nextInt(miners.size()));
@@ -86,6 +73,9 @@ public class BasicGatheringCoordinator implements Serializable {
 	public boolean hasIdleWorker(Integer id) {
 		return idles.contains(id);
 	}
+	public boolean hasOtherWorker(Integer id) {
+		return others.containsKey(id);
+	}
 	public void removeUnit(Integer unitID) {
 		lumberjacks.remove(unitID);
 		others.remove(unitID);
@@ -104,11 +94,11 @@ public class BasicGatheringCoordinator implements Serializable {
 		idles.remove(unitID);
 		lumberjacks.add(unitID);
 	}
-	public void assignOther(Integer unitID) {
+	public void assignOther(Integer unitID, Action assignment) {
 		miners.remove(unitID);
 		lumberjacks.remove(unitID);
 		idles.remove(unitID);
-		others.add(unitID);
+		others.put(unitID,assignment);
 	}
 	public void assignIdle(Integer unitID) {
 		miners.remove(unitID);
@@ -116,28 +106,26 @@ public class BasicGatheringCoordinator implements Serializable {
 		idles.add(unitID);
 		others.remove(unitID);
 	}
-	public void checkWorkersForIdleness(StateView state) {
-		List<Integer> onestoidleize = new LinkedList<Integer>();//because you can't alter it within the same loop 
-		for (Integer unitID : others) {
-			if (state.getUnit(unitID).getTask() == UnitTask.Idle) {
-				onestoidleize.add(unitID);
-			}
-		}
-		for (Integer id : onestoidleize) {
-			assignIdle(id);
-		}
-	}
 	public void assignActions(StateView state, RelevantStateView relstate, Map<Integer,Action> actions) {
-		System.out.println(miners.size() + " miners");
-		System.out.println(lumberjacks.size() + " lumberjacks");
-		System.out.println(idles.size() + " idle");
-		System.out.println(others.size() + " others");
+		if (verbose)
+		{
+			System.out.println(miners.size() + " miners");
+			System.out.println(lumberjacks.size() + " lumberjacks");
+			System.out.println(idles.size() + " idle");
+			System.out.println(others.size() + " others");
+		}
+		//for each builder or something
+		for (Entry<Integer,Action> indact : others.entrySet()) {
+			actions.put(indact.getKey(), indact.getValue());
+		}
 		//for each miner/lumberjack
 		for (Integer minerID : miners)
 		{
 			UnitView miner = state.getUnit(minerID);
 			//detect if it is carrying a resource
-			System.out.println("A miner is carrying: " + miner.getCargoAmount());
+			if (verbose) {
+				System.out.println("A miner (id:"+minerID+") is carrying: " + miner.getCargoAmount());
+			}
 			if (miner.getCargoAmount()>0)
 			{
 				//if it is, find the nearest base and tell it to go there
@@ -157,11 +145,15 @@ public class BasicGatheringCoordinator implements Serializable {
 					}
 				}
 				if (closestID != Integer.MIN_VALUE) {
-					System.out.println("Tossing in an action for a miner");
+					if (verbose) {
+						System.out.println("Tossing in an action for a miner");
+					}
 					actions.put(minerID, Action.createCompoundGather(minerID, closestID));
 				}
 				else {
-					System.out.println("Couldn't find a mine");
+					if (verbose) {
+						System.out.println("Couldn't find a mine");
+					}
 				}
 				
 			}
@@ -202,7 +194,9 @@ public class BasicGatheringCoordinator implements Serializable {
 		int closestDist = Integer.MAX_VALUE;
 		for (Integer potentialStoragePitID : state.getUnitIds(playerID))
 		{
-			System.out.println("Evaluating Unit with id "+potentialStoragePitID);
+			if (verbose) {
+				System.out.println("Evaluating Unit with id "+potentialStoragePitID);
+			}
 			UnitView potentialStoragePit = state.getUnit(potentialStoragePitID);
 			//it can still be carrying the other resource, it is better to have it choose to return with what it has than just go straight for the other resource
 			if (worker.getCargoType() == ResourceType.GOLD && potentialStoragePit.getTemplateView().canAcceptGold() || worker.getCargoType() == ResourceType.WOOD && potentialStoragePit.getTemplateView().canAcceptWood())
@@ -219,4 +213,5 @@ public class BasicGatheringCoordinator implements Serializable {
 			}
 		}
 	}
+
 }

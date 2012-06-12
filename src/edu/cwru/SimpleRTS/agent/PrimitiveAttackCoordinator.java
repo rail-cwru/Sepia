@@ -35,12 +35,13 @@ public class PrimitiveAttackCoordinator implements Serializable {
 	/**
 	 * Append the relevant actions to the action set.
 	 * This will replace previous ones, as Builder does not have any means to check.
-	 * TODO: Make this more efficient by having it do it's own path calculations
 	 * @param state
 	 * @param actions
 	 */
 	public void coordinate(StateView state, Map<Integer, Action> actions) {
-		
+		//DON'T DO ANYTHING IF NO ATTACKERS
+		if (attackers.size()==0)
+			return;
 		if (primarytargetID == NOTARGET || state.getUnit(primarytargetID) == null) {
 			getNewTarget(state);
 		}
@@ -62,7 +63,7 @@ public class PrimitiveAttackCoordinator implements Serializable {
 				for (UnitView enemy : allenemies) {
 					if (enemy.getTemplateView().getRange() <= DistanceMetrics.chebyshevDistance(unit.getXPosition(), unit.getYPosition(), enemy.getXPosition(), enemy.getYPosition()))
 					{
-						actions.put(unitID, Action.createCompoundAttack(unitID, enemy.hashCode()));
+						actions.put(unitID, Action.createCompoundAttack(unitID, enemy.getID()));
 						foundanenemy=true;
 						break;
 					}

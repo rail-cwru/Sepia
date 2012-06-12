@@ -20,25 +20,6 @@ public class BusynessCoordinator implements Serializable {
 		busy = new ArrayList<Integer>();
 		lazy = new ArrayList<Integer>();
 	}
-	public void initialize(StateView state) {
-		for (Integer id : state.getAllUnitIds()) {
-			UnitView u = state.getUnit(id);
-			switch(u.getTask()) {
-			case Attack:
-			case Build:
-			case Move:
-			case Gold:
-			case Wood:
-				busy.add(id);
-				break;
-			case Idle:
-			default:
-				lazy.add(id);
-				break;
-			
-			}
-		}
-	}
 	public boolean isIdle(Integer id) {
 		return lazy.contains(id);
 	}
@@ -56,18 +37,5 @@ public class BusynessCoordinator implements Serializable {
 	public void assignBusy(Integer unitID) {
 		lazy.remove(unitID);
 		busy.add(unitID);
-	}
-	public void checkForIdleness(StateView state) {
-		List<Integer> onestoidleize = new LinkedList<Integer>();//because you can't alter it within the same loop 
-		for (Integer unitID : busy) {
-			if (state.getUnit(unitID).getTask() == UnitTask.Idle) {
-				onestoidleize.add(unitID);
-			}
-		}
-		for (Integer id : onestoidleize) {
-			assignIdle(id);
-		}
-		System.out.println("Busy: " + busy.size());
-		System.out.println("Idle: " + lazy.size());
 	}
 }
