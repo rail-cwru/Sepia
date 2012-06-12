@@ -22,22 +22,11 @@ public abstract class Agent implements Serializable {
 	protected VisualLog visualLog;
 	protected boolean verbose; 
 	public static final int OBSERVER_ID = -999;
-	private static int nextID = 0;
-	/**
-	 * Doesn't really need to be called usually, as you construct agents when you run the main method, and they are not part of the state
-	 * @param minID
-	 */
-	public static void reserveIDsUpTo(int minID)
-	{
-		if (nextID <= minID)
-			nextID = minID+1;
-	}
 //	private final int[] enemynums;
 	protected final int playernum;
 	// map: agentID -> flag, if this flag set false, then we will ignore this agent when checking terminal condition. 
 	
 	
-	protected final int ID;
 	/**
 	 * Assigns this Agent the next available auto-incrementing ID and sets the playernum to the argument.
 	 * @param playernum
@@ -47,7 +36,6 @@ public abstract class Agent implements Serializable {
 	}
 	
 	protected Agent(int playernum , boolean countsTowardTermination) {
-		ID = nextID++;
 		this.playernum=playernum;
 //		this.enemynums = new int[enemynums.length];
 //		System.arraycopy(enemynums, 0, this.enemynums, 0, enemynums.length);
@@ -127,14 +115,6 @@ public abstract class Agent implements Serializable {
 	 */
 	public int getPlayerNumber() {
 		return playernum;
-	}
-	@Override public int hashCode() {
-		return ID;
-	}
-	@Override public boolean equals(Object o) {
-		if(!(o instanceof Agent))
-			return false;
-		return ID == ((Agent)o).ID;
 	}
 	
 	
