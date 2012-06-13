@@ -59,13 +59,26 @@ public class CombatAgent extends Agent{
 			this.wanderwhenidle = Boolean.parseBoolean(otherargs[1]);
 		}
 	}
-	
+	/**
+	 * Construct a combat agent.
+	 * @param playerNum The player number of this agent
+	 * @param enemies The player numbers of enemies
+	 * @param wanderWhileIdle Whether to move in random directions when you have nothing better to do.
+	 * @param verbose Verbosity 
+	 */
+	public CombatAgent(int playerNum, int[] enemies, boolean wanderWhileIdle, boolean verbose) {
+		super(playerNum);
+		this.enemies=new int[enemies.length];
+		System.arraycopy(enemies, 0, this.enemies, 0, enemies.length);
+		this.wanderwhenidle=wanderWhileIdle;
+		this.verbose = verbose;
+	}
 	/**
 	 * 
-	 * @param playernum
+	 * @param playerNum
 	 */
-	public CombatAgent(int playernum) {
-		super(playernum);
+	public CombatAgent(int playerNum) {
+		super(playerNum);
 		setDefaults();
 	}
 	

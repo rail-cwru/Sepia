@@ -67,7 +67,18 @@ public class VisualAgent extends Agent implements ActionListener {
 		}.setAgent(this);
 		SwingUtilities.invokeLater(runner);
 	}
-	
+	/**
+	 * 
+	 * @param playerNum The player number that this agent watches
+	 * @param humanControllable Whether you can use the visual interface to control units.
+	 */
+	public VisualAgent(int playerNum, boolean humanControllable) {
+		//Always sets infoVis to true, since there doesn't seem to be a good reason to turn it off
+		super(playerNum);
+		this.humanControllable = humanControllable;
+		
+		infoVis=true;
+	}
 //	public VisualAgent(int playernum, final StateView initState) {
 //		super(playernum, false);
 //		humanControllable = false;
