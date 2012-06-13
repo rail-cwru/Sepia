@@ -16,7 +16,6 @@ import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode.ResourceView;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 
 /**

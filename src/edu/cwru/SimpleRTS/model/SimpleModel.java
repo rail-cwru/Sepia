@@ -23,7 +23,6 @@ import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Configuration;
@@ -257,7 +256,6 @@ public class SimpleModel implements Model {
 		//Set each agent to have no task
 		for (Unit u : state.getUnits().values()) {
 			u.deprecateOldView();
-			u.setTask(UnitTask.Idle);
 		}
 		//Set each template to not keep the old view
 		for (Integer player : state.getPlayers())
@@ -285,78 +283,6 @@ public class SimpleModel implements Model {
 			int xPrime = 0;
 			int yPrime = 0;
 			Action fullact = queuedAct.getFullAction();
-			switch (fullact.getType()) {
-				case PRIMITIVEMOVE:
-				{
-					u.setTask(UnitTask.Move);
-					break;
-				}
-				case PRIMITIVEGATHER:
-				{
-					Direction d = ((DirectedAction)a).getDirection();
-					xPrime = x + d.xComponent();
-					yPrime = y + d.yComponent();				
-					ResourceNode r = state.resourceAt(xPrime,yPrime);
-					if (r!=null)
-						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
-					else
-						u.setTask(UnitTask.Idle);
-					break;
-				}
-				case COMPOUNDMOVE:
-				{
-					u.setTask(UnitTask.Move);
-					break;
-				}
-				case COMPOUNDPRODUCE:
-				{	
-					u.setTask(UnitTask.Build);
-					break;
-				}
-				case PRIMITIVEPRODUCE:
-				{
-					u.setTask(UnitTask.Build);
-					break;
-				}
-				case COMPOUNDBUILD:
-				{	
-					u.setTask(UnitTask.Build);
-					break;
-				}
-				case PRIMITIVEBUILD:
-				{	
-					u.setTask(UnitTask.Build);
-					break;
-				}
-				case COMPOUNDATTACK:
-				{
-					u.setTask(UnitTask.Attack);
-					break;
-				}
-				case PRIMITIVEATTACK:
-				{
-					u.setTask(UnitTask.Attack);
-					break;
-				}
-				case PRIMITIVEDEPOSIT:
-				{
-					if (u.getCurrentCargoAmount() > 0)
-						u.setTask(u.getCurrentCargoType()==ResourceType.GOLD?UnitTask.Gold:UnitTask.Wood);
-					else
-						u.setTask(UnitTask.Idle);
-					break;
-				}
-				case COMPOUNDGATHER:
-				{
-					TargetedAction thisact = ((TargetedAction)fullact);
-					ResourceNode r = state.getResource(thisact.getTargetId());
-					if (r != null)
-						u.setTask(r.getType()==ResourceNode.Type.GOLD_MINE?UnitTask.Gold:UnitTask.Wood);
-					else
-						u.setTask(UnitTask.Idle);
-					break;
-				}
-			}
 			if(a instanceof DirectedAction)
 			{
 				Direction d = ((DirectedAction)a).getDirection();
@@ -598,7 +524,6 @@ public class SimpleModel implements Model {
 					}
 					case FAILEDPERMANENTLY:
 					{
-						u.setTask(UnitTask.Idle);
 						break;
 					}
 				}

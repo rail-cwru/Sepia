@@ -53,7 +53,6 @@
 		<xs:element name="templateID" type="xs:int" />
 		<xs:element name="cargoType" type="ResourceType" />
 		<xs:element name="cargoAmount" type="xs:int" />
-		<xs:element name="unitTask" type="UnitTask" />
 		<xs:element name="progressPrimitive" type="Action" />
 		<xs:element name="progressAmount" type="xs:int" />
 	</xs:all>
@@ -177,16 +176,6 @@
 		</xs:extension>
 	</xs:complexContent>
 </xs:complexType>
-<xs:simpleType name="UnitTask">
-	<xs:restriction base="xs:string">
-		<xs:enumeration value="Wood" />
-		<xs:enumeration value="Gold" />
-		<xs:enumeration value="Idle" />
-		<xs:enumeration value="Build" />
-		<xs:enumeration value="Move" />
-		<xs:enumeration value="Attack" />
-	</xs:restriction>
-</xs:simpleType>
 <xs:complexType name="ResourceQuantity">
 	<xs:sequence>
 		<xs:element name="quantity" type="xs:int" />

@@ -15,7 +15,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 	protected int yPosition;
 	protected UnitTemplate template;
 	protected ResourceType cargoType;
-	protected UnitTask task;
 	protected int cargoAmount;
 	protected Action currentDurativePrimitive;
 	protected int currentDurativeProgress;
@@ -25,7 +24,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 		this.currentHealth = template.getBaseHealth();
 		currentDurativeProgress = 0;
 		currentDurativePrimitive = null;
-		task = UnitTask.Idle;
 	}
 	public boolean deepEquals(Object other) {
 		if (other == null || !this.getClass().equals(other.getClass()))
@@ -42,8 +40,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 		if ((this.template == null) != (o.template == null) ||!this.template.deepEquals(o.template))
 			return false;
 		if (this.cargoType != o.cargoType)
-			return false;
-		if (this.task != o.getTask())
 			return false;
 		if (this.cargoAmount != o.cargoAmount)
 			return false;
@@ -203,12 +199,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 	public int getCurrentCargoAmount() {
 		return cargoAmount;
 	}
-	public void setTask(UnitTask task) {
-		this.task = task;
-	}
-	public UnitTask getTask() {
-		return task;
-	}
 	public UnitView getView() {
 		if(view == null)
 			view = new UnitView(this);
@@ -229,7 +219,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 		private final int xPosition;
 		private final int yPosition;
 		private final UnitTemplateView templateView;
-		private final UnitTask task;
 		private final int ID;
 		private final Action currentDurativePrimitive;
 		private final int currentDurativeProgress;
@@ -240,7 +229,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 			cargoType = unit.cargoType;
 			xPosition = unit.xPosition;
 			yPosition = unit.yPosition;
-			task = unit.task;
 			ID = unit.ID;
 			currentDurativePrimitive = unit.currentDurativePrimitive;
 			currentDurativeProgress = unit.currentDurativeProgress;
@@ -307,13 +295,6 @@ public class Unit extends Target /*implements Cloneable*/ {
 		 */
 		public UnitTemplateView getTemplateView()   {
 			return templateView;
-		}
-		/**
-		 * Get the most recent task assigned to the unit.  Most uses deprecated through the event logging functionality
-		 * @return
-		 */
-		public UnitTask getTask()   {
-			return task;
 		}
 		/**
 		 * Get the unique identification number of this unit

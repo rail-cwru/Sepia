@@ -27,7 +27,6 @@ import edu.cwru.SimpleRTS.environment.TurnTracker;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate;
 import edu.cwru.SimpleRTS.util.Configuration;
@@ -294,10 +293,9 @@ public class LessSimpleModel implements Model {
 	public void executeStep() {
 		
 		//if for some reason you start getting views before you are done changing things, then you will need to deprecate them again
-		//Set each agent to have no task
-		for (Unit u : state.getUnits().values()) {
-			u.setTask(UnitTask.Idle);
-		}
+
+		
+		
 		
 		//Run the Actions
 		//This is based on 3 factors: the last state, spaces/resources/nodes with pending actions that are not known to be failures, and spaces/resources/nodes that are known to be failures

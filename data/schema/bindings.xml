@@ -20,10 +20,6 @@
 			 <jxb:javaType name="edu.cwru.SimpleRTS.model.resource.ResourceNode.Type" 
 			 	parseMethod="Type.valueOf"/>
 		</jxb:bindings> 
-		<jxb:bindings node="xs:simpleType[@name='UnitTask']">
-			 <jxb:javaType name="edu.cwru.SimpleRTS.model.unit.UnitTask" 
-			 	parseMethod="UnitTask.valueOf"/>
-		</jxb:bindings> 
 		<jxb:bindings node="xs:simpleType[@name='Direction']">
 			 <jxb:javaType name="edu.cwru.SimpleRTS.model.Direction" 
 			 	parseMethod="Direction.valueOf"/>

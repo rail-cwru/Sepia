@@ -7,7 +7,6 @@ import java.util.List;
 
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 
 public class BusynessCoordinator implements Serializable {
 	

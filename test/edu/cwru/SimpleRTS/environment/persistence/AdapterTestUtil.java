@@ -39,7 +39,6 @@ import edu.cwru.SimpleRTS.model.Direction;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.TypeLoader;
 
@@ -83,7 +82,6 @@ public class AdapterTestUtil {
 		xml.setProgressAmount(r.nextInt());
 		xml.setProgressPrimitive(createExampleAction(xml.getID(),r));
 		xml.setTemplateID(chosentemplate.getID());
-		xml.setUnitTask(UnitTask.values()[r.nextInt(UnitTask.values().length)]);
 		xml.setXPosition(r.nextInt());
 		xml.setYPosition(r.nextInt());
 		return xml;
