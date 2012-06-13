@@ -46,7 +46,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	protected final boolean infoVis;
 	
 	public VisualAgent(int playernum, String[] otherargs) {
-		super(playernum, Boolean.parseBoolean(otherargs[0]));
+		super(playernum);
 		humanControllable = Boolean.parseBoolean(otherargs[0]);
 		infoVis = Boolean.parseBoolean(otherargs[1]);
 		gamePanel = new GamePanel(this);

@@ -28,17 +28,11 @@ public abstract class Agent implements Serializable {
 	
 	
 	/**
-	 * Assigns this Agent the next available auto-incrementing ID and sets the playernum to the argument.
-	 * @param playernum
+	 * Create a new Agent to control a player.
+	 * @param playernum The player number controlled by this agent.
 	 */
 	public Agent(int playernum) {
-		this(playernum, true);
-	}
-	
-	protected Agent(int playernum , boolean countsTowardTermination) {
-		this.playernum=playernum;
-//		this.enemynums = new int[enemynums.length];
-//		System.arraycopy(enemynums, 0, this.enemynums, 0, enemynums.length);
+		this.playernum = playernum;
 		verbose = false;
 	}
 	
