@@ -15,13 +15,13 @@ import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.state.persistence.ActionAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.UnitAdapter;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlUnit;
 import edu.cwru.SimpleRTS.model.Template;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
-import edu.cwru.SimpleRTS.model.unit.UnitTask;
 import edu.cwru.SimpleRTS.model.unit.UnitTemplate;
 import edu.cwru.SimpleRTS.util.TypeLoader;
 
@@ -31,10 +31,17 @@ public class UnitAdapterTest {
 	private static Map<Integer,Template> templates;
 	
 	@Test
-	public void testToXml() {
+	public void testToXml() throws FileNotFoundException, JSONException {
+		int player = 0;
+		templates = new HashMap<Integer, Template>();
+		List<? extends Template> templateList = TypeLoader.loadFromFile("data/unit_templates", player, new State());
+		for(Template t : templateList)
+		{
+			if (t instanceof UnitTemplate)
+				templates.put(t.ID,t);
+		}
 		UnitAdapter adapter = new UnitAdapter(templates);
-		Unit unit = new Unit((UnitTemplate)templates.get(0),34);
-		unit.setTask(UnitTask.Idle);
+		Unit unit = new Unit((UnitTemplate)templates.get(player),34);
 		unit.setxPosition(1);
 		unit.setyPosition(2);
 		
@@ -68,9 +75,7 @@ public class UnitAdapterTest {
 		assertEquals("cargo amount did not match!", unit.getCurrentCargoAmount(), xml.getCargoAmount());
 		assertEquals("current health did not match!", unit.getCurrentHealth(), xml.getCurrentHealth());
 		assertEquals("current durative action did not match!", unit.getActionProgressPrimitive(), ActionAdapter.fromXml(xml.getProgressPrimitive()));
-//		assertEquals("current durative action did not match!", ActionAdapter.toXml(unit.getActionProgressPrimitive()), xml.getProgressPrimitive());
 		assertEquals("current durative progress amount did not match!", unit.getActionProgressAmount(), xml.getProgressAmount());
-		assertEquals("task did not match!", unit.getTask(), xml.getUnitTask());
 		assertEquals("id did not match!", unit.ID, xml.getID());
 	}
 }
