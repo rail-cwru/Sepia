@@ -1,8 +1,12 @@
 package edu.cwru.SimpleRTS;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -19,6 +23,7 @@ import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer.AgentClass;
 import edu.cwru.SimpleRTS.util.config.xml.XmlRunner;
 
 public class Main2 {
+	private static final Logger logger = Logger.getLogger(Main2.class.getCanonicalName());
 
 	public static void main(String[] args) {
 		if(args.length == 0)
@@ -31,12 +36,12 @@ public class Main2 {
 		XmlConfiguration xmlConfig = null;
 		try 
 		{
-			context = JAXBContext.newInstance(XmlState.class);
+			context = JAXBContext.newInstance(XmlConfiguration.class);
 			xmlConfig = (XmlConfiguration)context.createUnmarshaller().unmarshal(new File(args[0]));
 		} 
 		catch (JAXBException e1) 
 		{
-			System.out.println(args[0] + " is not a valid XML configuration file.");
+			logger.log(Level.SEVERE, args[0] + " is not a valid XML configuration file.", e1);
 			return;
 		}
 		
@@ -102,13 +107,15 @@ public class Main2 {
 				} 
 				catch (Exception e) 
 				{
-					Agent agent = (Agent) classDef.getConstructor(int.class).newInstance(player.getId());
+					Constructor<? extends Agent> constructor = (Constructor<? extends Agent>) classDef.getConstructor(int.class); 
+					System.out.println(constructor);
+					Agent agent = (Agent)constructor.newInstance(player.getId().intValue());
 					agents[i] = agent;
 				}
 			}
 			catch(Exception ex)
 			{
-				System.out.println("Unable to instantiate " + agentClass.getClassName() + " with arguments " + agentClass.getArgument() + ".");
+				logger.log(Level.SEVERE, "Unable to instantiate " + agentClass.getClassName() + " with arguments " + agentClass.getArgument() + "." + " is not a valid XML configuration file.", ex);
 				return null;
 			}
 		}

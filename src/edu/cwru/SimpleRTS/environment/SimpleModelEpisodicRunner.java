@@ -62,6 +62,7 @@ public class SimpleModelEpisodicRunner extends Runner {
 				}
 			}
 		}
+		System.exit(0);
 	}
 
 }
