@@ -222,15 +222,11 @@ public class DurativePlannerTest {
 			{
 				int lastround = state.getTurnNumber()-1;
 				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
-				List<ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
+				Map<Integer, ActionResult> feedbackmap= history.getCommandFeedback(player1, lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
-//				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
-//				ActionResult feedback = feedbacklist.get(0);
-//				assertTrue("Problem (maybe not fully related to duration), should have feedback on the right action ("+action+"), but it gave feedback on "+feedback.getAction(),action.equals(feedback.getAction()));
-//				System.out.println(feedback);
-				for (ActionResult feedback : feedbacklist)
+				for (ActionResult feedback : feedbackmap.values())
 					System.out.println(feedback);
-				ActionResult feedback = feedbacklist.get(0);
+				ActionResult feedback = feedbackmap.values().toArray(new ActionResult[0])[0];
 				assertTrue("The "+niterations+"th attempt should leave progress of "+expectedProgress+", but the progress was "+toAct.getActionProgressAmount(),toAct.getActionProgressAmount()==expectedProgress);
 				if (expectedProgress==0)
 				{

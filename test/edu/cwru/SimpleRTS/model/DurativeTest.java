@@ -695,10 +695,10 @@ public class DurativeTest {
 			{
 				int lastround = state.getTurnNumber()-1;
 				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
-				List<ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
+				Map<Integer, ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
-				ActionResult feedback = feedbacklist.get(0);
+				ActionResult feedback = feedbacklist.values().toArray(new ActionResult[0])[0];
 				assertTrue("Problem (maybe not fully related to duration), should have feedback on the right action ("+action+"), but it gave feedback on "+feedback.getAction(),action.equals(feedback.getAction()));
 				assertTrue("The "+i+"th attempt should leave progress of "+expectedDuration+", but the progress was "+toAct.getActionProgressAmount(),toAct.getActionProgressAmount()==expectedDuration);
 				if (expectedDuration==0)
@@ -750,10 +750,10 @@ public class DurativeTest {
 			{
 				int lastround = state.getTurnNumber()-1;
 				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
-				List<ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
+				Map<Integer, ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
 				//verify that there is only one action with feedback, and it is this action, then get it
 				assertTrue("Problem (maybe not fully related to duration), should have only one feedback in a round",feedbacklist.size()==1);
-				ActionResult feedback = feedbacklist.get(0);
+				ActionResult feedback = feedbacklist.values().toArray(new ActionResult[0])[0];
 				assertTrue("Problem (maybe not fully related to duration), should have feedback on the right action ("+interruptingAction+"), but it gave feedback on "+feedback.getAction(),interruptingAction.equals(feedback.getAction()));
 				assertTrue("The "+i+"th attempt should leave progress of "+expectedDuration+", but the progress was "+toAct.getActionProgressAmount(),toAct.getActionProgressAmount()==expectedDuration);
 				if (expectedDuration==0)
@@ -791,7 +791,7 @@ public class DurativeTest {
 			{
 				int lastround = state.getTurnNumber()-1;
 				HistoryView history = model.getHistory().getView(Agent.OBSERVER_ID);
-				List<ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
+				Map<Integer, ActionResult> feedbacklist = history.getCommandFeedback(player1, lastround);
 				assertTrue("Problem (maybe not fully related to duration), should have only no feedback as nothing was done",feedbacklist.size()==0);
 				assertTrue("The "+i+"th attempt should leave progress of "+expectedDuration+", but the progress was "+toAct.getActionProgressAmount(),toAct.getActionProgressAmount()==expectedDuration);
 				assertNull("The "+i+"th attempt should have finished the action, resetting progress (so the primitive should be null), but the primitive showing is "+toAct.getActionProgressPrimitive(),toAct.getActionProgressPrimitive());

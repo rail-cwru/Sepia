@@ -1,9 +1,10 @@
 package edu.cwru.SimpleRTS.environment.state.persistence;
-
 import java.util.List;
+import java.util.Map.Entry;
 
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlAction;
+import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlActionEntry;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlActionList;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlActionLogger;
 import edu.cwru.SimpleRTS.log.ActionLogger;
@@ -16,9 +17,12 @@ public class ActionLoggerAdapter {
 		{
 			XmlActionList xmlSingleTurn = new XmlActionList();
 			xmlSingleTurn.setRoundNumber(roundNumber);
-			for (Action single : actionLogger.getActions(roundNumber))
+			for (Entry<Integer,Action> single : actionLogger.getActions(roundNumber).entrySet())
 			{
-				xmlSingleTurn.getAction().add(ActionAdapter.toXml(single));
+				XmlActionEntry xmlEntry = new XmlActionEntry();
+				xmlEntry.setUnitID(single.getKey());
+				xmlEntry.setAction(ActionAdapter.toXml(single.getValue()));
+				xmlSingleTurn.getActionEntry().add(xmlEntry);
 			}
 			toReturn.getActionList().add(xmlSingleTurn);
 		}
@@ -31,9 +35,11 @@ public class ActionLoggerAdapter {
 		for (XmlActionList xmlSingleTurn : actions)
 		{
 			int roundNumber = xmlSingleTurn.getRoundNumber();
-			for (XmlAction xmlSingleAction : xmlSingleTurn.getAction())
+			for (XmlActionEntry xmlSingle : xmlSingleTurn.getActionEntry())
 			{
-				toReturn.addAction(roundNumber, ActionAdapter.fromXml(xmlSingleAction));
+				
+				Action action = ActionAdapter.fromXml(xmlSingle.getAction());
+				toReturn.addAction(roundNumber, xmlSingle.getUnitID(), action);
 			}
 		}
 		return toReturn;

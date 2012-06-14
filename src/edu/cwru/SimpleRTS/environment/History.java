@@ -123,7 +123,7 @@ public class History implements DeepEquatable {
 		playerHistories.get(player).getPrimitiveFeedback().addActionResult(stepnumber, primitiveFeedback);
 		observerHistory.getPrimitiveFeedback().addActionResult(stepnumber, primitiveFeedback);
 	}
-	public void recordCommandRecieved(int player, int stepnumber, Action actionRecieved)
+	public void recordCommandRecieved(int player, int stepnumber, int unitID, Action actionRecieved)
 	{
 		if (!playerHistories.containsKey(player))
 			throw new IllegalArgumentException("Invalid player, history doesn't contain a record of that player.");
@@ -429,15 +429,16 @@ public class History implements DeepEquatable {
 			return playerHistory.getEventLogger().getRevealedResourceNodes();
 		}
 		/**
-		 * Get a list of ActionResult objects that correspond to the primitive Actions attempted by the Model in resolving the commands issued by the specifed playerNumber during execution of the specified stepNumber. <br>
+		 * Get a map of ActionResult objects that correspond to the unit ids mapped to primitive Actions attempted by the Model in resolving the commands issued by the specifed playerNumber during execution of the specified stepNumber. <br>
 		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
 		 * <br>The primitive actions covered in these results are used to execute a (possibly non-strict) subset of the actions covered in the CommandResults for the same step, as some commands may be so flawed as to not correspond to any primitives.
 		 * <br>Primitive actions used to execute commands will be displayed here even if the command is a primitive action itself.
+		 * 
 		 * @param playerNumber the player number whose feedback should be returned
 		 * @param stepNumber the step number that the feedback occurred in.
-		 * @return null if the playerNumber is not visible to the viewing player, a list of ActionResult objects corresponding to the primitive Actions used during the specified stepNumber to execute the commands of the specified playerNumber otherwise.
+		 * @return null if the playerNumber is not visible to the viewing player, a map of Integers (unit ids) to their ActionResult objects corresponding to the primitive Actions used during the specified stepNumber to execute the commands of the specified playerNumber otherwise.
 		 */
-		public List<ActionResult> getPrimitiveFeedback(int playerNumber, int stepNumber)
+		public Map<Integer ,ActionResult> getPrimitiveFeedback(int playerNumber, int stepNumber)
 		{
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
@@ -450,14 +451,14 @@ public class History implements DeepEquatable {
 			}
 		}
 		/**
-		 * Get a list of Action objects that were received by the Model during the specified stepNumber from agents controlling the specified playerNumber
+		 * Get a map of Action objects that were received by the Model during the specified stepNumber from agents controlling the specified playerNumber, mapped by the unit ids of the units the action
 		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
 		 * <br>The actions in the list are a subset of the actions covered by CommandFeedback, as the model may use and generate feedback for commands issued during previous steps.
 		 * @param playerNumber the player number issuing commands
 		 * @param stepNumber the step number when commands were issued
 		 * @return null if the playerNumber is not visible to the viewing player, a list of Action objects received as commands during the specified stepNumber from agents controlling the specified playerNumber otherwise.
 		 */
-		public List<Action> getCommandsIssued(int playerNumber, int stepNumber)
+		public Map<Integer, Action> getCommandsIssued(int playerNumber, int stepNumber)
 		{
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
@@ -470,7 +471,7 @@ public class History implements DeepEquatable {
 			}
 		}
 		/**
-		 * Get a list of ActionResult objects covering commands from agents controlling the specified playerNumber that the Model attempted to execute during the specified stepNumber.
+		 * Get a map of ActionResult objects covering unit ids mapped to their commands from agents controlling the specified playerNumber that the Model attempted to execute during the specified stepNumber.
 		 * <br>This returns null if the actions of that playerNumber are not visible to the player whose HistoryView this is.  This happens only when fog of war (partial observability) is turned on, and only when the viewing player is not an observer.
 		 * <br>The actions in the list are a superset of the actions covered by CommandsIssued, as the model may use and generate feedback for commands issued during previous steps.
 		 * <br>The actions in the list are a superset of the actions whose primitive components are covered in PrmitiveFeedback, as some commands may be too flawed to lead to primitive components being calculated.
@@ -478,9 +479,9 @@ public class History implements DeepEquatable {
 		 * 
 		 * @param playerNumber the player number whose commands this list is based on
 		 * @param stepNumber the step number when the commands' execution was attempted
-		 * @return null if the playerNumber is not visible to the viewing player, a list of ActionResult objects corresponding the commands of the specified playerNumber that the Model attempted to execute during the specified stepNumber
+		 * @return null if the playerNumber is not visible to the viewing player, a map of Integer unit ids to ActionResult objects corresponding the commands of the specified playerNumber that the Model attempted to execute during the specified stepNumber
 		 */
-		public List<ActionResult> getCommandFeedback(int playerNumber, int stepNumber) {
+		public Map<Integer, ActionResult> getCommandFeedback(int playerNumber, int stepNumber) {
 			//if it is fully observable, or if this is an observer, or if it is asking for this player, then you can get the actual one
 			if (!hasFogOfWar() || this.player == playerNumber || this.player == Agent.OBSERVER_ID)
 			{

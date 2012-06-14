@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.prefs.BackingStoreException;
 
@@ -64,9 +65,9 @@ public class ModelAndPlannerTimeTest {
 				calcEnv.step();//Do the step so have the results for it.
 				Map<Integer, Action> thisStepsActions = new HashMap<Integer,Action>();
 				//get all of the commands issued
-				List<Action> commandsIssued = model.getHistory().getPlayerHistory(player).getCommandsIssued().getActions(thisStep);
-				for (Action a : commandsIssued) {
-					thisStepsActions.put(a.getUnitId(), a);
+				Map<Integer, Action> commandsIssued = model.getHistory().getPlayerHistory(player).getCommandsIssued().getActions(thisStep);
+				for (Entry<Integer, Action> a : commandsIssued.entrySet()) {
+					thisStepsActions.put(a.getKey(), a.getValue());
 				}
 				if (watchCalc)
 				{

@@ -43,6 +43,35 @@ public class DeepEquatableUtil {
 			return true;
 	}
 	/**
+	 * A method to compare the deep equality of two Lists of Lists. <BR>
+	 * Suffixed by ListList due to type erasure, which makes generics not overload intuitively.
+	 * @param obj1
+	 * @param obj2
+	 * @return True if both arguments are null or if both are non-null, of the same size, and objects with the same indices are deepEquals to eachother. False otherwise.
+	 */
+	public static boolean deepEqualsListMap(List<? extends Map<Integer, ? extends DeepEquatable>> obj1, List<? extends Map<Integer,? extends DeepEquatable>> obj2) {
+			boolean thisnull = obj1 == null;
+			boolean othernull = obj2 == null;
+			if ((thisnull == othernull)==false)
+			{
+				return false;
+			}
+			//if both aren't null, need to check deeper
+			if (!thisnull && !othernull)
+			{
+				if (obj1.size() != obj2.size())
+					return false;
+				for (int i = 0; i<obj1.size();i++)
+				{
+					Map<Integer, ? extends DeepEquatable> thisinner=obj1.get(i);
+					Map<Integer, ? extends DeepEquatable> otherinner=obj2.get(i);
+					if (!deepEqualsMap(thisinner,otherinner))
+						return false;
+				}
+			}
+			return true;
+	}
+	/**
 	 * A method to compare the deep equality of two Lists. <BR>
 	 * Suffixed by List due to type erasure, which makes generics not overload intuitively.
 	 * @param obj1

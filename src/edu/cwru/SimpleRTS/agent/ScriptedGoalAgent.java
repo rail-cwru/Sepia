@@ -461,7 +461,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 					busycoordinator.removeUnit(death.getDeadUnitID());
 				}
 			}
-			for (ActionResult result : statehistory.getCommandFeedback(getPlayerNumber(), turn))
+			for (ActionResult result : statehistory.getCommandFeedback(getPlayerNumber(), turn).values())
 			{ //don't need to check controller, since command feedback is only for your orders and invalid units don't give failed or completed, but invalidcontroller or invalidunits
 				ActionFeedback feedback = result.getFeedback();
 				Integer unit = result.getAction().getUnitId();

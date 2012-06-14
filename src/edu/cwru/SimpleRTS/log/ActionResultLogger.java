@@ -3,7 +3,9 @@ package edu.cwru.SimpleRTS.log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.util.DeepEquatable;
@@ -15,28 +17,43 @@ import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
  */
 public class ActionResultLogger implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
-	List<List<ActionResult>> actionresults;
+	List<Map<Integer, ActionResult>> actionresults;
 	public ActionResultLogger () {
-		actionresults = new ArrayList<List<ActionResult>>();
+		actionresults = new ArrayList<Map<Integer, ActionResult>>();
 	}
-	public void addActionResult(int stepnumber, ActionResult action) {
-		while (actionresults.size()<=stepnumber)
+	/**
+	 * Insert an action result, overwriting any ActionResult for the same unit in the same round.
+	 * <br>
+	 * @param stepNumber
+	 * @param actionResult
+	 */
+	public void addActionResult(int stepNumber, ActionResult actionResult) {
+		addActionResult(stepNumber,actionResult.getAction().getUnitId(),actionResult);
+	}
+	/**
+	 * Insert an action result, overwriting any ActionResult for the same unit id in the same round.
+	 * @param stepNumber
+	 * @param unitID
+	 * @param actionResult
+	 */
+	public void addActionResult(int stepNumber, int unitID, ActionResult actionResult) {
+		while (actionresults.size()<=stepNumber)
 		{
-			actionresults.add(new ArrayList<ActionResult>());
+			actionresults.add(new HashMap<Integer, ActionResult>());
 		}
-		actionresults.get(stepnumber).add(action);
+		actionresults.get(stepNumber).put(unitID,actionResult);
 	}
 	/**
 	 * Get the results of actions for a specific round.
 	 * @param roundnumber
 	 * @return an unmodifiable list of ActionResults
 	 */
-	public List<ActionResult> getActionResults(int roundnumber) {
+	public Map<Integer, ActionResult> getActionResults(int roundnumber) {
 		if ( roundnumber<0 || roundnumber >= actionresults.size()) {
-			return new ArrayList<ActionResult>();
+			return new HashMap<Integer, ActionResult>();
 		}
 		else {
-			return Collections.unmodifiableList(actionresults.get(roundnumber));
+			return Collections.unmodifiableMap(actionresults.get(roundnumber));
 		}
 	}
 	/**
@@ -76,7 +93,7 @@ public class ActionResultLogger implements Serializable, DeepEquatable {
 			return true;
 		
 		ActionResultLogger o = (ActionResultLogger) other;
-		if (!DeepEquatableUtil.deepEqualsListList(actionresults, o.actionresults))
+		if (!DeepEquatableUtil.deepEqualsListMap(actionresults, o.actionresults))
 			return false;
 		
 		return true;

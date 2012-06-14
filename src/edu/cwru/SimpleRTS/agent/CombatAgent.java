@@ -190,8 +190,7 @@ public class CombatAgent extends Agent{
 				}
 			}
 			//Update it's list of orders by checking for completions and failures and removing those
-			List<ActionResult> feedbacks = statehistory.getCommandFeedback(playernum, stepToRead);
-			for (ActionResult feedback : feedbacks)
+			for (ActionResult feedback : statehistory.getCommandFeedback(playernum, stepToRead).values())
 			{
 				
 				if (feedback.getFeedback() != ActionFeedback.INCOMPLETE)//Everything but incomplete is some form of failure or complete

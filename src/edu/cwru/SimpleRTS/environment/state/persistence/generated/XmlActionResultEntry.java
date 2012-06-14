@@ -12,22 +12,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import edu.cwru.SimpleRTS.action.ActionFeedback;
 
 
 /**
- * <p>Java class for ActionResult complex type.
+ * <p>Java class for ActionResultEntry complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ActionResult">
+ * &lt;complexType name="ActionResultEntry">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="action" type="{}Action"/>
- *         &lt;element name="feedback" type="{}ActionFeedback"/>
+ *         &lt;element name="unitID" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="actionResult" type="{}ActionResult"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,64 +35,54 @@ import edu.cwru.SimpleRTS.action.ActionFeedback;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ActionResult", propOrder = {
-    "action",
-    "feedback"
+@XmlType(name = "ActionResultEntry", propOrder = {
+    "unitID",
+    "actionResult"
 })
-public class XmlActionResult {
+public class XmlActionResultEntry {
 
+    protected int unitID;
     @XmlElement(required = true)
-    protected XmlAction action;
-    @XmlElement(required = true, type = String.class)
-    @XmlJavaTypeAdapter(Adapter4 .class)
-    protected ActionFeedback feedback;
+    protected XmlActionResult actionResult;
 
     /**
-     * Gets the value of the action property.
+     * Gets the value of the unitID property.
+     * 
+     */
+    public int getUnitID() {
+        return unitID;
+    }
+
+    /**
+     * Sets the value of the unitID property.
+     * 
+     */
+    public void setUnitID(int value) {
+        this.unitID = value;
+    }
+
+    /**
+     * Gets the value of the actionResult property.
      * 
      * @return
      *     possible object is
-     *     {@link XmlAction }
+     *     {@link XmlActionResult }
      *     
      */
-    public XmlAction getAction() {
-        return action;
+    public XmlActionResult getActionResult() {
+        return actionResult;
     }
 
     /**
-     * Sets the value of the action property.
+     * Sets the value of the actionResult property.
      * 
      * @param value
      *     allowed object is
-     *     {@link XmlAction }
+     *     {@link XmlActionResult }
      *     
      */
-    public void setAction(XmlAction value) {
-        this.action = value;
-    }
-
-    /**
-     * Gets the value of the feedback property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public ActionFeedback getFeedback() {
-        return feedback;
-    }
-
-    /**
-     * Sets the value of the feedback property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setFeedback(ActionFeedback value) {
-        this.feedback = value;
+    public void setActionResult(XmlActionResult value) {
+        this.actionResult = value;
     }
 
 }

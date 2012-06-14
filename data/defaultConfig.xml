@@ -3,35 +3,35 @@
 <preferences EXTERNAL_XML_VERSION="1.0">
   <root type="user">
     <map/>
-      <node name="edu">
+    <node name="edu">
+      <map/>
+      <node name="cwru">
         <map/>
-        <node name="cwru">
+        <node name="SimpleRTS">
           <map/>
-          <node name="SimpleRTS">
+          <node name="agent">
             <map/>
-            <node name="agent">
-            	<map/>
-            	<node name="templatefiles">
-            		<map>
-            			<entry key="Global" value="data/unit_templates"/>
-            		</map>
-            	</node>
-            </node>
-            <node name="environment">
+            <node name="templatefiles">
               <map>
-                <entry key="NumEpisodes" value="10"/>
-              </map>
-            </node>
-            <node name="model">
-              <map>
-                <entry key="Conquest" value="true"/>
-                <entry key="Midas" value="false"/>
-                <entry key="ManifestDestiny" value="false"/>
-                <entry key="TimeLimit" value="65535"/>
+                <entry key="Global" value="data/unit_templates"/>
               </map>
             </node>
           </node>
+          <node name="environment">
+            <map>
+              <entry key="NumEpisodes" value="10"/>
+            </map>
+          </node>
+          <node name="model">
+            <map>
+              <entry key="Conquest" value="true"/>
+              <entry key="Midas" value="false"/>
+              <entry key="ManifestDestiny" value="false"/>
+              <entry key="TimeLimit" value="65535"/>
+            </map>
+          </node>
         </node>
       </node>
+    </node>
   </root>
 </preferences>

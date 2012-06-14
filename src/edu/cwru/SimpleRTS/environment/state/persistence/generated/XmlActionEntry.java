@@ -10,21 +10,22 @@ package edu.cwru.SimpleRTS.environment.state.persistence.generated;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DeathLog complex type.
+ * <p>Java class for ActionEntry complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeathLog">
+ * &lt;complexType name="ActionEntry">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="deadUnitID" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="controller" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="unitID" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="action" type="{}Action"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -34,45 +35,54 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeathLog", propOrder = {
-    "deadUnitID",
-    "controller"
+@XmlType(name = "ActionEntry", propOrder = {
+    "unitID",
+    "action"
 })
-public class XmlDeathLog {
+public class XmlActionEntry {
 
-    protected int deadUnitID;
-    protected int controller;
+    protected int unitID;
+    @XmlElement(required = true)
+    protected XmlAction action;
 
     /**
-     * Gets the value of the deadUnitID property.
+     * Gets the value of the unitID property.
      * 
      */
-    public int getDeadUnitID() {
-        return deadUnitID;
+    public int getUnitID() {
+        return unitID;
     }
 
     /**
-     * Sets the value of the deadUnitID property.
+     * Sets the value of the unitID property.
      * 
      */
-    public void setDeadUnitID(int value) {
-        this.deadUnitID = value;
+    public void setUnitID(int value) {
+        this.unitID = value;
     }
 
     /**
-     * Gets the value of the controller property.
+     * Gets the value of the action property.
      * 
+     * @return
+     *     possible object is
+     *     {@link XmlAction }
+     *     
      */
-    public int getController() {
-        return controller;
+    public XmlAction getAction() {
+        return action;
     }
 
     /**
-     * Sets the value of the controller property.
+     * Sets the value of the action property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link XmlAction }
+     *     
      */
-    public void setController(int value) {
-        this.controller = value;
+    public void setAction(XmlAction value) {
+        this.action = value;
     }
 
 }

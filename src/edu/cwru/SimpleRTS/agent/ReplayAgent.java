@@ -44,7 +44,7 @@ public class ReplayAgent extends Agent {
 			System.out.println("Pulling actions for turn "+turnnumber);
 		}
 		Map<Integer, Action> commands = new HashMap<Integer, Action>();
-		for (Action a : actions.getActions(turnnumber))
+		for (Action a : actions.getActions(turnnumber).values())
 		{
 			if (verbose)
 			{

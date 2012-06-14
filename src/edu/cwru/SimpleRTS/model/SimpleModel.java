@@ -169,7 +169,7 @@ public class SimpleModel implements Model {
 			
 			int unitId = aent.getKey();
 			Action a = aent.getValue();
-			history.recordCommandRecieved(sendingPlayerNumber, state.getTurnNumber(), a);
+			history.recordCommandRecieved(sendingPlayerNumber, state.getTurnNumber(), unitId, a);
 			//If the unit is not the same as in the action, ignore the action
 			if (a.getUnitId() != unitId)
 			{

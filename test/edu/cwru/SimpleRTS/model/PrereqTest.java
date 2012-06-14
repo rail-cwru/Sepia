@@ -194,12 +194,12 @@ public class PrereqTest {
 		for (boolean b : whichupgrades)
 			if (!b)
 				shouldsucceed=false;
-		List<ActionResult> results = model.getHistory().getView(player).getCommandFeedback(player, model.getState().getTurnNumber()-1);
+		Map<Integer, ActionResult> results = model.getHistory().getView(player).getCommandFeedback(player, model.getState().getTurnNumber()-1);
 		assertTrue("Problem in setup, should be only one result",results.size()==1);
 		if (shouldsucceed)
-			assertTrue("It failed when it should have succeded",(results.get(0).getFeedback()==ActionFeedback.COMPLETED));
+			assertTrue("It failed when it should have succeded",(results.values().toArray(new ActionResult[0])[0].getFeedback()==ActionFeedback.COMPLETED));
 		else
-			assertTrue("It succeeded when it shouldn't have",(results.get(0).getFeedback()!=ActionFeedback.COMPLETED));
+			assertTrue("It succeeded when it shouldn't have",(results.values().toArray(new ActionResult[0])[0].getFeedback()!=ActionFeedback.COMPLETED));
 		
 	}
 }
