@@ -49,6 +49,9 @@ public class VisualAgent extends Agent implements ActionListener {
 		super(playernum);
 		humanControllable = Boolean.parseBoolean(otherargs[0]);
 		infoVis = Boolean.parseBoolean(otherargs[1]);
+		setupScreen();
+	}
+	private void setupScreen() {
 		gamePanel = new GamePanel(this);
 		actions = new HashMap<Integer, Action>();
 		Runnable runner = new Runnable() {
@@ -78,6 +81,7 @@ public class VisualAgent extends Agent implements ActionListener {
 		this.humanControllable = humanControllable;
 		
 		infoVis=true;
+		setupScreen();
 	}
 //	public VisualAgent(int playernum, final StateView initState) {
 //		super(playernum, false);
