@@ -325,7 +325,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		}
 		public boolean canGather() { return canGather; }
 		/**
-		 * Get whether units with this template uses the build action to make things.  This is independant of whether the template can actually make anything.
+		 * Get whether units with this template uses the build action to make things.  This is independent of whether the template can actually make anything.
 		 * @return true if this template makes units with build actions, false if produce actions are used instead.
 		 */
 		public boolean canBuild() { return canBuild; }

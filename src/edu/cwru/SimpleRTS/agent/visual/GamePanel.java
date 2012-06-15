@@ -5,11 +5,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;  
 import java.awt.event.MouseEvent;
+import java.util.List;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
+import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.InputMap;
 import javax.swing.ActionMap;
@@ -17,10 +21,7 @@ import javax.swing.JComponent;
 
 
 import edu.cwru.SimpleRTS.action.Action;
-import edu.cwru.SimpleRTS.action.ActionResult;
 import edu.cwru.SimpleRTS.action.ActionType;
-import edu.cwru.SimpleRTS.action.LocatedAction;
-import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.log.DamageLog;
@@ -224,11 +225,12 @@ public class GamePanel extends JPanel {
         g.drawString(currentState.getXExtent()+"x"+currentState.getYExtent(), getWidth()-50, getHeight()-1);
         //draw info vis (by double click)
         if(infoVisSelectedID>=0 && info!=null) {
-        	// TODO
-        	if(info.getX()>=0 && info.getY()>=0) {
-        		DrawingStrategy infoBox = DrawingStrategy.infoGraphic();
-        		infoBox.setInfo(info.getInfo());
-        		infoBox.draw(g, info.getX(), info.getY());
+        	if(currentState.getUnit(infoVisSelectedID)!=null) {
+        		if(info.getX()>=0 && info.getY()>=0) {
+        			DrawingStrategy infoBox = DrawingStrategy.infoGraphic();
+        			infoBox.setInfo(info.getInfo());
+        			infoBox.draw(g, info.getX(), info.getY());
+        		}
         	}
         }
     }
@@ -249,7 +251,8 @@ public class GamePanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO: currentState == null ?
+        	if(currentState==null)
+        		return;
             switch(shiftDirection) {
 			case UP:
 				if(tly > 0)
@@ -309,6 +312,124 @@ public class GamePanel extends JPanel {
 
 	}
 	
+	private class PopupActionMenu extends JPopupMenu {
+		private static final long serialVersionUID = 7823418576361323507L;
+
+		public PopupActionMenu(StateView state, MouseEvent e, UnitView selectedUnit) {
+			int x = unscaleX(e.getX());
+			int y = unscaleY(e.getY());
+			if(state.unitAt(x, y)!=null) { 
+				/** right click on a unit */
+				int rightSelected = state.unitAt(x, y);
+				UnitView targetUnit = state.getUnit(rightSelected);
+				if(selectedUnit.getTemplateView().canAttack() && targetUnit.getTemplateView().getPlayer()!=playernum) {
+					// attack the target
+					//Action action = new TargetedAction(selectedID, ActionType.COMPOUNDATTACK, rightSelected);
+					//log("=> Action: " + action);
+					//agent.addAction(action);
+					JMenuItem attackItem = new JMenuItem("Attack");
+					attackItem.addActionListener(new PopupActionListener(selectedID, rightSelected, ActionType.COMPOUNDATTACK));
+					add(attackItem);
+				} else if(selectedUnit.getCargoAmount()>0 && 
+						((targetUnit.getTemplateView().canAcceptGold() && selectedUnit.getCargoType()==ResourceType.GOLD) ||
+								(targetUnit.getTemplateView().canAcceptWood() && selectedUnit.getCargoType()==ResourceType.WOOD))) {
+					// target is townhall or Barracks, and the peasant holds the gold or wood
+					JMenuItem depositItem = new JMenuItem("Deposit " + selectedUnit.getCargoType());
+					depositItem.addActionListener(new PopupActionListener(selectedID, rightSelected, ActionType.COMPOUNDDEPOSIT));
+					add(depositItem);
+				} 
+			} else if(state.resourceAt(x, y)!=null) { // gather resource if doable
+				/** right click on a resource */
+				int rightSelected = state.resourceAt(x, y);
+				if(selectedUnit.getTemplateView().canGather()) {
+					JMenuItem gatherItem = new JMenuItem("Gather " + state.getResourceNode(rightSelected).getType());
+					gatherItem.addActionListener(new PopupActionListener(selectedID, rightSelected, ActionType.COMPOUNDGATHER));
+					add(gatherItem);
+				}
+			} else { 
+				/** right click on a blank */
+				if(selectedUnit.getTemplateView().getProduces()!=null &&
+						selectedUnit.getTemplateView().getProduces().size()>0 &&
+						selectedUnit.getTemplateView().canBuild()) {
+					// build some unit 
+					List<Integer> productions = selectedUnit.getTemplateView().getProduces();
+					for(int prodTempID : productions) {
+						JMenuItem bItem = new JMenuItem("Build " + state.getAllTemplates().get(prodTempID).getName());
+						bItem.addActionListener(new PopupActionListener(selectedID, prodTempID, ActionType.COMPOUNDBUILD, x, y));
+						add(bItem);
+					}
+				}
+				if(selectedUnit.getTemplateView().canMove()) {
+					// move
+					JMenuItem moveItem = new JMenuItem("Move");
+					moveItem.addActionListener(new PopupActionListener(selectedID, -1, ActionType.COMPOUNDMOVE, x, y));
+					add(moveItem);
+				}
+			}
+			
+			// if can produce (not build)
+			if(selectedUnit.getTemplateView().getProduces()!=null &&
+					selectedUnit.getTemplateView().getProduces().size()>0 &&
+					!selectedUnit.getTemplateView().canBuild()) {
+				// produce some unit
+				List<Integer> productions = selectedUnit.getTemplateView().getProduces();
+				for(int prodTempID : productions) {
+					JMenuItem bItem = new JMenuItem("Produce " + state.getAllTemplates().get(prodTempID).getName());
+					bItem.addActionListener(new PopupActionListener(selectedID, prodTempID, ActionType.COMPOUNDPRODUCE));
+					add(bItem);
+				}
+			} 
+		}
+		
+		private class PopupActionListener implements ActionListener {
+			private int source;
+			private int target;
+			private ActionType actionType;
+			private int x;
+			private int y;
+			public PopupActionListener(int source, int target, ActionType actionType) {
+				this.source = source;
+				this.target = target;
+				this.actionType = actionType;
+			}
+			public PopupActionListener(int source, int target, ActionType actionType, int x, int y) {
+				this.source = source;
+				this.target = target;
+				this.actionType = actionType;
+				this.x = x;
+				this.y = y;
+			}
+			public void actionPerformed(ActionEvent event) {
+				Action action = null;
+				switch (actionType) {
+				case COMPOUNDATTACK:
+					action = Action.createCompoundAttack(source, target);
+					break;
+				case COMPOUNDDEPOSIT:
+					action = Action.createCompoundDeposit(source, target);
+					break;
+				case COMPOUNDPRODUCE:
+					action = Action.createCompoundProduction(source, target);
+					break;
+				case COMPOUNDBUILD:
+					action = Action.createCompoundBuild(source, target, x, y);
+					break;
+				case COMPOUNDGATHER:
+					action = Action.createCompoundGather(source, target);
+					break;
+				case COMPOUNDMOVE:
+					action = Action.createCompoundMove(source, x, y);
+					break;
+				default:
+					return;
+				}
+				log("=> Action: " + action);
+				agent.addAction(action);
+			}
+		}
+		
+	}
+	
 	private void infoVisual(MouseEvent e) {
 		int x = unscaleX(e.getX());
 		int y = unscaleY(e.getY());
@@ -328,11 +449,6 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void humanControl(MouseEvent e) {
-		//int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
-		//int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
-		//System.out.println("Current Gold: " + currentGold);
-		//System.out.println("Current Wood: " + currentWood);
-		
 		int x = unscaleX(e.getX());
 		int y = unscaleY(e.getY());
 		StateView state = currentState;
@@ -354,34 +470,8 @@ public class GamePanel extends JPanel {
 					selectedID = -1;
 					return ;
 				}
-				if(state.unitAt(x, y)!=null) { 
-					int rightSelected = state.unitAt(x, y);
-					UnitView targetUnit = state.getUnit(rightSelected);
-					if(myUnit.getTemplateView().canAttack() && targetUnit.getTemplateView().getPlayer()!=playernum) { 
-						// attack the target
-						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDATTACK, rightSelected);
-						log("=> Action: " + action);
-						agent.addAction(action);
-					} else if(myUnit.getCargoAmount()>0 && 
-							((targetUnit.getTemplateView().canAcceptGold() && myUnit.getCargoType()==ResourceType.GOLD) ||
-									(targetUnit.getTemplateView().canAcceptWood() && myUnit.getCargoType()==ResourceType.WOOD))) {
-						// target is townhall or Barracks, and the peasant holds the gold or wood
-						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDDEPOSIT, rightSelected);
-						log("=> Action: " + action);
-						agent.addAction(action);
-					} 
-				} else if(state.resourceAt(x, y)!=null) { // gather resource if doable
-					int rightSelected = state.resourceAt(x, y);
-					if(myUnit.getTemplateView().canGather()) {
-						Action action = new TargetedAction(selectedID, ActionType.COMPOUNDGATHER, rightSelected);
-						log("=> Action: " + action);
-						agent.addAction(action);
-					}
-				} else { // move
-					Action action = new LocatedAction(selectedID, ActionType.COMPOUNDMOVE, x, y);
-					log("=> Action: " + action);
-					agent.addAction(action);
-				}
+				PopupActionMenu actionMenu = new PopupActionMenu(currentState, e, myUnit);
+				actionMenu.show(e.getComponent(), e.getX(), e.getY());
 			}
 		}
 	}
@@ -418,17 +508,18 @@ public class GamePanel extends JPanel {
 			if(state.getUnit(id)!=null) {
 				info = "ID: " + id;
 				UnitView unit = state.getUnit(id);
+				//unit.getTemplateView().
 				String unitName = unit.getTemplateView().getName();
+				info += "\nHP: " + unit.getHP();
 				if(unitName.equals("Peasant")) {
 					if(unit.getCargoAmount()>0)
 						info += unit.getCargoType().toString() + ": " + unit.getCargoAmount();
 				} else if(unitName.equals("TownHall") || unitName.equals("Barracks")){
-					info += "\nHP: " + unit.getHP();
 					if(unit.getCargoAmount()>0)
 						info += "\n" + unit.getCargoType().toString() + unit.getCargoAmount();
 				}
 				else { // TODO: add other info for other types of unit
-					info += "\nHP: " + unit.getHP();
+					;
 				}
 			}
 			else {
