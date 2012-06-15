@@ -29,13 +29,10 @@ import edu.cwru.SimpleRTS.model.upgrade.UpgradeTemplate.UpgradeTemplateView;
  */
 public class RawStateCreator implements StateCreator{
 	private static final long	serialVersionUID	= 1L;
-	private ObjectInputStream stateStream;
-	private ByteArrayInputStream underlyingStream;
+	byte[] stateData;
 	public RawStateCreator(byte[] stateData) throws IOException {
-		ByteArrayInputStream bis = new ByteArrayInputStream(stateData);
-		stateStream = new ObjectInputStream(bis);
-		underlyingStream = bis;
-		underlyingStream.mark(Integer.MAX_VALUE);
+		this.stateData = new byte[stateData.length];
+		System.arraycopy(stateData, 0, this.stateData, 0, stateData.length);
 		
 	}
 	@Override
@@ -43,8 +40,13 @@ public class RawStateCreator implements StateCreator{
 		
 		
 		try {
-			boolean b = stateStream.markSupported();
-			underlyingStream.reset();
+			//You may be tempted to cache this and reset the stream every time
+			//RESIST THAT TEMPTATION
+			//It will cause wierd things to happen to links back to the state.  But only the second time, making it hard to find.
+			//This can make a stateview (which presently stores the state) to loop back to a different state than the one that stores them, so they don't get updated.
+			//In other words, if you cached the streams and reset them, then created two states, any preexiting views in the first state would link to the first state (good), but preexisting views in the second state would be updated with the first state
+			ByteArrayInputStream bis = new ByteArrayInputStream(stateData);
+			ObjectInputStream stateStream = new ObjectInputStream(bis);
 			return (State)stateStream.readObject();
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("The data in the State cannot be read as a state.");

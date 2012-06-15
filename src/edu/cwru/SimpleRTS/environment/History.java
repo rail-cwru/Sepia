@@ -79,42 +79,6 @@ public class History implements DeepEquatable {
 	public void setFogOfWar(boolean fogOfWar) {
 		this.fogOfWar = fogOfWar;
 	}
-//	
-//	public void setRevealedResources(boolean revealedResources) {
-//		if (revealedResources) {
-//			//only need to do something if it is a change, or you risk duplicates
-//			if (!this.revealedResources)
-//			{
-//				this.revealedResources = true;
-//				for (ResourceNode resource : resourceNodes) {
-//					revealResource(resource);
-//				}
-//			}
-//		}
-//		else {
-//			this.revealedResources = false;
-//			for(PlayerState s : playerStates.values())
-//			{
-//				s.getEventLogger().eraseResourceNodeReveals();
-//			}
-//			observerState.getEventLogger().eraseResourceNodeReveals();
-//		}
-//	}
-//	public boolean getRevealedResources()
-//	{
-//		return revealedResources;
-//	}
-//	private void revealResource(ResourceNode resource) {
-//		for(PlayerState s : playerStates.values())
-//		{
-//			s.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
-//														resource.getyPosition(), 
-//														resource.getType());
-//		}
-//		observerState.getEventLogger().recordResourceNodeReveal(resource.getxPosition(), 
-//																resource.getyPosition(), 
-//																resource.getType());
-//	}
 	
 	public void recordPrimitiveFeedback(int player, int stepnumber, ActionResult primitiveFeedback)
 	{

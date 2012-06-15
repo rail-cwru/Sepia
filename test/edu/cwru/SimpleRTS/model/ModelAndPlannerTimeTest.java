@@ -76,7 +76,7 @@ public class ModelAndPlannerTimeTest {
 					System.out.println("New command feedback: "+ model.getHistory().getPlayerHistory(player).getCommandFeedback().getActionResults(thisStep));
 					System.out.println("New primitive feedback: "+ model.getHistory().getPlayerHistory(player).getPrimitiveFeedback().getActionResults(thisStep));
 					//Sort of hackish, should be replaced when method becomes right
-					seer.middleStep(model.getState().getView(player), model.getHistory().getView(Agent.OBSERVER_ID));
+					seer.middleStep(model.getState().getView(Agent.OBSERVER_ID), model.getHistory().getView(Agent.OBSERVER_ID));
 					System.out.println("now has "+model.getState().getResourceAmount(player, ResourceType.GOLD)+" gold");
 					System.out.println("Unit is at "+model.getState().getUnit(0).getxPosition() + ","+model.getState().getUnit(0).getyPosition());
 					System.out.println("Total nodes: "+model.getState().getResources().size());

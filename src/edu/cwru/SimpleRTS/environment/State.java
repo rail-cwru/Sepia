@@ -942,20 +942,14 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	}
 	public StateView getView(int player) {
 		//StateView toreturn = views.get(player);
-		if(player == Agent.OBSERVER_ID)
-		{
-			if(observerState.getView() == null)
-				observerState.setStateView(new StateView(this,player));
-
-			return observerState.getView();
-		}
+		PlayerState playerState = player == Agent.OBSERVER_ID?observerState:playerStates.get(player);
 		
-		StateView toreturn = playerStates.get(player).getView();
+		StateView toreturn = playerState.getView();
 		if(toreturn == null)
 		{
 			toreturn = new StateView(this,player);
 			//views.put(player, toreturn);
-			playerStates.get(player).setStateView(toreturn);
+			playerState.setStateView(toreturn);
 		}
 		return toreturn;
 	}
