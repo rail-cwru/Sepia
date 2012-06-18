@@ -8,14 +8,17 @@ import java.util.List;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 
-public class BusynessCoordinator implements Serializable {
-	
+/**
+ * A simple container for two lists: units that are doing something and units that aren't.
+ * @author The Condor
+ *
+ */
+public class BusynessCoordinator implements Serializable {	
 	private static final long serialVersionUID = 7410381053814236332L;
 	
 	private List<Integer> busy;
 	private List<Integer> lazy;
-	private int player;
-	public BusynessCoordinator(int player) {
+	public BusynessCoordinator() {
 		busy = new ArrayList<Integer>();
 		lazy = new ArrayList<Integer>();
 	}

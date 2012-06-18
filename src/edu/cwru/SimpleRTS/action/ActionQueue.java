@@ -59,4 +59,10 @@ public class ActionQueue
 		else
 			return fullAction.equals(((ActionQueue)other).fullAction);
 	}
+	
+	@Override
+	public String toString() 
+	{
+		return "ActionQueue: " + fullAction + " => " + primitives;
+	}
 }

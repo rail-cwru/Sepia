@@ -11,7 +11,7 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
 /**
- * A class that offers primative micromanagement of soldiers
+ * A class that offers primitive micromanagement of soldiers
  * Just sends them to the nearest building, shooting anything in range
  * @author The Condor
  *

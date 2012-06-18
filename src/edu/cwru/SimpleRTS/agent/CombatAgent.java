@@ -18,11 +18,8 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
 import edu.cwru.SimpleRTS.util.DistanceMetrics;
 
 public class CombatAgent extends Agent{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * A list of units by id that also contains orders given to each unit
 	 */
@@ -31,16 +28,9 @@ public class CombatAgent extends Agent{
 	 * The player numbers that this guy attacks
 	 */
 	private int[] enemies;
-	private boolean wanderwhenidle;
-	
-	
+	private boolean wanderwhenidle;	
 	private int lastStepMovedIn;
 	
-	/**
-	 * 
-	 * @param playernum
-	 * @param otherargs
-	 */
 	public CombatAgent(int playernum, String[] otherargs) {
 		super(playernum);
 		if (otherargs == null || otherargs.length == 0)
@@ -73,10 +63,7 @@ public class CombatAgent extends Agent{
 		this.wanderwhenidle=wanderWhileIdle;
 		this.verbose = verbose;
 	}
-	/**
-	 * 
-	 * @param playerNum
-	 */
+	
 	public CombatAgent(int playerNum) {
 		super(playerNum);
 		setDefaults();

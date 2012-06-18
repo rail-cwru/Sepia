@@ -11,19 +11,24 @@ import edu.cwru.SimpleRTS.util.DeepEquatableUtil;
 public class ActionResult implements DeepEquatable {
 	private final Action action;
 	private final ActionFeedback result;
+	
 	public ActionResult(Action action, ActionFeedback result)
 	{
 		this.action = action;
 		this.result = result;
 	}
+	
 	public Action getAction()
 	{
 		return action;
 	}
+	
 	public ActionFeedback getFeedback()
 	{
 		return result;
 	}
+	
+	@Override
 	public boolean equals(Object other)
 	{
 		if (this == other)
@@ -33,15 +38,20 @@ public class ActionResult implements DeepEquatable {
 		ActionResult arother= (ActionResult)other;
 		return this.action.equals(arother.action) && this.result == arother.result;
 	}
+	
+	@Override
 	public int hashCode()
 	{
 		int prime = 61;
 		return prime*action.hashCode() + result.hashCode();
 	}
-	@Override public String toString()
+	
+	@Override 
+	public String toString()
 	{
 		return "ActionResult: "+action + " result:"+result;
 	}
+	
 	@Override
 	public boolean deepEquals(Object other) {
 		if (this == other)

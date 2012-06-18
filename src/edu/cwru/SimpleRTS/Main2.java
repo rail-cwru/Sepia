@@ -3,14 +3,11 @@ package edu.cwru.SimpleRTS;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.Runner;
 import edu.cwru.SimpleRTS.environment.StateCreator;
@@ -22,7 +19,12 @@ import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer;
 import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer.AgentClass;
 import edu.cwru.SimpleRTS.util.config.xml.XmlRunner;
 
-public class Main2 {
+/**
+ * An entry point into SimpleRTS that takes an XML configuration file as defined in data/schema/config.xsd.
+ * @author tim
+ *
+ */
+public final class Main2 {
 	private static final Logger logger = Logger.getLogger(Main2.class.getCanonicalName());
 
 	public static void main(String[] args) {
@@ -107,6 +109,7 @@ public class Main2 {
 				} 
 				catch (Exception e) 
 				{
+					@SuppressWarnings("unchecked")
 					Constructor<? extends Agent> constructor = (Constructor<? extends Agent>) classDef.getConstructor(int.class); 
 					System.out.println(constructor);
 					Agent agent = (Agent)constructor.newInstance(player.getId().intValue());
@@ -134,4 +137,6 @@ public class Main2 {
 				.getConstructor(edu.cwru.SimpleRTS.util.Configuration.class, StateCreator.class, Agent[].class)
 				.newInstance(config, stateCreator, agents);
 	}
+	
+	private Main2() {}
 }

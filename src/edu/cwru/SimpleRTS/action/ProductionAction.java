@@ -1,11 +1,10 @@
 package edu.cwru.SimpleRTS.action;
 
 /**
- * A subtype of Action, include CompoundProduction, PrimitiveProduction, PrimitiveBuild
+ * A subtype of Action, includes CompoundProduction, PrimitiveProduction, PrimitiveBuild
  *
  */
-public class ProductionAction extends Action {
-	
+public class ProductionAction extends Action {	
 	private static final long serialVersionUID = -2225942140919623162L;
 	
 	private final int templateid;
@@ -18,12 +17,16 @@ public class ProductionAction extends Action {
 	{
 		return templateid;
 	}
+	
 	@Override
-	public String toString() {
+	public String toString() 
+	{
 		return "ProductionAction [templateid=" + templateid + ", type=" + type
 				+ ", unitId=" + unitId + "]";
 	}
-	@Override public boolean equals(Object other)
+	
+	@Override 
+	public boolean equals(Object other)
 	{
 		if (this == other)
 		{
@@ -40,7 +43,9 @@ public class ProductionAction extends Action {
 			return aother.type == type && aother.unitId == unitId && aother.templateid == templateid;
 		}
 	}
-	@Override public int hashCode()
+	
+	@Override 
+	public int hashCode()
 	{
 		int prime = 61;
 		return prime*prime * templateid + prime * type.hashCode() + unitId;

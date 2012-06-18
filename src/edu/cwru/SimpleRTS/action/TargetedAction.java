@@ -4,8 +4,7 @@ package edu.cwru.SimpleRTS.action;
  * A subtype of Action, include CompoundAttack, PrimitiveAttack, CompoundGather, CompoundDeposit
  *
  */
-public class TargetedAction extends Action {
-	
+public class TargetedAction extends Action {	
 	private static final long serialVersionUID = 5319275698704767319L;
 	
 	private final int targetid;
@@ -14,16 +13,20 @@ public class TargetedAction extends Action {
 		super(unitid, type);
 		this.targetid = targetid;
 	}
+	
 	public int getTargetId()
 	{
 		return targetid;
 	}
+	
 	@Override
 	public String toString() {
 		return "TargetedAction [targetid=" + targetid + ", type=" + type
 				+ ", unitId=" + unitId + "]";
 	}
-	@Override public boolean equals(Object other)
+	
+	@Override 
+	public boolean equals(Object other)
 	{
 		if (this == other)
 		{
@@ -40,7 +43,9 @@ public class TargetedAction extends Action {
 			return aother.type == type && aother.unitId == unitId && aother.targetid == targetid;
 		}
 	}
-	@Override public int hashCode()
+	
+	@Override 
+	public int hashCode()
 	{
 		int prime = 61;
 		return prime*prime * targetid + prime * type.hashCode() + unitId;

@@ -3,12 +3,12 @@ package edu.cwru.SimpleRTS.agent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Random;
-
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.ScriptedGoalAgent.RelevantStateView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
@@ -24,26 +24,29 @@ import edu.cwru.SimpleRTS.model.unit.Unit.UnitView;
  */
 public class BasicGatheringCoordinator implements Serializable {
 	private static final long serialVersionUID = 3922892996550559953L;
+	private static final Logger logger = Logger.getLogger(BasicGatheringCoordinator.class.getCanonicalName());
 	
-	private boolean verbose;
-	public void setVerbose(boolean verbosity) {
-		this.verbose=verbosity;
-	}
-	public boolean getVerbose() {
-		return this.verbose;
-	}
 	private int playerID;
-	private List<Integer> miners;
-	private Map<Integer, Action> others;
-	private List<Integer> idles;
-	private List<Integer> lumberjacks;
-	private Random r;
+	private List<Integer> miners;//unit IDs for gold gatherers
+	private Map<Integer, Action> others;//IDs and actions for units otherwise disposed
+	private List<Integer> idles;//unit IDs for unassigned units
+	private List<Integer> lumberjacks;//unit IDs for wood gatherers
+	private Random r;//random seed passed given in constructor
+	private boolean verbose;
+	
 	public BasicGatheringCoordinator(int playerID, Random r) {
 		miners = new ArrayList<Integer>();
 		lumberjacks = new ArrayList<Integer>();
 		others = new HashMap<Integer,Action>();
 		idles = new ArrayList<Integer>();
 		this.r=r;
+	}
+
+	public void setVerbose(boolean verbosity) {
+		this.verbose=verbosity;
+	}
+	public boolean getVerbose() {
+		return this.verbose;
 	}
 	public Integer getGoldWorker() {
 		return miners.get(r.nextInt(miners.size()));
@@ -105,13 +108,19 @@ public class BasicGatheringCoordinator implements Serializable {
 		idles.add(unitID);
 		others.remove(unitID);
 	}
+	/**
+	 * Adds gather/deposit actions to the given action map for units previously specified
+	 * as miners or lumberjacks.
+	 * @param state
+	 * @param relstate
+	 * @param actions
+	 */
 	public void assignActions(StateView state, RelevantStateView relstate, Map<Integer,Action> actions) {
 		if (verbose)
 		{
-			System.out.println(miners.size() + " miners");
-			System.out.println(lumberjacks.size() + " lumberjacks");
-			System.out.println(idles.size() + " idle");
-			System.out.println(others.size() + " others");
+			logger.info("Assigning actions for " + miners.size() + " miners, " +
+						lumberjacks.size() + " lumberjacks, and " + idles.size() + 
+						" idle units. Ignoring "+ others.size() + " others");
 		}
 		//for each builder or something
 		for (Entry<Integer,Action> indact : others.entrySet()) {
@@ -122,8 +131,8 @@ public class BasicGatheringCoordinator implements Serializable {
 		{
 			UnitView miner = state.getUnit(minerID);
 			//detect if it is carrying a resource
-			if (verbose) {
-				System.out.println("A miner (id:"+minerID+") is carrying: " + miner.getCargoAmount());
+			if (verbose && logger.isLoggable(Level.FINE)) {
+				logger.fine("A miner (id:"+minerID+") is carrying: " + miner.getCargoAmount());
 			}
 			if (miner.getCargoAmount()>0)
 			{
@@ -145,13 +154,13 @@ public class BasicGatheringCoordinator implements Serializable {
 				}
 				if (closestID != Integer.MIN_VALUE) {
 					if (verbose) {
-						System.out.println("Tossing in an action for a miner");
+						logger.info("Tossing in an action for a miner");
 					}
 					actions.put(minerID, Action.createCompoundGather(minerID, closestID));
 				}
 				else {
 					if (verbose) {
-						System.out.println("Couldn't find a mine");
+						logger.info("Couldn't find a mine");
 					}
 				}
 				
@@ -193,8 +202,8 @@ public class BasicGatheringCoordinator implements Serializable {
 		int closestDist = Integer.MAX_VALUE;
 		for (Integer potentialStoragePitID : state.getUnitIds(playerID))
 		{
-			if (verbose) {
-				System.out.println("Evaluating Unit with id "+potentialStoragePitID);
+			if (verbose && logger.isLoggable(Level.FINE)) {
+				logger.fine("Evaluating Unit with id "+potentialStoragePitID);
 			}
 			UnitView potentialStoragePit = state.getUnit(potentialStoragePitID);
 			//it can still be carrying the other resource, it is better to have it choose to return with what it has than just go straight for the other resource

@@ -43,11 +43,15 @@ public class Action implements Serializable, DeepEquatable{
 	{
 		return type;
 	}
-	@Override public String toString()
+	
+	@Override 
+	public String toString()
 	{
 		return "Action: Unit "+unitId + ", Type " + type.toString();
 	}
-	@Override public boolean equals(Object other)
+	
+	@Override 
+	public boolean equals(Object other)
 	{
 		if (this == other)
 		{
@@ -63,7 +67,9 @@ public class Action implements Serializable, DeepEquatable{
 			return aother.type == type && aother.unitId == unitId;
 		}
 	}
-	@Override public int hashCode()
+	
+	@Override 
+	public int hashCode()
 	{
 		int prime = 61;
 		return prime * type.hashCode() + unitId;

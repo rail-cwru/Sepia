@@ -77,7 +77,7 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		nextgoal=null;
 		attackcoordinator = new PrimitiveAttackCoordinator(playernumber);
 		gathercoordinator = new BasicGatheringCoordinator(playernumber, r);
-		busycoordinator = new BusynessCoordinator(playernumber);
+		busycoordinator = new BusynessCoordinator();
 		gathercoordinator.setVerbose(verbose);
 		centeroftown=null;
 		lastturncalled = 0;

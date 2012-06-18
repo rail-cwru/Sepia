@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionType;
 import edu.cwru.SimpleRTS.action.TargetedAction;
@@ -24,16 +26,16 @@ import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
  * @author Feng
  *
  */
-public class RCAgent extends Agent {
-
+public class ResourceCollectionAgent extends Agent {
 	private static final long serialVersionUID = -4047208702628325380L;
+	private static final Logger logger = Logger.getLogger(ResourceCollectionAgent.class.getCanonicalName());
 
 	private int goldRequired;
 	private int woodRequired;
 	
 	private int step;
 	
-	public RCAgent(int playernum) {
+	public ResourceCollectionAgent(int playernum) {
 		super(playernum);
 		Configuration config = PreferencesConfigurationLoader.loadConfiguration();
 		goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
@@ -51,15 +53,24 @@ public class RCAgent extends Agent {
 	@Override
 	public Map<Integer,Action> middleStep(StateView newState, History.HistoryView statehistory) {
 		step++;
-		System.out.println("=> Step: " + step);
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("=> Step: " + step);
+		}
 		
 		Map<Integer,Action> builder = new HashMap<Integer,Action>();
 		currentState = newState;
 		
 		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
-		System.out.println("Current Gold: " + currentGold);
-		System.out.println("Current Wood: " + currentWood);
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("Current Gold: " + currentGold);
+		}
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("Current Wood: " + currentWood);
+		}
 		List<Integer> allUnitIds = currentState.getAllUnitIds();
 		List<Integer> peasantIds = new ArrayList<Integer>();
 		List<Integer> townhallIds = new ArrayList<Integer>();
@@ -101,10 +112,16 @@ public class RCAgent extends Agent {
 		}
 		else {  // build peasant
 			if(currentGold>=400) {
-				System.out.println("already have enough gold to produce a new peasant.");
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("already have enough gold to produce a new peasant.");
+				}
 				TemplateView peasanttemplate = currentState.getTemplate(playernum, "Peasant");
 				int peasanttemplateID = peasanttemplate.getID();
-				System.out.println(peasanttemplate.getID());
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine(String.valueOf(peasanttemplate.getID()));
+				}
 				int townhallID = townhallIds.get(0);
 				builder.put(townhallID, Action.createCompoundProduction(townhallID, peasanttemplateID));
 			} else {
@@ -126,17 +143,26 @@ public class RCAgent extends Agent {
 	@Override
 	public void terminalStep(StateView newstate, History.HistoryView statehistory) {
 		step++;
-		System.out.println("=> Step: " + step);
-		
-		if (currentState != null)
+		if(logger.isLoggable(Level.FINE))
 		{
-		int currentGold = currentState.getResourceAmount(0, ResourceType.GOLD);
-		int currentWood = currentState.getResourceAmount(0, ResourceType.WOOD);
-		
-		System.out.println("Current Gold: " + currentGold);
-		System.out.println("Current Wood: " + currentWood);
+			logger.fine("=> Step: " + step);
 		}
-		System.out.println("Congratulations! You finish the task!");
+		
+		int currentGold = newstate.getResourceAmount(0, ResourceType.GOLD);
+		int currentWood = newstate.getResourceAmount(0, ResourceType.WOOD);
+		
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("Current Gold: " + currentGold);
+		}
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("Current Wood: " + currentWood);
+		}
+		if(logger.isLoggable(Level.FINE))
+		{
+			logger.fine("Congratulations! You have finished the task!");
+		}
 	}
 	
 	public static String getUsage() {

@@ -3,7 +3,12 @@ package edu.cwru.SimpleRTS;
 import edu.cwru.SimpleRTS.start.StartWindow;
 import edu.cwru.SimpleRTS.start.StartListener;
 
-public class SimpleStart {
+/**
+ * An entry point to SimpleRTS that allows for visual configuration of runtime parameters.
+ * @author Gary
+ *
+ */
+public final class SimpleStart {
 
     public static void main(String[] args) {
 
@@ -39,4 +44,5 @@ public class SimpleStart {
 
     }
 
+    private SimpleStart() {}
 }

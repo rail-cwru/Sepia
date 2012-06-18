@@ -25,7 +25,12 @@ import edu.cwru.SimpleRTS.util.Configuration;
 import edu.cwru.SimpleRTS.util.ConfigurationValues;
 import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 
-public class Main {
+/**
+ * An entry point into SimpleRTS that takes command line arguments.
+ * @author tim
+ *
+ */
+public final class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
 		// play resource collection sample
@@ -311,4 +316,6 @@ public class Main {
 		prefs.node("environment").clear();
 		prefs.node("model").clear();
 	}
+	
+	private Main() {}
 }

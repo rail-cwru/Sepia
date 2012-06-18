@@ -8,7 +8,14 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
 
+/**
+ * An agent that uses a map of turn numbers to action assignments to replay a series of actions.
+ * @author The Condor
+ *
+ */
 public class MimicAgent extends Agent {
+	private static final long	serialVersionUID	= 1L;
+	
 	private Map<Integer,? extends Map<Integer, Action>> actions;
 	/**
 	 * Creates a mimic agent that will blindly attempt to do a series of actions.

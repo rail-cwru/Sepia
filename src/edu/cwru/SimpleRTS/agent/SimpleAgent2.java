@@ -96,10 +96,6 @@ public class SimpleAgent2 extends Agent {
 				builder.put(unitId, a);
 			}
 		}
-//		for (Entry<Integer,Action> a : builder.entrySet())
-//		{
-//			System.out.println("Ordering "+a.getKey() + " to do action " + a.getValue());
-//		}
 		return builder;
 	}
 
