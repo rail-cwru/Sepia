@@ -1093,7 +1093,7 @@ public class LessSimpleModel implements Model {
 			if (!aq.hasNext())
 			{
 				if (willcompletethisturn) {
-					queuedActions.get(u.getPlayer()).remove(aq);
+					queuedActions.get(u.getPlayer()).remove(aq.getFullAction().getUnitId());
 					compoundFeedback = ActionFeedback.COMPLETED;
 				}
 				else {
