@@ -116,12 +116,15 @@ public class GamePanel extends JPanel {
         //draw selected by left click
         if(selectedID>=0) {
         	UnitView unit = currentState.getUnit(selectedID);
-        	int x = scaleX(unit.getXPosition());
-            int y = scaleY(unit.getYPosition());
-            if(x >= 0 && y >= 0) {
-            	DrawingStrategy selected = DrawingStrategy.selectedGraphic();
-            	selected.draw(g, x, y);
-            }
+        	if (unit != null)
+        	{
+	        	int x = scaleX(unit.getXPosition());
+	            int y = scaleY(unit.getYPosition());
+	            if(x >= 0 && y >= 0) {
+	            	DrawingStrategy selected = DrawingStrategy.selectedGraphic();
+	            	selected.draw(g, x, y);
+	            }
+        	}
         }
         
         if (latestHistory!=null)
