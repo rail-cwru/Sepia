@@ -1088,20 +1088,26 @@ public class LessSimpleModel implements Model {
 			}
 			}
 			
-			ActionFeedback feedback;
+			ActionFeedback compoundFeedback;
+			ActionFeedback primitiveFeedback = willcompletethisturn?ActionFeedback.COMPLETED:ActionFeedback.INCOMPLETE;
 			if (!aq.hasNext())
 			{
-				queuedActions.get(u.getPlayer()).remove(aq);
-				feedback = willcompletethisturn?ActionFeedback.COMPLETED:ActionFeedback.INCOMPLETE;
+				if (willcompletethisturn) {
+					queuedActions.get(u.getPlayer()).remove(aq);
+					compoundFeedback = ActionFeedback.COMPLETED;
+				}
+				else {
+					compoundFeedback = ActionFeedback.INCOMPLETE;
+				}
 					
 				
 			}
 			else
 			{
-				feedback = ActionFeedback.INCOMPLETE;
+				compoundFeedback = ActionFeedback.INCOMPLETE;
 			}
-			history.recordCommandFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),feedback));
-			history.recordPrimitiveFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(a,feedback));
+			history.recordCommandFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(aq.getFullAction(),compoundFeedback));
+			history.recordPrimitiveFeedback(state.getUnit(aq.getFullAction().getUnitId()).getPlayer(), state.getTurnNumber(), new ActionResult(a,primitiveFeedback));
 		}
 		for (ActionQueue aq : failed)
 		{
