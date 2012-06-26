@@ -15,6 +15,10 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.environment.History.HistoryView;
 import edu.cwru.SimpleRTS.environment.State.StateView;
+import edu.cwru.SimpleRTS.model.resource.ResourceType;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
+import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 /**
  * A visual agent
  * This serves two purposes: it allows a human to play the game, and, more importantly, 
@@ -29,7 +33,7 @@ public class VisualAgent extends Agent implements ActionListener {
 	GameScreen screen;
     GamePanel gamePanel;
     ControlPanel controlPanel = new ControlPanel();
-    LogPanel logPanel = new LogPanel();
+    StatusPanel statusPanel = new StatusPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
 	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
 		public void keyPressed(KeyEvent e) {
@@ -62,7 +66,7 @@ public class VisualAgent extends Agent implements ActionListener {
 			}
 			@Override
 			public void run() {
-				screen = new GameScreen(gamePanel, controlPanel, logPanel);
+				screen = new GameScreen(gamePanel, controlPanel, statusPanel);
                 screen.pack();
 				gamePanel.addKeyListener(canvasKeyListener);
 				controlPanel.addStepperListener(VisualAgent.this);
@@ -113,6 +117,8 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	@Override
 	public Map<Integer, Action> middleStep(StateView newstate, HistoryView statehistory) {
+		refreshStatusPanel("#clear");
+		refreshStatusPanel(getStateInfo(newstate));
 		if(gamePanel != null)
 			gamePanel.updateState(newstate, statehistory);
 		try {
@@ -132,7 +138,7 @@ public class VisualAgent extends Agent implements ActionListener {
 		if(controlPanel!=null)
 			controlPanel.stopPlay();
 		//JOptionPane.showMessageDialog(null, "Congratulations! You finished the task!");
-		log("=======> You've finished current episode!");
+		writeLineVisual("=======> You've finished current episode!");
 	}
 	
 	public void addAction(Action action) {
@@ -145,14 +151,35 @@ public class VisualAgent extends Agent implements ActionListener {
         stepSignal.release();
     }
     
-    public void log(String log) {
-    	System.out.println(log);
-    	if(logPanel==null)
+    private String getStateInfo(StateView state) {
+    	Configuration config = PreferencesConfigurationLoader.loadConfiguration();
+    	int goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
+		int woodRequired = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(config);
+		int currentGold = state.getResourceAmount(0, ResourceType.GOLD);
+		int currentWood = state.getResourceAmount(0, ResourceType.WOOD);
+		int currentFood = state.getSupplyAmount(playernum);
+		StringBuffer sb = new StringBuffer();
+		if(goldRequired>0 || woodRequired>0) {
+			sb.append("Goal: \n" + 
+					"  G: " + goldRequired + "\n" + 
+					"  W: " + woodRequired + "\n");
+		}
+		sb.append("Current Gold:\n" + 
+					"  " + currentGold + "\n" + 
+					"Current Wood:\n" + 
+					"  " + currentWood + "\n" + 
+					"Current Food:\n" + 
+					"  " + currentFood + "\n");
+		return sb.toString();
+    }
+    
+    public void refreshStatusPanel(String status) {
+    	if(statusPanel==null)
     		return ;
-    	if(log.startsWith("#clear"))
-    		logPanel.clear();
+    	if(status.startsWith("#clear"))
+    		statusPanel.clear();
     	else {
-    		logPanel.append(log);
+    		statusPanel.append(status);
     	}
     }
 

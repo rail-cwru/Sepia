@@ -15,7 +15,7 @@ public class GameScreen extends JFrame implements Serializable {
         this(canvas, null, null);
     }
 
-	public GameScreen(GamePanel canvas, ControlPanel controlPanel, LogPanel logPanel) {
+	public GameScreen(GamePanel canvas, ControlPanel controlPanel, StatusPanel logPanel) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setTitle("SimpleRTS");

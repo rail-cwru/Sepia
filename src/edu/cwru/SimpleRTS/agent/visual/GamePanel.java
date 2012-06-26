@@ -426,7 +426,7 @@ public class GamePanel extends JPanel {
 				default:
 					return;
 				}
-				log("=> Action: " + action);
+				agent.writeLineVisual("=> Action: " + action);
 				agent.addAction(action);
 			}
 		}
@@ -479,10 +479,6 @@ public class GamePanel extends JPanel {
 		}
 	}
 	
-	private void log(String text) {
-		agent.log(text);
-	}
-	
 	private class Info{
 		StateView state;
 		int id;
@@ -516,7 +512,7 @@ public class GamePanel extends JPanel {
 				info += "\nHP: " + unit.getHP();
 				if(unitName.equals("Peasant")) {
 					if(unit.getCargoAmount()>0)
-						info += unit.getCargoType().toString() + ": " + unit.getCargoAmount();
+						info += "\n" + unit.getCargoType().toString() + ": " + unit.getCargoAmount();
 				} else if(unitName.equals("TownHall") || unitName.equals("Barracks")){
 					if(unit.getCargoAmount()>0)
 						info += "\n" + unit.getCargoType().toString() + unit.getCargoAmount();
