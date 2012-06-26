@@ -750,6 +750,26 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		turnNumber++;
 	}
 	
+	/**
+	 * Get a StateCreator that will duplicate what this state looks like when the function is called.
+	 * @return
+	 * @throws IOException
+	 */
+	public StateCreator getStateCreator() throws IOException {
+		ByteArrayOutputStream bos=new ByteArrayOutputStream();
+		ObjectOutputStream o = new ObjectOutputStream(bos);
+		o.writeObject(this);
+		o.flush();
+		o.close();
+		byte[] stateData = bos.toByteArray();
+		bos.close();
+		return new RawStateCreator(stateData);
+	}
+	
+	/**
+	 * Get a limited, but text-friendly, version of the state.
+	 * @return
+	 */
 	public String getTextString() {
 		StringBuilder str = new StringBuilder();
 		for (int i = 0; i<xextent;i++)
@@ -986,14 +1006,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		public StateCreator getStateCreator() throws IOException {
 			if (!state.hasFogOfWar || player == Agent.OBSERVER_ID)
 			{
-				ByteArrayOutputStream bos=new ByteArrayOutputStream();
-				ObjectOutputStream o = new ObjectOutputStream(bos);
-				o.writeObject(state);
-				o.flush();
-				o.close();
-				byte[] stateData = bos.toByteArray();
-				bos.close();
-				return new RawStateCreator(stateData);
+				return state.getStateCreator();
 			}
 			else
 			{
@@ -1417,6 +1430,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		}
 		
 	}
+	
+	
 	
 	
 
