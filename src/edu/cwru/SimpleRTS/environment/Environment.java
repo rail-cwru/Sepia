@@ -110,11 +110,7 @@ public class Environment
 		{
 			step();
 		} 
-		for (int i = 0; i<connectedagents.length;i++)
-		{
-			int playerNumber = connectedagents[i].getPlayerNumber();
-			connectedagents[i].terminalStep(model.getState().getView(playerNumber), model.getHistory().getView(playerNumber));
-		}
+		terminalStep();
 		
 	}
 	public boolean isTerminated() {
@@ -185,6 +181,13 @@ public class Environment
 		step++;
 		turnTracker.newStep();
 		return model.isTerminated();
+	}
+	public final void terminalStep() {
+		for (int i = 0; i<connectedagents.length;i++)
+		{
+			int playerNumber = connectedagents[i].getPlayerNumber();
+			connectedagents[i].terminalStep(model.getState().getView(playerNumber), model.getHistory().getView(playerNumber));
+		}
 	}
 	public int getStepNumber() {
 		return step;
