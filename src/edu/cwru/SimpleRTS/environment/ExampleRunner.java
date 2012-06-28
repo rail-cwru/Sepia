@@ -43,13 +43,13 @@ public class ExampleRunner extends Runner {
 	public void run() {
 		seed = 6;
 		numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
-		numEpisodes = configuration.getInt("environment.NumEpisodes", 1);
-		episodesPerReplaySave = configuration.getInt("experiment.episodesperreplaysave",0);
-		episodesPerAgentSave = configuration.getInt("experiment.episodesperagentsave",0);
-		baseReplayDirectory = new File(configuration.getString("experiment.save.replaydirectory", "replays"));
-		baseAgentDirectory = new File(configuration.getString("experiment.save.agentdirectory", "replays"));
-		saveAgents = (episodesPerAgentSave<1);
-		saveReplays = (episodesPerReplaySave<1);
+		numEpisodes = configuration.getInt("environment.NumEpisodes", 12);
+		episodesPerReplaySave = configuration.getInt("experiment.episodesperreplaysave",4);
+		episodesPerAgentSave = configuration.getInt("experiment.episodesperagentsave",4);
+		baseReplayDirectory = new File(configuration.getString("experiment.save.replaydirectory", "saves/replays"));
+		baseAgentDirectory = new File(configuration.getString("experiment.save.agentdirectory", "saves/agents"));
+		saveAgents = (episodesPerAgentSave>=1);
+		saveReplays = (episodesPerReplaySave>=1);
 		Model model = new LessSimpleModel(stateCreator.createState(), seed, stateCreator);
 		
 		env = new Environment(agents, model, seed);
@@ -97,12 +97,11 @@ public class ExampleRunner extends Runner {
 				for(int j = 0; saveAgents && j < agents.length; j++)
 				{
 					try {
-						ObjectOutputStream agentOut = new ObjectOutputStream(new FileOutputStream("saves/agent"+j+"-"+episode));
-						agentOut.writeObject(agents[j]);
-						agentOut.close();
+						saveAgentData(new File(baseAgentDirectory,"ep"+episode), j);
 					}
-					catch(Exception ex) {
-						System.out.println("Unable to save agent "+j);
+					catch(FileNotFoundException ex) {
+						System.err.println("Unable to save agent "+j);
+						ex.printStackTrace();
 					}
 				}
 			}
