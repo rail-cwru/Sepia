@@ -87,18 +87,24 @@ public class LessSimpleModel implements Model {
 		verbose = false;
 		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
+	@Override
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+	@Override
+	public boolean getVerbose() {
+		return this.verbose;
 	}
 	
 	public void setTurnTracker(TurnTracker tracker)
 	{
 		this.turnTracker = tracker;
 	}
+	@Override
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
-	
+	@Override
 	public Configuration getConfiguration() {
 		return configuration;
 	}

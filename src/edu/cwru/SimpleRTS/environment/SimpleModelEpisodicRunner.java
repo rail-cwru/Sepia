@@ -10,6 +10,7 @@ import edu.cwru.SimpleRTS.agent.Agent;
 import edu.cwru.SimpleRTS.model.SimpleModel;
 import edu.cwru.SimpleRTS.util.Configuration;
 import edu.cwru.SimpleRTS.util.ConfigurationValues;
+import edu.cwru.SimpleRTS.util.GameMap;
 
 /**
  * A {@code Runner} that runs a number of episodes using {@code edu.cwru.SimpleRTS.model.SimpleModel}.
@@ -24,17 +25,23 @@ public class SimpleModelEpisodicRunner extends Runner {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	private int seed;
+	private int numEpisodes;
+	private int episodesPerSave;
+	private boolean saveAgents;
+	private Environment env;
 	@Override
 	public void run() {
-		int seed = 6;
-		int numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
-		int episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
-		boolean saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);
-
+		seed = 6;
+		numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
+		episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
+		saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);
+		
 		SimpleModel model = new SimpleModel(stateCreator.createState(), seed, stateCreator);
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
-		Environment env = new Environment(agents ,model, seed);
+		env = new Environment(agents ,model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			//System.out.println("\n=======> Start running episode " + episode);
@@ -48,7 +55,7 @@ public class SimpleModelEpisodicRunner extends Runner {
 			}
 			if(episodesPerSave > 0 && episode % episodesPerSave == 0)
 			{
-				model.save("saves/state"+episode+".SRTSsav");
+				saveState(new File("saves/state"+episode+".SRTSsav"),env.getModel().getState());
 				for(int j = 0; saveAgents && j < agents.length; j++)
 				{
 					try {
@@ -64,5 +71,8 @@ public class SimpleModelEpisodicRunner extends Runner {
 		}
 		System.exit(0);
 	}
-
+	public void loadFull() {
+		
+	}
+	
 }

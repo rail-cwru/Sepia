@@ -4,6 +4,7 @@ import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.util.Configuration;
 
 /**
  * The interface for model, which transitions its state as executing given actions.
@@ -34,6 +35,15 @@ public interface Model extends Serializable{
 	 * @return current state of the model
 	 */
 	State getState();
+	/**
+	 * Get the history of the model since the last new world was created.
+	 * @return
+	 */
 	History getHistory();
 	void setVerbose(boolean verbosity);
+	boolean getVerbose();
+	
+	void setConfiguration(Configuration configuration);
+	Configuration getConfiguration();
+	
 }

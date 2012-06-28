@@ -52,9 +52,13 @@
 		<TimeLimit>1000</TimeLimit>
 	</ModelParameters>
 	<Runner>
-		<RunnerClass>edu.cwru.SimpleRTS.environment.SimpleModelEpisodicRunner</RunnerClass>
-		<Parameter name="environment.NumEpisodes" value="1"/>
+		<RunnerClass>edu.cwru.SimpleRTS.environment.ExampleRunner</RunnerClass>
+		<Parameter name="environment.NumEpisodes" value="10"/>
 		<Parameter name="environment.EpisodesPerSave" value="2"/>
 		<Parameter name="environment.SaveAgents" value="false"/>
+		<Parameter name="experiment.episodesperagentsave" value="4" />
+		<Parameter name="experiment.episodesperreplaysave" value="4" />
+		<Parameter name="experiment.save.replaydirectory" value="saves/test1" />
+		<Parameter name="experiment.save.agentdirectory" value="saves/test1" />
 	</Runner>
 </Configuration>

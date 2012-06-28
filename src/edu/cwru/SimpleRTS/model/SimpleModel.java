@@ -64,12 +64,20 @@ public class SimpleModel implements Model {
 		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	
+	@Override
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
+	@Override
+	public boolean getVerbose() {
+		return this.verbose;
+	}
+	
+	@Override
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+	@Override
 	public Configuration getConfiguration() {
 		return configuration;
 	}

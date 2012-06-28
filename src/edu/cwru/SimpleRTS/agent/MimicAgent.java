@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,5 +58,14 @@ public class MimicAgent extends Agent {
 	public void terminalStep(StateView newstate, HistoryView statehistory) {
 		//do nothing
 		
+	}
+	@Override
+	public void savePlayerData(OutputStream os) {
+		//this agent lacks learning and so has nothing to persist.
+		
+	}
+	@Override
+	public void loadPlayerData(InputStream is) {
+		//this agent lacks learning and so has nothing to persist.
 	}
 }

@@ -45,7 +45,7 @@ public class ModelAndPlannerTimeTest {
 	
 	@Test
 	public void testTime() throws IOException, JSONException, InterruptedException, BackingStoreException {
-		boolean watchCalc=false;//An easy access point in case you want to watch the process
+		boolean watchCalc=true;//An easy access point in case you want to watch the process
 		boolean watchActual=false;//An easy access point in case you want to watch the process
 		DefaultConfigurationGenerator.main(null);//This is a horrible monstrosity and I hope someone deprecates it
 		Model model = makeBaselineModel();
@@ -54,10 +54,10 @@ public class ModelAndPlannerTimeTest {
 		{
 			VisualAgent seer=null;
 			if (watchCalc)
-				seer = new VisualAgent(Agent.OBSERVER_ID, new String[]{"false","true"});
+				seer = new VisualAgent(player, new String[]{"true","true"});
 			ScriptedGoalAgent scriptedAgent = new ScriptedGoalAgent(player, new BufferedReader(new FileReader("data/timetest_script.txt")), new Random(seed), watchCalc);
 			Agent[] agents;
-			agents = new Agent[]{scriptedAgent};
+			agents = new Agent[]{seer};
 			model.createNewWorld();
 			Environment calcEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)));
 			while (!calcEnv.isTerminated()) {
@@ -76,7 +76,7 @@ public class ModelAndPlannerTimeTest {
 					System.out.println("New command feedback: "+ model.getHistory().getPlayerHistory(player).getCommandFeedback().getActionResults(thisStep));
 					System.out.println("New primitive feedback: "+ model.getHistory().getPlayerHistory(player).getPrimitiveFeedback().getActionResults(thisStep));
 					//Sort of hackish, should be replaced when method becomes right
-					seer.middleStep(model.getState().getView(Agent.OBSERVER_ID), model.getHistory().getView(Agent.OBSERVER_ID));
+//					seer.middleStep(model.getState().getView(Agent.OBSERVER_ID), model.getHistory().getView(Agent.OBSERVER_ID));
 					System.out.println("now has "+model.getState().getResourceAmount(player, ResourceType.GOLD)+" gold");
 					System.out.println("Unit is at "+model.getState().getUnit(0).getxPosition() + ","+model.getState().getUnit(0).getyPosition());
 					System.out.println("Total nodes: "+model.getState().getResources().size());

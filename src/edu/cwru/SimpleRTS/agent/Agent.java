@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.agent;
 import java.awt.Dimension;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
@@ -127,5 +129,16 @@ public abstract class Agent implements Serializable {
 	 */
 	public abstract void terminalStep(State.StateView newstate, History.HistoryView statehistory);
 	
-	
+	/**
+	 * Save data accumulated by the agent.
+	 * @see {@link #loadPlayerData(InputStream)}
+	 * @param os An output stream, such as to a file.
+	 */
+	public abstract void savePlayerData(OutputStream os);
+	/**
+	 * Load data stored by the agent.
+	 * @see {@link #savePlayerData(OutputStream)}
+	 * @param is An input stream, such as from a file.
+	 */
+	public abstract void loadPlayerData(InputStream is);
 }

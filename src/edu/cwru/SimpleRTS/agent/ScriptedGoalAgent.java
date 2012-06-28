@@ -2,6 +2,8 @@ package edu.cwru.SimpleRTS.agent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -587,5 +589,15 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	public static String getUsage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void savePlayerData(OutputStream os) {
+		//this agent lacks learning and so has nothing to persist.
+		
+	}
+	@Override
+	public void loadPlayerData(InputStream is) {
+		//this agent lacks learning and so has nothing to persist.
 	}
 }

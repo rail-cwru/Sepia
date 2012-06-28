@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -269,6 +271,15 @@ public class CombatAgent extends Agent{
 	public static String getUsage() {
 		
 		return "It takes three parameters (--agentparam): a space seperated array of enemy player numbers, a boolean for whether it should wander, and a boolean for verbosity";
+	}
+	@Override
+	public void savePlayerData(OutputStream os) {
+		//this agent lacks learning and so has nothing to persist.
+		
+	}
+	@Override
+	public void loadPlayerData(InputStream is) {
+		//this agent lacks learning and so has nothing to persist.
 	}
 	
 }

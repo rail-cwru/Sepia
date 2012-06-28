@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
@@ -185,5 +187,14 @@ public class VisualAgent extends Agent implements ActionListener {
 
 	public static String getUsage() {
 		return "It takes two parameters (--agentparam): a boolean for whether it can be controlled by human, a boolean for whether it visualizes info for units";
+	}
+	@Override
+	public void savePlayerData(OutputStream os) {
+		//this agent lacks learning and so has nothing to persist.
+		
+	}
+	@Override
+	public void loadPlayerData(InputStream is) {
+		//this agent lacks learning and so has nothing to persist.
 	}
 }

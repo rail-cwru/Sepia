@@ -1,5 +1,7 @@
 package edu.cwru.SimpleRTS.agent;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,5 +86,13 @@ public class MatlabAgent extends Agent {
 			e.printStackTrace();
 		}
 	}
-
+	@Override
+	public void savePlayerData(OutputStream os) {
+		//this agent lacks learning and so has nothing to persist.
+		
+	}
+	@Override
+	public void loadPlayerData(InputStream is) {
+		//this agent lacks learning and so has nothing to persist.
+	}
 }
