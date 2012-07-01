@@ -46,6 +46,7 @@ public class StatusPanel extends JPanel {
 	
 	public void paintComponent(Graphics g) {
 		statusJTextArea.setText(textSB.toString().trim());
+		super.paintComponent(g);
 	}
 	
 	public void append(String text) {
