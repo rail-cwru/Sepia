@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Random;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.action.ActionFeedback;
@@ -41,6 +43,7 @@ import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
  */
 public class SimpleModel implements Model {
 	private static final long serialVersionUID = -8289868580233478749L;
+	private static final Logger logger = Logger.getLogger(SimpleModel.class.getCanonicalName());
 	
 	private Random rand;
 	private History history;
@@ -161,7 +164,8 @@ public class SimpleModel implements Model {
 							break;
 					}
 				}
-//				System.out.println("Player "+i+" has at least "+actual + "{"+template.getName()+"}s"+" (needed "+required+")");
+				if(logger.isLoggable(Level.FINER))
+					logger.finer("Player "+i+" has at least "+actual + "{"+template.getName()+"}s"+" (needed "+required+")");
 				built = built && (actual >= required);
 				if (!built) //if you haven't built one of the requirements, you can't have built all of them
 					break;
@@ -181,23 +185,39 @@ public class SimpleModel implements Model {
 			//If the unit is not the same as in the action, ignore the action
 			if (a.getUnitId() != unitId)
 			{
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("Rejecting submitted action because key did not match action's unit ID: " + a);
+				}
 				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit does not exist, ignore the action
 			else if (state.getUnit(unitId) == null)
 			{
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("Rejecting submitted action because unit " + unitId + " does not exist");
+				}
 				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDUNIT));
 				continue;
 			}
 			//If the unit is not the player's, ignore the action
 			else if(state.getUnit(unitId).getPlayer() != sendingPlayerNumber)
 			{
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("Rejecting submitted action because player does not control unit: " + a);
+				}
 				history.recordCommandFeedback(sendingPlayerNumber, state.getTurnNumber(), new ActionResult(a,ActionFeedback.INVALIDCONTROLLER));
 				continue;
 			}
 			else
 			{//Valid
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("Action submitted successfully: " + a);
+				}
 				Unit actor = state.getUnit(unitId);
 				ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
 				queuedActions.put(actor, queue);
@@ -256,6 +276,10 @@ public class SimpleModel implements Model {
 				primitives = null;
 			
 		}
+		if(logger.isLoggable(Level.FINER))
+		{
+			logger.finer("Action " + action + " was turned into the following list of primitives: " + primitives);
+		}
 		return primitives;
 	}
 	@Override
@@ -273,14 +297,14 @@ public class SimpleModel implements Model {
 		//Run the Action
 		for(ActionQueue queuedAct : queuedActions.values()) 
 		{
-			if (verbose)
-				System.out.println("Doing full action: "+queuedAct.getFullAction());
+			if (logger.isLoggable(Level.FINE))
+				logger.fine("Doing full action: "+queuedAct.getFullAction());
 			//Pull out the primitive
 			if (!queuedAct.hasNext()) 
 				continue;
 			Action a = queuedAct.popPrimitive();
-			if (verbose)
-				System.out.println("Doing primitive action: "+a);
+			if (logger.isLoggable(Level.FINE))
+				logger.fine("Doing primitive action: "+a);
 			//Execute it
 			Unit u = state.getUnit(a.getUnitId());			
 			if (u == null)
@@ -290,7 +314,6 @@ public class SimpleModel implements Model {
 			int y = u.getyPosition();
 			int xPrime = 0;
 			int yPrime = 0;
-			Action fullact = queuedAct.getFullAction();
 			if(a instanceof DirectedAction)
 			{
 				Direction d = ((DirectedAction)a).getDirection();
@@ -302,7 +325,9 @@ public class SimpleModel implements Model {
 				xPrime = x + ((LocatedAction)a).getX();
 				yPrime = y + ((LocatedAction)a).getY();
 			}
-			
+
+			if (logger.isLoggable(Level.FINE))
+				logger.fine("Action is from " + x + "," + y + " to " + xPrime + "," + yPrime);
 			
 			//Gather the last of the information and actually execute the actions
 			int timesTried=0;
@@ -325,10 +350,14 @@ public class SimpleModel implements Model {
 							break;
 						}
 						if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
+							if (logger.isLoggable(Level.FINE))
+								logger.fine("Moving unit " + u.ID);
 							state.moveUnit(u, ((DirectedAction)a).getDirection());
 						}
 						else {
 							failedTry=true;
+							if (logger.isLoggable(Level.FINE))
+								logger.fine("Move failed. Recalculating.");
 							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 						}
 						break;
@@ -347,11 +376,15 @@ public class SimpleModel implements Model {
 							failed=true;
 						}
 						else {
+							if (logger.isLoggable(Level.FINE))
+								logger.fine(u.ID + " gathering from " + resource.ID);
 							int amountPickedUp = resource.reduceAmountRemaining(u.getTemplate().getGatherRate(resource.getType()));
 							u.setCargo(resource.getResourceType(), amountPickedUp);
 							history.recordResourcePickup(u, resource, amountPickedUp, state);
 						}
 						if (failed) {
+							if (logger.isLoggable(Level.FINE))
+								logger.fine(u.ID + " failed to gather from resource " + resource + " at " + xPrime + "," + yPrime);
 							failedTry=true;
 							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 						}
@@ -374,11 +407,15 @@ public class SimpleModel implements Model {
 						}
 						if(!canAccept)
 						{
+							if (logger.isLoggable(Level.FINE))
+								logger.fine("Unable to deposit to " + townHall.ID + " at " + xPrime + "," + yPrime);
 							failedTry=true;
 							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 							break;
 						}
 						else {
+							if (logger.isLoggable(Level.FINE))
+								logger.fine(u.ID + " depositing to " + townHall.ID);
 							int agent = u.getPlayer();
 							history.recordResourceDropoff(u, townHall, state);
 							state.addResourceAmount(agent, u.getCurrentCargoType(), u.getCurrentCargoAmount());
@@ -398,17 +435,23 @@ public class SimpleModel implements Model {
 							if (u.getTemplate().getRange() >= DistanceMetrics.chebyshevDistance(u.getxPosition(),u.getyPosition(), target.getxPosition(), target.getyPosition()))
 							{
 								int damage = calculateDamage(u,target);
+								if (logger.isLoggable(Level.FINE))
+									logger.fine(u.ID + " did " + damage + " damage to " + target.ID);
 								history.recordDamage(u, target, damage, state);
 								target.setHP(Math.max(target.getCurrentHealth()-damage,0));
 							}
 							else //out of range
 							{
+								if (logger.isLoggable(Level.FINE))
+									logger.fine(u.ID + " failed to attack out-of-range unit " + target.ID);
 								failedTry=true;
 								queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 							}
 						}
 						else
 						{
+							if (logger.isLoggable(Level.FINE))
+								logger.fine(u.ID + " failed to attack non-existent unit");
 							failedTry=true;
 							queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 						}
@@ -425,6 +468,8 @@ public class SimpleModel implements Model {
 							LocatedProductionAction fullbuild = (LocatedProductionAction) queuedAct.getFullAction();
 							if (fullbuild.getX() != u.getxPosition() || fullbuild.getY() != u.getyPosition())
 							{
+								if (logger.isLoggable(Level.FINE))
+									logger.fine(u.ID + " failed building because it was not in the right spot");
 								failedTry=true;
 								queuedAct.resetPrimitives(calculatePrimitives(queuedAct.getFullAction()));
 								break;
@@ -456,9 +501,13 @@ public class SimpleModel implements Model {
 								{
 									history.recordBirth(building, u, state);
 								}
+								if (logger.isLoggable(Level.FINE))
+									logger.fine("Built building " + building.ID + " at " + newxy[0] + "," + newxy[1]);
 							}
 							else //didn't meet prerequisites
 							{
+								if (logger.isLoggable(Level.FINE))
+									logger.fine(u.ID + " failed building because prerequisites for template " + template.ID + " were not met");
 								failedTry=true;
 							}
 						}
@@ -505,6 +554,8 @@ public class SimpleModel implements Model {
 									{
 										history.recordBirth(produced, u, state);
 									}
+									if (logger.isLoggable(Level.FINE))
+										logger.fine("Produced unit " + produced.ID + " at " + newxy[0] + "," + newxy[1]);
 								}
 								else if (template instanceof UpgradeTemplate) {
 									UpgradeTemplate upgradetemplate = ((UpgradeTemplate)template);
@@ -512,6 +563,8 @@ public class SimpleModel implements Model {
 									{
 										history.recordUpgrade(upgradetemplate,u, state);
 									}
+									if (logger.isLoggable(Level.FINE))
+										logger.fine("Upgrade " + upgradetemplate.getName() + " produced for player " + upgradetemplate.getPlayer());
 								}
 							}
 							else { //prerequisites not met
@@ -547,18 +600,24 @@ public class SimpleModel implements Model {
 					
 					if (!queuedAct.hasNext())
 					{
+						if (logger.isLoggable(Level.FINE))
+							logger.fine("Unit " + u.ID + " has completed all actions in its queue");
 						history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.COMPLETED));
 						history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.COMPLETED));
 						queuedActions.remove(queuedAct.getFullAction());
 					}
 					else
 					{
+						if (logger.isLoggable(Level.FINE))
+							logger.fine("Unit " + u.ID + " has completed a primitive action and has more in its queue");
 						history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.INCOMPLETE));
 						history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.COMPLETED));
 					}
 				}
 				else if (a.getType()==ActionType.FAILEDPERMANENTLY || failedTry && fullIsPrimitive)
 				{
+					if (logger.isLoggable(Level.FINE))
+						logger.fine("Unit " + u.ID + " has permanently failed its current primitive action");
 					history.recordCommandFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(queuedAct.getFullAction(),ActionFeedback.FAILED));
 					history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,ActionFeedback.FAILED));
 					queuedActions.remove(queuedAct.getFullAction());
@@ -583,6 +642,8 @@ public class SimpleModel implements Model {
 			{
 				history.recordDeath(u, state);
 				dead.add(u.ID);
+				if (logger.isLoggable(Level.FINE))
+					logger.fine("Unit " + u.ID + " has died.");
 			}
 		}
 		//Remove them
@@ -598,6 +659,8 @@ public class SimpleModel implements Model {
 			{
 				history.recordResourceNodeExhaustion(r, state);
 				usedup.add(r.ID);
+				if (logger.isLoggable(Level.FINE))
+					logger.fine("Resource node " + r.ID + " has been exhausted");
 			}
 		}
 		//Remove the used up resource nodes

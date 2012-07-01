@@ -60,32 +60,44 @@ public class ExampleRunner extends Runner {
 			boolean saveReplayThisEpisode = episodesPerReplaySave > 0 ? saveReplays && episode % episodesPerReplaySave == 0 : false;
 			
 			State initialStateCopy=null;
-			//System.out.println("\n=======> Start running episode " + episode);
+			if(logger.isLoggable(Level.FINE))
+				logger.fine("\n=======> Start running episode " + episode);
 			try
 			{
 				//Manually implement the run
 				
 				//Make a new state and clear the history
 				env.forceNewEpisode();
-					if (saveReplayThisEpisode) {
-						//copy the initialstate in case the state creator is stochastic
-						try {
-						initialStateCopy = env.getModel().getState().getView(Agent.OBSERVER_ID).getStateCreator().createState();
-						}
-						catch (IOException e) {
-							saveReplayThisEpisode=false;
-							e.printStackTrace();
-							logger.warning("Unable to save replay, error while saaving state "+e.getMessage());
-						}
+				if (saveReplayThisEpisode) {
+					if(logger.isLoggable(Level.FINE))
+						logger.fine("Saving replay for episode " + episode);
+					//copy the initialstate in case the state creator is stochastic
+					try {
+					initialStateCopy = env.getModel().getState().getView(Agent.OBSERVER_ID).getStateCreator().createState();
 					}
+					catch (IOException e) {
+						saveReplayThisEpisode=false;
+						logger.log(Level.WARNING, "Unable to save replay.", e);
+					}
+				}
 				//Run steps until it returns true, indicating that it is terminated
-				while(!env.step()) ;
+				while(!env.step())
+				{
+					logger.finer("step");
+				}
 				//Run the terminal step
 				env.terminalStep();
-				
-					if (saveReplayThisEpisode) {
-						saveReplay(new File(baseReplayDirectory,"ep"+episode),initialStateCopy, env.getModel().getHistory());
+				if(logger.isLoggable(Level.FINE))
+				{
+					logger.fine("Episode " + episode + " terminated.");
+				}
+				if (saveReplayThisEpisode) {
+					if(logger.isLoggable(Level.FINE))
+					{
+						logger.fine("Saving replay to file " + baseReplayDirectory + "/ep" + episode);
 					}
+					saveReplay(new File(baseReplayDirectory,"ep"+episode),initialStateCopy, env.getModel().getHistory());
+				}
 			}
 			catch (InterruptedException e)
 			{
@@ -100,12 +112,14 @@ public class ExampleRunner extends Runner {
 						saveAgentData(new File(baseAgentDirectory,"ep"+episode), j);
 					}
 					catch(FileNotFoundException ex) {
-						System.err.println("Unable to save agent "+j);
-						ex.printStackTrace();
+						logger.log(Level.WARNING,"Unable to save agent "+j, ex);
 					}
 				}
 			}
 		}
+		//This is intentional since the runner has the authority to stop execution, but 
+		//does not necessarily have access to all threads that may have been spawned. To prevent
+		//this from interfering with agent cleanup, have slow agents add a shutdown hook.
 		System.exit(0);
 	}
 }

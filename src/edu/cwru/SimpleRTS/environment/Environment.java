@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.Agent;
@@ -19,6 +21,8 @@ import edu.cwru.SimpleRTS.model.Model;
  */
 public class Environment
 {
+	private static final Logger logger = Logger.getLogger(Environment.class.getCanonicalName());
+	
 	public void forceNewEpisode() {
 		step = 0;
 		model.createNewWorld();
@@ -50,7 +54,7 @@ public class Environment
 		} 
 		catch (ClassNotFoundException e) 
 		{
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "Unable to find class for TurnTracker " + trackerName, e);
 		}
 		try 
 		{
@@ -64,11 +68,14 @@ public class Environment
 			} 
 			catch (Exception e1) 
 			{
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Unable to create an instance of TurnTracker " + trackerName, e);
 			}
 		}
 		if (toReturn == null)
+		{
+			logger.info("No TurnTracker was specified or instantiation failed; using SimultaneousTurnTracker");
 			return new SimultaneousTurnTracker(new Random(seed));
+		}
 		else
 			return toReturn;
 	}
@@ -103,6 +110,7 @@ public class Environment
 	
 	public final void runEpisode() throws InterruptedException
 	{
+		logger.fine("Running a new episode");
 		forceNewEpisode();
 		
 		while(!isTerminated())
@@ -110,7 +118,7 @@ public class Environment
 			step();
 		} 
 		terminalStep();
-		
+		logger.fine("Episode terminated");
 	}
 	public boolean isTerminated() {
 		return model.isTerminated();
@@ -143,7 +151,14 @@ public class Environment
 		{
 			if (isAgentsTurn[ag])
 			{
-//				System.out.println("Step "+step+": Agent with player number: "+connectedagents[ag].getPlayerNumber() + "'s turn.  "+(turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?"Has had turn":"First turn"));
+				if(logger.isLoggable(Level.FINER))
+				{
+					logger.finer("Step " + step + ": Agent with player number: " + 
+								 connectedagents[ag].getPlayerNumber() + "'s turn.  " + 
+								 (turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber()) ? 
+										 "Has had turn" : 
+										 "First turn"));
+				}
 				actionLatches[ag] = agentIntermediaries[ag].submitState(states[ag], histories[ag], turnTracker.hasHadTurnBefore(connectedagents[ag].getPlayerNumber())?ThreadIntermediary.StateType.MIDDLE:ThreadIntermediary.StateType.INITIAL);
 			}
 		}
@@ -176,12 +191,15 @@ public class Environment
 				}
 			}
 		}
+		logger.fine("Executing one step of the model");
 		model.executeStep();
 		step++;
+		logger.fine("Notifying TurnTracker of new step");
 		turnTracker.newStep();
 		return model.isTerminated();
 	}
 	public final void terminalStep() {
+		logger.fine("Notifying agents of terminal step");
 		for (int i = 0; i<connectedagents.length;i++)
 		{
 			int playerNumber = connectedagents[i].getPlayerNumber();
