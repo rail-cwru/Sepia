@@ -4,6 +4,7 @@ import java.util.Map;
 import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.environment.TurnTracker;
 import edu.cwru.SimpleRTS.util.Configuration;
 
 /**
@@ -45,5 +46,10 @@ public interface Model extends Serializable{
 	
 	void setConfiguration(Configuration configuration);
 	Configuration getConfiguration();
+	/**
+	 * Add the turn tracker to moderate who can move on a given turn.
+	 * @param turnTracker
+	 */
+	void setTurnTracker(TurnTracker turnTracker);
 	
 }

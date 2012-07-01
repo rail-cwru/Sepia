@@ -20,6 +20,7 @@ import edu.cwru.SimpleRTS.action.TargetedAction;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
 import edu.cwru.SimpleRTS.environment.StateCreator;
+import edu.cwru.SimpleRTS.environment.TurnTracker;
 import edu.cwru.SimpleRTS.model.resource.ResourceNode;
 import edu.cwru.SimpleRTS.model.resource.ResourceType;
 import edu.cwru.SimpleRTS.model.unit.Unit;
@@ -31,13 +32,12 @@ import edu.cwru.SimpleRTS.util.DistanceMetrics;
 import edu.cwru.SimpleRTS.util.GameMap;
 import edu.cwru.SimpleRTS.util.PreferencesConfigurationLoader;
 /**
- * <pre>
+ * 
  * A "Simple" Model.
- * This model is sequential, processing most actions one at a time, and resolves
- * conflicts in this manner.
- * This model assumes all primitive actions take exactly one step to complete, 
- * and will disregard all evidence to the contrary.
- * </pre>
+ * <br>This model is sequential, processing most actions one at a time, and resolves conflicts in this manner.
+ * <br>This model assumes players don't take turns and primitive actions take exactly one step to complete, and will disregard all evidence to the contrary.
+ * 
+ * 
  */
 public class SimpleModel implements Model {
 	private static final long serialVersionUID = -8289868580233478749L;
@@ -644,5 +644,10 @@ public class SimpleModel implements Model {
 	}
 	public void save(String filename) {
 		GameMap.storeState(filename, state);
+	}
+
+	@Override
+	public void setTurnTracker(TurnTracker turnTracker) {
+		//This method does nothing, SimpleModel ignores turns
 	}
 }

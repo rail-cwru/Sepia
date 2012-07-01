@@ -91,8 +91,7 @@ public class Environment
 			turnTracker.addPlayer(player);
 		}
 		turnTracker.newEpisodeAndStep();
-		if (model instanceof LessSimpleModel)
-			((LessSimpleModel)model).setTurnTracker(turnTracker);
+		model.setTurnTracker(turnTracker);
 	}
 	public final Agent[] getAgents() {
 		return connectedagents;
