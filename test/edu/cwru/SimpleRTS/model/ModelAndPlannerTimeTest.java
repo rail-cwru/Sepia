@@ -38,14 +38,13 @@ import edu.cwru.SimpleRTS.util.TypeLoader;
 
 public class ModelAndPlannerTimeTest {
 
-	static Model model;
 	static int player=0;
 	static int enemy = 1;
 	static int seed = 324234;
 	
 	@Test
 	public void testTime() throws IOException, JSONException, InterruptedException, BackingStoreException {
-		boolean watchCalc=true;//An easy access point in case you want to watch the process
+		boolean watchCalc=false;//An easy access point in case you want to watch the process
 		boolean watchActual=false;//An easy access point in case you want to watch the process
 		DefaultConfigurationGenerator.main(null);//This is a horrible monstrosity and I hope someone deprecates it
 		Model model = makeBaselineModel();
@@ -57,7 +56,7 @@ public class ModelAndPlannerTimeTest {
 				seer = new VisualAgent(player, new String[]{"true","true"});
 			ScriptedGoalAgent scriptedAgent = new ScriptedGoalAgent(player, new BufferedReader(new FileReader("data/timetest_script.txt")), new Random(seed), watchCalc);
 			Agent[] agents;
-			agents = new Agent[]{seer};
+			agents = new Agent[]{scriptedAgent, seer};
 			model.createNewWorld();
 			Environment calcEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)));
 			while (!calcEnv.isTerminated()) {
