@@ -71,7 +71,7 @@ public class SequentialTurnTracker implements TurnTracker {
 
 	@Override
 	public boolean isAgentsTurn(Agent agent) {
-		return isPlayersTurn(agent.getPlayerNumber());
+		return agent == null ? false : isPlayersTurn(agent.getPlayerNumber());
 	}
 	
 	@Override
