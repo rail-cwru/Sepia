@@ -8,6 +8,7 @@ import edu.cwru.SimpleRTS.action.Action;
 import edu.cwru.SimpleRTS.agent.visual.VisualLog;
 import edu.cwru.SimpleRTS.environment.History;
 import edu.cwru.SimpleRTS.environment.State;
+import edu.cwru.SimpleRTS.util.Configuration;
 /**
  * The base type for any agent that can interact with the SimpleRTS environment.
  * @author Tim
@@ -23,6 +24,7 @@ public abstract class Agent implements Serializable {
 	protected VisualLog visualLog;
 	protected boolean verbose; 
 	protected final int playernum;
+	protected Configuration configuration;
 	// map: agentID -> flag, if this flag set false, then we will ignore this agent when checking terminal condition. 
 	
 	
@@ -33,6 +35,10 @@ public abstract class Agent implements Serializable {
 	public Agent(int playernum) {
 		this.playernum = playernum;
 		verbose = false;
+	}
+	
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 	
 	/**

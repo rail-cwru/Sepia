@@ -13,7 +13,11 @@ import edu.cwru.SimpleRTS.environment.Runner;
 import edu.cwru.SimpleRTS.environment.StateCreator;
 import edu.cwru.SimpleRTS.environment.XmlStateCreator;
 import edu.cwru.SimpleRTS.environment.state.persistence.generated.XmlState;
+import edu.cwru.SimpleRTS.util.Configuration;
+import edu.cwru.SimpleRTS.util.ConfigurationValues;
+import edu.cwru.SimpleRTS.util.KeyValueConfigurationUtil;
 import edu.cwru.SimpleRTS.util.config.xml.XmlConfiguration;
+import edu.cwru.SimpleRTS.util.config.xml.XmlKeyValuePair;
 import edu.cwru.SimpleRTS.util.config.xml.XmlModelParameters;
 import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer;
 import edu.cwru.SimpleRTS.util.config.xml.XmlPlayer.AgentClass;
@@ -84,11 +88,6 @@ public final class Main2 {
 		return new XmlStateCreator(state);
 	}
 	
-	private static void getModelParameters(XmlConfiguration xmlConfig) {
-		XmlModelParameters modelParameters = xmlConfig.getModelParameters();
-		//TODO
-	}
-	
 	private static Agent[] getAgents(XmlConfiguration xmlConfig) {
 		List<XmlPlayer> players = xmlConfig.getPlayer();
 		Agent[] agents = new Agent[players.size()];
@@ -121,6 +120,30 @@ public final class Main2 {
 				logger.log(Level.SEVERE, "Unable to instantiate " + agentClass.getClassName() + " with arguments " + agentClass.getArgument() + "." + " is not a valid XML configuration file.", ex);
 				return null;
 			}
+			Configuration configuration = null;
+			if(player.getPropertyFile() != null)
+			{
+				try
+				{
+					configuration = KeyValueConfigurationUtil.load(player.getPropertyFile());
+				}
+				catch(Exception ex)
+				{
+					logger.warning("Agent " + i + "'s config file " + player.getPropertyFile() + " is invalid.");
+				}
+			}
+			if(player.getProperty() != null)
+			{
+				if(configuration == null)
+					configuration = new Configuration();
+				for(XmlKeyValuePair pair : player.getProperty())
+				{
+					configuration.put(pair.getName(), pair.getValue());
+				}
+			}
+			if(configuration == null)
+				configuration = new Configuration();
+			agents[i].setConfiguration(configuration);
 		}
 		
 		return agents;
@@ -131,11 +154,23 @@ public final class Main2 {
 		XmlRunner runner = xmlConfig.getRunner();
 		Class<?> runnerClass = Class.forName(runner.getRunnerClass());
 		edu.cwru.SimpleRTS.util.Configuration config = new edu.cwru.SimpleRTS.util.Configuration();
-		//TODO - fill configuration from runner parameters
+		getModelParameters(xmlConfig, config);
 		return (edu.cwru.SimpleRTS.environment.Runner)
 				runnerClass
 				.getConstructor(edu.cwru.SimpleRTS.util.Configuration.class, StateCreator.class, Agent[].class)
 				.newInstance(config, stateCreator, agents);
+	}
+
+	private static void getModelParameters(XmlConfiguration xmlConfig, Configuration configuration) {
+		XmlModelParameters modelParameters = xmlConfig.getModelParameters();
+		configuration.put(ConfigurationValues.MODEL_CONQUEST.key, modelParameters.isConquest());
+		configuration.put(ConfigurationValues.MODEL_MIDAS.key, modelParameters.isMidas());
+		configuration.put(ConfigurationValues.MODEL_MANIFEST_DESTINY.key, modelParameters.isManifestDestiny());
+		configuration.put(ConfigurationValues.MODEL_TIME_LIMIT.key, modelParameters.getTimeLimit());
+		for(XmlKeyValuePair pair : modelParameters.getRequirement())
+		{
+			configuration.put(pair.getName(), pair.getValue());
+		}
 	}
 	
 	private Main2() {}

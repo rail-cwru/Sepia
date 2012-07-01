@@ -29,7 +29,7 @@
 		</xs:element>
 		<xs:choice>
 			<xs:sequence minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="Parameter" type="xs:string"/>
+				<xs:element name="Property" type="KeyValuePair"/>
 			</xs:sequence>
 			<xs:element name="PropertyFile" type="xs:string"/>
 		</xs:choice>
