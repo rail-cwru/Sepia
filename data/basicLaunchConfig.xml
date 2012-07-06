@@ -2,47 +2,47 @@
 	<Map>data/nondurcom_4f1ax8.xml</Map>
 	<Player Id="0">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.visual.VisualAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
 			<Argument>true</Argument>
 			<Argument>false</Argument>
 		</AgentClass>
 	</Player>
 	<Player Id="1">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="2">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="3">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="4">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="5">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="6">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<Player Id="7">
 		<AgentClass>
-			<ClassName>edu.cwru.SimpleRTS.agent.CombatAgent</ClassName>
+			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
 	<ModelParameters>
@@ -52,7 +52,7 @@
 		<TimeLimit>1000</TimeLimit>
 	</ModelParameters>
 	<Runner>
-		<RunnerClass>edu.cwru.SimpleRTS.environment.SimpleModelEpisodicRunner</RunnerClass>
+		<RunnerClass>edu.cwru.sepia.environment.SimpleModelEpisodicRunner</RunnerClass>
 		<Parameter name="environment.NumEpisodes" value="1"/>
 		<Parameter name="environment.EpisodesPerSave" value="2"/>
 		<Parameter name="environment.SaveAgents" value="false"/>

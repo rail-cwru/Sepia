@@ -9,7 +9,7 @@ global goldRequired;
 global woodRequired;
 
 playernum = arg_playernum;
-prefs = Preferences.userRoot.node('edu').node('cwru').node('SimpleRTS').node('model');
+prefs = Preferences.userRoot.node('edu').node('cwru').node('sepia').node('model');
 goldRequired=prefs.getInt('RequiredGold', 0);
 woodRequired=prefs.getInt('RequiredWood', 0);
 

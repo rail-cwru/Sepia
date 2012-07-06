@@ -27,7 +27,7 @@ import edu.cwru.sepia.util.ConfigurationValues;
 import edu.cwru.sepia.util.PreferencesConfigurationLoader;
 
 /**
- * An entry point into SimpleRTS that takes command line arguments.
+ * An entry point into Sepia that takes command line arguments.
  * @author tim
  *
  */
@@ -35,17 +35,17 @@ public final class Main {
 	public static void main(String[] args) throws BackingStoreException, IOException, InterruptedException {
 		
 		// play resource collection sample
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0";
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.RCAgent 0 --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.sepia.agent.RCAgent 0";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.sepia.agent.RCAgent 0 --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
 		
 		// use matlab agent sample
-//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.SimpleRTS.agent.MatlabAgent 0";
+//		String para = "--config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.sepia.agent.MatlabAgent 0";
 		
 		// play maze sample
-//		String para = "--config data/mazeConfig.xml data/maze_16x16n.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/mazeConfig.xml data/maze_16x16n.map --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
 		
 		// produce peasant and footman sample
-//		String para = "--config data/mazeConfig.xml data/produce_3p2f.map --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
+//		String para = "--config data/mazeConfig.xml data/produce_3p2f.map --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam true --agentparam true";
 		
 
 //		args=para.split(" +");
@@ -68,7 +68,7 @@ public final class Main {
 				return;
 			}
 //			//print out the preferences
-//			Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").exportSubtree(System.out);
+//			Preferences.userRoot().node("edu").node("cwru").node("sepia").exportSubtree(System.out);
 			i += 2;
 		}
 		else
@@ -268,8 +268,8 @@ public final class Main {
 	}
 	private static void printUsage(String error) {
 		System.out.println(error);
-		System.out.println("\nUsage: java [-cp <path to your agent's class file>];SimpleRTS.jar] edu.cwru.SimpleRTS.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--agentparam otherparameter]* [--loadfrom <serialized agent file name>]] ...] ");
-		System.out.println("\nExample: --config data/defaultConfig.xml \"data/com_4f4a2kv4f4a2k.xml\" --agent edu.cwru.SimpleRTS.agent.visual.VisualAgent 0 --agentparam false --agentparam true --agent edu.cwru.SimpleRTS.agent.SimpleAgent1 0");
+		System.out.println("\nUsage: java [-cp <path to your agent's class file>];Sepia.jar] edu.cwru.sepia.Main [--config configurationFile] <map file name> [[--agent <agent class name> <player number> [--agentparam otherparameter]* [--loadfrom <serialized agent file name>]] ...] ");
+		System.out.println("\nExample: --config data/defaultConfig.xml \"data/com_4f4a2kv4f4a2k.xml\" --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam false --agentparam true --agent edu.cwru.sepia.agent.SimpleAgent1 0");
 		System.out.println("\nNote: all agents must implement Serializable and contain only primitives and Serializable objects in order to be loadable.");
 		System.out.println("Note: agents that are not loaded from a file will be made using a single argument constructor that will take the player number.");
 		System.out.println("See doc/manual.html for more information");
@@ -312,7 +312,7 @@ public final class Main {
 		}
 	}
 	private static void clearPrefs() throws BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
 		prefs.clear();
 		prefs.node("environment").clear();
 		prefs.node("model").clear();

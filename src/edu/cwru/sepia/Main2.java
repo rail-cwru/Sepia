@@ -25,7 +25,7 @@ import edu.cwru.sepia.util.config.xml.XmlRunner;
 import edu.cwru.sepia.util.config.xml.XmlPlayer.AgentClass;
 
 /**
- * An entry point into SimpleRTS that takes an XML configuration file as defined in data/schema/config.xsd.
+ * An entry point into Sepia that takes an XML configuration file as defined in data/schema/config.xsd.
  * @author tim
  *
  */

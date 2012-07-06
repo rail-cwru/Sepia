@@ -18,7 +18,7 @@ import edu.cwru.sepia.util.ConfigurationValues;
 import edu.cwru.sepia.util.GameMap;
 
 /**
- * A {@code Runner} that runs a number of episodes using {@code edu.cwru.SimpleRTS.model.LessSimpleModel}.
+ * A {@code Runner} that runs a number of episodes using {@code edu.cwru.sepia.model.LessSimpleModel}.
  * <br> Demonstrates some 
  *
  */

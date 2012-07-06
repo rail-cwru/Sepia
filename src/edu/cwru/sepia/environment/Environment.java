@@ -46,8 +46,8 @@ public class Environment
 	 */
 	private static TurnTracker readTurnTrackerFromPrefs(int seed) {
 		TurnTracker toReturn=null;
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
-		String trackerName = prefs.get("TurnTracker","edu.cwru.SimpleRTS.environment.SimultaneousTurnTracker");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia").node("environment");
+		String trackerName = prefs.get("TurnTracker","edu.cwru.sepia.environment.SimultaneousTurnTracker");
 		Class<?> trackerClass = null;
 		try 
 		{
@@ -90,7 +90,7 @@ public class Environment
 		}
 		this.model = model;
 		
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS").node("environment");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia").node("environment");
 		DELAY_MS=prefs.getInt("InterruptTime",-1);
 		this.turnTracker = turnTracker;
 		Integer[] players = model.getState().getView(Agent.OBSERVER_ID).getPlayerNumbers();

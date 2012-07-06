@@ -6,12 +6,12 @@ function [ action ] = agent_middleStep( state )
 % then the two peasants will collect gold and wood separately until reach
 % goal
 
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.environment.*;
-import edu.cwru.SimpleRTS.model.*;
-import edu.cwru.SimpleRTS.model.resource.*;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode.*;
-import edu.cwru.SimpleRTS.model.unit.*;
+import edu.cwru.sepia.action.*;
+import edu.cwru.sepia.environment.*;
+import edu.cwru.sepia.model.*;
+import edu.cwru.sepia.model.resource.*;
+import edu.cwru.sepia.model.resource.ResourceNode.*;
+import edu.cwru.sepia.model.unit.*;
 
 action = java.util.HashMap();
 

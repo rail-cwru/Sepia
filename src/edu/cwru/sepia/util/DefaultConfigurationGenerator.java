@@ -8,7 +8,7 @@ import java.util.prefs.Preferences;
 
 public class DefaultConfigurationGenerator {
 	public static void main(String[] args) throws FileNotFoundException, IOException, BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
 		configureEnvPrefs(prefs);
 		configureModelPrefs(prefs);
 		prefs.exportSubtree(System.out);

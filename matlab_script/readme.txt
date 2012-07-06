@@ -8,10 +8,10 @@ This only works under Matlab of Windows 7 environment, and doesn't work under Ma
 
 HOW TO RUN THE SAMPLE CODE:
 
-To test the matlab_script, simply run test_SimpleRTS in matlab.
+To test the matlab_script, simply run test_sepia in matlab.
 
-It will call the main function in edu.cwru.SimpleRTS.Main, passing proper arguments.
-The edu.cwru.SimpleRTS.agent.MatlabAgent is called.
+It will call the main function in edu.cwru.sepia.Main, passing proper arguments.
+The edu.cwru.sepia.agent.MatlabAgent is called.
 
 =============================
 

@@ -4,7 +4,7 @@ import edu.cwru.sepia.start.StartListener;
 import edu.cwru.sepia.start.StartWindow;
 
 /**
- * An entry point to SimpleRTS that allows for visual configuration of runtime parameters.
+ * An entry point to Sepia that allows for visual configuration of runtime parameters.
  * @author Gary
  *
  */

@@ -11,7 +11,7 @@ import edu.cwru.sepia.environment.History;
 import edu.cwru.sepia.environment.State;
 import edu.cwru.sepia.util.Configuration;
 /**
- * The base type for any agent that can interact with the SimpleRTS environment.
+ * The base type for any agent that can interact with the Sepia environment.
  * @author Tim
  *
  */

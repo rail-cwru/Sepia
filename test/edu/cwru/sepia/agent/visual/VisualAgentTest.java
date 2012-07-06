@@ -95,6 +95,6 @@ public class VisualAgentTest {
 		while(true);
 	}
 	public static void main(String args[]) {
-	      org.junit.runner.JUnitCore.main("edu.cwru.SimpleRTS.agent.visual.VisualAgentTest");
+	      org.junit.runner.JUnitCore.main("edu.cwru.sepia.agent.visual.VisualAgentTest");
 	}
 }

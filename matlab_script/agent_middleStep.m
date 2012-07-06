@@ -6,12 +6,12 @@ function [ action ] = agent_middleStep( state )
 % then the two peasants will collect gold and wood separately until reach
 % goal
 
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.environment.*;
-import edu.cwru.SimpleRTS.model.*;
-import edu.cwru.SimpleRTS.model.resource.*;
-import edu.cwru.SimpleRTS.model.resource.ResourceNode.*;
-import edu.cwru.SimpleRTS.model.unit.*;
+import edu.cwru.sepia.action.*;
+import edu.cwru.sepia.environment.*;
+import edu.cwru.sepia.model.*;
+import edu.cwru.sepia.model.resource.*;
+import edu.cwru.sepia.model.resource.ResourceNode.*;
+import edu.cwru.sepia.model.unit.*;
 
 action = java.util.HashMap();
 
@@ -46,7 +46,7 @@ if(peasantNum>=2) % collect resources
         if(state.getUnit(peasantID).getCargoAmount>0)
             b = TargetedAction(peasantID, ActionType.COMPOUNDDEPOSIT, townHallID);
         else
-            gm_enum = javaMethod('valueOf', 'edu.cwru.SimpleRTS.model.resource.ResourceNode$Type', 'TREE');
+            gm_enum = javaMethod('valueOf', 'edu.cwru.sepia.model.resource.ResourceNode$Type', 'TREE');
             resourceIDs = state.getResourceNodeIds(gm_enum);
             b = TargetedAction(peasantID, ActionType.COMPOUNDGATHER, resourceIDs.get(0));
         end
@@ -56,7 +56,7 @@ if(peasantNum>=2) % collect resources
         if(state.getUnit(peasantID).getCargoType==ResourceType.GOLD && state.getUnit(peasantID).getCargoAmount>0)
             b = TargetedAction(peasantID, ActionType.COMPOUNDDEPOSIT, townHallID);
         else
-            gm_enum = javaMethod('valueOf', 'edu.cwru.SimpleRTS.model.resource.ResourceNode$Type', 'GOLD_MINE');
+            gm_enum = javaMethod('valueOf', 'edu.cwru.sepia.model.resource.ResourceNode$Type', 'GOLD_MINE');
             resourceIDs = state.getResourceNodeIds(gm_enum);
             b = TargetedAction(peasantID, ActionType.COMPOUNDGATHER, resourceIDs.get(0));
         end
@@ -73,7 +73,7 @@ else % build peasant
         if(state.getUnit(peasantID).getCargoType==ResourceType.GOLD && state.getUnit(peasantID).getCargoAmount>0)
             b = TargetedAction(peasantID, ActionType.COMPOUNDDEPOSIT, townHallID);
         else
-            gm_enum = javaMethod('valueOf', 'edu.cwru.SimpleRTS.model.resource.ResourceNode$Type', 'GOLD_MINE');
+            gm_enum = javaMethod('valueOf', 'edu.cwru.sepia.model.resource.ResourceNode$Type', 'GOLD_MINE');
             resourceIDs = state.getResourceNodeIds(gm_enum);
             b = TargetedAction(peasantID, ActionType.COMPOUNDGATHER, resourceIDs.get(0));
         end

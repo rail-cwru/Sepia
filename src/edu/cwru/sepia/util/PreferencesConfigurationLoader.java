@@ -14,7 +14,7 @@ public class PreferencesConfigurationLoader {
 	}
 	public static Configuration loadConfiguration() {
 		Configuration config = new Configuration();
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
 		for(ConfigurationValues value : ConfigurationValues.values())
 		{
 			//Use the periods to navigate the tree structure
@@ -66,7 +66,7 @@ public class PreferencesConfigurationLoader {
 		}
 	}
 	private static void clearPrefs() throws BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("SimpleRTS");
+		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
 		prefs.clear();
 		prefs.node("environment").clear();
 		prefs.node("model").clear();

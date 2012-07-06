@@ -2,11 +2,11 @@
 % Nothing is returned here.
 function [] = agent_terminalStep( state )
 
-import edu.cwru.SimpleRTS.action.*;
-import edu.cwru.SimpleRTS.environment.*;
-import edu.cwru.SimpleRTS.model.*;
-import edu.cwru.SimpleRTS.model.resource.*;
-import edu.cwru.SimpleRTS.model.unit.*;
+import edu.cwru.sepia.action.*;
+import edu.cwru.sepia.environment.*;
+import edu.cwru.sepia.model.*;
+import edu.cwru.sepia.model.resource.*;
+import edu.cwru.sepia.model.unit.*;
 
 currentGold = state.getResourceAmount(0, ResourceType.GOLD).intValue();
 currentWood = state.getResourceAmount(0, ResourceType.WOOD).intValue();

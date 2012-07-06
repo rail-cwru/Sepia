@@ -7,7 +7,7 @@
         <map/>
         <node name="cwru">
           <map/>
-          <node name="SimpleRTS">
+          <node name="sepia">
             <map/>
             <node name="agent">
             	<map/>
@@ -20,7 +20,7 @@
             <node name="environment">
               <map>
                 <entry key="NumEpisodes" value="1"/>
-                <entry key="TurnTracker" value="edu.cwru.SimpleRTS.environment.SequentialTurnTracker"/>
+                <entry key="TurnTracker" value="edu.cwru.sepia.environment.SequentialTurnTracker"/>
               </map>
             </node>
             <node name="model">

@@ -119,7 +119,7 @@ public class CommandPanel extends JPanel {
         List<String> preArgs = new LinkedList<String>();
         preArgs.add("java");
         // TODO: Classpath?
-        preArgs.add("edu.cwru.SimpleRTS.Main");
+        preArgs.add("edu.cwru.sepia.Main");
         preArgs.addAll(args);
         String command = join(preArgs, " ");
         commandArea.setText(command);
