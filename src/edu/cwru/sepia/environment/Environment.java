@@ -31,8 +31,8 @@ import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.ThreadIntermediary;
 import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.LessSimpleModel;
-import edu.cwru.sepia.model.Model;
+import edu.cwru.sepia.environment.model.LessSimpleModel;
+import edu.cwru.sepia.environment.model.Model;
 
 /**
  * Simulates the environment component in a standard Reinforcement Learning setting. 

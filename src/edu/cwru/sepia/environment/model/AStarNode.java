@@ -17,9 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model;
+package edu.cwru.sepia.environment.model;
 
 import java.util.Arrays;
+
+import edu.cwru.sepia.model.Direction;
 
 /**
  * Note: compareTo and equals are not equivalently implemented

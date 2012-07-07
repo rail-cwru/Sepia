@@ -31,9 +31,9 @@ import org.junit.Test;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.model.LessSimpleModel;
-import edu.cwru.sepia.model.Model;
-import edu.cwru.sepia.model.SimplePlanner;
+import edu.cwru.sepia.environment.model.LessSimpleModel;
+import edu.cwru.sepia.environment.model.Model;
+import edu.cwru.sepia.environment.model.SimplePlanner;
 import edu.cwru.sepia.model.Template;
 import edu.cwru.sepia.model.unit.Unit;
 import edu.cwru.sepia.model.unit.UnitTemplate;

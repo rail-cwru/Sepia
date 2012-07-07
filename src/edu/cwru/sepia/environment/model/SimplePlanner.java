@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model;
+package edu.cwru.sepia.environment.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -30,6 +30,8 @@ import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.State;
 import edu.cwru.sepia.environment.State.StateView;
+import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.model.Template;
 import edu.cwru.sepia.model.resource.ResourceNode;
 import edu.cwru.sepia.model.unit.Unit;
 import edu.cwru.sepia.model.unit.UnitTemplate;

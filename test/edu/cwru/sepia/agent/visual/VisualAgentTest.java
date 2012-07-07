@@ -31,7 +31,7 @@ import edu.cwru.sepia.agent.visual.VisualAgent;
 import edu.cwru.sepia.environment.Environment;
 import edu.cwru.sepia.environment.State;
 import edu.cwru.sepia.environment.State.StateBuilder;
-import edu.cwru.sepia.model.SimpleModel;
+import edu.cwru.sepia.environment.model.SimpleModel;
 import edu.cwru.sepia.model.Template;
 import edu.cwru.sepia.model.resource.ResourceNode;
 import edu.cwru.sepia.model.unit.Unit;
