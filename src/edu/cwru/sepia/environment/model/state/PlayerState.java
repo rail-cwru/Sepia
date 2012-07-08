@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
 import java.util.EnumMap;
@@ -26,10 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.unit.Unit;
+import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 

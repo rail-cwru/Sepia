@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.environment.History.HistoryView;
-import edu.cwru.sepia.environment.State.StateView;
+import edu.cwru.sepia.environment.model.state.History.HistoryView;
+import edu.cwru.sepia.environment.model.state.State.StateView;
 
 /**
  * An agent that uses a map of turn numbers to action assignments to replay a series of actions.

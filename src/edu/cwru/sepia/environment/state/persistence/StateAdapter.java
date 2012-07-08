@@ -21,13 +21,13 @@ package edu.cwru.sepia.environment.state.persistence;
 
 import java.util.List;
 
-import edu.cwru.sepia.environment.PlayerState;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.State.StateBuilder;
+import edu.cwru.sepia.environment.model.state.PlayerState;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceNode;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
-import edu.cwru.sepia.model.resource.ResourceNode;
 
 public class StateAdapter {
 	

@@ -32,13 +32,13 @@ import edu.cwru.sepia.action.ActionType;
 import edu.cwru.sepia.action.DirectedAction;
 import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.agent.Agent;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.State.StateBuilder;
 import edu.cwru.sepia.environment.model.SimpleModel;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.model.Direction;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
 import edu.cwru.sepia.util.TypeLoader;
 /**
  * Contains tests relating to the creation and manipulation of units

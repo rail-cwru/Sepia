@@ -29,13 +29,13 @@ import java.util.Map;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
-import edu.cwru.sepia.environment.History;
-import edu.cwru.sepia.environment.State.StateView;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.log.BirthLog;
 import edu.cwru.sepia.log.DamageLog;
 import edu.cwru.sepia.log.DeathLog;
 import edu.cwru.sepia.model.Direction;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
 import edu.cwru.sepia.util.DistanceMetrics;
 
 public class CombatAgent extends Agent{

@@ -24,10 +24,10 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import org.json.*;
 
-import edu.cwru.sepia.environment.IDDistributer;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.unit.UnitTemplate;
-import edu.cwru.sepia.model.upgrade.UpgradeTemplate;
+import edu.cwru.sepia.environment.model.state.IDDistributer;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 
 public final class TypeLoader {
 	private TypeLoader(){}

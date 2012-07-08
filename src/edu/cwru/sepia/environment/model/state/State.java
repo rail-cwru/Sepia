@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,16 +33,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import edu.cwru.sepia.agent.Agent;
+import edu.cwru.sepia.environment.model.state.Template.TemplateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.model.Direction;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.Template.TemplateView;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
-import edu.cwru.sepia.model.upgrade.Upgrade;
-import edu.cwru.sepia.model.upgrade.UpgradeTemplate;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 

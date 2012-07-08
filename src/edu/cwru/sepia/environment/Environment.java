@@ -30,9 +30,10 @@ import java.util.prefs.Preferences;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.ThreadIntermediary;
-import edu.cwru.sepia.environment.State.StateView;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
 import edu.cwru.sepia.environment.model.Model;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.State.StateView;
 
 /**
  * Simulates the environment component in a standard Reinforcement Learning setting. 

@@ -21,10 +21,10 @@ package edu.cwru.sepia.environment.state.persistence;
 
 import java.util.Map;
 
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlUnit;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
 
 public class UnitAdapter {
 

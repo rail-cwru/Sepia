@@ -17,10 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
-import java.io.Serializable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
-public interface StateCreator extends Serializable {
-	State createState();
+public class LoadingStateCreator implements StateCreator{
+	private static final long	serialVersionUID	= 1L;
+	
+	String loadfilename;
+	public LoadingStateCreator(String loadfilename) {
+		this.loadfilename = loadfilename;
+	}
+	@Override
+	public State createState() {
+		State state = null;
+		ObjectInputStream ois = null;
+		
+		try {
+			ois = new ObjectInputStream(new FileInputStream(loadfilename));
+			state = (State)ois.readObject();
+			ois.close();
+		}
+		catch(Exception ex) {
+			System.err.print("Could not load \""+new File(loadfilename).getAbsolutePath()+"\" ");
+			ex.printStackTrace();
+			return null;
+		}
+		return state;
+	}
+	
 }

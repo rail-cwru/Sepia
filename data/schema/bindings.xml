@@ -9,7 +9,7 @@
 			</jxb:nameXmlTransform>
 		</jxb:schemaBindings>
 		<jxb:bindings node="xs:simpleType[@name='ResourceType']">
-			 <jxb:javaType name="edu.cwru.sepia.model.resource.ResourceType" 
+			 <jxb:javaType name="edu.cwru.sepia.environment.model.state.ResourceType" 
 			 	parseMethod="ResourceType.valueOf"/>
 		</jxb:bindings>
 		<jxb:bindings node="xs:simpleType[@name='ActionFeedback']">
@@ -17,7 +17,7 @@
 			 	parseMethod="ActionFeedback.valueOf"/>
 		</jxb:bindings>
 		<jxb:bindings node="xs:simpleType[@name='ResourceNodeType']">
-			 <jxb:javaType name="edu.cwru.sepia.model.resource.ResourceNode.Type" 
+			 <jxb:javaType name="edu.cwru.sepia.environment.model.state.ResourceNode.Type" 
 			 	parseMethod="Type.valueOf"/>
 		</jxb:bindings> 
 		<jxb:bindings node="xs:simpleType[@name='Direction']">

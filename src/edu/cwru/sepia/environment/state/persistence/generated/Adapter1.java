@@ -10,7 +10,7 @@ package edu.cwru.sepia.environment.state.persistence.generated;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import edu.cwru.sepia.model.resource.ResourceNode.Type;
+import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 
 public class Adapter1
     extends XmlAdapter<String, Type>

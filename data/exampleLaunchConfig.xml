@@ -52,7 +52,7 @@
 		<TimeLimit>1000</TimeLimit>
 	</ModelParameters>
 	<Runner>
-		<RunnerClass>edu.cwru.sepia.environment.ExampleRunner</RunnerClass>
+		<RunnerClass>edu.cwru.sepia.experiment.ExampleRunner</RunnerClass>
 		<Parameter name="environment.NumEpisodes" value="10"/>
 		<Parameter name="environment.EpisodesPerSave" value="2"/>
 		<Parameter name="environment.SaveAgents" value="false"/>

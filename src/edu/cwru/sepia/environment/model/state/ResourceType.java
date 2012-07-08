@@ -17,21 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model.upgrade;
-
+package edu.cwru.sepia.environment.model.state;
 /**
- * An instance of an upgrade template.
- * As it has no existence in the game world,
- * all relevant data is stored in its template.
+ * An enumeration of two types of reserces, i.e., Gold and Wood.
+ *
  */
-public class Upgrade 
-{
-	private UpgradeTemplate template;
-	public Upgrade(UpgradeTemplate template)
-	{
-		this.template = template;
-	}
-	public UpgradeTemplate getTemplate() {
-		return template;
-	}
+public enum ResourceType {
+	GOLD,
+	WOOD
 }

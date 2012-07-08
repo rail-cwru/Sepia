@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import edu.cwru.sepia.model.resource.ResourceType;
+import edu.cwru.sepia.environment.model.state.ResourceType;
 
 
 /**

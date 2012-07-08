@@ -17,23 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model;
-
-import java.io.Serializable;
-
-import edu.cwru.sepia.util.DeepEquatable;
+package edu.cwru.sepia.environment.model.state;
 
 /**
- * An class that signifies that an extending class can be the direct object of an action
- * This requires that they all share an ID scheme
- * @author Tim
- *
+ * An instance of an upgrade template.
+ * As it has no existence in the game world,
+ * all relevant data is stored in its template.
  */
-public abstract class Target implements Serializable, DeepEquatable {
-	public static final long serialVersionUID = 310562678386330058l;
-	public final int ID;
-	public Target(int ID)
+public class Upgrade 
+{
+	private UpgradeTemplate template;
+	public Upgrade(UpgradeTemplate template)
 	{
-		this.ID = ID;
+		this.template = template;
+	}
+	public UpgradeTemplate getTemplate() {
+		return template;
 	}
 }

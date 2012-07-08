@@ -36,14 +36,14 @@ import org.junit.Test;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
-import edu.cwru.sepia.environment.State;
 import edu.cwru.sepia.environment.model.SimpleModel;
 import edu.cwru.sepia.environment.model.SimplePlanner;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
-import edu.cwru.sepia.model.upgrade.UpgradeTemplate;
+import edu.cwru.sepia.environment.model.state.ResourceType;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class PrereqTest {

@@ -46,12 +46,12 @@ import org.json.JSONException;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.visual.GamePanel;
 import edu.cwru.sepia.agent.visual.GameScreen;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.State.StateBuilder;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.util.GameMap;
 import edu.cwru.sepia.util.TypeLoader;
 

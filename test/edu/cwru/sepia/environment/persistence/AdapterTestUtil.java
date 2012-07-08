@@ -35,9 +35,13 @@ import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
 import edu.cwru.sepia.action.ActionType;
 import edu.cwru.sepia.agent.Agent;
-import edu.cwru.sepia.environment.History;
-import edu.cwru.sepia.environment.PlayerHistory;
-import edu.cwru.sepia.environment.State;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.PlayerHistory;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceType;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.state.persistence.ActionAdapter;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlAction;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlDirectedAction;
@@ -55,10 +59,6 @@ import edu.cwru.sepia.log.ActionLogger;
 import edu.cwru.sepia.log.ActionResultLogger;
 import edu.cwru.sepia.log.EventLogger;
 import edu.cwru.sepia.model.Direction;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.unit.UnitTemplate;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class AdapterTestUtil {

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,18 +28,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.Template.TemplateView;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.resource.ResourceNode.ResourceView;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
-import edu.cwru.sepia.model.unit.UnitTemplate.UnitTemplateView;
-import edu.cwru.sepia.model.upgrade.UpgradeTemplate;
-import edu.cwru.sepia.model.upgrade.UpgradeTemplate.UpgradeTemplateView;
+import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 /**
  * A core component of simulating. <br>
  * RawStateCreator is used to repeatedly clone an existing state from an array of bytes representing a serialization.

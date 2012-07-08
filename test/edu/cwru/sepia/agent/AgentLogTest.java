@@ -34,12 +34,12 @@ import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.SimpleAgent1;
 import edu.cwru.sepia.agent.visual.GamePanel;
 import edu.cwru.sepia.agent.visual.VisualLog;
-import edu.cwru.sepia.environment.State;
 import edu.cwru.sepia.environment.model.SimpleModel;
 import edu.cwru.sepia.environment.model.SimplePlanner;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.util.TypeLoader;
 
 

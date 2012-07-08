@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.util.DistanceMetrics;
 
 /**

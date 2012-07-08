@@ -31,11 +31,11 @@ import java.util.Random;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.ScriptedGoalAgent.RelevantStateView;
-import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.resource.ResourceNode.ResourceView;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceType;
+import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
 
 /**

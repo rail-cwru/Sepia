@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.experiment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,9 +29,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.cwru.sepia.agent.Agent;
+import edu.cwru.sepia.environment.Environment;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
 import edu.cwru.sepia.environment.model.Model;
 import edu.cwru.sepia.environment.model.SimpleModel;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.util.Configuration;
 import edu.cwru.sepia.util.ConfigurationValues;
 import edu.cwru.sepia.util.GameMap;

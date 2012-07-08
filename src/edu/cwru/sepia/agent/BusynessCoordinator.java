@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.cwru.sepia.environment.State.StateView;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
 /**
  * A simple container for two lists: units that are doing something and units that aren't.

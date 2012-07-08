@@ -10,7 +10,7 @@ import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.environment.*;
 import edu.cwru.sepia.model.*;
 import edu.cwru.sepia.model.resource.*;
-import edu.cwru.sepia.model.resource.ResourceNode.*;
+import edu.cwru.sepia.environment.model.state.ResourceNode.*;
 import edu.cwru.sepia.model.unit.*;
 
 action = java.util.HashMap();

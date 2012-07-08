@@ -17,25 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
+import edu.cwru.sepia.util.DeepEquatable;
 
-public final class XmlStateUtil {
-	
-	private XmlStateUtil() {}
-
-	public static Collection<Integer> playerIds(XmlState xml) {
-		Set<Integer> playerIds = new HashSet<Integer>();
-		for(XmlPlayer player : xml.getPlayer())
-		{
-			playerIds.add(player.getID());
-		}
-		return playerIds;
+/**
+ * An class that signifies that an extending class can be the direct object of an action
+ * This requires that they all share an ID scheme
+ * @author Tim
+ *
+ */
+public abstract class Target implements Serializable, DeepEquatable {
+	public static final long serialVersionUID = 310562678386330058l;
+	public final int ID;
+	public Target(int ID)
+	{
+		this.ID = ID;
 	}
 }

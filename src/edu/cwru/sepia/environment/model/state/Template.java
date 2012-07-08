@@ -17,13 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.cwru.sepia.environment.IDDistributer;
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**

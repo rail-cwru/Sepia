@@ -26,11 +26,11 @@ import java.io.InputStreamReader;
 import java.util.List;
 import org.json.JSONException;
 
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
 
 public class MapEditor {
 	public static void main(String[] args) throws IOException, JSONException {

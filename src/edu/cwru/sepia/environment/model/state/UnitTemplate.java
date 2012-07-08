@@ -17,16 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model.unit;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import edu.cwru.sepia.environment.IDDistributer;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceNode;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 /**
  * Contains information shared between units of the same type.

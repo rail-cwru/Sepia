@@ -17,14 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model.unit;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
 
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.model.Target;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.unit.UnitTemplate.UnitTemplateView;
+import edu.cwru.sepia.environment.model.state.UnitTemplate.UnitTemplateView;
 
 public class Unit extends Target /*implements Cloneable*/ {
 	private static final long serialVersionUID = 1L;

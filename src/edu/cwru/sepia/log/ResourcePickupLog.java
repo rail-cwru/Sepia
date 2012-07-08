@@ -21,8 +21,8 @@ package edu.cwru.sepia.log;
 
 import java.io.Serializable;
 
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**

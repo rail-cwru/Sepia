@@ -17,12 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model.resource;
-/**
- * An enumeration of two types of reserces, i.e., Gold and Wood.
- *
- */
-public enum ResourceType {
-	GOLD,
-	WOOD
+package edu.cwru.sepia.environment.model.state;
+
+import java.io.Serializable;
+
+public interface StateCreator extends Serializable {
+	State createState();
 }

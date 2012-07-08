@@ -23,9 +23,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.state.persistence.ResourceNodeAdapter;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceNode;
-import edu.cwru.sepia.model.resource.ResourceNode;
 
 public class ResourceNodeAdapterTest {
 

@@ -30,10 +30,10 @@ import java.io.ObjectOutputStream;
 
 import org.junit.Test;
 
-import edu.cwru.sepia.environment.RawStateCreator;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.StateCreator;
-import edu.cwru.sepia.environment.State.StateBuilder;
+import edu.cwru.sepia.environment.model.state.RawStateCreator;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.StateCreator;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 
 public class ModelSerializationTest {
 

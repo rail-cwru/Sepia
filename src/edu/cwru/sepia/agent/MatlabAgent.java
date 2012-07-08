@@ -30,8 +30,8 @@ import matlabcontrol.MatlabProxy;
 import matlabcontrol.MatlabProxyFactory;
 import matlabcontrol.MatlabProxyFactoryOptions;
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.environment.History;
-import edu.cwru.sepia.environment.State.StateView;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.State.StateView;
 
 /**
  * This is a wrapper class for calling agent implemented in Matlab.

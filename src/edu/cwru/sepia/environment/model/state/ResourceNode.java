@@ -17,11 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model.resource;
+package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
 
-import edu.cwru.sepia.model.Target;
 
 /**
  * A subtype of Target that contains all information of a resource.

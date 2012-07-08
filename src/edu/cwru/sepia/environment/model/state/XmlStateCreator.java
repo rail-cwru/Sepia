@@ -17,35 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import edu.cwru.sepia.environment.state.persistence.StateAdapter;
+import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
 
-public class LoadingStateCreator implements StateCreator{
-	private static final long	serialVersionUID	= 1L;
+public class XmlStateCreator implements StateCreator {
+	private static final long serialVersionUID = 1L;
 	
-	String loadfilename;
-	public LoadingStateCreator(String loadfilename) {
-		this.loadfilename = loadfilename;
+	private XmlState state;
+	private StateAdapter adapter;
+	
+	public XmlStateCreator(XmlState state) {
+		this.state = state;
+		adapter = new StateAdapter();
 	}
+	
 	@Override
-	public State createState() {
-		State state = null;
-		ObjectInputStream ois = null;
-		
-		try {
-			ois = new ObjectInputStream(new FileInputStream(loadfilename));
-			state = (State)ois.readObject();
-			ois.close();
+	public State createState() {		
+		try
+		{
+			return adapter.fromXml(state);
 		}
-		catch(Exception ex) {
-			System.err.print("Could not load \""+new File(loadfilename).getAbsolutePath()+"\" ");
+		catch(Exception ex)
+		{
 			ex.printStackTrace();
 			return null;
 		}
-		return state;
 	}
-	
+
 }

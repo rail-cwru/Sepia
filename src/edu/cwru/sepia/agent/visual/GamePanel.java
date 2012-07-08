@@ -41,15 +41,15 @@ import javax.swing.JComponent;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionType;
-import edu.cwru.sepia.environment.History.HistoryView;
-import edu.cwru.sepia.environment.State.StateView;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceType;
+import edu.cwru.sepia.environment.model.state.History.HistoryView;
+import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
+import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
+import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.log.DamageLog;
 import edu.cwru.sepia.log.RevealedResourceNodeLog;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.resource.ResourceType;
-import edu.cwru.sepia.model.resource.ResourceNode.ResourceView;
-import edu.cwru.sepia.model.resource.ResourceNode.Type;
-import edu.cwru.sepia.model.unit.Unit.UnitView;
 
 public class GamePanel extends JPanel {
 

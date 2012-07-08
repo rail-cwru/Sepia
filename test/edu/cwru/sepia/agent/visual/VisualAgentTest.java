@@ -29,13 +29,13 @@ import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.SimpleAgent1;
 import edu.cwru.sepia.agent.visual.VisualAgent;
 import edu.cwru.sepia.environment.Environment;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.State.StateBuilder;
 import edu.cwru.sepia.environment.model.SimpleModel;
-import edu.cwru.sepia.model.Template;
-import edu.cwru.sepia.model.resource.ResourceNode;
-import edu.cwru.sepia.model.unit.Unit;
-import edu.cwru.sepia.model.unit.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class VisualAgentTest {

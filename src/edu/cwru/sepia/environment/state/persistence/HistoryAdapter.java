@@ -19,8 +19,8 @@
  */
 package edu.cwru.sepia.environment.state.persistence;
 
-import edu.cwru.sepia.environment.History;
-import edu.cwru.sepia.environment.PlayerHistory;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.PlayerHistory;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlHistory;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayerHistory;
 

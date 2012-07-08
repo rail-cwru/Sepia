@@ -30,8 +30,8 @@ import java.io.PrintWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import edu.cwru.sepia.environment.History;
-import edu.cwru.sepia.environment.State;
+import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.state.persistence.HistoryAdapter;
 import edu.cwru.sepia.environment.state.persistence.StateAdapter;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlHistory;

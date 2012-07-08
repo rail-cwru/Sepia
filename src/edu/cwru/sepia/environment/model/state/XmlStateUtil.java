@@ -17,33 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment;
+package edu.cwru.sepia.environment.model.state;
 
-import edu.cwru.sepia.environment.state.persistence.StateAdapter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
 
-public class XmlStateCreator implements StateCreator {
-	private static final long serialVersionUID = 1L;
+public final class XmlStateUtil {
 	
-	private XmlState state;
-	private StateAdapter adapter;
-	
-	public XmlStateCreator(XmlState state) {
-		this.state = state;
-		adapter = new StateAdapter();
-	}
-	
-	@Override
-	public State createState() {		
-		try
-		{
-			return adapter.fromXml(state);
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-			return null;
-		}
-	}
+	private XmlStateUtil() {}
 
+	public static Collection<Integer> playerIds(XmlState xml) {
+		Set<Integer> playerIds = new HashSet<Integer>();
+		for(XmlPlayer player : xml.getPlayer())
+		{
+			playerIds.add(player.getID());
+		}
+		return playerIds;
+	}
 }

@@ -35,11 +35,11 @@ import javax.xml.bind.JAXBException;
 
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.Environment;
-import edu.cwru.sepia.environment.LoadingStateCreator;
-import edu.cwru.sepia.environment.State;
-import edu.cwru.sepia.environment.StateCreator;
-import edu.cwru.sepia.environment.XmlStateCreator;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
+import edu.cwru.sepia.environment.model.state.LoadingStateCreator;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.StateCreator;
+import edu.cwru.sepia.environment.model.state.XmlStateCreator;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
 import edu.cwru.sepia.util.Configuration;
 import edu.cwru.sepia.util.ConfigurationValues;
