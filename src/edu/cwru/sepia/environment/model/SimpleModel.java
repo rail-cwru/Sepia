@@ -49,12 +49,12 @@ import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
-import edu.cwru.sepia.model.Direction;
-import edu.cwru.sepia.util.Configuration;
-import edu.cwru.sepia.util.ConfigurationValues;
+import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.ConfigurationValues;
+import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
+import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.GameMap;
-import edu.cwru.sepia.util.PreferencesConfigurationLoader;
 /**
  * 
  * A "Simple" Model.

@@ -1,7 +1,7 @@
 
 package edu.cwru.sepia.action;
 
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 
 /**
  * A subtype of Action, include PrimitiveMove, PrimitiveGather, PrimitiveDeposit

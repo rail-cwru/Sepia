@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.util;
+package edu.cwru.sepia.experiment;
 
 import java.io.File;
 import java.io.IOException;

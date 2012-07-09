@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.model;
+package edu.cwru.sepia.util;
 /**
  * A basic enumeration of the eight directions in which a primitive action can be taken.
  * Directions are treated the same as screen coordinates: East is positive x, South is positive y.

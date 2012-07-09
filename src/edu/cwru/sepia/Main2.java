@@ -32,10 +32,10 @@ import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.XmlStateCreator;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
+import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.ConfigurationValues;
+import edu.cwru.sepia.experiment.KeyValueConfigurationUtil;
 import edu.cwru.sepia.experiment.Runner;
-import edu.cwru.sepia.util.Configuration;
-import edu.cwru.sepia.util.ConfigurationValues;
-import edu.cwru.sepia.util.KeyValueConfigurationUtil;
 import edu.cwru.sepia.util.config.xml.XmlConfiguration;
 import edu.cwru.sepia.util.config.xml.XmlKeyValuePair;
 import edu.cwru.sepia.util.config.xml.XmlModelParameters;
@@ -173,11 +173,11 @@ public final class Main2 {
 													SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		XmlRunner runner = xmlConfig.getRunner();
 		Class<?> runnerClass = Class.forName(runner.getRunnerClass());
-		edu.cwru.sepia.util.Configuration config = new edu.cwru.sepia.util.Configuration();
+		edu.cwru.sepia.experiment.Configuration config = new edu.cwru.sepia.experiment.Configuration();
 		getModelParameters(xmlConfig, config);
 		return (edu.cwru.sepia.experiment.Runner)
 				runnerClass
-				.getConstructor(edu.cwru.sepia.util.Configuration.class, StateCreator.class, Agent[].class)
+				.getConstructor(edu.cwru.sepia.experiment.Configuration.class, StateCreator.class, Agent[].class)
 				.newInstance(config, stateCreator, agents);
 	}
 

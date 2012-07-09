@@ -31,7 +31,7 @@ import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateView;
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 /**
  * An implementation of basic planning methods extended to the case of actions that take time to act.

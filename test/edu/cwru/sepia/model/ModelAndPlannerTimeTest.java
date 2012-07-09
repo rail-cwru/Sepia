@@ -55,7 +55,7 @@ import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
-import edu.cwru.sepia.util.DefaultConfigurationGenerator;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class ModelAndPlannerTimeTest {

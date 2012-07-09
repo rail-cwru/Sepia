@@ -21,7 +21,7 @@
 			 	parseMethod="Type.valueOf"/>
 		</jxb:bindings> 
 		<jxb:bindings node="xs:simpleType[@name='Direction']">
-			 <jxb:javaType name="edu.cwru.sepia.model.Direction" 
+			 <jxb:javaType name="edu.cwru.sepia.util.Direction" 
 			 	parseMethod="Direction.valueOf"/>
 		</jxb:bindings> 
 		<jxb:bindings node="xs:simpleType[@name='ActionType']">

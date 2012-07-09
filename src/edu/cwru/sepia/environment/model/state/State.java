@@ -35,9 +35,9 @@ import java.util.Set;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
-import edu.cwru.sepia.model.Direction;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
+import edu.cwru.sepia.util.Direction;
 
 /**
  * Represents the state

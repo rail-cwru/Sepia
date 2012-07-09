@@ -32,7 +32,7 @@ import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.environment.model.state.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 /**
  * A simple agent that makes all its units move in random directions if they are not attacking.

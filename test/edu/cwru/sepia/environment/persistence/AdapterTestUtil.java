@@ -58,7 +58,7 @@ import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeTemplate
 import edu.cwru.sepia.log.ActionLogger;
 import edu.cwru.sepia.log.ActionResultLogger;
 import edu.cwru.sepia.log.EventLogger;
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class AdapterTestUtil {

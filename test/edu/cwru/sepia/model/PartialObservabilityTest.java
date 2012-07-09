@@ -40,7 +40,7 @@ import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.log.RevealedResourceNodeLog;
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.TypeLoader;
 

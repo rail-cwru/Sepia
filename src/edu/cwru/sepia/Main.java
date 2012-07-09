@@ -41,9 +41,9 @@ import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.XmlStateCreator;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
-import edu.cwru.sepia.util.Configuration;
-import edu.cwru.sepia.util.ConfigurationValues;
-import edu.cwru.sepia.util.PreferencesConfigurationLoader;
+import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.ConfigurationValues;
+import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 
 /**
  * An entry point into Sepia that takes command line arguments.

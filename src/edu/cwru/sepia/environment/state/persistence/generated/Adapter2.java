@@ -10,7 +10,7 @@ package edu.cwru.sepia.environment.state.persistence.generated;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 
 public class Adapter2
     extends XmlAdapter<String, Direction>

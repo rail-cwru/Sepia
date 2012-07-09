@@ -21,7 +21,7 @@ package edu.cwru.sepia.environment.model;
 
 import java.util.Arrays;
 
-import edu.cwru.sepia.model.Direction;
+import edu.cwru.sepia.util.Direction;
 
 /**
  * Note: compareTo and equals are not equivalently implemented

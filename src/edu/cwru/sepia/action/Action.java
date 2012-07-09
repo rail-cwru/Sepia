@@ -21,8 +21,8 @@ package edu.cwru.sepia.action;
 
 import java.io.Serializable;
 
-import edu.cwru.sepia.model.Direction;
 import edu.cwru.sepia.util.DeepEquatable;
+import edu.cwru.sepia.util.Direction;
 /**
  * The primary class of issued commands.
  * Action is immutable and it's subtypes should be as well.

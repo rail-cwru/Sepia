@@ -35,8 +35,6 @@ import edu.cwru.sepia.environment.model.Model;
 import edu.cwru.sepia.environment.model.SimpleModel;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.StateCreator;
-import edu.cwru.sepia.util.Configuration;
-import edu.cwru.sepia.util.ConfigurationValues;
 import edu.cwru.sepia.util.GameMap;
 
 /**

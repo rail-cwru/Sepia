@@ -38,9 +38,9 @@ import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
-import edu.cwru.sepia.util.Configuration;
-import edu.cwru.sepia.util.ConfigurationValues;
-import edu.cwru.sepia.util.PreferencesConfigurationLoader;
+import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.ConfigurationValues;
+import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 
 /**
  * This agent will first collect gold to produce a peasant,
