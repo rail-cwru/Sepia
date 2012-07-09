@@ -26,9 +26,9 @@ public enum ConfigurationValues {
 	MODEL_TIME_LIMIT("environment.model.TimeLimit", Integer.class, 1 << 16),
 	MODEL_REQUIRED_GOLD("environment.model.RequiredGold", Integer.class, 0),
 	MODEL_REQUIRED_WOOD("environment.model.RequiredWood", Integer.class, 0),
-	ENVIRONMENT_EPISODES("environment.NumEpisodes", Integer.class, 1),
-	ENVIRONMENT_EPISODES_PER_SAVE("environment.EpisodesPerSave", Integer.class, 1),
-	ENVIRONMENT_SAVE_AGENTS("environment.SaveAgents", Boolean.class, false)
+	ENVIRONMENT_EPISODES("experiment.NumEpisodes", Integer.class, 1),
+	ENVIRONMENT_EPISODES_PER_SAVE("experiment.EpisodesPerSave", Integer.class, 1),
+	ENVIRONMENT_SAVE_AGENTS("experiment.SaveAgents", Boolean.class, false)
 	;
 	public final String key;
 	public final Class<?> type;

@@ -17,10 +17,13 @@
             		</map>
             	</node>
             </node>
-            <node name="environment">
-              <map>
-                <entry key="NumEpisodes" value="1"/>
-              </map>
+            <node name="experiment">
+          	<map>
+              <entry key="NumEpisodes" value="10"/>
+            </map>
+          </node>
+          <node name="environment">
+            <map/>
               <node name="model">
               <map>
                 <entry key="Conquest" value="false"/>

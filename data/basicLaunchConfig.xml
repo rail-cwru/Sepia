@@ -53,8 +53,8 @@
 	</ModelParameters>
 	<Runner>
 		<RunnerClass>edu.cwru.sepia.experiment.SimpleModelEpisodicRunner</RunnerClass>
-		<Parameter name="environment.NumEpisodes" value="1"/>
-		<Parameter name="environment.EpisodesPerSave" value="2"/>
-		<Parameter name="environment.SaveAgents" value="false"/>
+		<Parameter name="experiment.NumEpisodes" value="1"/>
+		<Parameter name="experiment.EpisodesPerSave" value="2"/>
+		<Parameter name="experiment.SaveAgents" value="false"/>
 	</Runner>
 </Configuration>

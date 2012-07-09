@@ -28,15 +28,21 @@ import java.util.prefs.Preferences;
 public class DefaultConfigurationGenerator {
 	public static void main(String[] args) throws FileNotFoundException, IOException, BackingStoreException {
 		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
+		prefs.clear();
+		configureExpPrefs(prefs);
 		configureEnvPrefs(prefs);
 		configureModelPrefs(prefs);
 		prefs.exportSubtree(System.out);
 		prefs.exportSubtree(new FileOutputStream("data/defaultConfig.xml"));
 	}
+	private static void configureExpPrefs(Preferences prefs) throws BackingStoreException {
+		Preferences expPrefs = prefs.node("experiment");
+		expPrefs.clear();
+		expPrefs.putInt("NumEpisodes",10);		
+	}
 	private static void configureEnvPrefs(Preferences prefs) throws BackingStoreException {
 		Preferences envPrefs = prefs.node("environment");
 		envPrefs.clear();
-		envPrefs.putInt("NumEpisodes",10);		
 	}
 	private static void configureModelPrefs(Preferences prefs) throws BackingStoreException {
 		Preferences modelPrefs = prefs.node("environment").node("model");

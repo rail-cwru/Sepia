@@ -9,10 +9,13 @@
         <map/>
         <node name="sepia">
           <map/>
-          <node name="environment">
-            <map>
+          <node name="experiment">
+          	<map>
               <entry key="NumEpisodes" value="10"/>
             </map>
+          </node>
+          <node name="environment">
+            <map/>
             <node name="model">
               <map>
                 <entry key="Conquest" value="true"/>

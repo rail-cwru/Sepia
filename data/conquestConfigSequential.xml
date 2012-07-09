@@ -17,7 +17,12 @@
             		</map>
             	</node>
             </node>
-            <node name="environment">
+            <node name="experiment">
+          	<map>
+              <entry key="NumEpisodes" value="10"/>
+            </map>
+          </node>
+          <node name="environment">
               <map>
                 <entry key="NumEpisodes" value="1"/>
                 <entry key="TurnTracker" value="edu.cwru.sepia.environment.SequentialTurnTracker"/>
