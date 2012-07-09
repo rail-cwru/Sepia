@@ -20,12 +20,12 @@
 package edu.cwru.sepia.experiment;
 
 public enum ConfigurationValues {
-	MODEL_CONQUEST("model.Conquest", Boolean.class, false),
-	MODEL_MIDAS("model.Midas", Boolean.class, false),
-	MODEL_MANIFEST_DESTINY("model.ManifestDestiny", Boolean.class, false),
-	MODEL_TIME_LIMIT("model.TimeLimit", Integer.class, 1 << 16),
-	MODEL_REQUIRED_GOLD("model.RequiredGold", Integer.class, 0),
-	MODEL_REQUIRED_WOOD("model.RequiredWood", Integer.class, 0),
+	MODEL_CONQUEST("environment.model.Conquest", Boolean.class, false),
+	MODEL_MIDAS("environment.model.Midas", Boolean.class, false),
+	MODEL_MANIFEST_DESTINY("environment.model.ManifestDestiny", Boolean.class, false),
+	MODEL_TIME_LIMIT("environment.model.TimeLimit", Integer.class, 1 << 16),
+	MODEL_REQUIRED_GOLD("environment.model.RequiredGold", Integer.class, 0),
+	MODEL_REQUIRED_WOOD("environment.model.RequiredWood", Integer.class, 0),
 	ENVIRONMENT_EPISODES("environment.NumEpisodes", Integer.class, 1),
 	ENVIRONMENT_EPISODES_PER_SAVE("environment.EpisodesPerSave", Integer.class, 1),
 	ENVIRONMENT_SAVE_AGENTS("environment.SaveAgents", Boolean.class, false)

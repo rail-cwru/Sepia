@@ -13,6 +13,22 @@
             <map>
               <entry key="NumEpisodes" value="10"/>
             </map>
+            <node name="model">
+              <map>
+                <entry key="Conquest" value="true"/>
+                <entry key="Midas" value="false"/>
+                <entry key="ManifestDestiny" value="false"/>
+                <entry key="TimeLimit" value="65535"/>
+              </map>
+            </node>
+          </node>
+          <node name="environment.model">
+            <map>
+              <entry key="Conquest" value="true"/>
+              <entry key="Midas" value="false"/>
+              <entry key="ManifestDestiny" value="false"/>
+              <entry key="TimeLimit" value="65535"/>
+            </map>
           </node>
           <node name="model">
             <map>

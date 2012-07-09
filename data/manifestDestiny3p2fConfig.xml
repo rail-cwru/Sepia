@@ -21,8 +21,7 @@
               <map>
                 <entry key="NumEpisodes" value="1"/>
               </map>
-            </node>
-            <node name="model">
+              <node name="model">
               <map>
                 <entry key="Conquest" value="false"/>
                 <entry key="Midas" value="false"/>
@@ -32,6 +31,8 @@
                 <entry key="TimeLimit" value="65535"/>
               </map>
             </node>
+            </node>
+            
           </node>
         </node>
       </node>

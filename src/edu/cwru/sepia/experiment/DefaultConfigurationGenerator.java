@@ -39,7 +39,7 @@ public class DefaultConfigurationGenerator {
 		envPrefs.putInt("NumEpisodes",10);		
 	}
 	private static void configureModelPrefs(Preferences prefs) throws BackingStoreException {
-		Preferences modelPrefs = prefs.node("model");
+		Preferences modelPrefs = prefs.node("environment").node("model");
 		modelPrefs.clear();
 		modelPrefs.putBoolean("Conquest", true);
 		modelPrefs.putBoolean("Midas", false);
