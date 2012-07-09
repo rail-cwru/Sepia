@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.log;
+package edu.cwru.sepia.environment.model.history;
 
 import java.io.Serializable;
 
@@ -25,43 +25,36 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**
- * A read only class that represents the exhaustion of a resource node
+ * A read only class that represents the revealing of units at the start of the game
  * @author The Condor
  *
  */
-public class ResourceNodeExhaustionLog implements Serializable, DeepEquatable {
+public class RevealedResourceNodeLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
-	private int nodeid;
+	private int nodex;
+	private int nodey;
 	private ResourceNode.Type nodetype;
-	public ResourceNodeExhaustionLog(int exhaustednodeid, ResourceNode.Type resoucenodetype) {
-		nodeid=exhaustednodeid;
+	public RevealedResourceNodeLog(int resourcenodex, int resourcenodey, ResourceNode.Type resoucenodetype) {
+		this.nodex=resourcenodex;
+		this.nodey=resourcenodey;
 		this.nodetype = resoucenodetype;
 	}
-	public int getExhaustedNodeID() {
-		return nodeid;
+	public int getResourceNodeXPosition() {
+		return nodex;
+	}
+	public int getResourceNodeYPosition() {
+		return nodey;
 	}
 	public ResourceNode.Type getResourceNodeType() {
 		return nodetype;
 	}
-	@Override public boolean equals(Object other) {
+	@Override
+	public boolean deepEquals(Object other) {
+		if (this == other)
+			return true;
 		if (other == null || !this.getClass().equals(other.getClass()))
 			return false;
-		ResourceNodeExhaustionLog o = (ResourceNodeExhaustionLog)other;
-		if (nodeid != o.nodeid)
-			return false;
-		if (nodetype != o.nodetype)
-			return false;
-		return true;
-	}
-	@Override public int hashCode() {
-		int product = 1;
-		int sum = 0;
-		int prime = 31;
-		sum += (product = product*prime)*nodeid;
-		sum += (product = product*prime)*nodetype.ordinal();
-		return sum;
-	}
-	@Override public boolean deepEquals(Object other) {
-		return equals(other);
+		RevealedResourceNodeLog o = (RevealedResourceNodeLog)other;
+		return nodex==o.nodex && nodey==o.nodey && nodetype==o.nodetype;
 	}
 }

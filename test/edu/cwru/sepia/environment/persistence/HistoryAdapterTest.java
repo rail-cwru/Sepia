@@ -35,7 +35,7 @@ import javax.xml.bind.JAXBException;
 import org.json.JSONException;
 import org.junit.Test;
 
-import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.PlayerState;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;

@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.environment.model.state.History.HistoryView;
+import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 
 

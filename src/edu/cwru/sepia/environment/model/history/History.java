@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment.model.state;
+package edu.cwru.sepia.environment.model.history;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,14 +27,10 @@ import java.util.Map;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionResult;
 import edu.cwru.sepia.agent.Agent;
-import edu.cwru.sepia.log.BirthLog;
-import edu.cwru.sepia.log.DamageLog;
-import edu.cwru.sepia.log.DeathLog;
-import edu.cwru.sepia.log.ResourceDropoffLog;
-import edu.cwru.sepia.log.ResourceNodeExhaustionLog;
-import edu.cwru.sepia.log.ResourcePickupLog;
-import edu.cwru.sepia.log.RevealedResourceNodeLog;
-import edu.cwru.sepia.log.UpgradeLog;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Unit;
+import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 

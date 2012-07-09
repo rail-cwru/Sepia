@@ -41,7 +41,7 @@ import edu.cwru.sepia.action.LocatedProductionAction;
 import edu.cwru.sepia.action.ProductionAction;
 import edu.cwru.sepia.action.TargetedAction;
 import edu.cwru.sepia.environment.TurnTracker;
-import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;

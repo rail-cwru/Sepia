@@ -34,15 +34,15 @@ import java.util.Random;
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
-import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.history.BirthLog;
+import edu.cwru.sepia.environment.model.history.DeathLog;
+import edu.cwru.sepia.environment.model.history.History;
+import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
-import edu.cwru.sepia.environment.model.state.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
-import edu.cwru.sepia.log.BirthLog;
-import edu.cwru.sepia.log.DeathLog;
 import edu.cwru.sepia.util.DistanceMetrics;
 
 /**

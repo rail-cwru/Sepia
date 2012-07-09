@@ -20,9 +20,9 @@
 package edu.cwru.sepia.environment.state.persistence;
 
 import edu.cwru.sepia.action.ActionResult;
+import edu.cwru.sepia.environment.model.history.ActionResultLogger;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlActionResult;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlActionResultLogger;
-import edu.cwru.sepia.log.ActionResultLogger;
 
 public class ActionResultAdapter {
 	public static XmlActionResult toXml(ActionResult actionResult) {

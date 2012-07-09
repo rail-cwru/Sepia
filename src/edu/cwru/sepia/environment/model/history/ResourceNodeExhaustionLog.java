@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.log;
+package edu.cwru.sepia.environment.model.history;
 
 import java.io.Serializable;
 
@@ -25,36 +25,43 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**
- * A read only class that represents the revealing of units at the start of the game
+ * A read only class that represents the exhaustion of a resource node
  * @author The Condor
  *
  */
-public class RevealedResourceNodeLog implements Serializable, DeepEquatable {
+public class ResourceNodeExhaustionLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
-	private int nodex;
-	private int nodey;
+	private int nodeid;
 	private ResourceNode.Type nodetype;
-	public RevealedResourceNodeLog(int resourcenodex, int resourcenodey, ResourceNode.Type resoucenodetype) {
-		this.nodex=resourcenodex;
-		this.nodey=resourcenodey;
+	public ResourceNodeExhaustionLog(int exhaustednodeid, ResourceNode.Type resoucenodetype) {
+		nodeid=exhaustednodeid;
 		this.nodetype = resoucenodetype;
 	}
-	public int getResourceNodeXPosition() {
-		return nodex;
-	}
-	public int getResourceNodeYPosition() {
-		return nodey;
+	public int getExhaustedNodeID() {
+		return nodeid;
 	}
 	public ResourceNode.Type getResourceNodeType() {
 		return nodetype;
 	}
-	@Override
-	public boolean deepEquals(Object other) {
-		if (this == other)
-			return true;
+	@Override public boolean equals(Object other) {
 		if (other == null || !this.getClass().equals(other.getClass()))
 			return false;
-		RevealedResourceNodeLog o = (RevealedResourceNodeLog)other;
-		return nodex==o.nodex && nodey==o.nodey && nodetype==o.nodetype;
+		ResourceNodeExhaustionLog o = (ResourceNodeExhaustionLog)other;
+		if (nodeid != o.nodeid)
+			return false;
+		if (nodetype != o.nodetype)
+			return false;
+		return true;
+	}
+	@Override public int hashCode() {
+		int product = 1;
+		int sum = 0;
+		int prime = 31;
+		sum += (product = product*prime)*nodeid;
+		sum += (product = product*prime)*nodetype.ordinal();
+		return sum;
+	}
+	@Override public boolean deepEquals(Object other) {
+		return equals(other);
 	}
 }

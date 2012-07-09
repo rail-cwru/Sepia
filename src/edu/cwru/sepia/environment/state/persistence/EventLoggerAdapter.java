@@ -19,6 +19,15 @@
  */
 package edu.cwru.sepia.environment.state.persistence;
 
+import edu.cwru.sepia.environment.model.history.BirthLog;
+import edu.cwru.sepia.environment.model.history.DamageLog;
+import edu.cwru.sepia.environment.model.history.DeathLog;
+import edu.cwru.sepia.environment.model.history.EventLogger;
+import edu.cwru.sepia.environment.model.history.ResourceDropoffLog;
+import edu.cwru.sepia.environment.model.history.ResourceNodeExhaustionLog;
+import edu.cwru.sepia.environment.model.history.ResourcePickupLog;
+import edu.cwru.sepia.environment.model.history.RevealedResourceNodeLog;
+import edu.cwru.sepia.environment.model.history.UpgradeLog;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlBirthLog;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlBirthLogList;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlDamageLog;
@@ -35,15 +44,6 @@ import edu.cwru.sepia.environment.state.persistence.generated.XmlResourcePickupL
 import edu.cwru.sepia.environment.state.persistence.generated.XmlRevealedResourceNodeLog;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeLog;
 import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeLogList;
-import edu.cwru.sepia.log.BirthLog;
-import edu.cwru.sepia.log.DamageLog;
-import edu.cwru.sepia.log.DeathLog;
-import edu.cwru.sepia.log.EventLogger;
-import edu.cwru.sepia.log.ResourceDropoffLog;
-import edu.cwru.sepia.log.ResourceNodeExhaustionLog;
-import edu.cwru.sepia.log.ResourcePickupLog;
-import edu.cwru.sepia.log.RevealedResourceNodeLog;
-import edu.cwru.sepia.log.UpgradeLog;
 
 public class EventLoggerAdapter {
 	public static XmlEventLogger toXml(EventLogger eventLogger) {

@@ -17,49 +17,43 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.log;
+package edu.cwru.sepia.environment.model.history;
 
 import java.io.Serializable;
 
-import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**
- * A read only class documenting an event 
+ * A read only class documenting an historic event wherein resources are dropped off (deposited)
  * @author The Condor
  *
  */
-public class ResourcePickupLog implements Serializable, DeepEquatable {
+public class ResourceDropoffLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
-	private int pickuper;
+	private int pickuperid;
 	private ResourceType resource;
 	private int amount;
-	private ResourceNode.Type nodetype;
-	private int nodeid;
+	private int depotid;
 	private int controller;
-	public ResourcePickupLog(int gathererid, int controller, ResourceType resource, int amountpickedup, int nodeid, ResourceNode.Type nodetype) {
-		pickuper = gathererid;
+	public ResourceDropoffLog(int gathererid, int controller, int amountpickedup, ResourceType resource, int depotid) {
+		pickuperid = gathererid;
 		this.resource = resource;
 		amount = amountpickedup;
-		this.nodetype = nodetype;
-		this.nodeid = nodeid;
+		this.depotid = depotid;
 		this.controller = controller;
 	}
 	public ResourceType getResourceType() {
 		return resource;
 	}
 	public int getGathererID() {
-		return pickuper;
+		return pickuperid;
 	}
-	public int getAmountPickedUp() {
+	public int getAmountDroppedOff() {
 		return amount;
 	}
-	public ResourceNode.Type getNodeType() {
-		return nodetype;
-	}
-	public int getNodeID() {
-		return nodeid;
+	public int getDepotID() {
+		return depotid;
 	}
 	public int getController() {
 		return controller;
@@ -67,16 +61,14 @@ public class ResourcePickupLog implements Serializable, DeepEquatable {
 	@Override public boolean equals(Object other) {
 		if (other == null || !this.getClass().equals(other.getClass()))
 			return false;
-		ResourcePickupLog o = (ResourcePickupLog)other;
+		ResourceDropoffLog o = (ResourceDropoffLog)other;
 		if (resource != o.resource)
 			return false;
-		if (pickuper != o.pickuper)
+		if (pickuperid != o.pickuperid)
 			return false;
 		if (amount != o.amount)
 			return false;
-		if (nodetype != o.nodetype)
-			return false;
-		if (nodeid != o.nodeid)
+		if (depotid != o.depotid)
 			return false;
 		if (controller != o.controller)
 			return false;
@@ -87,10 +79,9 @@ public class ResourcePickupLog implements Serializable, DeepEquatable {
 		int sum = 0;
 		int prime = 31;
 		sum += (product = product*prime)*resource.ordinal();
-		sum += (product = product*prime)*pickuper;
+		sum += (product = product*prime)*pickuperid;
 		sum += (product = product*prime)*amount;
-		sum += (product = product*prime)*nodetype.ordinal();
-		sum += (product = product*prime)*nodeid;
+		sum += (product = product*prime)*depotid;
 		sum += (product = product*prime)*controller;
 		return sum;
 	}

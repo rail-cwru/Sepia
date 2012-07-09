@@ -26,7 +26,7 @@ import java.util.Map;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.visual.VisualLog;
-import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.experiment.Configuration;
 /**

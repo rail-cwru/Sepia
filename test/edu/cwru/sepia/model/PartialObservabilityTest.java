@@ -31,6 +31,7 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.Test;
 
+import edu.cwru.sepia.environment.model.history.RevealedResourceNodeLog;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
@@ -39,7 +40,6 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
-import edu.cwru.sepia.log.RevealedResourceNodeLog;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.TypeLoader;

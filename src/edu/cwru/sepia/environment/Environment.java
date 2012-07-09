@@ -32,7 +32,7 @@ import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.agent.ThreadIntermediary;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
 import edu.cwru.sepia.environment.model.Model;
-import edu.cwru.sepia.environment.model.state.History;
+import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 
 /**

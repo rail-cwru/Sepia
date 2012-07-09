@@ -17,44 +17,44 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.log;
+package edu.cwru.sepia.environment.model.history;
 
 import java.io.Serializable;
 
 import edu.cwru.sepia.util.DeepEquatable;
 
 /**
- * Logs the upgrade of something
- *
+ * A read only class that represents the birth of something
+ * 
  */
-public class UpgradeLog implements Serializable, DeepEquatable {
+public class BirthLog implements Serializable, DeepEquatable {
 	private static final long	serialVersionUID	= 1L;
-	private int upgradetemplateid;
-	private int producingunitid;
+	private int unitid;
 	private int player;
-	public UpgradeLog(int upgradetemplateid, int producingunitid, int player) {
-		this.upgradetemplateid = upgradetemplateid;
-		this.producingunitid = producingunitid;
+	private int parent;
+	public BirthLog(int newunitid, int producerid, int player) {
+		unitid=newunitid;
 		this.player = player;
+		this.parent = producerid;
 	}
-	public int getUpgradeTemplateID() {
-		return upgradetemplateid;
+	public int getNewUnitID() {
+		return unitid;
 	}
 	public int getController() {
 		return player;
 	}
-	public int getProducingUnitID() {
-		return producingunitid;
+	public int getParentID() {
+		return parent;
 	}
 	@Override public boolean equals(Object other) {
 		if (other == null || !this.getClass().equals(other.getClass()))
 			return false;
-		UpgradeLog o = (UpgradeLog)other;
-		if (upgradetemplateid != o.upgradetemplateid)
-			return false;
-		if (producingunitid != o.producingunitid)
+		BirthLog o = (BirthLog)other;
+		if (unitid != o.unitid)
 			return false;
 		if (player != o.player)
+			return false;
+		if (parent != o.parent)
 			return false;
 		return true;
 	}
@@ -62,9 +62,9 @@ public class UpgradeLog implements Serializable, DeepEquatable {
 		int product = 1;
 		int sum = 0;
 		int prime = 31;
-		sum += (product = product*prime)*upgradetemplateid;
-		sum += (product = product*prime)*producingunitid;
+		sum += (product = product*prime)*unitid;
 		sum += (product = product*prime)*player;
+		sum += (product = product*prime)*parent;
 		return sum;
 	}
 	@Override public boolean deepEquals(Object other) {

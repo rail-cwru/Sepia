@@ -17,11 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment.model.state;
+package edu.cwru.sepia.environment.model.history;
 
-import edu.cwru.sepia.log.ActionLogger;
-import edu.cwru.sepia.log.ActionResultLogger;
-import edu.cwru.sepia.log.EventLogger;
 import edu.cwru.sepia.util.DeepEquatable;
 /**
  * The history specific to a player.
