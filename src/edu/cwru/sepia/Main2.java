@@ -39,9 +39,9 @@ import edu.cwru.sepia.experiment.Runner;
 import edu.cwru.sepia.util.config.xml.XmlConfiguration;
 import edu.cwru.sepia.util.config.xml.XmlKeyValuePair;
 import edu.cwru.sepia.util.config.xml.XmlModelParameters;
-import edu.cwru.sepia.util.config.xml.XmlPlayer;
+import edu.cwru.sepia.util.config.xml.XmlAgentParameters;
 import edu.cwru.sepia.util.config.xml.XmlRunner;
-import edu.cwru.sepia.util.config.xml.XmlPlayer.AgentClass;
+import edu.cwru.sepia.util.config.xml.XmlAgentParameters.AgentClass;
 
 /**
  * An entry point into Sepia that takes an XML configuration file as defined in data/schema/config.xsd.
@@ -109,12 +109,12 @@ public final class Main2 {
 	}
 	
 	private static Agent[] getAgents(XmlConfiguration xmlConfig) {
-		List<XmlPlayer> players = xmlConfig.getPlayer();
+		List<XmlAgentParameters> players = xmlConfig.getPlayer();
 		Agent[] agents = new Agent[players.size()];
 		
 		for(int i = 0; i < players.size(); i++)
 		{
-			XmlPlayer player = players.get(i);
+			XmlAgentParameters player = players.get(i);
 			AgentClass agentClass = player.getAgentClass();
 			try
 			{

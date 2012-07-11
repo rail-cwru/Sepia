@@ -8,14 +8,14 @@
 		<xs:sequence>
 			<xs:element name="Map" type="xs:string"/>
 			<xs:sequence minOccurs="1" maxOccurs="unbounded">
-				<xs:element name="Player" type="Player"/>
+				<xs:element name="Player" type="AgentParameters"/>
 			</xs:sequence>
 			<xs:element name="ModelParameters" type="ModelParameters"/>
 			<xs:element name="Runner" type="Runner"/>
 		</xs:sequence>
 	</xs:complexType>
 </xs:element>
-<xs:complexType name="Player">
+<xs:complexType name="AgentParameters">
 	<xs:sequence>
 		<xs:element name="AgentClass">
 			<xs:complexType>
