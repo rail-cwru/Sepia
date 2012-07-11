@@ -23,10 +23,9 @@ import java.util.Map.Entry;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.environment.model.history.ActionLogger;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlActionEntry;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlActionList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlActionLogger;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlActionEntry;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlActionList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlActionLogger;
 
 public class ActionLoggerAdapter {
 	public static XmlActionLogger toXml(ActionLogger actionLogger) {

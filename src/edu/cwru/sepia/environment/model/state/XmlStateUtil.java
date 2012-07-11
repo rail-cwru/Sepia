@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlPlayer;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlState;
 
 public final class XmlStateUtil {
 	

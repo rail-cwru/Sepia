@@ -19,8 +19,8 @@
  */
 package edu.cwru.sepia.environment.state.persistence;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceNode;
 
 public class ResourceNodeAdapter {
 

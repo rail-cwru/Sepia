@@ -44,13 +44,6 @@ import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.state.persistence.HistoryAdapter;
 import edu.cwru.sepia.environment.state.persistence.PlayerAdapter;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlHistory;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceQuantity;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnit;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnitTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeTemplate;
 
 public class HistoryAdapterTest {
 	

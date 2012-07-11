@@ -29,9 +29,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 import edu.cwru.sepia.agent.Agent;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlState;
 import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.XmlStateCreator;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
 import edu.cwru.sepia.experiment.KeyValueConfigurationUtil;

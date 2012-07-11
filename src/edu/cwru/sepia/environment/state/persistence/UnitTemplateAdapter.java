@@ -19,9 +19,9 @@
  */
 package edu.cwru.sepia.environment.state.persistence;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnitTemplate;
 
 public class UnitTemplateAdapter {
 

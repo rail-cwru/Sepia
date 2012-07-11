@@ -19,8 +19,8 @@
  */
 package edu.cwru.sepia.environment.model.state;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlState;
 import edu.cwru.sepia.environment.state.persistence.StateAdapter;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlState;
 
 public class XmlStateCreator implements StateCreator {
 	private static final long serialVersionUID = 1L;

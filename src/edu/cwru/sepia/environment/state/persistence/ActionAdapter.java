@@ -25,12 +25,12 @@ import edu.cwru.sepia.action.LocatedAction;
 import edu.cwru.sepia.action.LocatedProductionAction;
 import edu.cwru.sepia.action.ProductionAction;
 import edu.cwru.sepia.action.TargetedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDirectedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlLocatedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlLocatedProductionAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlProductionAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlTargetedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDirectedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlLocatedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlLocatedProductionAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlProductionAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTargetedAction;
 
 /**
  * An adapter between Action and it's subclasses and XmlAction and it's subclasses.

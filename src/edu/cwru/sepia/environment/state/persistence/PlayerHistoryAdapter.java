@@ -21,8 +21,7 @@ package edu.cwru.sepia.environment.state.persistence;
 
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.history.PlayerHistory;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlHistory;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayerHistory;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlPlayerHistory;
 
 public class PlayerHistoryAdapter {
 	public static XmlPlayerHistory toXml(PlayerHistory history) {

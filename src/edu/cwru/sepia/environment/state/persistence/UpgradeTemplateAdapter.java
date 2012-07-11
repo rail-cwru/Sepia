@@ -19,9 +19,9 @@
  */
 package edu.cwru.sepia.environment.state.persistence;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeTemplate;
 
 public class UpgradeTemplateAdapter {
 

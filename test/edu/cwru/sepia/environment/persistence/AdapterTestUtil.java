@@ -40,24 +40,24 @@ import edu.cwru.sepia.environment.model.history.ActionResultLogger;
 import edu.cwru.sepia.environment.model.history.EventLogger;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.history.PlayerHistory;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDirectedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlLocatedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlLocatedProductionAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlPlayer;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlProductionAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceQuantity;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTargetedAction;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUnit;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.state.persistence.ActionAdapter;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDirectedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlLocatedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlLocatedProductionAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlProductionAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceQuantity;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlTargetedAction;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnit;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnitTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -109,9 +109,7 @@ public class AdapterTestUtil {
 	{
 		//pick a random type or null, then pick some random arguments
 		int ntypes = ActionType.values().length;
-		int typeind=r.nextInt(ntypes+1);
-		if (typeind==ntypes)
-			return null;
+		int typeind=r.nextInt(ntypes);
 		
 		ActionType type = ActionType.values()[typeind];
 		switch (type)

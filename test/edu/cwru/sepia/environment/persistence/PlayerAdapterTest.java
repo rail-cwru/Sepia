@@ -29,6 +29,12 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.Test;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlPlayer;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceQuantity;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUnit;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.PlayerState;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
@@ -36,12 +42,6 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.state.persistence.PlayerAdapter;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlPlayer;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceQuantity;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnit;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUnitTemplate;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 
 public class PlayerAdapterTest {

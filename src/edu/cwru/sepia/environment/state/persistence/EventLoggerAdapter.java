@@ -28,22 +28,22 @@ import edu.cwru.sepia.environment.model.history.ResourceNodeExhaustionLog;
 import edu.cwru.sepia.environment.model.history.ResourcePickupLog;
 import edu.cwru.sepia.environment.model.history.RevealedResourceNodeLog;
 import edu.cwru.sepia.environment.model.history.UpgradeLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlBirthLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlBirthLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDamageLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDamageLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDeathLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlDeathLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlEventLogger;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceDropoffLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceDropoffLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceNodeExhaustionLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourceNodeExhaustionLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourcePickupLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlResourcePickupLogList;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlRevealedResourceNodeLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeLog;
-import edu.cwru.sepia.environment.state.persistence.generated.XmlUpgradeLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlBirthLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlBirthLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDamageLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDamageLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDeathLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlDeathLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlEventLogger;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceDropoffLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceDropoffLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceNodeExhaustionLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceNodeExhaustionLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourcePickupLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourcePickupLogList;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlRevealedResourceNodeLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeLog;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeLogList;
 
 public class EventLoggerAdapter {
 	public static XmlEventLogger toXml(EventLogger eventLogger) {
