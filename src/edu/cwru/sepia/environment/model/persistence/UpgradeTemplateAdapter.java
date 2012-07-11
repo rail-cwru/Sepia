@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment.state.persistence;
+package edu.cwru.sepia.environment.model.persistence;
 
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;

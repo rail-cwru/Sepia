@@ -40,6 +40,7 @@ import edu.cwru.sepia.environment.model.history.ActionResultLogger;
 import edu.cwru.sepia.environment.model.history.EventLogger;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.history.PlayerHistory;
+import edu.cwru.sepia.environment.model.persistence.ActionAdapter;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlAction;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlDirectedAction;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlLocatedAction;
@@ -57,7 +58,6 @@ import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
-import edu.cwru.sepia.environment.state.persistence.ActionAdapter;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 

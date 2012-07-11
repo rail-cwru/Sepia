@@ -31,11 +31,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import edu.cwru.sepia.environment.model.history.History;
+import edu.cwru.sepia.environment.model.persistence.HistoryAdapter;
+import edu.cwru.sepia.environment.model.persistence.StateAdapter;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlHistory;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlState;
 import edu.cwru.sepia.environment.model.state.State;
-import edu.cwru.sepia.environment.state.persistence.HistoryAdapter;
-import edu.cwru.sepia.environment.state.persistence.StateAdapter;
 
 
 /**

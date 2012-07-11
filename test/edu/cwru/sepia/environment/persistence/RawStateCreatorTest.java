@@ -28,6 +28,7 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.Test;
 
+import edu.cwru.sepia.environment.model.persistence.PlayerAdapter;
 import edu.cwru.sepia.environment.model.state.PlayerState;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
@@ -35,7 +36,6 @@ import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
-import edu.cwru.sepia.environment.state.persistence.PlayerAdapter;
 public class RawStateCreatorTest {
 	
 	/**

@@ -17,21 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.cwru.sepia.environment.state.persistence;
+package edu.cwru.sepia.environment.model.persistence;
 
-import edu.cwru.sepia.action.ActionResult;
-import edu.cwru.sepia.environment.model.history.ActionResultLogger;
-import edu.cwru.sepia.environment.model.persistence.generated.XmlActionResult;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceNode;
+import edu.cwru.sepia.environment.model.state.ResourceNode;
 
-public class ActionResultAdapter {
-	public static XmlActionResult toXml(ActionResult actionResult) {
-		XmlActionResult toReturn = new XmlActionResult();
-		toReturn.setAction(ActionAdapter.toXml(actionResult.getAction()));
-		toReturn.setFeedback(actionResult.getFeedback());
-		return toReturn;
+public class ResourceNodeAdapter {
+
+	public ResourceNode fromXml(XmlResourceNode xml) {
+		return new ResourceNode(xml.getType(), xml.getXPosition(), xml.getYPosition(), xml.getAmountRemaining(), xml.getID());
 	}
 	
-	public static ActionResult fromXml(XmlActionResult xml) {
-		return new ActionResult(ActionAdapter.fromXml(xml.getAction()), xml.getFeedback()); 
+	public XmlResourceNode toXml(ResourceNode node) {
+		XmlResourceNode xml = new XmlResourceNode();
+		xml.setType(node.getType());
+		xml.setAmountRemaining(node.getAmountRemaining());
+		xml.setXPosition(node.getxPosition());
+		xml.setYPosition(node.getyPosition());
+		xml.setID(node.ID);
+		return xml;
 	}
 }
