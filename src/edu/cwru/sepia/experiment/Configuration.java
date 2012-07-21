@@ -70,7 +70,15 @@ public class Configuration {
 	 * @return
 	 */
 	public Boolean getBoolean(String key) {
-		return (Boolean)settings.get(key);
+		Object o = settings.get(key);
+		if(o instanceof Boolean)
+			return (Boolean)o;
+		else if(o.toString().equalsIgnoreCase("TRUE"))
+			return Boolean.TRUE;
+		else if(o.toString().equalsIgnoreCase("FALSE"))
+			return Boolean.FALSE;
+		else
+			return null;
 	}
 	
 	/**
@@ -80,7 +88,7 @@ public class Configuration {
 	 * @return
 	 */
 	public Boolean getBoolean(String key, boolean fallback) {
-		Boolean property = (Boolean)settings.get(key);
+		Boolean property = getBoolean(key);
 		return property != null  ?  property : fallback;
 	}
 	
@@ -90,7 +98,11 @@ public class Configuration {
 	 * @return
 	 */
 	public Integer getInt(String key) {
-		return (Integer)settings.get(key);
+		Object o = settings.get(key);
+		if(o instanceof Integer)
+			return (Integer)o;
+		else
+			return Integer.parseInt(o.toString());
 	}
 	/**
 	 * Get an integer property
@@ -99,12 +111,20 @@ public class Configuration {
 	 * @return
 	 */
 	public Integer getInt(String key, int fallback) {
-		Integer property = (Integer)settings.get(key);
+		Integer property = null;
+		try
+		{
+			property = getInt(key);
+		} catch(NumberFormatException ex) {}
 		return property != null  ?  property : fallback;
 	}
 	
 	public Double getDouble(String key) {
-		return (Double)settings.get(key);
+		Object o = settings.get(key);
+		if(o instanceof Double)
+			return (Double)o;
+		else
+			return Double.parseDouble(o.toString());
 	}
 	/**
 	 * 
@@ -113,8 +133,12 @@ public class Configuration {
 	 * @return
 	 */
 	public Double getDouble(String key, Double fallback) {
-		Double property = (Double)settings.get(key);
-		return property != null ? property: fallback;
+		Double property = null;
+		try
+		{
+			property = getDouble(key);
+		} catch(NumberFormatException ex) {}
+		return property != null  ?  property : fallback;
 	}
 	public void put(String key, String value) {
 		settings.put(key, value);
