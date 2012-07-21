@@ -175,6 +175,10 @@ public final class Main2 {
 		Class<?> runnerClass = Class.forName(runner.getRunnerClass());
 		edu.cwru.sepia.experiment.Configuration config = new edu.cwru.sepia.experiment.Configuration();
 		getModelParameters(xmlConfig, config);
+		for(XmlKeyValuePair parameter : runner.getParameter())
+		{
+			config.put(parameter.getName(), parameter.getValue());
+		}
 		return (edu.cwru.sepia.experiment.Runner)
 				runnerClass
 				.getConstructor(edu.cwru.sepia.experiment.Configuration.class, StateCreator.class, Agent[].class)
