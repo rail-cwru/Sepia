@@ -71,6 +71,8 @@ public class Configuration {
 	 */
 	public Boolean getBoolean(String key) {
 		Object o = settings.get(key);
+		if (o == null)
+			return null;
 		if(o instanceof Boolean)
 			return (Boolean)o;
 		else if(o.toString().equalsIgnoreCase("TRUE"))
@@ -99,6 +101,8 @@ public class Configuration {
 	 */
 	public Integer getInt(String key) {
 		Object o = settings.get(key);
+		if (o == null)
+			return null;
 		if(o instanceof Integer)
 			return (Integer)o;
 		else
@@ -121,6 +125,8 @@ public class Configuration {
 	
 	public Double getDouble(String key) {
 		Object o = settings.get(key);
+		if (o == null)
+			return null;
 		if(o instanceof Double)
 			return (Double)o;
 		else

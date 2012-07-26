@@ -63,7 +63,7 @@ public class ExampleRunner extends Runner {
 	public void run() {
 		seed = 6;
 		numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
-		numEpisodes = configuration.getInt("environment.NumEpisodes", 12);
+		numEpisodes = configuration.getInt("experiment.NumEpisodes", 12);
 		episodesPerReplaySave = configuration.getInt("experiment.episodesperreplaysave",4);
 		episodesPerAgentSave = configuration.getInt("experiment.episodesperagentsave",4);
 		baseReplayDirectory = new File(configuration.getString("experiment.save.replaydirectory", "saves/replays"));
