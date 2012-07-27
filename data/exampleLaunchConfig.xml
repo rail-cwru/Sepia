@@ -53,12 +53,13 @@
 	</ModelParameters>
 	<Runner>
 		<RunnerClass>edu.cwru.sepia.experiment.ExampleRunner</RunnerClass>
-		<Parameter name="experiment.NumEpisodes" value="10"/>
-		<Parameter name="experiment.EpisodesPerSave" value="2"/>
-		<Parameter name="experiment.SaveAgents" value="false"/>
-		<Parameter name="experiment.episodesperagentsave" value="4" />
-		<Parameter name="experiment.episodesperreplaysave" value="4" />
-		<Parameter name="experiment.save.replaydirectory" value="saves/test1" />
-		<Parameter name="experiment.save.agentdirectory" value="saves/test1" />
+		<Parameter Name="experiment.NumEpisodes" Value="5"/>
+		<Parameter Name="experiment.EpisodesPerSave" Value="2"/>
+		<Parameter Name="experiment.SaveAgents" Value="false"/>
+		<Parameter Name="experiment.episodesperagentsave" Value="4" />
+		<Parameter Name="experiment.episodesperreplaysave" Value="4" />
+		<Parameter Name="experiment.save.replaydirectory" Value="saves/test1" />
+		<Parameter Name="experiment.save.agentdirectory" Value="saves/test1" />
+		<Parameter Name="experiment.temp.thing" Value="saves/test1" />
 	</Runner>
 </Configuration>
