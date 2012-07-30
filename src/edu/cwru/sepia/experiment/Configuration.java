@@ -247,10 +247,6 @@ public class Configuration {
 	 * @param levelName the name of the current level of nodes, hierarchy-wise
 	 */
 	private static void addToPreferenceFormatConfiguration(Node node, Configuration configuration, final String levelName) {
-		System.out.println("Node has local name " +node.getLocalName());
-		System.out.println("Node has node name " +node.getNodeName());
-		System.out.println("Node has node type " +node.getNodeType());
-		System.out.println("Node has node value " +node.getNodeValue());
 		
 		String nodeName = node.getNodeName();
 		if ("node".equals(nodeName)) {
@@ -271,14 +267,6 @@ public class Configuration {
 					throw new IllegalArgumentException("All children of map must be entry");
 				}
 				else {
-//					System.out.println("Node has attributes ");
-//					for (int i = 0; i<child.getAttributes().getLength(); i++)
-//					{	System.out.println("\t"+child.getAttributes().item(i).getLocalName());
-//						System.out.println("\t"+child.getAttributes().item(i).getNodeName());
-//						System.out.println("\t"+child.getAttributes().item(i).getNodeType());
-//						System.out.println("\t"+child.getAttributes().item(i).getNodeValue());
-//						System.out.println("\t"+child.getAttributes().item(i).getTextContent());
-//					}
 					Node key = child.getAttributes().getNamedItem("key");
 					Node value = child.getAttributes().getNamedItem("value");
 					if (key == null || value == null) {
@@ -296,7 +284,6 @@ public class Configuration {
 			}
 		}
 		else {
-			System.out.println(node.getTextContent());
 			throw new RuntimeException("All non-root nodes must be map or node (or entry, if the parent is map), not "+nodeName);
 		}
 	}
