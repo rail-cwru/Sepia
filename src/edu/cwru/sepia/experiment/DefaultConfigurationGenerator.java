@@ -19,37 +19,26 @@
  */
 package edu.cwru.sepia.experiment;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
+/**
+ * A utility class with a factory method to make a default configuration.
+ * <br>It is highly recommended that a configuration be custom-made for the particular instance of {@link Runner}.
+ * 
+ *
+ */
 public class DefaultConfigurationGenerator {
-	public static void main(String[] args) throws FileNotFoundException, IOException, BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
-		prefs.clear();
-		configureExpPrefs(prefs);
-		configureEnvPrefs(prefs);
-		configureModelPrefs(prefs);
-		prefs.exportSubtree(System.out);
-		prefs.exportSubtree(new FileOutputStream("data/defaultConfig.xml"));
-	}
-	private static void configureExpPrefs(Preferences prefs) throws BackingStoreException {
-		Preferences expPrefs = prefs.node("experiment");
-		expPrefs.clear();
-		expPrefs.putInt("NumEpisodes",10);		
-	}
-	private static void configureEnvPrefs(Preferences prefs) throws BackingStoreException {
-		Preferences envPrefs = prefs.node("environment");
-		envPrefs.clear();
-	}
-	private static void configureModelPrefs(Preferences prefs) throws BackingStoreException {
-		Preferences modelPrefs = prefs.node("environment").node("model");
-		modelPrefs.clear();
-		modelPrefs.putBoolean("Conquest", true);
-		modelPrefs.putBoolean("Midas", false);
-		modelPrefs.putBoolean("ManifestDestiny", false);
-		modelPrefs.putInt("TimeLimit", 65535);
+	/**
+	 * Makes a default configuration (conquest with one episode with a large (2^16-1) time limit)
+	 * <br>It is highly recommended that a configuration be custom-made for the particular instance of {@link Runner}.
+	 * @return
+	 */
+	public static Configuration getDefaultConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.put("experiment.NumEpisodes", 1);
+		configuration.put("environment.model.Conquest", true);
+		configuration.put("environment.model.Midas", false);
+		configuration.put("environment.model.ManifestDestiny", false);
+		configuration.put("environment.model.TimeLimit", 65535);
+		return configuration;
 	}
 }

@@ -116,7 +116,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		Unit u2= ((UnitTemplate)s.getTemplate(player2, "Footman")).produceInstance(s);
 		s.addUnit(u1, 0, 1);
 		s.addUnit(u2, 1, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -149,7 +149,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		Unit u2= ((UnitTemplate)s.getTemplate(player2, "Footman")).produceInstance(s);
 		s.addUnit(u1, 0, 1);
 		s.addUnit(u2, 1, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -196,7 +196,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 1);
 		s.addUnit(u2, 1, 0);
 		s.addUnit(u3, 0, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -213,11 +213,13 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 			model.addActions(act3, player3);
 		}
 		model.executeStep();
+		peek(player1, model);
 		int lastturn = s.getTurnNumber()-1;
 		assertTrue("They should have failed, but did not",model.getHistory().getView(player1).getPrimitiveFeedback(player1, lastturn).size()==0);
 		assertTrue("They should have failed, but did not",model.getHistory().getView(player2).getPrimitiveFeedback(player2, lastturn).size()==0);
 		assertTrue("They should have failed, but did not",model.getHistory().getView(player3).getPrimitiveFeedback(player3, lastturn).size()==0);
 	}
+	
 	/**
 	 * Test the situation where one unit moves out of range as the other tries to attack it.
 	 * Expect both to succeed.
@@ -248,7 +250,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		u2.setHP(1);//cripple it so it dies in one shot
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 1);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveAttack(u1.ID, u2.ID));
@@ -307,7 +309,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 1);
 		s.addUnit(u2, 3, 3);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveAttack(u1.ID, u2.ID));
@@ -374,7 +376,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 0);
 //		s.addUnit(u3, 1, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -435,7 +437,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 0);
 		s.addUnit(u3, 1, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -496,7 +498,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 0);
 		s.addResource(r2);
 		s.addUnit(u3, 1, 1);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveMove(u1.ID, Direction.EAST));
@@ -557,7 +559,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		u3.setHP(1);//cripple it so it dies in one shot
 		s.addResource(r2);
 		s.addUnit(u3, 1, 1);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act3 = new HashMap<Integer,Action>();
 			act3.put(u3.ID, Action.createPrimitiveGather(u3.ID, Direction.NORTH));
@@ -642,7 +644,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		ResourceNode r2= new ResourceNode(rtype, 1, 0, ramount, s.nextTargetID());
 		s.addResource(r2);
 		
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveGather(u1.ID, Direction.EAST));
@@ -736,7 +738,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		ResourceNode r2= new ResourceNode(rtype, 1, 0, ramount, s.nextTargetID());
 		s.addResource(r2);
 		
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveGather(u1.ID, Direction.EAST));
@@ -863,7 +865,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 				}
 			}
 		
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		Map<Integer,Action> acts = new HashMap<Integer,Action>();
 		for (Unit th : ths)
 		{
@@ -1101,7 +1103,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 				}
 			}
 		
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		Map<Integer,Action> acts = new HashMap<Integer,Action>();
 		itr=0;
 		//make the actions
@@ -1196,7 +1198,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 1);
 		s.addUnit(u3, 1, 0);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveAttack(u1.ID, u3.ID));
@@ -1246,7 +1248,7 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		u2.setHP(1);//cripple it so it dies in one shot
 		s.addUnit(u1, 0, 0);
 		s.addUnit(u2, 1, 1);
-		Model model= new LessSimpleModel(s, seed, null);
+		Model model= new LessSimpleModel(s, seed, null, null);
 		{
 			Map<Integer,Action> act1 = new HashMap<Integer,Action>();
 			act1.put(u1.ID, Action.createPrimitiveAttack(u1.ID, u2.ID));
@@ -1271,5 +1273,12 @@ public void oneMoves(int player1, int player2) throws FileNotFoundException, JSO
 		LESSTHANALLATTEMPT,
 		THESAMEASATTEMPT
 		
+	}
+	/**
+	 * 
+	 */
+	private void peek(int player, Model model) {
+		VisualAgent ag = new VisualAgent(player, false);
+		ag.middleStep(model.getState().getView(player), model.getHistory().getView(player));
 	}
 }

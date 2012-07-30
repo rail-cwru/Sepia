@@ -39,6 +39,7 @@ import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -101,7 +102,7 @@ public class SimplePlannerTest {
 		builder.addResource(t);
 		t = new ResourceNode(ResourceNode.Type.TREE, 10, 4, 100, state.nextTargetID());
 		builder.addResource(t);
-		model = new LessSimpleModel(state,5536,null);
+		model = new LessSimpleModel(state,5536,null, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 	}
 	

@@ -57,8 +57,7 @@ public class SimpleModelEpisodicRunner extends Runner {
 		episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
 		saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);
 		
-		SimpleModel model = new SimpleModel(stateCreator.createState(), seed, stateCreator);
-		model.setConfiguration(configuration);
+		SimpleModel model = new SimpleModel(stateCreator.createState(), seed, stateCreator, configuration);
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
 		env = new Environment(agents ,model, seed);

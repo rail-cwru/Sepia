@@ -47,6 +47,7 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.GameMap;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -115,7 +116,7 @@ public class ActionFeedbackTest {
 		tempfile = File.createTempFile("idontcare", ".map");
 		GameMap.storeState(tempfile.getPath(), state);
 		StateCreator restartthing = new LoadingStateCreator(tempfile.getPath());
-		model = new SimpleModel(state, 6,restartthing);
+		model = new SimpleModel(state, 6,restartthing, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 	}
 	@AfterClass

@@ -49,7 +49,6 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.GameMap;
@@ -62,6 +61,9 @@ import edu.cwru.sepia.util.GameMap;
 public class BestEffortModel implements Model {
 	private static final long serialVersionUID = -8289868580233478749L;
 	
+	
+	private final String NUM_ATTEMPTS = "environment.model.numattempts";
+	
 	private Random rand;
 	private History history;
 	private State state;
@@ -72,8 +74,9 @@ public class BestEffortModel implements Model {
 	private Configuration configuration;
 	private int numAttempts;
 	private TurnTracker turnTracker;
-	public BestEffortModel(State init, int seed, StateCreator restartTactic, int numAttempts) {
-		this.numAttempts = numAttempts;
+	public BestEffortModel(State init, int seed, StateCreator restartTactic, Configuration configuration) {
+		this.configuration = configuration;
+		this.numAttempts = configuration.getInt(NUM_ATTEMPTS, 2);
 		state = init;
 		history = new History();
 		queuedActions = new HashMap<Integer, HashMap<Integer, ActionQueue>>();
@@ -86,7 +89,6 @@ public class BestEffortModel implements Model {
 		
 		this.restartTactic = restartTactic;
 		verbose = false;
-		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	
 	@Override

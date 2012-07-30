@@ -9,11 +9,6 @@
         <map/>
         <node name="sepia">
           <map/>
-          <node name="experiment">
-          	<map>
-              <entry key="NumEpisodes" value="10"/>
-            </map>
-          </node>
           <node name="environment">
             <map/>
             <node name="model">
@@ -27,15 +22,20 @@
           </node>
           <node name="environment.model">
             <map>
-              <entry key="Conquest" value="true"/>
+              <entry key="Conquest" value="false"/>
               <entry key="Midas" value="false"/>
               <entry key="ManifestDestiny" value="false"/>
               <entry key="TimeLimit" value="65535"/>
             </map>
           </node>
+          <node name="experiment">
+            <map>
+              <entry key="NumEpisodes" value="10"/>
+            </map>
+          </node>
           <node name="model">
             <map>
-              <entry key="Conquest" value="true"/>
+              <entry key="Conquest" value="false"/>
               <entry key="Midas" value="false"/>
               <entry key="ManifestDestiny" value="false"/>
               <entry key="TimeLimit" value="65535"/>

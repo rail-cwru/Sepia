@@ -57,7 +57,7 @@ public class AttackAndDeathTest {
 	public static void loadTemplates() throws Exception {
 		State.StateBuilder builder = new State.StateBuilder();
 		state = builder.build();
-		templates = TypeLoader.loadFromFile("data/unit_templates",player,state);		
+		templates = TypeLoader.loadFromFile("data/nondurative_combat_templates",player,state);		
 		System.out.println("Sucessfully loaded templates");
 		
 		builder.setSize(15,15);
@@ -98,7 +98,7 @@ public class AttackAndDeathTest {
 			builder.addUnit(u,0,0);
 		}
 		planner = new SimplePlanner(state);
-		model = new LessSimpleModel(state, 5536,null);
+		model = new LessSimpleModel(state, 5536,null, null);
 		model.setVerbose(true);
 	}
 	

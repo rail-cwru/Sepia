@@ -43,7 +43,6 @@ import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.XmlStateCreator;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 
 /**
  * An entry point into Sepia that takes command line arguments.
@@ -252,9 +251,9 @@ public final class Main {
 		}
 		Configuration configuration;
 		if (configfile!=null)
-			configuration = PreferencesConfigurationLoader.loadConfiguration(configfile);
+			configuration = Configuration.loadPreferenceFormatConfiguration(configfile);
 		else
-			configuration = PreferencesConfigurationLoader.loadConfiguration();
+			throw new RuntimeException("whoops, forgot to go back and reimplement");//TODO: fix this
 		int numEpisodes = ConfigurationValues.ENVIRONMENT_EPISODES.getIntValue(configuration);
 		int episodesPerSave = ConfigurationValues.ENVIRONMENT_EPISODES_PER_SAVE.getIntValue(configuration);
 		boolean saveAgents = ConfigurationValues.ENVIRONMENT_SAVE_AGENTS.getBooleanValue(configuration);;
@@ -262,7 +261,7 @@ public final class Main {
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
 		int seed = 7;
-		LessSimpleModel model = new LessSimpleModel(initState, seed, stateCreator);
+		LessSimpleModel model = new LessSimpleModel(initState, seed, stateCreator, configuration);
 		Environment env = new Environment(agents.toArray(new Agent[0]),model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{

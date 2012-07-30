@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import edu.cwru.sepia.action.Action;
@@ -37,9 +36,7 @@ import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State.StateView;
-import edu.cwru.sepia.experiment.Configuration;
-import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
+
 /**
  * A visual agent
  * This serves two purposes: it allows a human to play the game, and, more importantly, 
@@ -173,18 +170,10 @@ public class VisualAgent extends Agent implements ActionListener {
     }
     
     private String getStateInfo(StateView state) {
-    	Configuration config = PreferencesConfigurationLoader.loadConfiguration();
-    	int goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
-		int woodRequired = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(config);
 		int currentGold = state.getResourceAmount(0, ResourceType.GOLD);
 		int currentWood = state.getResourceAmount(0, ResourceType.WOOD);
 		int currentFood = state.getSupplyAmount(playernum);
 		StringBuffer sb = new StringBuffer();
-		if(goldRequired>0 || woodRequired>0) {
-			sb.append("Goal: \n" + 
-					"  G: " + goldRequired + "\n" + 
-					"  W: " + woodRequired + "\n");
-		}
 		sb.append("Current Gold:\n" + 
 					"  " + currentGold + "\n" + 
 					"Current Wood:\n" + 

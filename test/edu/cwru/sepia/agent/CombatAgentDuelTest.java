@@ -35,6 +35,7 @@ import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.TypeLoader;
 
 
@@ -96,7 +97,7 @@ public class CombatAgentDuelTest {
 		}
 		
 		planner = new SimplePlanner(state);
-		model=new LessSimpleModel(state, 1235,null);
+		model=new LessSimpleModel(state, 1235,null, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 	}
 	

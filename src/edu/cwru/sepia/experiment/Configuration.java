@@ -18,8 +18,19 @@
     along with SEPIA.  If not, see <http://www.gnu.org/licenses/>.
  */
 package edu.cwru.sepia.experiment;
+import javax.xml.parsers.*;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 /**
  * Manages a list of configurable properties and allows for saving to/loading from a file.
@@ -28,6 +39,8 @@ import java.util.Set;
  */
 public class Configuration {
 	
+	private static final String USELESS_TEXT="#text";
+	private static final String DEPRECATED_PREFIX="edu.cwru.sepia.";
 	private HashMap<String,Object> settings;
 	
 	public Configuration() {
@@ -177,5 +190,132 @@ public class Configuration {
 	@Override
 	public String toString() {
 		return settings.toString();
+	}
+
+	/**
+	 * Treat a file as a java preferences file and load it into a configuration, without the unsafe use of java's preferences.
+	 * @param configFilePath
+	 * @return a configuration parsed from the file
+	 */
+	public static Configuration loadPreferenceFormatConfiguration(String configFilePath) {
+		File config = new File(configFilePath);
+		String configAbsPath= config.getAbsolutePath();
+		try {
+			Configuration configuration = new Configuration();
+			DocumentBuilderFactory docBuildFact = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuild = docBuildFact.newDocumentBuilder();
+			Document xmlDoc = docBuild.parse(config);
+			
+			NodeList rootChildren = xmlDoc.getElementsByTagName("preferences");
+			int nRootChildren = rootChildren.getLength();
+			if (nRootChildren != 1) {
+				throw new IllegalArgumentException("Expected 1 root node called preferences, but there were "+ nRootChildren);
+			}
+			else {
+				Node preferenceNode = rootChildren.item(0);
+				NodeList children = preferenceNode.getChildNodes();
+				for (Node nodeCalledRoot : getNonTextIterator(children)) {
+					if (!"root".equals(nodeCalledRoot.getNodeName())) {
+						throw new IllegalArgumentException("Expected child of preferences to be root, but it was "+nodeCalledRoot.getNodeName());
+					}
+					else
+					{
+						for (Node node : getNonTextIterator(nodeCalledRoot.getChildNodes())) {
+							addToPreferenceFormatConfiguration(node, configuration, "");
+						}
+					}
+						
+				}
+				return configuration;
+			}
+			
+		} catch (ParserConfigurationException e) {
+			throw new IllegalArgumentException("Unable to parse configuration file: couldn't build parser"+configAbsPath,e);
+		} catch (SAXException e) {
+			throw new IllegalArgumentException("Unable to parse configuration file: couldn't parser file"+configAbsPath,e);
+		} catch (IOException e) {
+			throw new IllegalArgumentException("Unable to parse configuration file: couldn't read file"+configAbsPath,e);
+		}
+		catch (RuntimeException e) {
+			throw new IllegalArgumentException("Unable to parse configuration file: run time exception"+configAbsPath,e);
+		}
+	}
+	/**
+	 * 
+	 * @param node
+	 * @param configuration
+	 * @param levelName the name of the current level of nodes, hierarchy-wise
+	 */
+	private static void addToPreferenceFormatConfiguration(Node node, Configuration configuration, final String levelName) {
+		System.out.println("Node has local name " +node.getLocalName());
+		System.out.println("Node has node name " +node.getNodeName());
+		System.out.println("Node has node type " +node.getNodeType());
+		System.out.println("Node has node value " +node.getNodeValue());
+		
+		String nodeName = node.getNodeName();
+		if ("node".equals(nodeName)) {
+			NodeList children = node.getChildNodes();
+			Node nameAttrib = node.getAttributes().getNamedItem("name");
+			if (nameAttrib == null) {
+				throw new IllegalArgumentException("All <node> must have a name attribute");
+			}
+			String newLevelName = levelName + nameAttrib.getNodeValue() + ".";
+			for (Node child : getNonTextIterator(children) ) { 
+				addToPreferenceFormatConfiguration(child, configuration, newLevelName);
+			}
+		}
+		else if ("map".equals(nodeName)) {
+			NodeList children = node.getChildNodes();
+			for (Node child : getNonTextIterator(children) ) {
+				if (!"entry".equals(child.getNodeName())) {
+					throw new IllegalArgumentException("All children of map must be entry");
+				}
+				else {
+//					System.out.println("Node has attributes ");
+//					for (int i = 0; i<child.getAttributes().getLength(); i++)
+//					{	System.out.println("\t"+child.getAttributes().item(i).getLocalName());
+//						System.out.println("\t"+child.getAttributes().item(i).getNodeName());
+//						System.out.println("\t"+child.getAttributes().item(i).getNodeType());
+//						System.out.println("\t"+child.getAttributes().item(i).getNodeValue());
+//						System.out.println("\t"+child.getAttributes().item(i).getTextContent());
+//					}
+					Node key = child.getAttributes().getNamedItem("key");
+					Node value = child.getAttributes().getNamedItem("value");
+					if (key == null || value == null) {
+						throw new IllegalArgumentException("All entries must have key and value attributes");
+					}
+					else {
+						String newConfigName = levelName+key.getNodeValue();
+						if (newConfigName.startsWith(DEPRECATED_PREFIX)) {
+							newConfigName = newConfigName.replaceFirst(DEPRECATED_PREFIX, "");
+						}
+						configuration.put(newConfigName, value.getNodeValue());
+					}
+					
+				}
+			}
+		}
+		else {
+			System.out.println(node.getTextContent());
+			throw new RuntimeException("All non-root nodes must be map or node (or entry, if the parent is map), not "+nodeName);
+		}
+	}
+	
+	
+	/**
+	 * Helper class to make nodes iterable to allow for cleaner loops elsewhere.
+	 * <br>Assumes that the nodelists are unchanging and leaves remove as nonfunctional;
+	 * @author The Condor
+	 *
+	 */
+	private static Iterable<Node> getNonTextIterator(final NodeList nodeList) {
+		List<Node> list = new LinkedList<Node>();
+		int nChildren = nodeList.getLength();
+		for (int i = 0; i<nChildren; i++) {
+			Node node = nodeList.item(i);
+			if (!USELESS_TEXT.equals(node.getNodeName()))
+				list.add(node);
+		}
+		return list;
 	}
 }

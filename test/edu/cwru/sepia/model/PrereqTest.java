@@ -195,7 +195,7 @@ public class PrereqTest {
 		builder.setResourceAmount(player, ResourceType.GOLD, 1000);
 		builder.setResourceAmount(player, ResourceType.WOOD, 1000);
 		planner = new SimplePlanner(state);
-		model = new SimpleModel(state, 5536,null);
+		model = new SimpleModel(state, 5536,null,null);
 		model.setVerbose(true);
 		//Try to do an upgrade that you didn't do the prerequisite for
 		LinkedList<Action> plan = planner.planProduce(producer, producee);

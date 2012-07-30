@@ -82,7 +82,7 @@ public class ScriptedGoalAgentTest {
 		}
 		
 		planner = new SimplePlanner(state);
-		model=new LessSimpleModel(state, 1235,null);
+		model=new LessSimpleModel(state, 1235,null,null);
 		model.setVerbose(true);
 	}
 	

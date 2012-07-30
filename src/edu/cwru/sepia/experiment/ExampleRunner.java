@@ -70,7 +70,7 @@ public class ExampleRunner extends Runner {
 		baseAgentDirectory = new File(configuration.getString("experiment.save.agentdirectory", "saves/agents"));
 		saveAgents = (episodesPerAgentSave>=1);
 		saveReplays = (episodesPerReplaySave>=1);
-		Model model = new LessSimpleModel(stateCreator.createState(), seed, stateCreator);
+		Model model = new LessSimpleModel(stateCreator.createState(), seed, stateCreator, configuration);
 		
 		env = new Environment(agents, model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)

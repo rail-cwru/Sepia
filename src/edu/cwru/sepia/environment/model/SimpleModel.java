@@ -51,7 +51,6 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.GameMap;
@@ -76,7 +75,8 @@ public class SimpleModel implements Model {
 	private boolean verbose;
 	private Configuration configuration;
 	
-	public SimpleModel(State init, int seed, StateCreator restartTactic) {
+	public SimpleModel(State init, int seed, StateCreator restartTactic, Configuration configuration) {
+		this.configuration = configuration;
 		state = init;
 		history = new History();
 		for (Integer i : state.getPlayers())
@@ -86,7 +86,6 @@ public class SimpleModel implements Model {
 		queuedActions = new HashMap<Unit, ActionQueue>();
 		this.restartTactic = restartTactic;
 		verbose = false;
-		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	
 	@Override

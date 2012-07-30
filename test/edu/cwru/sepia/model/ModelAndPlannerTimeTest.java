@@ -55,6 +55,8 @@ import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.ConfigurationValues;
 import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -68,7 +70,6 @@ public class ModelAndPlannerTimeTest {
 	public void testTime() throws IOException, JSONException, InterruptedException, BackingStoreException {
 		boolean watchCalc=false;//An easy access point in case you want to watch the process
 		boolean watchActual=false;//An easy access point in case you want to watch the process
-		DefaultConfigurationGenerator.main(null);//This is a horrible monstrosity and I hope someone deprecates it
 		Model model = makeBaselineModel();
 		//calculate the moves
 		Map<Integer,Map<Integer,Action>> calculatedActions=new HashMap<Integer,Map<Integer,Action>>();
@@ -195,6 +196,8 @@ public class ModelAndPlannerTimeTest {
 		
 		s.addUnit((Unit)s.getTemplate(enemy, "TownHall").produceInstance(s), 22, 22);
 		StateCreator sc = s.getView(Agent.OBSERVER_ID).getStateCreator();
-		return new LessSimpleModel(sc.createState(), seed, sc);
+		Configuration c = new Configuration();
+		c.put(ConfigurationValues.MODEL_CONQUEST.key, "true");
+		return new LessSimpleModel(sc.createState(), seed, sc, c);
 	}
 }

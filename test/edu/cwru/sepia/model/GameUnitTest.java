@@ -38,6 +38,7 @@ import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 /**
@@ -71,7 +72,7 @@ public class GameUnitTest {
 			x += 5;
 			y += 5;
 		}
-		model = new SimpleModel(state, 5336,null);
+		model = new SimpleModel(state, 5336,null, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 	}
 	/**

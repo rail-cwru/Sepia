@@ -21,26 +21,9 @@ package edu.cwru.sepia.agent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.prefs.BackingStoreException;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import edu.cwru.sepia.Main;
-import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.SimpleAgent1;
-import edu.cwru.sepia.agent.visual.GamePanel;
-import edu.cwru.sepia.agent.visual.VisualLog;
-import edu.cwru.sepia.environment.model.SimpleModel;
-import edu.cwru.sepia.environment.model.SimplePlanner;
-import edu.cwru.sepia.environment.model.state.State;
-import edu.cwru.sepia.environment.model.state.Template;
-import edu.cwru.sepia.environment.model.state.Unit;
-import edu.cwru.sepia.environment.model.state.UnitTemplate;
-import edu.cwru.sepia.util.TypeLoader;
 
 
 public class AgentLogTest {
@@ -74,8 +57,8 @@ public class AgentLogTest {
 		logtest.writeLineVisual("The Molasses Act");
 		logtest.writeLineVisual("Martial Rules");
 		logtest.writeLineVisual("Monsters");
-		logtest.writeLineVisual("The television program Farscape");
-		logtest.writeLineVisual("French Burns");
+		logtest.writeLineVisual("Fhe television program Farscape");
+		logtest.writeLineVisual("Montgomery Burns");
 		logtest.writeLineVisual("Frankie Chaplin");
 		System.out.println("Log should have 10 lines, press enter");
 		pause();
@@ -85,7 +68,7 @@ public class AgentLogTest {
 		logtest.closeVisualLog();
 		System.out.println("Log should have closed");
 		pause();
-		logtest.writeLineVisual("Here's Johnny!");
+		logtest.writeLineVisual("Back again!");
 		System.out.println("Log should have reopened");
 		pause();
 	}

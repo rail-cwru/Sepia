@@ -26,7 +26,7 @@
     <echo message="Creating JAR..." />
     <jar destfile="Sepia.jar" filesetmanifest="mergewithoutmain">
       <manifest>
-        <attribute name="Main-Class" value="edu.cwru.sepia.Main"/>
+        <attribute name="Main-Class" value="edu.cwru.sepia.Main2"/>
         <attribute name="Class-Path" value="."/>
       </manifest>
       <fileset dir="${sepia.dst}"/>

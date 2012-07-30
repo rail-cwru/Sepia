@@ -43,6 +43,7 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.experiment.Configuration;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -82,7 +83,7 @@ public class ResourceGatheringTest {
 		ResourceNode g = new ResourceNode(ResourceNode.Type.GOLD_MINE, 11, 12, 5000,state.nextTargetID());
 		builder.addResource(t);
 		builder.addResource(g);
-		model = new LessSimpleModel(state, 5336,null);
+		model = new LessSimpleModel(state, 5336,null, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 		configuration = new Configuration();
 		configuration.put(ResourceNode.Type.TREE+"GatherRate", 20+"");

@@ -40,7 +40,6 @@ import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 
 /**
  * This agent will first collect gold to produce a peasant,
@@ -57,11 +56,11 @@ public class ResourceCollectionAgent extends Agent {
 	
 	private int step;
 	
-	public ResourceCollectionAgent(int playernum) {
+	public ResourceCollectionAgent(int playernum, String[] arguments) {
 		super(playernum);
-		Configuration config = PreferencesConfigurationLoader.loadConfiguration();
-		goldRequired = ConfigurationValues.MODEL_REQUIRED_GOLD.getIntValue(config);
-		woodRequired = ConfigurationValues.MODEL_REQUIRED_WOOD.getIntValue(config);
+		
+		goldRequired = Integer.parseInt(arguments[0]);
+		woodRequired = Integer.parseInt(arguments[1]);
 	}
 
 	StateView currentState;
@@ -188,7 +187,7 @@ public class ResourceCollectionAgent extends Agent {
 	}
 	
 	public static String getUsage() {
-		return "None";
+		return "Two arguments, amount of gold to gather and amount of wood to gather";
 	}
 	@Override
 	public void savePlayerData(OutputStream os) {

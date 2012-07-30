@@ -57,6 +57,7 @@ import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.GameMap;
 import edu.cwru.sepia.util.TypeLoader;
@@ -898,7 +899,7 @@ public class DurativeTest {
 			state.addTemplate(u);
 		for(UpgradeTemplate u : upgradetemplates)
 			state.addTemplate(u);
-		model = new LessSimpleModel(state, seed, null);
+		model = new LessSimpleModel(state, seed, null, DefaultConfigurationGenerator.getDefaultConfiguration());
 	}
 	@Test
 	public void testFailures()

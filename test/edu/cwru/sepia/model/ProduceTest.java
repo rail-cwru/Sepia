@@ -37,6 +37,7 @@ import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
+import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class ProduceTest {
@@ -91,7 +92,7 @@ public class ProduceTest {
 		builder.setResourceAmount(player, ResourceType.GOLD, 99999);
 		builder.setResourceAmount(player, ResourceType.WOOD, 99999);
 		planner = new SimplePlanner(state);
-		model = new LessSimpleModel(state, 5536,null);
+		model = new LessSimpleModel(state, 5536,null, DefaultConfigurationGenerator.getDefaultConfiguration());
 		model.setVerbose(true);
 	}
 	

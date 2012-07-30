@@ -52,7 +52,6 @@ import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
-import edu.cwru.sepia.experiment.PreferencesConfigurationLoader;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
 import edu.cwru.sepia.util.GameMap;
@@ -89,11 +88,11 @@ public class LessSimpleModel implements Model {
 	private HashMap<Integer,HashMap<Integer, ActionQueue>> queuedActions; //ActionQueue uses equals and 
 	private DurativePlanner planner;
 	private StateCreator restartTactic;
-	@SuppressWarnings("unused")
 	private boolean verbose;
 	private TurnTracker turnTracker;
 	private Configuration configuration;
-	public LessSimpleModel(State init, int seed, StateCreator restartTactic) {
+	public LessSimpleModel(State init, int seed, StateCreator restartTactic, Configuration configuration) {
+		this.configuration = configuration;
 		state = init;
 		history = new History();
 		queuedActions = new HashMap<Integer,HashMap<Integer, ActionQueue>>();
@@ -107,7 +106,6 @@ public class LessSimpleModel implements Model {
 		
 		this.restartTactic = restartTactic;
 		verbose = false;
-		configuration = PreferencesConfigurationLoader.loadConfiguration();
 	}
 	@Override
 	public void setVerbose(boolean verbose) {
@@ -150,6 +148,7 @@ public class LessSimpleModel implements Model {
 	@Override
 	public boolean isTerminated() {
 		boolean terminated = true;
+		
 		if(ConfigurationValues.MODEL_CONQUEST.getBooleanValue(configuration))
 			terminated = conquestTerminated();
 		if(ConfigurationValues.MODEL_MIDAS.getBooleanValue(configuration))
