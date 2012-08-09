@@ -66,19 +66,113 @@
 		<p>
 		Once you have compiled your agent (or if you want to use only the included agents),
 		 you will want to run the program.  This is accomplished via the versatile main method
-		  included.  The following should get you started:
+		  included.  The following should get you started (as run from the root sepia directory):
 		</p>
-		<code>java -cp Sepiav3.1.jar edu.cwru.sepia.Main --config data/midasConfig.xml data/rc_3m5t.xml --agent edu.cwru.sepia.agent.RCAgent 0 --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam false --agentparam true</code>
+		<code>java -cp Sepia.jar edu.cwru.sepia.Main2 data/exampleLaunchConfig.xml</code>
 		<p>
-		If you have downloaded the repository, to run from the src folder, the above should work with the data/whatever replaced with ../data/whatever
+			See <a href="#Config">configuration</a> for details on altering the configuration and making your own.
 		</p>
-		<p>This will invoke the main() method in edu.cwru.sepia.Main. It uses the configuration data in data/midasConfig.xml (which is 1 episode with an economic victory).  It uses the map stored in data/rc_3m5t.xml. It also initializes the agent called SimpleAgent1 with player number 0 (red).
-		It also initializes a visual agent (also with the player number 0), that isn't controllable by you (the first agentparam),
+		<h3>More Examples</h3>
+		<p>Another important agent is the CombatAgent, which is a basic fighting AI.  When the combat agent is controlling them, each unit sits around (or wanders) until an enemy comes into it's sight range, at which point it mindlessly attacks that enemy until one dies.
+		The combat agent takes three additional parameters:
+		<ul>
+			<li>A space separated list of enemy player numbers (for example if this is '--agentparam "0 1 3"', then the Combat agent will attack players 0,1, and 3)</li>
+			<li>A boolean for whether it's units should wander while waiting to see enemies</li>
+			<li>A boolean for whether it should produce verbose output into System.out</li>
+		</ul>
+		</p>
+		<p>
+			Thus, an example trial involving CombatAgent (with a visual agent to watch) could be started like so:
+		</p>
+		<code>java -cp Sepia.jar edu.cwru.sepia.Main --config data/conquestConfig.xml data/durcom_4f4a2kv4f4a2k.xml --agent edu.cwru.sepia.agent.CombatAgent 0 --agentparam "1" --agentparam true --agentparam false --agent edu.cwru.sepia.agent.CombatAgent 1 --agentparam "0" --agentparam true --agentparam false --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam false --agentparam true</code>
+		<p>
+			Notice that each specifies the other as its enemy.  This will invoke the main() method in edu.cwru.sepia.Main. It uses the configuration data in data/conquestConfig.xml (a fight to the death).  It uses the map stored in data/durcom_4f4a2kv4f4a2k.xml, a 10 unit v 10 unit matchup with a variety of units.  It initiates a CombatAgent with player number 0, which has as it's enemy the player with number 1 (first arg), which orders its units to wander (second arg), and which is not verbose (third arg)
+		It also initializes another CombatAgent (player number 1 with enemies 0) a visual agent (also with the player number 0), that isn't controllable by you (the first agentparam),
 			and which will give you information if you double click (the second agentparam).
-			Note that the visual agent shares the same player number.  If fog of war were enabled,
+			Note that the visual agent shares the same player number as the first agent.  If fog of war were enabled,
 			it would be clear that sharing the same player number gives the visual agent a view of the same player's units.
 		 	Trying to initialize an agent with a playernumber that does not exist in the map will lead to errors.
-		   </p> 
+		 	See <a href="#Config">configuration</a> for more details.
+		</p>
+		
+		<h2 id="Config">4. Configuration </h2>
+		<h3>Main2 and it's configuration</h3>
+		<p>
+		edu.cwru.sepia.Main2 takes a single argument, a full configuration file.
+		</p>
+		This configuration file is an xml file with &lt;Configuration&gt; as the root directory.
+		It structure is:
+		<div><code>&lt;Configuration&gt;</code>
+		<div>
+		<div>Map has text containing the map file</div>
+		</div>
+		</div>
+		<div><code>&lt;Configuration&gt;</code></i>
+			<div class="definition">
+			<code>&lt;Map&gt;<i>filename</i>&lt;/Map&gt;</code>
+				
+			</div>
+			<div class="definition">
+			There can be many players <br>
+			<code>&lt;Player Id="<i>playernumber</i>"&gt;</code>
+				<div class="definition">
+				<code>&lt;AgentClass&gt;</code>
+					<div class="definition">
+					<code>&lt;ClassName&gt;<i>fullyqualifiedagentname</i>&lt;/ClassName&gt;</code>
+					</div>
+					Each agent may have many or no arguments.  These arguments are put into a string array as arguments to the constructor, which is called via java's reflection capabilities<br>
+					<div class="definition">
+					<code>&lt;Argument&gt;<i>argumenttext</i>&lt;/Argument&gt;</code>
+					</div>
+				</div>
+			</div>
+			<div class="definition">
+			<code>&lt;ModelParameters"&gt;</code>
+				These represent the termination conditions<br>
+				<div class="definition">
+				<code>&lt;Conquest"&gt;<i>isconquest</i>&lt;/Conquest"&gt;</code>
+					<div class="definition">
+					A boolean value representing whether the victory condition is by killing units from all other players.
+					</div>
+				</div>
+				<div class="definition">
+				<code>&lt;Midas"&gt;<i>ismidas</i>&lt;/Midas"&gt;</code>
+					<div class="definition">
+					A boolean value representing whether the victory condition is by gathering resources
+					</div>
+				</div>
+				<div class="definition">
+				<code>&lt;ManifestDestiny"&gt;<i>ismanifestdestiny</i>&lt;/ManifestDestiny"&gt;</code>
+					<div class="definition">
+					A boolean value representing whether the victory condition is by building structures
+					</div>
+				</div>
+				<div class="definition">
+				<code>&lt;TimeLimit"&gt;<i>timelimit</i>&lt;/TimeLimit"&gt;</code>
+					<div class="definition">
+					An integer representing the number of rounds until it terminates despite no victory conditions being met
+					</div>
+				</div>
+			<div>
+			<code>&lt;Runner"&gt;</code>
+				These represent the termination conditions<br>
+				<div class="definition">
+				<code>&lt;RunnerClass"&gt;<i>fullyqualifiedrunnername</i>&lt;/RunnerClass"&gt;</code>
+					<div class="definition">
+						The runner launches and controls episodes, it is expected that users doing extensive work will use modified Runners of their own devising.
+					</div>
+				</div>
+				
+				<div class="definition">
+				A runner may have any number of key,value pairs (or, to be more exact, Name,Value pairs), representing additional parameters that control the experiment or be passed through it to the model itself.<br>
+				<code>&lt;Parameter" Name="<i>key</i>>" Value="<i>value</i>"&gt;</code>
+				<div class="definition">
+					The parameters represent certain expected arguments that may not be shared amongst all (for instance) models or runners.  They are designed to provide extensibility, allowing the designer of a runner to pass whatever parameters are needed.
+				</div>
+			</div>
+		</div>
+		</div>
+		<h3>Main and its configuration</h3>
 		<p>Here is a further description of all the options that can be used (Entering in insufficient
 		   or incorrect arguments will cause the program to print out usage info and
 		   terminate):
@@ -114,31 +208,12 @@
 			    of an agent. 			    
 			</div> 
 		</div>
-		<h3>More Examples</h3>
-		<p>Another important agent is the CombatAgent, which is a basic fighting AI.  When the combat agent is controlling them, each unit sits around (or wanders) until an enemy comes into it's sight range, at which point it mindlessly attacks that enemy until one dies.
-		The combat agent takes three additional parameters:
-		<ul>
-			<li>A space separated list of enemy player numbers (for example if this is '--agentparam "0 1 3"', then the Combat agent will attack players 0,1, and 3)</li>
-			<li>A boolean for whether it's units should wander while waiting to see enemies</li>
-			<li>A boolean for whether it should produce verbose output into System.out</li>
-		</ul>
-		</p>
-		<p>
-			Thus, an example trial involving CombatAgent (with a visual agent to watch) could be started like so:
-		<\p>
-		<code>java -cp sepia.jar edu.cwru.sepia.Main --config data/conquestConfig.xml data/com_4f4a2kv4f4a4k.xml --agent edu.cwru.sepia.agent.CombatAgent 0 --agentparam "1" --agentparam true --agentparam false --agent edu.cwru.sepia.agent.CombatAgent 1 --agentparam "0" --agentparam true --agentparam false --agent edu.cwru.sepia.agent.visual.VisualAgent 0 --agentparam false --agentparam true</code>
-		<p>
-			Notice that each specifies the other as its enemy.
-		</p>
-		<h2 id="Config">4. Configuration</h2>
 		<p>The configuration file is used to define victory/termination conditions and set up parameters for the
-		   series of episodes you are running.  It is an XML file that gets loaded into the user-specific
+		   series of episodes you are running.  It is an XML file that gets loaded as if it were an
 		   instance of <a href="http://download.oracle.com/javase/6/docs/api/java/util/prefs/Preferences.html">
 		   java.util.Preferences</a>. Basically, the configuration file is a hierarchy of
 		   maps which store primitives as values. For an example of how to write a configuration
-		   file, see <a href="../data.defaultConfig.xml">data/defaultConfig.xml</a>. For an example
-		   of how to define and export preferences in Java code, see 
-		   edu.cwru.sepia.experiment.DefaultConfigurationGenerator.java. Here are the values that Sepia
+		   file, see <a href="../data.defaultConfig.xml">data/defaultConfig.xml</a>.  Here are the values that Sepia
 		   uses and their defaults:
 		</p>
 		<p> Note that with the exception of the time limit, all victory conditions are additive, you must meet all of them to win. 
@@ -177,11 +252,6 @@
 		<p>You can use the configuration file to define	parameters for your own agent 
 			(e.g. learning rate, discount factor, etc.). Just define your own path, figure out 
 			how to use java.util.Preferences, and put your settings in the configuration file.
-		</p>
-		<p><strong>Note:</strong> preferences do not get cleared out automatically; they are
-			persisted to disk by Java and reloaded for every Java program run by the same
-			user on the same machine. Sepia clears out the properties defined above
-			automatically, but you will have to clear out custom properties yourself.
 		</p>
 		<h2 id="VisualAgent">5. Visual Agent and Game Details</h2>
 		<p>
