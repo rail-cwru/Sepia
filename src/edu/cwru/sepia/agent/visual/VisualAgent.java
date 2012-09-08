@@ -180,6 +180,7 @@ public class VisualAgent extends Agent implements ActionListener {
 					"  " + currentWood + "\n" + 
 					"Current Food:\n" + 
 					"  " + currentFood + "\n");
+		sb.append("Current Turn:\n"+" " + state.getTurnNumber()+"\n");
 		return sb.toString();
     }
     
