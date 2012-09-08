@@ -25,11 +25,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.Environment;
+import edu.cwru.sepia.environment.model.BestEffortModel;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
 import edu.cwru.sepia.environment.model.Model;
 import edu.cwru.sepia.environment.model.SimpleModel;
@@ -70,8 +73,44 @@ public class ExampleRunner extends Runner {
 		baseAgentDirectory = new File(configuration.getString("experiment.save.agentdirectory", "saves/agents"));
 		saveAgents = (episodesPerAgentSave>=1);
 		saveReplays = (episodesPerReplaySave>=1);
-		Model model = new LessSimpleModel(stateCreator.createState(), seed, stateCreator, configuration);
 		
+		String modelName = configuration.getString("environment.model.class","edu.cwru.sepia.environment.model.LessSimpleModel");
+		Model model=null;
+		
+		//Note the description of the constructor to refer to in error messages
+		String constructorDescription="constructor for "+modelName+" (State initState, int seed, StateCreator, Configuration)";
+		try {
+			Class<?> modelClass = Class.forName(modelName);
+			Constructor<?> modelConstructor = modelClass.getConstructor(State.class, int.class, StateCreator.class, Configuration.class);
+			model = (Model)modelConstructor.newInstance(stateCreator.createState(), seed, stateCreator, configuration);
+			
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+			logger.log(Level.SEVERE, "Specified class"+modelName+" does not exist", e1);
+			throw new IllegalArgumentException("Bad class, "+modelName + " not found");
+		}
+		catch (NoSuchMethodException e2) {
+			logger.log(Level.SEVERE, "Could not find "+constructorDescription, e2);
+			throw new IllegalArgumentException("Bad class, "+constructorDescription+" not found");
+		} catch (InstantiationException e) {
+			logger.log(Level.SEVERE, modelName + " was abstract", e);
+			throw new IllegalArgumentException("Bad class, "+modelName+" is abstract");
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE, "Could not access "+constructorDescription, e);
+			throw new IllegalArgumentException("Bad class, could not access "+constructorDescription);
+		} catch (IllegalArgumentException e) {
+			logger.log(Level.SEVERE, "Bug in code, mismatched constructor search and constructor call", e);
+			e.printStackTrace();
+			throw new IllegalArgumentException("Bug in code, mismatched constructor search and constructor call");
+		} catch (InvocationTargetException e) {
+			logger.log(Level.SEVERE, "Error while calling "+constructorDescription, e);
+			e.printStackTrace();
+			throw new IllegalArgumentException("Bad class, it had exception during call of "+constructorDescription);
+		}
+		System.out.println(model);
+		State initState = stateCreator.createState();
+		model = new BestEffortModel(initState, seed, stateCreator, configuration);
 		env = new Environment(agents, model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{

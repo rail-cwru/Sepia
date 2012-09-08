@@ -21,6 +21,7 @@ package edu.cwru.sepia.environment.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,6 @@ public class BestEffortModel implements Model {
 			queuedActions.put(i, new HashMap<Integer,ActionQueue>());
 		}
 			
-		queuedActions = new HashMap<Integer, HashMap<Integer, ActionQueue>>();
 		planner = new DurativePlanner(state);
 	}
 	
@@ -229,6 +229,7 @@ public class BestEffortModel implements Model {
 			}
 			else
 			{//Valid
+				System.out.println(sendingPlayerNumber);
 				ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
 				queuedActions.get(sendingPlayerNumber).put(unitId, queue);
 			}
@@ -308,8 +309,10 @@ public class BestEffortModel implements Model {
 				queuedActions.put(player, new HashMap<Integer, ActionQueue>());
 			}
 			if (turnTracker == null || turnTracker.isPlayersTurn(player)) {
-				for(ActionQueue queuedAct : queuedActions.get(player).values()) 
+				Iterator<ActionQueue> queuedActItr = queuedActions.get(player).values().iterator();
+				while(queuedActItr.hasNext()) 
 				{
+					ActionQueue queuedAct = queuedActItr.next();
 					if (verbose)
 						System.out.println("Doing full action: "+queuedAct.getFullAction());
 					//Pull out the primitive
@@ -716,7 +719,7 @@ public class BestEffortModel implements Model {
 							history.recordPrimitiveFeedback(u.getPlayer(), state.getTurnNumber(), new ActionResult(a,primitiveFeedback));
 						}
 						if (removeAction) {
-							queuedActions.remove(queuedAct.getFullAction());
+							queuedActItr.remove();
 						}
 					}
 					while (timesTried < numAttempts && failedTry && !fullIsPrimitive && !wrongType);

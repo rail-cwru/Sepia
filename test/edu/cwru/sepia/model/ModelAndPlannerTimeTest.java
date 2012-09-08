@@ -109,6 +109,7 @@ public class ModelAndPlannerTimeTest {
 			}
 		}
 		int nrounds=100;
+		int stepCount = 0;
 		long starttime = System.currentTimeMillis();
 		for (int x = nrounds; x>0;x--)
 		{
@@ -125,10 +126,11 @@ public class ModelAndPlannerTimeTest {
 			while (!testEnv.isTerminated()) {
 				int thisStep = model.getState().getTurnNumber(); 
 				testEnv.step();//Do the step so have the results for it.
+				stepCount++;
 			}
 		}
 		long timetaken = System.currentTimeMillis()-starttime;
-		System.out.println(nrounds+" repetitions took " + timetaken +" ms");
+		System.out.println(nrounds+" ("+stepCount+" total steps)repetitions took " + timetaken +" ms");
 			
 		
 		

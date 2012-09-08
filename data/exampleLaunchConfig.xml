@@ -4,6 +4,8 @@
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
+	</Player>
+	<Player Id="0">
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
 			<Argument>true</Argument>
@@ -61,5 +63,6 @@
 		<Parameter Name="experiment.save.replaydirectory" Value="saves/test1" />
 		<Parameter Name="experiment.save.agentdirectory" Value="saves/test1" />
 		<Parameter Name="experiment.temp.thing" Value="saves/test1" />
+		<Parameter Name="environment.model.class" Value="edu.cwru.sepia.environment.model.BestEffortModel" />
 	</Runner>
 </Configuration>
