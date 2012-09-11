@@ -229,7 +229,6 @@ public class BestEffortModel implements Model {
 			}
 			else
 			{//Valid
-				System.out.println(sendingPlayerNumber);
 				ActionQueue queue = new ActionQueue(a, calculatePrimitives(a));
 				queuedActions.get(sendingPlayerNumber).put(unitId, queue);
 			}
