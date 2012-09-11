@@ -436,17 +436,20 @@ public class Editor extends JFrame {
 			if (!state.inBounds(x, y))
 			{
 				error.setText(x + "," + y + " is out of bounds.");
+				return;
 			}
 			if(!selectPointer.isSelected() && !selectRemove.isSelected() && (state.unitAt(x, y) != null || state.resourceAt(x, y) != null))
 			{
 				error.setText("Cannot place on top of existing object.");
 				return;
 			}
+			
 			if(selectUnit.isSelected())
 			{
 				String name = (String)templateSelector.getSelectedItem();
 				Unit u = ((UnitTemplate)state.getTemplate(player,name)).produceInstance(state);
 				state.addUnit(u,x,y);
+				error.setText("Unit id "+u.ID+" "+name+" (player:"+player+") placed at "+x+","+y);
 			}
 			else if(selectTree.isSelected())
 			{
@@ -460,6 +463,7 @@ public class Editor extends JFrame {
 				}
 				ResourceNode r = new ResourceNode(ResourceNode.Type.TREE, x, y, amount,state.nextTargetID());
 				state.addResource(r);
+				error.setText("Tree id "+r.ID+" placed at "+x+","+y);
 			}
 			else if(selectMine.isSelected())
 			{
@@ -473,6 +477,7 @@ public class Editor extends JFrame {
 				}
 				ResourceNode r = new ResourceNode(ResourceNode.Type.GOLD_MINE, x, y, amount,state.nextTargetID());
 				state.addResource(r);
+				error.setText("Mine id "+r.ID+" placed at "+x+","+y);
 			}
 			else if(selectRemove.isSelected())
 			{
@@ -482,6 +487,7 @@ public class Editor extends JFrame {
 				if (resourcethere != null) //if there was a resource there
 				{//then remove it
 					state.removeResourceNode(resourcethere.ID);
+					error.setText("Resource id "+resourcethere.ID+" removed from "+x+","+y);
 				}
 				else //otherwise, see about units
 				{
@@ -489,6 +495,7 @@ public class Editor extends JFrame {
 					if (unitthere != null)//if there was a unit there
 					{//then remove it
 						state.removeUnit(unitthere.ID);
+						error.setText("Unit id "+unitthere.ID+" removed from "+x+","+y);
 					}
 				}
 					
