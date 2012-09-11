@@ -2,36 +2,61 @@
 <project default="jar" name="Sepia">
   <!--ANT 1.7 is required-->
   <property name="sepia.src" location="src" />
-  <property name="sepia.dst" location="bin" />
+  <property name="sepia.bin" location="bin" />
+  <property name="sepia.artifact" location="artifact" />
+  <property name="sepia.artifact.version" location="${sepia.artifact}/version.properties" />
   <property name="lib.dir" location="lib" />
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="**/*.jar" />
   </path>
+  <!-- Make new black folders for the temporary information to be stored -->
   <target name="init">
-    <mkdir dir="${sepia.dst}" />
+    <mkdir dir="${sepia.bin}" />
     <echo message="Created build directory" />
+  	<mkdir dir="${sepia.artifact}" />
+  	<echo message="Created build directory" />
   </target>
   <target name="clean">
-    <delete dir="${sepia.dst}" />
+    <delete dir="${sepia.bin}" />
     <echo message="Removed build directory" />
+  	<delete dir="${sepia.artifact}" />
+  	<echo message="Removed artifact directory" />
   </target>
   <target name="compile" depends="init">
     <echo message="Compiling project..." />
-    <javac srcdir="${sepia.src}" destdir="${sepia.dst}"
+    <javac srcdir="${sepia.src}" destdir="${sepia.bin}"
            classpathref="classpath" includes="edu/**"
            includeantruntime="false" />
     <echo message="Done." />
   </target>
-  <target name="jar" depends="compile">
+  <target name="jar" depends="clean, compile, version">
     <echo message="Creating JAR..." />
-    <jar destfile="Sepia.jar" filesetmanifest="mergewithoutmain">
+    <jar destfile="${sepia.artifact}/Sepia.jar" filesetmanifest="mergewithoutmain">
       <manifest>
         <attribute name="Main-Class" value="edu.cwru.sepia.Main2"/>
         <attribute name="Class-Path" value="."/>
       </manifest>
-      <fileset dir="${sepia.dst}"/>
+      <fileset dir="${sepia.bin}" />
+      <fileset dir="${sepia.src}" />
+      <fileset file="${sepia.artifact.version}" />
       <zipgroupfileset dir="${lib.dir}" includes="**/*.jar" />
     </jar>
     <echo message="Done." />
   </target>
+  <target name="version">
+  	<echo file="${sepia.artifact.version}" message="builder=${user.name}${line.separator}" />
+  	
+  	<!-- Get the current eastern time, which is "America/New_York" for some reason -->
+  	<tstamp>
+  	  <format property="current.time" timezone="America/New_York" pattern="yyyy-MM-dd hh:mm:ss aa" />
+  	</tstamp>
+  	<echo file="${sepia.artifact.version}" message="buildtime=${current.time} Eastern (US)${line.separator}" append="true" />
+
+  	<!-- get the svn version -->
+	<echo file="${sepia.artifact.version}" message="svn=" append="true"/>
+	<exec executable="svnversion"
+	    output="${sepia.artifact.version}" append="true">
+	</exec>
+  </target>   
 </project>
+
