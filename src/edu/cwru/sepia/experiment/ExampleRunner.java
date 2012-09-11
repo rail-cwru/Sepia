@@ -108,7 +108,6 @@ public class ExampleRunner extends Runner {
 			e.printStackTrace();
 			throw new IllegalArgumentException("Bad class, it had exception during call of "+constructorDescription);
 		}
-		System.out.println(model);
 		State initState = stateCreator.createState();
 		model = new BestEffortModel(initState, seed, stateCreator, configuration);
 		env = new Environment(agents, model, seed);
