@@ -137,7 +137,9 @@ public class ResourceNode extends Target implements Cloneable {
 	}
 	@Override
 	public boolean deepEquals(Object other) {
-		if (other == null || !this.getClass().equals(other))
+		if (this == other)
+			return true;
+		if (other == null || !this.getClass().equals(other.getClass()))
 			return false;
 		ResourceNode o = (ResourceNode)other;
 		if (this.type != o.type)
@@ -151,5 +153,9 @@ public class ResourceNode extends Target implements Cloneable {
 		if (this.amountRemaining != o.amountRemaining)
 			return false;
 		return true;
+	}
+	@Override 
+	public String toString() {
+		return getClass().getName()+"[Type: "+type+" xPosition: "+xPosition+" yPosition:"+yPosition+" amount: "+amountRemaining+"/"+initialAmount+"]";
 	}
 }
