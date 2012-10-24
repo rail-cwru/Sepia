@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430160</millis>
+  <sequence>576</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 0's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430172</millis>
+  <sequence>588</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 0's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430173</millis>
+  <sequence>589</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 1's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430173</millis>
+  <sequence>590</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 2's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430174</millis>
+  <sequence>591</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 3's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430175</millis>
+  <sequence>592</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 4's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430176</millis>
+  <sequence>593</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 5's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430177</millis>
+  <sequence>594</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 6's turn.  First turn</message>
+</record>
+<record>
+  <date>2012-09-11T00:57:10</date>
+  <millis>1347339430178</millis>
+  <sequence>595</sequence>
+  <logger>edu.cwru.sepia.environment.Environment</logger>
+  <level>FINER</level>
+  <class>edu.cwru.sepia.environment.Environment</class>
+  <method>step</method>
+  <thread>1</thread>
+  <message>Step 0: Agent with player number: 7's turn.  First turn</message>
+</record>
+</log>

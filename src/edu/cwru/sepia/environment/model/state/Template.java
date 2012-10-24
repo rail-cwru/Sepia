@@ -20,6 +20,7 @@
 package edu.cwru.sepia.environment.model.state;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,6 +57,22 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 		this.ID = ID;
 		buildPrerequisites = new HashSet<Integer>();
 		upgradePrerequisites = new HashSet<Integer>();
+	}
+	/**
+	 * @param view
+	 */
+	public Template(TemplateView view) {
+		this.ID = view.ID;
+		for (Integer prereqUnitId : view.buildPrerequisites)
+			addBuildPrerequisite(prereqUnitId);
+		for (Integer prereqUpgradeId : view.upgradePrerequisites)
+			addUpgradePrerequisite(prereqUpgradeId);
+		setFoodCost(view.foodCost);
+		setGoldCost(view.goldCost);
+		setWoodCost(view.woodCost);
+		setTimeCost(view.timeCost);
+		setName(view.name);
+		setPlayer(view.player);
 	}
 	public int getTimeCost() {
 		return timeCost;
@@ -131,6 +148,8 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 		private final int ID;
 		private final int player;
 		private final String name;
+		private final Set<Integer> buildPrerequisites;
+		private final Set<Integer> upgradePrerequisites;
 		public TemplateView(Template<?> template){
 			timeCost = template.getTimeCost();
 			goldCost = template.getGoldCost();
@@ -139,6 +158,30 @@ public abstract class Template<T> implements Serializable, DeepEquatable{
 			ID = template.ID;
 			player = template.getPlayer();
 			name = template.getName();
+			Set<Integer> tbuild = new HashSet<Integer>();
+			for (Integer i : template.buildPrerequisites) {
+				tbuild.add(i);
+			}
+			buildPrerequisites = Collections.unmodifiableSet(tbuild);
+			Set<Integer> tupgrade = new HashSet<Integer>();
+			for (Integer i : template.upgradePrerequisites) {
+				tupgrade.add(i);
+			}
+			upgradePrerequisites = Collections.unmodifiableSet(tupgrade);
+		}
+		/**
+		 * Get a(n unmodifiable) set of buildings or other units that must be built before a unit can be made with this template
+		 * @return The ids of the templates of the required buildings/units
+		 */
+		public Set<Integer> getBuildPrerequisites() {
+			return buildPrerequisites;
+		}
+		/**
+		 * Get a(n unmodifiable) set of upgrades 
+		 * @return The ids of the templates of the required upgrades
+		 */
+		public Set<Integer> getUpgradePrerequisites() {
+			return upgradePrerequisites;
 		}
 		public int getTimeCost() {
 			return timeCost;

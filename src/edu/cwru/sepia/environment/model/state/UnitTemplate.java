@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 /**
  * Contains information shared between units of the same type.
@@ -65,6 +66,40 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	{
 		super(ID);
 		producesID = new ArrayList<Integer>();
+	}
+	/**
+	 * Create a cloned unit template out of a view
+	 */
+	public UnitTemplate(UnitTemplateView view) {
+		super(view);
+		setBaseHealth(view.baseHealth);
+		setBasicAttack(view.basicAttack);
+		setPiercingAttack(view.piercingAttack);
+		setRange(view.range);
+		setArmor(view.armor);
+		setSightRange(view.sightRange);
+		setCanGather(view.canGather);
+		setCanBuild(view.canBuild);
+		setCanMove(view.canMove);
+		setCanAcceptGold(view.acceptsGold);
+		setCanAcceptWood(view.acceptsWood);
+		setFoodProvided(view.foodProvided);
+		setCharacter(view.character);
+		setGoldCapacity(view.goldCapacity);
+		setWoodCapacity(view.woodCapacity);
+		setGoldGatherRate(view.goldGatherRate);
+		setWoodGatherRate(view.woodGatherRate);
+		
+		
+		setDurationGatherGold(view.durationGatherGold);
+		setDurationGatherWood(view.durationGatherWood);
+		setDurationMove(view.durationMove);
+		setDurationAttack(view.durationAttack);
+		setDurationDeposit(view.durationDeposit);
+		for (Integer produced : view.producesID)
+			addProductionItem(produced);
+		
+		
 	}
 	@Override
 	public Unit produceInstance(IDDistributer idsource) {
@@ -136,11 +171,16 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	}
 	public void setGoldGatherRate(int goldpertrip) {
 		this.goldGatherRate = goldpertrip;
-		this.goldCapacity = goldpertrip;
+	}
+	public void setGoldCapacity(int goldCarried) {
+		this.goldCapacity = goldCarried;
 	}
 	public void setWoodGatherRate(int woodpertrip) {
 		this.woodGatherRate = woodpertrip;
-		this.woodCapacity = woodpertrip;
+		
+	}
+	public void setWoodCapacity (int woodCarried) {
+		this.woodCapacity = woodCarried;
 	}
 	public int getGatherRate(ResourceNode.Type type) {
 		if (type == ResourceNode.Type.GOLD_MINE) {
@@ -305,6 +345,10 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		private final int durationGatherGold;
 		private final int durationGatherWood;
 		private final int durationDeposit;
+		private final int goldCapacity;
+		private final int goldGatherRate;
+		private final int woodCapacity;
+		private final int woodGatherRate;
 		private static final long serialVersionUID = 1L;
 		
 		/**
@@ -337,8 +381,43 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			durationDeposit = template.getDurationDeposit();
 			durationGatherGold = template.getDurationGatherGold();
 			durationGatherWood = template.getDurationGatherWood();
+			goldCapacity = template.getCarryingCapacity(Type.GOLD_MINE);
+			goldGatherRate = template.getGatherRate(Type.GOLD_MINE);
+			woodCapacity = template.getCarryingCapacity(Type.TREE);
+			woodGatherRate = template.getGatherRate(Type.TREE);
 			
 		}
+		/**
+		 * Get the amount of resources that the unit can carry after gathering from a node of a specific type. 
+		 * @param resourceNodeType 
+		 * @return 
+		 */
+		public int getCarryingCapacity(Type resourceNodeType) {
+			switch (resourceNodeType) {
+			case GOLD_MINE:
+				return goldCapacity;
+			case TREE:
+				return woodCapacity;
+			default:
+				throw new IllegalArgumentException("Type not supported by this method");
+			}
+		}
+		/**
+		 * Get the amount of resources that the unit can gather in a single action from a node of a specific type. 
+		 * @param resourceNodeType 
+		 * @return 
+		 */
+		public int getGatherRate(Type resourceNodeType) {
+			switch (resourceNodeType) {
+			case GOLD_MINE:
+				return goldGatherRate;
+			case TREE:
+				return woodGatherRate;
+			default:
+				throw new IllegalArgumentException("Type not supported by this method");
+			}
+		}
+		
 		public boolean canGather() { return canGather; }
 		/**
 		 * Get whether units with this template uses the build action to make things.  This is independent of whether the template can actually make anything.

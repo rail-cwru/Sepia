@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -31,11 +32,18 @@ import java.util.concurrent.Semaphore;
 
 import javax.swing.SwingUtilities;
 
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.experiment.ExampleRunner;
 
 /**
  * A visual agent
@@ -101,7 +109,6 @@ public class VisualAgent extends Agent implements ActionListener {
 		//Always sets infoVis to true, since there doesn't seem to be a good reason to turn it off
 		super(playerNum);
 		this.humanControllable = humanControllable;
-		
 		infoVis=true;
 		setupScreen();
 	}

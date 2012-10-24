@@ -43,6 +43,21 @@ public class UpgradeTemplate extends Template<Upgrade>
 		super(ID);
 		unitTemplatesAffected = new ArrayList<Integer>();
 	}
+	/**
+	 * A constructor to make an object from a view.
+	 */
+	public UpgradeTemplate(UpgradeTemplateView view) {
+		super(view);
+		setPiercingAttackChange(view.piercingAttackChange);
+		setBasicAttackChange(view.basicAttackChange);
+		setArmorChange(view.armorChange);
+		setHealthChange(view.healthChange);
+		setRangeChange(view.rangeChange);
+		setSightRangeChange(view.sightRangeChange);
+		for (Integer affectedUnitTemplate : view.affectedUnitTypes) {
+			addAffectedUnit(affectedUnitTemplate);
+		}
+	}
 	public Upgrade produceInstance(IDDistributer idsource)
 	{
 		return new Upgrade(this);

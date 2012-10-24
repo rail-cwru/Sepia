@@ -33,8 +33,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import edu.cwru.sepia.agent.Agent;
+import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
 import edu.cwru.sepia.environment.model.state.Template.TemplateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
+import edu.cwru.sepia.environment.model.state.UnitTemplate.UnitTemplateView;
+import edu.cwru.sepia.environment.model.state.UpgradeTemplate.UpgradeTemplateView;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 import edu.cwru.sepia.util.Direction;
@@ -88,6 +91,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	 * Observer sight is tracked as the sum of all other sight
 	 * But when it comes time to tell if the observer can see something, it always can
 	 */
+	//TODO: split fog of war (here and in history) into it's component parts (like ability to see resource nodes, units, templates, upgrades, resources, supply caps, etc, all separately)
 	private boolean hasFogOfWar;
 	private List<ResourceNode> resourceNodes;
 	private int turnNumber;
@@ -135,7 +139,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	 */
 	public boolean deepEquals(Object other)
 	{
-		
+		if (this == other)
+			return true;
 		if (other==null || !this.getClass().equals(other.getClass()))
 			return false;
 		
@@ -707,7 +712,6 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		}
 		else
 		{
-			//int[][] cansee = playerCanSee.get(player);
 			int[][] cansee = playerStates.get(player).getVisibilityMatrix();
 			if (cansee==null)
 			{
@@ -741,8 +745,6 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 					if (inBounds(i,j))
 					{
 						state.getVisibilityMatrix()[i][j]++;
-						//playerCanSee.get(player)[i][j]++;
-						//observersight[i][j]++;
 						observerState.getVisibilityMatrix()[i][j]++;
 					}
 		}
@@ -764,7 +766,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	}
 	
 	/**
-	 * Get a StateCreator that will duplicate what this state looks like when the function is called.
+	 * Get a StateCreator that will duplicate what this state is when the function is called.
 	 * @return
 	 * @throws IOException
 	 */
@@ -988,7 +990,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	}
 	@SuppressWarnings("rawtypes")
 	/**
-	 * Provides a read-only view of class values
+	 * Provides a read-only view of class values.
+	 * <br>This  
 	 * @author Tim
 	 *
 	 */
@@ -1012,18 +1015,49 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		
 		/**
 		 * If the player can see the whole state, get a StateCreator that will rebuild the state as it is when this is called.<br/>
-		 * This can be used as an immutable and repeatable deep copy of the underlying state.
+		 * <br>This can be used as an immutable and repeatable deep copy of the underlying state.
+		 * <br>
+		 * <br>If the player cannot see the state, the StateCreator will be based on the observable state.
+		 * As a result of this limited information, most agents will benefit from tracking the state themselves,
+		 * in order to track, for instance, units that previously walked into or out of sight, unit upgrades based on the template values, or to incorporate their own predictions more naturally. 
 		 * @return When fog of war is on and the player is not an observer: null;<br/>otherwise: A StateCreator that rebuilds the underlying state.
 		 * @throws IOException
 		 */
 		public StateCreator getStateCreator() throws IOException {
 			if (!state.hasFogOfWar || player == Agent.OBSERVER_ID)
 			{
+				//No fog of war, so use state directly
 				return state.getStateCreator();
 			}
 			else
 			{
-				return null;
+				//State is partially hidden, build as much as possible
+				StateBuilder stateBuilder = new StateBuilder();
+				stateBuilder.setSize(state.xextent, state.yextent);
+				for (ResourceView rv : getAllResourceNodes()) {
+					stateBuilder.addResource(new ResourceNode(rv.getType(), rv.getYPosition(), rv.getYPosition(), rv.getAmountRemaining(), rv.getID()));
+				}
+				for (TemplateView t : getAllTemplates()) {
+					if (t instanceof UnitTemplate.UnitTemplateView) {
+						UnitTemplateView ut = (UnitTemplateView) t;
+						stateBuilder.addTemplate(new UnitTemplate(ut));
+					}
+					else if (t instanceof UpgradeTemplate.UpgradeTemplateView) {
+						UpgradeTemplateView ut = (UpgradeTemplateView) t;
+						stateBuilder.addTemplate(new UpgradeTemplate(ut));
+					}
+					else {
+						throw new IllegalStateException();
+					}
+				}
+				State builtState = stateBuilder.build();
+				for (UnitView uv : getAllUnits()) {
+					Unit u = new Unit((UnitTemplate)builtState.getTemplate(uv.getTemplateView().getID()), uv.getID());
+					//The state add, unlike the statebuilder add, includes an increase to supply cap and to supply used
+					builtState.addUnit(u, uv.getXPosition(), uv.getYPosition());
+				}
+				
+				return builtState.getStateCreator();
 			}
 		}
 		/**
@@ -1192,6 +1226,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return
 		 */
 		public List<Integer> getAllTemplateIds() {
+			//TODO: give for vision of units
 			List<Integer> ids = new ArrayList<Integer>();
 			for(Entry<Integer, Template> e : state.allTemplates.entrySet())
 			{
@@ -1208,6 +1243,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return
 		 */
 		public List<Integer> getTemplateIds(int playerid) {
+			//TODO: give for vision of units
 			if (state.hasFogOfWar && playerid != player && player != Agent.OBSERVER_ID)
 				return null;
 			List<Integer> ids = new ArrayList<Integer>();
@@ -1225,6 +1261,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return
 		 */
 		public List<TemplateView> getAllTemplates() {
+			//TODO: view for units
 			List<TemplateView> views = new ArrayList<TemplateView>();
 			for(Entry<Integer, Template> e : state.allTemplates.entrySet())
 			{
@@ -1241,6 +1278,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return
 		 */
 		public List<TemplateView> getTemplates(int playerid) {
+			//view for unit
 			if (state.hasFogOfWar && playerid != player && player != Agent.OBSERVER_ID)
 				return null;
 			List<TemplateView> views = new ArrayList<TemplateView>();
@@ -1259,6 +1297,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return
 		 */
 		public Template.TemplateView getTemplate(int templateID) {
+			//TODO: view for unit
 			Template template = state.getTemplate(templateID);
 			if (template == null)
 				return null;
@@ -1273,6 +1312,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return The view of the first (and what should be the only) template that has the specified name, or null if that player does not have a template by that name
 		 */
 		public Template.TemplateView getTemplate(int player, String name) {
+			//TODO: make fog of war views
 			Template t = state.getTemplate(player,name);
 			if (t!=null)
 				return t.getView();
@@ -1380,6 +1420,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		 * @return Whether the player has researched an upgrade with id upgradeid.  Always false if you try it on someone else.
 		 */
 		public boolean hasUpgrade(int upgradeid, int playerid) {
+			//TODO: consider something
 			if (state.hasFogOfWar && playerid!=this.player && this.player != Agent.OBSERVER_ID)
 				return false;
 			return state.hasUpgrade(playerid, upgradeid);

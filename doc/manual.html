@@ -345,15 +345,17 @@
 			A simulation may need to be run for purposes of replaying a previous game for viewing or further learning or as a lookahead method in planning.<br/>
 			This can be done by interacting directly with the model, taking the place of the environment.
 			<code>//Written 4/13/2012
-				//Get a state
-				
+				//Methods of getting a simulated state
 					//If you are doing lookahead
 					StateCreator stateCreator = stateView.getStateCreator();
-					//Loading from basic serialization
-					StateCreator stateCreator = stateView.getStateCreator();
-					//Loading from an xml serialization
+					//Loading from serialization to rerun previous events:
+					  //via normal serialization
+					StateCreator stateCreator = new LoadingStateCreator();
+					  //via xml serialization
 					StateCreator stateCreator = new XmlStateCreator(); 
 			</code>
+			The lookahead is not effective in partial observability.  While the getStateCreator method shown above may give the currently visible units and templates, an agent that has been paying attention will likely be able to do far better.  For this reason, it is advised that the edu.cwru.sepia.enviroment.model.state.State.StateBuilder be used to either manually construct states or to track them as they change.
+		 
 		</p>
 		<h2 id="MapEditor">7. Making your own Map</h2>
 		<p>
