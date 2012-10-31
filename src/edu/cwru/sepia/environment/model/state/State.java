@@ -1047,7 +1047,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 						stateBuilder.addTemplate(new UpgradeTemplate(ut));
 					}
 					else {
-						throw new IllegalStateException();
+						throw new IllegalStateException("Only UnitTemplates and UpgradeTemplates supported so far here");
 					}
 				}
 				State builtState = stateBuilder.build();
