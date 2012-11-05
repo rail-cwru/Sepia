@@ -1334,7 +1334,9 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		
 		/**
 		 * Get the amount of supply (food) used by a specific player.
-		 * If you are not an observer, it will not work on other people with fog of war on
+		 * <br>This is the amount presently used, it will go up with new units being created and down with them dying.
+		 * <br>It does not change with farms added or removed.
+		 * If you are not an observer, it will not work on other people with fog of war on.
 		 * @param player
 		 * @return
 		 */
@@ -1345,7 +1347,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		}
 		/**
 		 * Get the maximum amount of supply that could ever be available to any player.
-		 * <br>This should be used in conjunction with getSupplyCapEarned to determine the effect of building a new farm/townhall.  
+		 * <br>This should be used in conjunction with {@link #getSupplyCapEarned(int)} to determine the effect of building a new farm/townhall.
+		 * <br>{@link #getSupplyCap(int)} is min({@link #getSupplyCapEarned(int)}, {@link #getSupplyCapMaximum()})
 		 * @return
 		 */
 		public int getSupplyCapMaximum() {
@@ -1354,6 +1357,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		/**
 		 * Get the maximum amount of supply (food) available to a specific player.
 		 * <br>This should be used for calculating whether another unit can be made.
+		 * <br>{@link #getSupplyCap(int)} is min({@link #getSupplyCapEarned(int)}, {@link #getSupplyCapMaximum()})
 		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @return
@@ -1366,7 +1370,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 		/**
 		 * Get the maximum amount of supply (food) earned by a specific player.
 		 * <br>This is the amount given by the farms and town halls or their alternatives.
-		 * <br>This should be used for calculating effect of farms/townhalls dying, not for calculating whether you can make a unit.  
+		 * <br>This should be used for calculating effect of farms/townhalls dying, not for calculating whether you can make a unit.
+		 * <br>{@link #getSupplyCap(int)} is min({@link #getSupplyCapEarned(int)}, {@link #getSupplyCapMaximum()})
 		 * If you are not an observer, it will not work on other people with fog of war on
 		 * @param player
 		 * @return
@@ -1377,7 +1382,8 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 			return state.getSupplyCapEarned(playerid);
 		}
 		/**
-		 * Gets the closest position that you can see.
+		 * Gets the closest position that you can see, using an outward spiraling pattern.
+		 * <br>This method is intended to help higher level planners to easily find open positions, as well as to predict the position of produced units or a worker that will succeed in building.
 		 * @param x
 		 * @param y
 		 * @return

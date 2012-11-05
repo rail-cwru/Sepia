@@ -280,8 +280,8 @@
 		</p>
 		<h2 id="Agent">6. Writing an Agent</h2>
 		<p>All agents written to interact with Sepia must extend the class
-		    <code>edu.cwru.sepia.agent.Agent</code>. Consult the javadoc for a
-			description of the methods in Agent. At the very least, you must implement
+		    <code>edu.cwru.sepia.agent.Agent</code>. Consult the <a href="../javadocs/edu/cwru/sepia/agent/Agent.html">Agent javadoc</a> for a
+			description of the methods. At the very least, you must implement
 			the initialStep(), middleStep(), and terminalStep() methods. These three
 			methods define the logic for the agent to receive a state update and return
 			a mapping of its units to actions for the next step.
@@ -290,10 +290,27 @@
 		If it does not match this (or just "int playernum"), it will not be loaded by the main method.  In order to pass the arguments in, each is put sequentially as --agentparam x.  More details in the How To Run section.
 		If you do add additional parameters, please override the static String getUsage() to explain their usage, as that will be called if it is used wrong.
 		</p>
+		<h3 id="StateHist">Accessing The State/History</h3>
+		<p>
+			The values recorded within the model are passed through the agents in the parameters to the initialStep, middleStep, and terminalStep.  It comes in the form of the two provided parameters: the <a href="../javadocs/edu/cwru/sepia/environment/model/state/State.StateView.html">StateView</a> and the <a href="../javadocs/edu/cwru/sepia/environment/model/history/History.HistoryView.html">HistoryView</a>.  Each is an immutable and permanent view of a part of the model for the beginning of that turn.
+			<h4 id="State" >The State</h4>
+			<br>The StateView provides information on the present state of the model, whereas the HistoryView tells the agent how it got there.  There are many methods and the <a href="../javadocs/edu/cwru/sepia/environment/model/state/State.StateView.html">javadoc</a> is recommended.  These methods range from utility methods like getCurrentTurn(), the getAll_____[Id]s() set of methods to get full lists of such things as units, templates, resource nodes, and upgrades; the related get____[Id]s(playerNumber); navigation enablers like the [has]____At(x,y) to check for collisions or inBounds(x,y); player resource amounts with getResourceAmount(playerId, ResourceType) and the more complex supply methods; as well as the more arcane getClosestOpenPosition(x,y) which is to simplify high level agents choosing building placement. Another important method is getStateCreator(), which (if the state is fully observable) returns a <a href="../javadocs/edu/cwru/sepia/environment/model/state/StateCreator.html">StateCreator</a> object that can create independant, mutable copies of the underlying state, for use in simulation. 
+			<h4 id="History" >The History</h4>
+			The history represents a complete history of the object, and thus most methods are parameterized with a step number.  This stepNumber will generally be set with the state's getTurnNumber() - 1 (as the turn number is the current turn, and you generally want to know what happened in the last turn).
+			<br>The history provides important feedback through the various action feedback mechanisms.  These logs include a commandsIssued(playerNumber, turnNumber), 
+			which track which actions were sent that turn in the map that the agents return; commandFeedback(playerNumber, turnNumber), which gives the feedback for all
+			commands which are still ongoing (IE, primitive actions from that turn or compound actions from that turn or before that haven't completed);
+			and getPrimitiveFeedback(playerNumber, turnNumber), which gives the feedback for each of the primitive actions that make up a compound action.  This will be the same as commandFeedback if and only if the commands issued are primitive actions themselves.  For compound actions, the unit number can be used to cross reference the compound and primitive actions, and there will often be several primitives that reach a completed status while the compound reaches it once.
+			
+			Feedback takes the form of an enum, indicating such stages as completion, incomplete, failed, and a few unusual fail conditions (see the  <a href="../javadocs/edu/cwru/sepia/action/ActionFeedback.html">javadoc</a> for details)
+			The feedback methods are the best way of verifying when an action you have sent is successful or failed, to help keep track of the activity of units. 
+			<br>The history also has a variety of logs (such as getDamageLog(turnNumber), getBirthLog(turnNumber), etc).  These logs mark significant events, and may be useful for assigning rewards.
+			<br>Most agents will want to monitor the birth and death logs to keep a running tally of the available units.  When the agents take sequential turns, this requires an agent to remember the last turn number that it acted on and loop over the logs for all turns that have elapsed since then. 
+		</p>
 		<h3 id="Actions">Actions</h3>
-		<p>In order to send commands to your units, you must construct a map from the IDs of your units to the actions that you want them to do.
+		<p>In order to send commands to your units, you must construct a <code>java.util.Map</code> from the IDs of your units to the actions that you want them to do.  This Map from Integer to Action is the return value for both the initialStep and middleStep methods (the terminalStep is purely information about the final step, so no actions need to be sent).
 		Actions may be constructed by calling various static factory methods in <code>edu.cwru.sepia.action.Action</code>, such as <code>createCompoundAttack</code>.
-		The actions are divided into two groups, primitive actions and compound actions.  The primitive actions represent basic commands to individual units, whereas the compound actions are higher level, requesting a series of primitive actions over the course of several turns as part of a larger command. 
+		The actions are divided into two groups, primitive actions and compound actions.  The primitive actions represent basic commands to individual units, whereas the compound actions are higher level, requesting a series of primitive actions over the course of several turns as part of a larger command.
 		There are 14 possible action types, described below:
 		<ul>
 			<li>
@@ -336,9 +353,6 @@
 				FAILED and FAILEDPERMANENTLY: These are internal actions used by the planner in executing the compound actions.
 			</li>
 		</ul>		
-		</p>
-		<h3>Accessing The State</h3>
-		<p>
 		</p>
 		<h3 id="AgentSimulation">Running Look-Ahead/Simulations</h3>
 		<p>
