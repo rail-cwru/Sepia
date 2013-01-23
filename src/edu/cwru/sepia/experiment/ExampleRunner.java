@@ -110,7 +110,6 @@ public class ExampleRunner extends Runner {
 			throw new IllegalArgumentException("Bad class, it had exception during call of "+constructorDescription);
 		}
 		State initState = stateCreator.createState();
-		model = new BestEffortModel(initState, seed, stateCreator, configuration);
 		env = new Environment(agents, model, seed);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
