@@ -127,37 +127,37 @@
 				</div>
 			</div>
 			<div class="definition">
-			<code>&lt;ModelParameters"&gt;</code>
+			<code>&lt;ModelParameters&gt;</code>
 				These represent the termination conditions<br>
 				<div class="definition">
-				<code>&lt;Conquest"&gt;<i>isconquest</i>&lt;/Conquest"&gt;</code>
+				<code>&lt;Conquest&gt;<i>isconquest</i>&lt;/Conquest&gt;</code>
 					<div class="definition">
 					A boolean value representing whether the victory condition is by killing units from all other players.
 					</div>
 				</div>
 				<div class="definition">
-				<code>&lt;Midas"&gt;<i>ismidas</i>&lt;/Midas"&gt;</code>
+				<code>&lt;Midas&gt;<i>ismidas</i>&lt;/Midas&gt;</code>
 					<div class="definition">
 					A boolean value representing whether the victory condition is by gathering resources
 					</div>
 				</div>
 				<div class="definition">
-				<code>&lt;ManifestDestiny"&gt;<i>ismanifestdestiny</i>&lt;/ManifestDestiny"&gt;</code>
+				<code>&lt;ManifestDestiny&gt;<i>ismanifestdestiny</i>&lt;/ManifestDestiny&gt;</code>
 					<div class="definition">
 					A boolean value representing whether the victory condition is by building structures
 					</div>
 				</div>
 				<div class="definition">
-				<code>&lt;TimeLimit"&gt;<i>timelimit</i>&lt;/TimeLimit"&gt;</code>
+				<code>&lt;TimeLimit&gt;<i>timelimit</i>&lt;/TimeLimit&gt;</code>
 					<div class="definition">
 					An integer representing the number of rounds until it terminates despite no victory conditions being met
 					</div>
 				</div>
 			<div>
-			<code>&lt;Runner"&gt;</code>
+			<code>&lt;Runner&gt;</code>
 				These represent the termination conditions<br>
 				<div class="definition">
-				<code>&lt;RunnerClass"&gt;<i>fullyqualifiedrunnername</i>&lt;/RunnerClass"&gt;</code>
+				<code>&lt;RunnerClass&gt;<i>fullyqualifiedrunnername</i>&lt;/RunnerClass&gt;</code>
 					<div class="definition">
 						The runner launches and controls episodes, it is expected that users doing extensive work will use modified Runners of their own devising.
 					</div>
@@ -165,7 +165,7 @@
 				
 				<div class="definition">
 				A runner may have any number of key,value pairs (or, to be more exact, Name,Value pairs), representing additional parameters that control the experiment or be passed through it to the model itself.<br>
-				<code>&lt;Parameter" Name="<i>key</i>>" Value="<i>value</i>"&gt;</code>
+				<code>&lt;Parameter Name="<i>key</i>" Value="<i>value</i>"&gt;</code>
 				<div class="definition">
 					The parameters represent certain expected arguments that may not be shared amongst all (for instance) models or runners.  They are designed to provide extensibility, allowing the designer of a runner to pass whatever parameters are needed.
 				</div>
@@ -358,16 +358,15 @@
 		<p>
 			A simulation may need to be run for purposes of replaying a previous game for viewing or further learning or as a lookahead method in planning.<br/>
 			This can be done by interacting directly with the model, taking the place of the environment.
-			<code>//Written 4/13/2012
-				//Methods of getting a simulated state
-					//If you are doing lookahead
-					StateCreator stateCreator = stateView.getStateCreator();
-					//Loading from serialization to rerun previous events:
-					  //via normal serialization
-					StateCreator stateCreator = new LoadingStateCreator();
-					  //via xml serialization
-					StateCreator stateCreator = new XmlStateCreator(); 
-			</code>
+			<pre>//Written 4/13/2012
+//Methods of getting a simulated state
+//If you are doing lookahead
+StateCreator stateCreator = stateView.getStateCreator();
+//Loading from serialization to rerun previous events:
+  //via normal serialization
+StateCreator stateCreator = new LoadingStateCreator();
+  //via xml serialization
+StateCreator stateCreator = new XmlStateCreator();</pre>
 			The lookahead is not effective in partial observability.  While the getStateCreator method shown above may give the currently visible units and templates, an agent that has been paying attention will likely be able to do far better.  For this reason, it is advised that the edu.cwru.sepia.enviroment.model.state.State.StateBuilder be used to either manually construct states or to track them as they change.
 		 
 		</p>
@@ -388,7 +387,7 @@
 		    (more info on these <a href="#FogofWar">here</a>).
 		    
 	    </p>
-		<p>As of version 3.1, you may not change templates, put in upgrades, give resources to players, or change unit or resource node attributes after having placed them.
+		<p>As of version 0.9.2, you may not change templates, put in upgrades, give resources to players, or change unit or resource node attributes after having placed them.
 		</p>  
 		<h2 id="Agent">8. Using the Scripted Agent</h2>
 		<p>The scripted agent may be found at <code>edu.cwru.sepia.agent.ScriptedGoalAgent</code>.
