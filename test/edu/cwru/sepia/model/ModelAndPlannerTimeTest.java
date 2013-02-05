@@ -81,7 +81,7 @@ public class ModelAndPlannerTimeTest {
 			Agent[] agents;
 			agents = new Agent[]{scriptedAgent, seer};
 			model.createNewWorld();
-			Environment calcEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)));
+			Environment calcEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)), new Configuration());
 			while (!calcEnv.isTerminated()) {
 				int thisStep = model.getState().getTurnNumber(); 
 				calcEnv.step();//Do the step so have the results for it.
@@ -122,7 +122,7 @@ public class ModelAndPlannerTimeTest {
 				agents = new Agent[]{mimic};
 			}
 			model.createNewWorld();
-			Environment testEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)));
+			Environment testEnv = new Environment(agents, model, new SequentialTurnTracker(new Random(seed)), new Configuration());
 			while (!testEnv.isTerminated()) {
 				int thisStep = model.getState().getTurnNumber(); 
 				testEnv.step();//Do the step so have the results for it.

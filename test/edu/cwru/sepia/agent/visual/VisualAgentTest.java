@@ -36,6 +36,7 @@ import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
+import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.util.TypeLoader;
 
 public class VisualAgentTest {
@@ -107,7 +108,7 @@ public class VisualAgentTest {
 		model.setVerbose(true);
 		visualAgent = new VisualAgent(player1,new String[]{"false","true"});
 		simpleAgent = new SimpleAgent1(player2);
-		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model, 123456);
+		env = new Environment(new Agent[]{visualAgent,simpleAgent}, model, 123456, new Configuration());
 	}
 	@Test
 	public void display() {

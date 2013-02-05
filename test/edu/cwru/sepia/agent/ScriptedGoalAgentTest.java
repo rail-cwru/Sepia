@@ -31,6 +31,8 @@ import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.ScriptedGoalAgent;
 import edu.cwru.sepia.agent.visual.VisualAgent;
 import edu.cwru.sepia.environment.model.LessSimpleModel;
+import edu.cwru.sepia.environment.model.Model;
+import edu.cwru.sepia.environment.model.SimpleModel;
 import edu.cwru.sepia.environment.model.SimplePlanner;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
@@ -42,7 +44,7 @@ import edu.cwru.sepia.util.TypeLoader;
 
 
 public class ScriptedGoalAgentTest {
-	static LessSimpleModel model;
+	static Model model;
 	static SimplePlanner planner;
 	static List<Template<?>> templates;
 	static State state;
@@ -82,7 +84,7 @@ public class ScriptedGoalAgentTest {
 		}
 		
 		planner = new SimplePlanner(state);
-		model=new LessSimpleModel(state, 1235,null,null);
+		model=new SimpleModel(state, 1235,null,null);
 		model.setVerbose(true);
 	}
 	

@@ -60,7 +60,7 @@ public class SimpleModelEpisodicRunner extends Runner {
 		SimpleModel model = new SimpleModel(stateCreator.createState(), seed, stateCreator, configuration);
 		File firstFile = new File("saves");
 		firstFile.mkdirs();
-		env = new Environment(agents ,model, seed);
+		env = new Environment(agents, model, seed, configuration);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			//System.out.println("\n=======> Start running episode " + episode);

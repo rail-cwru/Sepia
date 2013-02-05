@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -85,13 +84,7 @@ public final class Main {
 				printUsage("Invalid filename for preferences "+configfile);
 				return;
 			}
-//			//print out the preferences
-//			Preferences.userRoot().node("edu").node("cwru").node("sepia").exportSubtree(System.out);
 			i += 2;
-		}
-		else
-		{
-			clearPrefs();
 		}
 		String statefilename = args[i];
 		StateCreator stateCreator = null;
@@ -262,7 +255,7 @@ public final class Main {
 		firstFile.mkdirs();
 		int seed = 7;
 		LessSimpleModel model = new LessSimpleModel(initState, seed, stateCreator, configuration);
-		Environment env = new Environment(agents.toArray(new Agent[0]),model, seed);
+		Environment env = new Environment(agents.toArray(new Agent[0]),model, seed, configuration);
 		for(int episode = 0; episode < numEpisodes; episode++)
 		{
 			//System.out.println("\n=======> Start running episode " + episode);
@@ -318,22 +311,6 @@ public final class Main {
 		catch(NumberFormatException ex) {
 			return -1;
 		}
-	}
-	private static boolean loadPrefs(String arg) {
-		try {
-			Preferences.importPreferences(new FileInputStream(arg));
-			return true;
-		} catch (Exception e) {
-			System.err.println("Invalid preference file "+new File(arg).getAbsolutePath());
-			e.printStackTrace();
-			return false;
-		}
-	}
-	private static void clearPrefs() throws BackingStoreException {
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia");
-		prefs.clear();
-		prefs.node("environment").clear();
-		prefs.node("model").clear();
 	}
 	
 	private Main() {}

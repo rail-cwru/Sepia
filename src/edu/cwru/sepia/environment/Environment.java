@@ -25,7 +25,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.agent.Agent;
@@ -34,6 +33,7 @@ import edu.cwru.sepia.environment.model.LessSimpleModel;
 import edu.cwru.sepia.environment.model.Model;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.experiment.Configuration;
 
 /**
  * Simulates the environment component in a standard Reinforcement Learning setting. 
@@ -56,18 +56,17 @@ public class Environment
 	private Model model;
 	private int step;
 	private TurnTracker turnTracker;
-	public Environment(Agent[] connectedagents, Model model, int seed) {
-		this(connectedagents, model, readTurnTrackerFromPrefs(seed));
+	public Environment(Agent[] connectedagents, Model model, int seed, Configuration configuration) {
+		this(connectedagents, model, readTurnTrackerFromPrefs(seed, configuration), configuration);
 	}
 	/**
 	 * Do some reflection to read the type of tracker to use and call it's constructor with a random if possible, and failing that, no argument.
 	 * @param seed
 	 * @return
 	 */
-	private static TurnTracker readTurnTrackerFromPrefs(int seed) {
+	private static TurnTracker readTurnTrackerFromPrefs(int seed, Configuration configuration) {
 		TurnTracker toReturn=null;
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia").node("environment");
-		String trackerName = prefs.get("TurnTracker","edu.cwru.sepia.environment.SimultaneousTurnTracker");
+		String trackerName = configuration.get("environment.TurnTracker","edu.cwru.sepia.environment.SimultaneousTurnTracker");
 		Class<?> trackerClass = null;
 		try 
 		{
@@ -100,7 +99,7 @@ public class Environment
 		else
 			return toReturn;
 	}
-	public Environment(Agent[] connectedagents, Model model, TurnTracker turnTracker) {
+	public Environment(Agent[] connectedagents, Model model, TurnTracker turnTracker, Configuration configuration) {
 		this.connectedagents = connectedagents;
 		agentIntermediaries = new ThreadIntermediary[connectedagents.length];
 		for (int ag = 0; ag < connectedagents.length; ag++)
@@ -110,8 +109,7 @@ public class Environment
 		}
 		this.model = model;
 		
-		Preferences prefs = Preferences.userRoot().node("edu").node("cwru").node("sepia").node("environment");
-		DELAY_MS=prefs.getInt("InterruptTime",-1);
+		DELAY_MS=configuration.getInt("environment.InterruptTime",-1);
 		this.turnTracker = turnTracker;
 		Integer[] players = model.getState().getView(Agent.OBSERVER_ID).getPlayerNumbers();
 		for (Integer player : players)
