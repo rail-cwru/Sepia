@@ -396,7 +396,7 @@ public class GamePanel extends JPanel {
 				// produce some unit
 				List<Integer> productions = selectedUnit.getTemplateView().getProduces();
 				for(int prodTempID : productions) {
-					JMenuItem bItem = new JMenuItem("Produce " + state.getAllTemplates().get(prodTempID).getName());
+					JMenuItem bItem = new JMenuItem("Produce " + state.getTemplate(prodTempID).getName());
 					bItem.addActionListener(new PopupActionListener(selectedID, prodTempID, ActionType.COMPOUNDPRODUCE));
 					add(bItem);
 				}
