@@ -344,6 +344,20 @@ public class GamePanel extends JPanel {
 				/** right click on a unit */
 				int rightSelected = state.unitAt(x, y);
 				UnitView targetUnit = state.getUnit(rightSelected);
+				if (targetUnit.getID() == selectedUnit.getID()) {
+					//Units may build at their own position
+					if(selectedUnit.getTemplateView().getProduces()!=null &&
+							selectedUnit.getTemplateView().getProduces().size()>0 &&
+							selectedUnit.getTemplateView().canBuild()) {
+						List<Integer> productions = selectedUnit.getTemplateView().getProduces();
+						for(int prodTempID : productions) {
+							JMenuItem bItem = new JMenuItem("Build " + state.getTemplate(prodTempID).getName());
+							bItem.addActionListener(new PopupActionListener(selectedID, prodTempID, ActionType.COMPOUNDBUILD, x, y));
+							add(bItem);
+						}
+					}
+				}
+				
 				if(selectedUnit.getTemplateView().canAttack() && targetUnit.getTemplateView().getPlayer()!=playernum) {
 					// attack the target
 					//Action action = new TargetedAction(selectedID, ActionType.COMPOUNDATTACK, rightSelected);
@@ -526,18 +540,10 @@ public class GamePanel extends JPanel {
 			if(state.getUnit(id)!=null) {
 				info = "ID: " + id;
 				UnitView unit = state.getUnit(id);
-				//unit.getTemplateView().
-				String unitName = unit.getTemplateView().getName();
 				info += "\nHP: " + unit.getHP();
-				if(unitName.equals("Peasant")) {
+				if(unit.getTemplateView().canGather()) {
 					if(unit.getCargoAmount()>0)
 						info += "\n" + unit.getCargoType().toString() + ": " + unit.getCargoAmount();
-				} else if(unitName.equals("TownHall") || unitName.equals("Barracks")){
-					if(unit.getCargoAmount()>0)
-						info += "\n" + unit.getCargoType().toString() + unit.getCargoAmount();
-				}
-				else { // TODO: add other info for other types of unit
-					;
 				}
 			}
 			else {
