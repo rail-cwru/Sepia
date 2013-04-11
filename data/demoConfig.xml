@@ -1,0 +1,20 @@
+<Configuration>
+	<Map>data/map.xml</Map>
+	<Player Id="0">
+		<AgentClass>
+			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
+			<Argument>true</Argument>
+			<Argument>false</Argument>
+		</AgentClass>
+	</Player>
+	<ModelParameters>
+		<Conquest>true</Conquest>
+		<Midas>false</Midas>
+		<ManifestDestiny>false</ManifestDestiny>
+		<TimeLimit>1000</TimeLimit>
+	</ModelParameters>
+	<Runner>
+		<RunnerClass>edu.cwru.sepia.experiment.ExampleRunner</RunnerClass>
+		<Parameter Name="experiment.NumEpisodes" Value="5"/>
+	</Runner>
+</Configuration>

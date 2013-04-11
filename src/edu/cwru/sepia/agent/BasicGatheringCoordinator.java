@@ -36,11 +36,13 @@ import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
+import edu.cwru.sepia.util.DistanceMetrics;
 
 
 /**
- * A basic AI that does simple commanding of gatherer units
- *
+ * A basic AI that does simple commanding of gatherer units.
+ * <br>It tracks idle units, does simple gathering and returning of resources, and assists others with repeating their actions
+ * <br>Can be overridden with 
  */
 public class BasicGatheringCoordinator implements Serializable {
 	private static final long serialVersionUID = 3922892996550559953L;
@@ -142,104 +144,88 @@ public class BasicGatheringCoordinator implements Serializable {
 						lumberjacks.size() + " lumberjacks, and " + idles.size() + 
 						" idle units. Ignoring "+ others.size() + " others");
 		}
-		//for each builder or something
+		//for each builder (or other partially monitored worker) keep it doing what it was doing
 		for (Entry<Integer,Action> indact : others.entrySet()) {
 			actions.put(indact.getKey(), indact.getValue());
 		}
 		//for each miner/lumberjack
-		for (Integer minerID : miners)
+		continueWork(state, actions, miners, ResourceNode.Type.GOLD_MINE);
+		continueWork(state, actions, lumberjacks, ResourceNode.Type.TREE);
+	}
+	
+	/**
+	 * Ensures that resource-gathering workers continue doing so for both gather and deposit phases
+	 */
+	private void continueWork(StateView state, Map<Integer, Action> actionMap, List<Integer> workerIds, ResourceNode.Type assignedResourceNodeType) {
+		for (Integer workerID : workerIds)
 		{
-			UnitView miner = state.getUnit(minerID);
+			UnitView worker = state.getUnit(workerID);
 			//detect if it is carrying a resource
-			if (verbose && logger.isLoggable(Level.FINE)) {
-				logger.fine("A miner (id:"+minerID+") is carrying: " + miner.getCargoAmount());
-			}
-			if (miner.getCargoAmount()>0)
+			logger.fine("A "+assignedResourceNodeType+"-worker (id:"+workerID+") is carrying: " + worker.getCargoAmount() + " of type " + worker.getCargoType());
+			if (worker.getCargoAmount()>0)
 			{
-				//if it is, find the nearest base and tell it to go there
-				assignWorkerToReturn(state, miner, actions);
+				//if it is carrying a resource (even the wrong one) return it
+				actionMap.put(workerID, assignWorkerToReturn(state, worker));
 			}
 			else
 			{
-				//if it is not, find the nearest appropriate resource and tell it to go there
-				int closestDist = Integer.MAX_VALUE;
-				int closestID = Integer.MIN_VALUE;
-				for (Integer mineID :state.getResourceNodeIds(ResourceNode.Type.GOLD_MINE)) {
-					ResourceView mine = state.getResourceNode(mineID);
-					int dist = Math.abs(miner.getXPosition() - mine.getXPosition()) + Math.abs(miner.getYPosition() - mine.getYPosition());
-					if (dist < closestDist) {
-						closestID = mineID;
-						closestDist = dist;
-					}
-				}
-				if (closestID != Integer.MIN_VALUE) {
-					if (verbose) {
-						logger.info("Tossing in an action for a miner");
-					}
-					actions.put(minerID, Action.createCompoundGather(minerID, closestID));
-				}
-				else {
-					if (verbose) {
-						logger.info("Couldn't find a mine");
-					}
-				}
-				
-			}
-		}
-		for (Integer lumberjackID : lumberjacks)
-		{
-			UnitView lumberjack = state.getUnit(lumberjackID);
-			//detect if it is carrying a resource
-			if (lumberjack.getCargoAmount()>0)
-			{
-				
-				//if it is, find the nearest base and tell it to go there
-				assignWorkerToReturn(state, lumberjack, actions);
-			}
-			else
-			{
-				//if it is not, find the nearest appropriate resource and tell it to go there
-				int closestDist = Integer.MAX_VALUE;
-				int closestID = Integer.MIN_VALUE;
-				for (Integer treeID :state.getResourceNodeIds(ResourceNode.Type.TREE)) {
-					ResourceView tree = state.getResourceNode(treeID);
-					int dist = Math.abs(lumberjack.getXPosition() - tree.getXPosition()) + Math.abs(lumberjack.getYPosition() - tree.getYPosition());
-					if (dist < closestDist) {
-						closestID = treeID;
-						closestDist = dist;
-					}
-				}
-				if (closestID != Integer.MIN_VALUE) {
-					actions.put(lumberjackID, Action.createCompoundGather(lumberjackID, closestID));
-				}
-				
+				//if it is not carrying a resource, gather
+				actionMap.put(workerID, assignWorkerToGather(state, worker, assignedResourceNodeType));
 			}
 		}
 	}
-	private void assignWorkerToReturn(StateView state, UnitView worker, Map<Integer,Action> actions) {
-		//find the nearest base and tell it to go there
-		int closestID = Integer.MIN_VALUE;
+	
+	private Action assignWorkerToGather(StateView state, UnitView worker, ResourceNode.Type resourceNodeType) {
+		Action gatherAction = null;
+		//find the nearest appropriate resource and tell it to gather from that node
 		int closestDist = Integer.MAX_VALUE;
-		for (Integer potentialStoragePitID : state.getUnitIds(playerID))
-		{
-			if (verbose && logger.isLoggable(Level.FINE)) {
-				logger.fine("Evaluating Unit with id "+potentialStoragePitID);
+		int closestID = Integer.MIN_VALUE;
+		for (Integer resourceNodeID :state.getResourceNodeIds(resourceNodeType)) {
+			ResourceView resourceNode = state.getResourceNode(resourceNodeID);
+			int dist = DistanceMetrics.chebyshevDistance(worker.getXPosition(),worker.getYPosition(), resourceNode.getXPosition(), resourceNode.getYPosition());
+			if (dist < closestDist) {
+				closestID = resourceNodeID;
+				closestDist = dist;
 			}
-			UnitView potentialStoragePit = state.getUnit(potentialStoragePitID);
-			//it can still be carrying the other resource, it is better to have it choose to return with what it has than just go straight for the other resource
-			if (worker.getCargoType() == ResourceType.GOLD && potentialStoragePit.getTemplateView().canAcceptGold() || worker.getCargoType() == ResourceType.WOOD && potentialStoragePit.getTemplateView().canAcceptWood())
+		}
+		//If it found an action, use it
+		if (closestID != Integer.MIN_VALUE) {
+			gatherAction = Action.createCompoundGather(worker.getID(), closestID);
+		}
+		return gatherAction;
+	}
+	/**
+	 * Returns an action for returning resources to a depot that accepts the resource, null if it cannot find an appropriate depot (including if it is not carrying anything)
+	 * @param state
+	 * @param worker
+	 * @return
+	 */
+	private Action assignWorkerToReturn(StateView state, UnitView worker) {
+		Action returnAction = null;
+		if (worker.getCargoAmount() > 0) {
+			//find the nearest base and tell it to go there
+			int closestID = Integer.MIN_VALUE;
+			int closestDist = Integer.MAX_VALUE;
+			for (Integer potentialStoragePitID : state.getUnitIds(playerID))
 			{
-				int dist = Math.abs(worker.getXPosition() - potentialStoragePit.getXPosition()) + Math.abs(worker.getYPosition() - potentialStoragePit.getYPosition());
-				if (dist < closestDist)
+				logger.fine("Evaluating Unit with id "+potentialStoragePitID);
+				UnitView potentialStoragePit = state.getUnit(potentialStoragePitID);
+				if (worker.getCargoType() == ResourceType.GOLD && potentialStoragePit.getTemplateView().canAcceptGold() || worker.getCargoType() == ResourceType.WOOD && potentialStoragePit.getTemplateView().canAcceptWood())
 				{
-					closestID = potentialStoragePitID;
-					closestDist = dist;
+					int dist = DistanceMetrics.chebyshevDistance(worker.getXPosition(),worker.getYPosition(), potentialStoragePit.getXPosition(), potentialStoragePit.getYPosition());
+					if (dist < closestDist)
+					{
+						closestID = potentialStoragePitID;
+						closestDist = dist;
+					}
 				}
 			}
 			if (closestID != Integer.MIN_VALUE) {
-				actions.put(worker.getID(), Action.createCompoundDeposit(worker.getID(), closestID));
+				returnAction = Action.createCompoundDeposit(worker.getID(), closestID);
 			}
 		}
+		return returnAction;
 	}
+	
 
 }

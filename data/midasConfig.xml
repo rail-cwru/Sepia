@@ -1,0 +1,37 @@
+<Configuration>
+	<Map>rc_3m5t.xml</Map>
+	<Player Id="0">
+		<AgentClass>
+			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
+			<Argument>true</Argument>
+			<Argument>true</Argument>
+		</AgentClass>
+	</Player>
+	<Player Id="0">
+		<AgentClass>
+			<ClassName>edu.cwru.sepia.agent.ResourceCollectionAgent</ClassName>
+			<Argument>1600</Argument>
+			<Argument>1600</Argument>
+			<Argument>4</Argument>
+		</AgentClass>
+	</Player>
+	<ModelParameters>
+		<Conquest>false</Conquest>
+		<Midas>true</Midas>
+		<Requirement Name="environment.model.RequiredGold" Value="1600"/>
+		<Requirement Name="environment.model.RequiredWood" Value="1600"/>
+		<ManifestDestiny>false</ManifestDestiny>
+		<TimeLimit>100000</TimeLimit>
+	</ModelParameters>
+	<Runner>
+		<RunnerClass>edu.cwru.sepia.experiment.SimpleModelEpisodicRunner</RunnerClass>
+		<Parameter Name="experiment.NumEpisodes" Value="100"/>
+		<Parameter Name="experiment.EpisodesPerSave" Value="10"/>
+		<Parameter Name="experiment.SaveAgents" Value="false"/>
+		<Parameter Name="experiment.episodesperagentsave" Value="4" />
+		<Parameter Name="experiment.episodesperreplaysave" Value="4" />
+		<Parameter Name="experiment.save.replaydirectory" Value="saves/test1" />
+		<Parameter Name="experiment.save.agentdirectory" Value="saves/test1" />
+		<Parameter Name="experiment.temp.thing" Value="saves/test1" />
+	</Runner>
+</Configuration>

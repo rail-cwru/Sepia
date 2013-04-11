@@ -20,13 +20,17 @@
 package edu.cwru.sepia.agent.visual;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultCaret;
 /**
  * A text area to be used by agents.
@@ -34,8 +38,37 @@ import javax.swing.text.DefaultCaret;
  * @author The Condor
  *
  */
-public class VisualLog extends JFrame{
+public class VisualLog extends JFrame {
+	private class VisualLogHandler extends Handler {
+		/* (non-Javadoc)
+		 * @see java.util.logging.Handler#close()
+		 */
+		@Override
+		public void close() throws SecurityException {
+			VisualLog.this.clearLog();
+			VisualLog.this.setVisible(false);
+			
+		}
 
+		/* (non-Javadoc)
+		 * @see java.util.logging.Handler#flush()
+		 */
+		@Override
+		public void flush() {
+			//Nothing to do, there is nothing to flush
+		}
+
+		/* (non-Javadoc)
+		 * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
+		 */
+		@Override
+		public void publish(LogRecord record) {
+			VisualLog.this.writeLine(record.getLevel()+":"+record.getMessage());
+		}
+		
+	}
+	
+	
 	private JTextArea textlog;
 	private JScrollPane scrolling;
 	private static final long serialVersionUID = 145642630197820949L;
@@ -52,6 +85,23 @@ public class VisualLog extends JFrame{
 		this.pack();
 		this.setTitle(agentname+"'s Log");
 		this.setVisible(true);
+		scrolling.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener(){
+			private boolean lockToBottom = true;
+			@Override
+			public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
+				//getValueIsAdjusting is whether it is being moved by a person (mostly, it still messes up with the mouse wheel, unfortunately)
+				if (adjustmentEvent.getValueIsAdjusting()) {
+					lockToBottom = getBottom() == adjustmentEvent.getValue();
+				} else {
+					if (lockToBottom) {
+						scrolling.getVerticalScrollBar().setValue(getBottom());
+					}
+				}
+			}
+			private int getBottom() {
+				return scrolling.getVerticalScrollBar().getMaximum() - scrolling.getVerticalScrollBar().getModel().getExtent();
+			}
+			});
 	}
 	/**
 	 * Clear the log, deleting all entries.
@@ -61,7 +111,13 @@ public class VisualLog extends JFrame{
 		textlog.setText("");
 	}
 	
-	
+	/**
+	 * Attach a logger, so that this log will output everything sent to the logger
+	 * @param logger
+	 */
+	public void attachLogger(Logger logger) {
+		logger.addHandler(new VisualLogHandler());
+	}
 	/**
 	 * Add another line to the log
 	 * @param newline A line to print
@@ -69,17 +125,7 @@ public class VisualLog extends JFrame{
 	public void writeLine(String newline)
 	{
 		//Scroll to the bottom only if you are at the bottom
-		boolean shouldscroll = (scrolling.getVerticalScrollBar().getValue()+scrolling.getVerticalScrollBar().getModel().getExtent()==scrolling.getVerticalScrollBar().getMaximum());
 		textlog.append(((!textlog.getText().equals(""))?"\n":"")+newline);
-		if (shouldscroll)
-		{
-			
-			SwingUtilities.invokeLater(new Runnable(){public void run(){
-				scrolling.getVerticalScrollBar().setValue(scrolling.getVerticalScrollBar().getMaximum());
-			}
-			}
-					);
-		}
 	}
 	int t;
 	@Override public void setPreferredSize(Dimension preferredSize)

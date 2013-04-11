@@ -1,5 +1,5 @@
 <Configuration>
-	<Map>data/durcom_4f1ax8.xml</Map>
+	<Map>data/lessoverkill.xml</Map>
 	<Player Id="0">
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
@@ -17,35 +17,24 @@
 			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
+	<Player Id="1">
+	<AgentClass>
+		<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
+		<Argument>true</Argument>
+		<Argument>false</Argument>
+	</AgentClass>
+	</Player>
 	<Player Id="2">
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
 		</AgentClass>
 	</Player>
-	<Player Id="3">
-		<AgentClass>
-			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
-		</AgentClass>
-	</Player>
-	<Player Id="4">
-		<AgentClass>
-			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
-		</AgentClass>
-	</Player>
-	<Player Id="5">
-		<AgentClass>
-			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
-		</AgentClass>
-	</Player>
-	<Player Id="6">
-		<AgentClass>
-			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
-		</AgentClass>
-	</Player>
-	<Player Id="7">
-		<AgentClass>
-			<ClassName>edu.cwru.sepia.agent.CombatAgent</ClassName>
-		</AgentClass>
+	<Player Id="2">
+	<AgentClass>
+	<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
+		<Argument>true</Argument>
+		<Argument>false</Argument>
+	</AgentClass>
 	</Player>
 	<ModelParameters>
 		<Conquest>true</Conquest>
@@ -60,9 +49,10 @@
 		<Parameter Name="experiment.SaveAgents" Value="false"/>
 		<Parameter Name="experiment.episodesperagentsave" Value="4" />
 		<Parameter Name="experiment.episodesperreplaysave" Value="4" />
-		<Parameter Name="experiment.save.replaydirectory" Value="saves/test1" />
+		<Parameter Name="experiment.save.replaydirectory" Value="hsaves/test1" />
 		<Parameter Name="experiment.save.agentdirectory" Value="saves/test1" />
 		<Parameter Name="experiment.temp.thing" Value="saves/test1" />
 		<Parameter Name="environment.model.class" Value="edu.cwru.sepia.environment.model.SimpleModel" />
+		<Parameter Name="environment.InterruptTime" Value="5000" />
 	</Runner>
 </Configuration>

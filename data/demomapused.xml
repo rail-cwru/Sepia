@@ -1,0 +1,36 @@
+<state xExtent="15" yExtent="15" fogOfWar="false">
+    <player>
+        <ID>0</ID>
+        <unit>
+            <ID>0</ID>
+            <currentHealth>60</currentHealth>
+            <xPosition>2</xPosition>
+            <yPosition>3</yPosition>
+            <templateID>4</templateID>
+            <cargoAmount>0</cargoAmount>
+            <unitTask>Idle</unitTask>
+            <progressAmount>0</progressAmount>
+        </unit>
+        <template xsi:type="UnitTemplate">
+            <ID>4</ID>
+            <goldCost>600</goldCost>
+            <timeCost>1</timeCost>
+            <name>Footman</name>
+            <baseHealth>60</baseHealth>
+            <baseAttack>6</baseAttack>
+            <armor>2</armor>
+            <sightRange>4</sightRange>
+            <canGather>false</canGather>
+            <canMove>true</canMove>
+            <goldGatherRate>0</goldGatherRate>
+            <durationMove>3</durationMove>
+            <durationAttack>10</durationAttack>
+        </template>
+        <resourceAmount>
+            <quantity>100</quantity>
+            <type>GOLD</type>
+        </resourceAmount>
+        <supply>5</supply>
+        <supplyCap>0</supplyCap>
+    </player>
+</state>
