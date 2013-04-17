@@ -48,7 +48,7 @@ import edu.cwru.sepia.experiment.ExampleRunner;
 /**
  * A visual agent
  * This serves two purposes: it allows a human to play the game, and, more importantly, 
- * it allows one to look at what the agent is doing through it's effect on the state.
+ * it allows one to look at what the agent is doing through its effect on the state.
  *
  */
 public class VisualAgent extends Agent implements ActionListener {
@@ -61,16 +61,7 @@ public class VisualAgent extends Agent implements ActionListener {
     ControlPanel controlPanel = new ControlPanel();
     StatusPanel statusPanel = new StatusPanel();
 	private final Semaphore stepSignal = new Semaphore(0);
-	private final KeyAdapter canvasKeyListener = new KeyAdapter() {
-		public void keyPressed(KeyEvent e) {
-//			System.out.println(e.getKeyCode());
-			if(e.getKeyCode() == KeyEvent.VK_ENTER)
-			{
-				stepSignal.drainPermits();
-				stepSignal.release();
-			}
-		}
-	};
+
 	
 	protected final boolean humanControllable;
 	protected final boolean infoVis;
@@ -81,15 +72,23 @@ public class VisualAgent extends Agent implements ActionListener {
 		infoVis = Boolean.parseBoolean(otherargs[1]);
 		setupScreen();
 	}
-	private void setupScreen() {
-		gamePanel = new GamePanel(this);
+	GamePanel createGamePanel() {
+		return new GamePanel(this, new DefaultGameDrawer());
+	}
+	void setupScreen() {
+		gamePanel = createGamePanel();
 		actions = new HashMap<Integer, Action>();
-		Runnable runner = new Runnable() {
-			VisualAgent agent;
-			public Runnable setAgent(VisualAgent agent) {
-				this.agent = agent;
-				return this;
+		final KeyAdapter canvasKeyListener = new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+//				System.out.println(e.getKeyCode());
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					stepSignal.drainPermits();
+					stepSignal.release();
+				}
 			}
+		};
+		Runnable runner = new Runnable() {
 			@Override
 			public void run() {
 				screen = new GameScreen(gamePanel, controlPanel, statusPanel);
@@ -97,7 +96,7 @@ public class VisualAgent extends Agent implements ActionListener {
 				gamePanel.addKeyListener(canvasKeyListener);
 				controlPanel.addStepperListener(VisualAgent.this);
 			}					
-		}.setAgent(this);
+		};
 		SwingUtilities.invokeLater(runner);
 	}
 	/**
@@ -112,26 +111,6 @@ public class VisualAgent extends Agent implements ActionListener {
 		infoVis=true;
 		setupScreen();
 	}
-//	public VisualAgent(int playernum, final StateView initState) {
-//		super(playernum, false);
-//		humanControllable = false;
-//		infoVis = false;
-//		actions = new HashMap<Integer, Action>();
-//		Runnable runner = new Runnable() {
-//			VisualAgent agent;
-//			public Runnable setAgent(VisualAgent agent) {
-//				this.agent = agent;
-//				return this;
-//			}
-//			@Override
-//			public void run() {
-//				screen = new GameScreen(gamePanel, controlPanel, logPanel);
-//                screen.pack();
-//				gamePanel.updateState(initState);
-//			}					
-//		}.setAgent(this);
-//		SwingUtilities.invokeLater(runner);
-//	}
 
 	@Override
 	public Map<Integer, Action> initialStep(StateView newstate, HistoryView statehistory) {

@@ -278,6 +278,8 @@
 		<p>
 			For more detailed information or to make changes, see data/unit_templates.
 		</p>
+		<h3 id="VisualAgentEnhancement">5.1 Enhancing the visualization</h3>
+		<p>When you are writing an agent, you may find yourself wanting to change the visualization, to overlay internal agent information or to focus on a particular aspect of the simulation.  Sepia provides the ability to easily augment the visualization through the edu.cwru.sepia.agent.visual.GameDrawer interface.  The instance used by the visual agent is created in the visual agent's createGamePanel() method.  Overriding this will cause your visual agent subclass to display differently.  The GameDrawer interface has updateState() methods that give it access to the state and history.  It is broken down into drawing methods for the background, the top bar, the tiles, and the foreground.  Each method is has parameters of a DrawingContext, which provides the context in which the visualization takes place, with convenience methods for converting between pixel coordinates and game world coordinates.  The methods also recieve a java.awt.Graphics to create the visual output.  Most enhancements should be doable by strategically subclassing the DefaultGameDrawer and altering the tile or foreground drawing methods.  DefaultGameDrawer also has overrideable methods for drawing individual units and resources on the map</p>
 		<h2 id="Agent">6. Writing an Agent</h2>
 		<p>All agents written to interact with Sepia must extend the class
 		    <code>edu.cwru.sepia.agent.Agent</code>. Consult the <a href="../javadocs/edu/cwru/sepia/agent/Agent.html">Agent javadoc</a> for a

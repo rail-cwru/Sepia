@@ -21,6 +21,7 @@ package edu.cwru.sepia.agent.visual.editor;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -30,6 +31,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -41,17 +43,20 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
 import org.json.JSONException;
 
 import edu.cwru.sepia.agent.Agent;
+import edu.cwru.sepia.agent.visual.DefaultGameDrawer;
+import edu.cwru.sepia.agent.visual.DrawingContext;
 import edu.cwru.sepia.agent.visual.GamePanel;
 import edu.cwru.sepia.agent.visual.GameScreen;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
-import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.util.GameMap;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -429,8 +434,8 @@ public class Editor extends JFrame {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			int x = gamePanel.unscaleX(e.getX());
-			int y = gamePanel.unscaleY(e.getY());
+			int x = gamePanel.convertPixelToGameX(e.getX());
+			int y = gamePanel.convertPixelToGameY(e.getY());
 			System.out.println(x+","+y);
 			int player = playerSelector.getSelectedIndex();
 			if (!state.inBounds(x, y))
@@ -548,7 +553,13 @@ public class Editor extends JFrame {
 			state = builder.build();
 		}
         final State fstate = state;
-        final GamePanel gamePanel = new GamePanel(null);
+        //Use a game panel that has no top bar and does not attempt to get resources from it
+        final GamePanel gamePanel = new GamePanel(null, new DefaultGameDrawer(){
+        	@Override public int getTopBarHeight() {
+        		return 0;
+        	}
+        	@Override public void drawTopBar(DrawingContext context, Graphics g){};
+        });
 		final GameScreen screen = new GameScreen(gamePanel);
         final String ftemplates = templates;
 		SwingUtilities.invokeLater(new Runnable() {

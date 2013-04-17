@@ -46,31 +46,6 @@ public abstract class DrawingStrategy {
 	
 	public abstract void draw(Graphics g, int tlx, int tly);
 	
-	public static DrawingStrategy treeGraphic() {
-		if(tree == null)
-		{
-			tree = new DrawingStrategy() {
-				@Override
-				public void draw(Graphics g, int tlx, int tly) {
-					Color previous = g.getColor();
-					g.setColor(new Color(0,127,0));
-					Polygon top = new Polygon();
-					top.addPoint(tlx+16, tly+2);
-					top.addPoint(tlx+4, tly+12);
-					top.addPoint(tlx+8, tly+12);
-					top.addPoint(tlx+2, tly+22);
-					top.addPoint(tlx+30, tly+22);
-					top.addPoint(tlx+24, tly+12);
-					top.addPoint(tlx+28, tly+12);
-					g.fillPolygon(top);
-					g.setColor(new Color(0xA5,0x2A,0x2A));
-					g.fillRect(tlx+12, tly+22, 8, 10);
-					g.setColor(previous);
-				}
-			};
-		}
-		return tree;
-	}
 	public static DrawingStrategy revealedTreeGraphic() {
 		if(revealedtree == null)
 		{
@@ -125,21 +100,7 @@ public abstract class DrawingStrategy {
 		}
 		return revealedmine;
 	}
-	public static DrawingStrategy mineGraphic() {
-		if(mine == null)
-		{
-			mine = new DrawingStrategy() {
-				@Override
-				public void draw(Graphics g, int tlx, int tly) {
-					Color previous = g.getColor();
-					g.setColor(new Color(0xFF,0xFF,0x33));					
-					g.fillRect(tlx+6, tly+6, 20, 20);
-					g.setColor(previous);
-				}
-			};
-		}
-		return mine;
-	}
+
 	
 	/**
 	 * graphic for the fog of war

@@ -57,25 +57,22 @@ public class GamePanel extends JPanel {
 
     public static final int WIDTH = 800, HEIGHT = 600;
 	public static final int SCALING_FACTOR = 32;
-	public static final Color[] playerColors = new Color[] {
-        new Color(255,0,0), new Color(0,255,0),
-        new Color(0,0,255), new Color(255,255,0),
-        new Color(255,0,255), new Color(0,255,255),
-        new Color(255,255,255), new Color(0,0,0)
-    };
+
 
 	private StateView currentState;
 	private HistoryView latestHistory;
-	private int tlx;
-	private int tly;
+	private DrawingContext latestContext;
+	private int gameWorldTopLeftX;
+	private int gameWorldTopLeftY;
 
 	private VisualAgent agent;
+	private GameDrawer gameDrawer;
 	private int playernum;
 	private int selectedID;  	// left clicked
 	private int infoVisSelectedID; // double clicked
 	private Info info;
 	
-    public GamePanel(VisualAgent agent) {
+    public GamePanel(VisualAgent agent, GameDrawer gameDrawer) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
         // Add Key Bindings
@@ -93,6 +90,8 @@ public class GamePanel extends JPanel {
         
         this.addMouseListener(this.new GamePanelMouseListener());
         this.agent = agent;
+        this.gameDrawer = gameDrawer;
+        recalculateContext();
         if(agent!=null)
         	this.playernum = agent.getPlayerNumber();
         selectedID = -1;
@@ -104,41 +103,46 @@ public class GamePanel extends JPanel {
         infoVisSelectedID = -1;
     }
     
+    public void recalculateContext() {
+    	latestContext = new DrawingContext(agent == null ? -1 : agent.getPlayerNumber(), gameDrawer.getTopBarHeight(), gameWorldTopLeftX, gameWorldTopLeftY, getWidth(), getHeight(), SCALING_FACTOR);
+    }
+    
+    public int convertPixelToGameX(int pixelX) {
+    	return latestContext.convertPixelToGameWorldX(pixelX);
+    }
+    public int convertPixelToGameY(int pixelY) {
+    	return latestContext.convertPixelToGameWorldY(pixelY);
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
-    	g.setColor(new Color(0x00,0xFF,0xFF));//aqua for things out of bounds
-        g.fillRect(0, 0, getWidth(), getHeight());//background
-        if(currentState == null)
-            return;
-        g.setColor(new Color(0x99,0x66,0x33));//brown color
-        g.fillRect(scaleX(0), scaleY(0), scaleX(currentState.getXExtent())-scaleX(0),scaleY(currentState.getYExtent())-scaleY(0));//background
-        Color oldcolor = g.getColor();
-        
-        //Draw some lines
+    	if (currentState == null) {
+    		return;
+    	}
+    	recalculateContext();
+    	gameDrawer.drawBackground(latestContext, g);
+        for (int x = 0; x < currentState.getXExtent(); x++) {
+        	for (int y = 0; y < currentState.getYExtent(); y++) {
+        		gameDrawer.drawTile(latestContext, g, x, y);
+        	}
+        }
+      //Draw some lines
         g.setColor(new Color(0x66,0x44,0x22));
-        for (int i = 0; i<=currentState.getXExtent(); i++)
-            g.drawLine(scaleX(i), scaleY(0), scaleX(i), scaleY(currentState.getYExtent()));
+        for (int i = 0; i<=currentState.getXExtent(); i++) {
+            g.drawLine(latestContext.convertGameWorldToPixelX(i), latestContext.convertGameWorldToPixelY(0), latestContext.convertGameWorldToPixelX(i), latestContext.convertGameWorldToPixelY(currentState.getYExtent()));
+        }
         for (int j = 0; j<=currentState.getYExtent(); j++)
-            g.drawLine(scaleX(0), scaleY(j), scaleX(currentState.getXExtent()), scaleY(j));
-        	
-        //Draw some tiny numbers
-        Font oldfont = g.getFont();
-        g.setFont(g.getFont().deriveFont(7f));
-        g.setColor(new Color(255,128,60));
-        for (int i = 0; i<currentState.getXExtent(); i++)
-        	for (int j = 0; j<currentState.getYExtent(); j++)
-        		g.drawString(i+","+j, scaleX(i)+1, scaleY(j)+7);
-        g.setFont(oldfont);
-        g.setColor(oldcolor);
+            g.drawLine(latestContext.convertGameWorldToPixelX(0), latestContext.convertGameWorldToPixelY(j), latestContext.convertGameWorldToPixelX(currentState.getXExtent()), latestContext.convertGameWorldToPixelY(j));
         
+        gameDrawer.drawForeground(latestContext, g);
         
-        //draw selected by left click
+      //draw selected by left click
         if(selectedID>=0) {
         	UnitView unit = currentState.getUnit(selectedID);
         	if (unit != null)
         	{
-	        	int x = scaleX(unit.getXPosition());
-	            int y = scaleY(unit.getYPosition());
+	        	int x = latestContext.convertGameWorldToPixelX(unit.getXPosition());
+	            int y = latestContext.convertGameWorldToPixelY(unit.getYPosition());
 	            if(x >= 0 && y >= 0) {
 	            	DrawingStrategy selected = DrawingStrategy.selectedGraphic();
 	            	selected.draw(g, x, y);
@@ -146,104 +150,7 @@ public class GamePanel extends JPanel {
         	}
         }
         
-        if (latestHistory!=null)
-        {
-        //draw revealed resources
-        DrawingStrategy revealedTree = DrawingStrategy.revealedTreeGraphic();
-        DrawingStrategy revealedMine = DrawingStrategy.revealedMineGraphic();
-        for (RevealedResourceNodeLog rrl : latestHistory.getRevealedResourceNodeLogs())
-        {
-        	int x = scaleX(rrl.getResourceNodeXPosition());
-        	int y = scaleY(rrl.getResourceNodeYPosition());
-        	if (rrl.getResourceNodeType()==Type.GOLD_MINE)
-        	{
-        		revealedMine.draw(g, x, y);
-        	}
-        	else if (rrl.getResourceNodeType()==Type.TREE)
-        	{
-        		revealedTree.draw(g, x, y);
-        	}
-        }
-        }
-        //draw trees
-        DrawingStrategy tree = DrawingStrategy.treeGraphic();
-        for(int id : currentState.getResourceNodeIds(ResourceNode.Type.TREE))
-        {
-            ResourceView node = currentState.getResourceNode(id);
-            int x = scaleX(node.getXPosition());
-            int y = scaleY(node.getYPosition());
-            if(x < 0 || y < 0)
-                continue;
-            tree.draw(g, x, y);
-        }
         
-        //draw mines
-        DrawingStrategy mine = DrawingStrategy.mineGraphic();
-        for(int id : currentState.getResourceNodeIds(ResourceNode.Type.GOLD_MINE))
-        {
-            ResourceView node = currentState.getResourceNode(id);
-            int x = scaleX(node.getXPosition());
-            int y = scaleY(node.getYPosition());
-            if(x < 0 || y < 0)
-                continue;
-            mine.draw(g, x, y);
-        }
-        
-        //draw units
-        for(int id : currentState.getAllUnitIds())
-        {
-            UnitView unit = currentState.getUnit(id);
-            int x = scaleX(unit.getXPosition());
-            int y = scaleY(unit.getYPosition());
-            if(x < 0 || y < 0 || x > getWidth() || y > getHeight())
-                continue;
-            DrawingStrategy letter = DrawingStrategy.charGraphic(unit.getTemplateView().getCharacter());
-            g.setColor(playerColors[unit.getTemplateView().getPlayer()]);
-            letter.draw(g, x, y);
-        }
-        //Draw weapons fire
-        if (latestHistory!=null)
-        {
-        Color lastcolor = g.getColor();
-        for (DamageLog damage :latestHistory.getDamageLogs(currentState.getTurnNumber()-1))
-        {
-        	UnitView attacker = currentState.getUnit(damage.getAttackerID());
-        	UnitView defender = currentState.getUnit(damage.getDefenderID());
-        	g.setColor(playerColors[damage.getAttackerController()]);
-        	if (attacker != null && defender != null)
-        	{
-        		//do an offset so you can see two things shooting at each other
-        		int yplayeroffset = damage.getAttackerController()*2;
-        		g.drawLine(scaleX(attacker.getXPosition())+SCALING_FACTOR/2, scaleY(attacker.getYPosition())+SCALING_FACTOR/2, scaleX(defender.getXPosition())+SCALING_FACTOR/2, scaleY(defender.getYPosition())+SCALING_FACTOR/2 + yplayeroffset);
-        		g.drawString(Integer.toString(damage.getDamage()), (int)(scaleX(attacker.getXPosition())*0.75+scaleX(defender.getXPosition())*0.25)+SCALING_FACTOR/2, (int)(scaleY(attacker.getYPosition())*.75+scaleY(defender.getYPosition())*.25)+SCALING_FACTOR/2+yplayeroffset);
-        	}
-        	else if (attacker!=null) 
-        	{
-        		//Just draw the number over the attacker
-        		g.drawString(Integer.toString(damage.getDamage()), scaleX(attacker.getXPosition())+SCALING_FACTOR/2, scaleY(attacker.getYPosition())+SCALING_FACTOR/2);
-        	}
-        	else if (defender!=null)
-        	{
-        		//Just draw the number over the defender
-        		g.drawString(Integer.toString(damage.getDamage()), scaleX(defender.getXPosition())+SCALING_FACTOR/2, scaleY(defender.getYPosition())+SCALING_FACTOR/2);
-        	}
-        	
-        }
-        g.setColor(lastcolor);
-        }
-       
-        //draw fog of war
-        DrawingStrategy fog = DrawingStrategy.fogGraphic();
-        for (int i = 0; i<currentState.getXExtent(); i++)
-        	for (int j = 0; j<currentState.getYExtent(); j++)
-            {
-        		if (!currentState.canSee(i, j))
-        			fog.draw(g, scaleX(i), scaleY(j));
-            }
-        
-       
-        g.setColor(new Color(255,128,127));
-        g.drawString("TL:"+tlx+","+tly, getWidth()-50, getHeight()-16);
         g.drawString(currentState.getXExtent()+"x"+currentState.getYExtent(), getWidth()-50, getHeight()-1);
         //draw info vis (by double click)
         if(infoVisSelectedID>=0 && info!=null) {
@@ -255,6 +162,8 @@ public class GamePanel extends JPanel {
         		}
         	}
         }
+        
+        gameDrawer.drawTopBar(latestContext, g);
     }
 
     public static enum ShiftDirection {
@@ -277,41 +186,30 @@ public class GamePanel extends JPanel {
         		return;
             switch(shiftDirection) {
 			case UP:
-				if(tly > 0)
-					tly--;
+				if(gameWorldTopLeftY > 0)
+					gameWorldTopLeftY--;
 				break;
 			case DOWN:
-				if(tly + getHeight()/SCALING_FACTOR < currentState.getYExtent())
-				tly++;
+				if(gameWorldTopLeftY + getHeight()/SCALING_FACTOR < currentState.getYExtent())
+				gameWorldTopLeftY++;
 				break;
 			case LEFT:
-				if(tlx > 0)
-					tlx--;
+				if(gameWorldTopLeftX > 0)
+					gameWorldTopLeftX--;
 				break;
 			case RIGHT:
-				if(tlx + getWidth()/SCALING_FACTOR < currentState.getXExtent())
-					tlx++;	
+				if(gameWorldTopLeftX + getWidth()/SCALING_FACTOR < currentState.getXExtent())
+					gameWorldTopLeftX++;	
 				break;
             }
+            recalculateContext();
             GamePanel.this.repaint();
         }
 
     }
-
-	public int scaleX(int x) {
-		return (x-tlx)*SCALING_FACTOR;
-	}
-	public int scaleY(int y) {
-		return (y-tly)*(SCALING_FACTOR);
-	}
-	public int unscaleX(int x) {
-		return x/SCALING_FACTOR+tlx;
-	}
-	public int unscaleY(int y) {
-		return y/SCALING_FACTOR+tly;
-	}
-	
+    
 	public void updateState(StateView state, HistoryView history) {
+		this.gameDrawer.updateState(state, history);
 		this.currentState = state;
 		this.latestHistory = history;
         this.repaint();
@@ -321,10 +219,6 @@ public class GamePanel extends JPanel {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			//int x = unscaleX(e.getX());
-			//int y = unscaleY(e.getY());
-			//System.out.println(x+","+y);
-			
 			if(agent!=null && agent.humanControllable)
 				humanControl(e);
 			if(agent == null || agent.infoVis)
@@ -338,8 +232,8 @@ public class GamePanel extends JPanel {
 		private static final long serialVersionUID = 7823418576361323507L;
 
 		public PopupActionMenu(StateView state, MouseEvent e, UnitView selectedUnit) {
-			int x = unscaleX(e.getX());
-			int y = unscaleY(e.getY());
+			int x = latestContext.convertPixelToGameWorldX(e.getX());
+			int y = latestContext.convertPixelToGameWorldY(e.getY());
 			if(state.unitAt(x, y)!=null) { 
 				/** right click on a unit */
 				int rightSelected = state.unitAt(x, y);
@@ -467,8 +361,8 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void infoVisual(MouseEvent e) {
-		int x = unscaleX(e.getX());
-		int y = unscaleY(e.getY());
+		int x = latestContext.convertPixelToGameWorldX(e.getX());
+		int y = latestContext.convertPixelToGameWorldY(e.getY());
 		StateView state = currentState;
 		if(e.getButton()==MouseEvent.BUTTON1 && e.getClickCount()==2) { // double click
 			//System.out.println("double clicked!");
@@ -485,8 +379,8 @@ public class GamePanel extends JPanel {
 	}
 	
 	private void humanControl(MouseEvent e) {
-		int x = unscaleX(e.getX());
-		int y = unscaleY(e.getY());
+		int x = latestContext.convertPixelToGameWorldX(e.getX());
+		int y = latestContext.convertPixelToGameWorldY(e.getY());
 		StateView state = currentState;
 		//System.out.println(x+","+y);
 		if(e.getButton()==MouseEvent.BUTTON1) { // left click
@@ -523,17 +417,17 @@ public class GamePanel extends JPanel {
 		}
 		public int getX() {
 			if(state.getUnit(id)!=null)
-				return scaleX(state.getUnit(id).getXPosition());
+				return latestContext.convertGameWorldToPixelX(state.getUnit(id).getXPosition());
 			else if (state.getResourceNode(id)!=null)
-				return scaleX(state.getResourceNode(id).getXPosition());
+				return latestContext.convertGameWorldToPixelX(state.getResourceNode(id).getXPosition());
 			else
 				return -1;
 		}
 		public int getY() {
 			if(state.getUnit(id)!=null)
-				return scaleY(state.getUnit(id).getYPosition());
+				return latestContext.convertGameWorldToPixelY(state.getUnit(id).getYPosition());
 			else if (state.getResourceNode(id)!=null)
-				return scaleY(state.getResourceNode(id).getYPosition()); 
+				return latestContext.convertGameWorldToPixelY(state.getResourceNode(id).getYPosition()); 
 			return -1;
 		}
 		public String getInfo() { 

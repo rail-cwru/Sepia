@@ -648,7 +648,7 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	public ResourceNode getResource(int resourceId) {
 		for(ResourceNode r : resourceNodes)
 		{
-			if(resourceId == r.hashCode())
+			if(resourceId == r.getID())
 				return r;
 		}
 		return null;
