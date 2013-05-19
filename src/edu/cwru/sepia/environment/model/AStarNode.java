@@ -58,7 +58,7 @@ public class AStarNode implements Comparable<AStarNode> {
 		this.durativesteps = 1;
 	}
 	/**
-	 * Create a nonroot node with fields so for backtracking.
+	 * Create a nonroot node with fields for backtracking.
 	 * @param x
 	 * @param y
 	 * @param g
