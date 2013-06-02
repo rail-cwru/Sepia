@@ -12,23 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for UpgradeLogList complex type.
+ * <p>Java class for TerrainDuration complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="UpgradeLogList">
+ * &lt;complexType name="TerrainDuration">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="roundNumber" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;sequence maxOccurs="unbounded" minOccurs="0">
- *           &lt;element name="upgradeLog" type="{}UpgradeLog"/>
- *         &lt;/sequence>
+ *         &lt;element name="terrain" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
+ *         &lt;element name="duration" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -38,58 +37,59 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UpgradeLogList", propOrder = {
-    "roundNumber",
-    "upgradeLog"
+@XmlType(name = "TerrainDuration", propOrder = {
+    "terrain",
+    "duration"
 })
-public class XmlUpgradeLogList {
+public class XmlTerrainDuration {
 
-    protected int roundNumber;
-    protected List<XmlUpgradeLog> upgradeLog;
-
-    /**
-     * Gets the value of the roundNumber property.
-     * 
-     */
-    public int getRoundNumber() {
-        return roundNumber;
-    }
+    @XmlElement(required = true)
+    protected List<String> terrain;
+    protected int duration;
 
     /**
-     * Sets the value of the roundNumber property.
-     * 
-     */
-    public void setRoundNumber(int value) {
-        this.roundNumber = value;
-    }
-
-    /**
-     * Gets the value of the upgradeLog property.
+     * Gets the value of the terrain property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the upgradeLog property.
+     * This is why there is not a <CODE>set</CODE> method for the terrain property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getUpgradeLog().add(newItem);
+     *    getTerrain().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link XmlUpgradeLog }
+     * {@link String }
      * 
      * 
      */
-    public List<XmlUpgradeLog> getUpgradeLog() {
-        if (upgradeLog == null) {
-            upgradeLog = new ArrayList<XmlUpgradeLog>();
+    public List<String> getTerrain() {
+        if (terrain == null) {
+            terrain = new ArrayList<String>();
         }
-        return this.upgradeLog;
+        return this.terrain;
+    }
+
+    /**
+     * Gets the value of the duration property.
+     * 
+     */
+    public int getDuration() {
+        return duration;
+    }
+
+    /**
+     * Sets the value of the duration property.
+     * 
+     */
+    public void setDuration(int value) {
+        this.duration = value;
     }
 
 }

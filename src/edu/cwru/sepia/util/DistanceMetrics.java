@@ -19,6 +19,8 @@
  */
 package edu.cwru.sepia.util;
 
+import edu.cwru.sepia.environment.model.state.Unit;
+
 public final class DistanceMetrics {
 
 	private DistanceMetrics(){}
@@ -27,10 +29,20 @@ public final class DistanceMetrics {
 		return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 	}
 	/**
-	 * The core distance metric used by wargus for attacks and such
+	 * The core distance metric used by sepia for attacks and such
 	 */
 	public static int chebyshevDistance(int x1, int y1, int x2, int y2) {
 		return Math.max(Math.abs(x1-x2), Math.abs(y1-y2));
+	}
+
+	/**
+	 * The core distance metric used by sepia for attacks and such
+	 * @param testUnit
+	 * @param unit
+	 * @return
+	 */
+	public static int chebyshevDistance(Unit unit1, Unit unit2) {
+		return DistanceMetrics.chebyshevDistance(unit1.getxPosition(), unit1.getyPosition(), unit2.getxPosition(), unit2.getyPosition());
 	}
 	
 }

@@ -22,9 +22,12 @@ package edu.cwru.sepia.environment.model.state;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 /**
  * Contains information shared between units of the same type.
@@ -38,6 +41,12 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Marks that there is no duration
+	 */
+	public static final int NO_DURATION = -1;
+	
 	protected int baseHealth;
 	protected int basicAttack;
 	protected int piercingAttack;
@@ -57,7 +66,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	protected int woodGatherRate;
 	protected int durationGoldGather;
 	protected int durationWoodGather;
-	protected int durationMove;
+	protected Map<TerrainType, Integer> durationMove;
 	protected int durationAttack;
 	protected int durationDeposit;
 	private UnitTemplateView view;
@@ -66,6 +75,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	{
 		super(ID);
 		producesID = new ArrayList<Integer>();
+		durationMove = new EnumMap<TerrainType, Integer>(TerrainType.class);
 	}
 	/**
 	 * Create a cloned unit template out of a view
@@ -93,7 +103,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		
 		setDurationGatherGold(view.durationGatherGold);
 		setDurationGatherWood(view.durationGatherWood);
-		setDurationMove(view.durationMove);
+		durationMove = new EnumMap<TerrainType, Integer>(view.durationMove);
 		setDurationAttack(view.durationAttack);
 		setDurationDeposit(view.durationDeposit);
 		for (Integer produced : view.producesID)
@@ -245,15 +255,15 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	 * Get the number of steps needed to make a single move.
 	 * @return
 	 */
-	public int getDurationMove() {
-		return durationMove;
+	public int getDurationMove(TerrainType terrainType) {
+		return durationMove.get(terrainType);
 	}
 	/**
 	 * Set the number of steps needed to make a single move.
 	 * @param durationMove
 	 */
-	public void setDurationMove(int durationMove) {
-		this.durationMove = durationMove;
+	public void setDurationMove(int durationMove, TerrainType terrainType) {
+		this.durationMove.put(terrainType,durationMove);
 	}
 	/**
 	 * Get the number of steps needed to make a single attack
@@ -283,8 +293,12 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 	public void setDurationDeposit(int durationDeposit) {
 		this.durationDeposit = durationDeposit;
 	}
-	public void addProductionItem(Integer item) {
-		this.producesID.add(item);
+	/**
+	 * Add a unit or upgrade to be produced/built by this unit
+	 * @param templateId
+	 */
+	public void addProductionItem(Integer templateId) {
+		this.producesID.add(templateId);
 	}
 	/**
 	 * Get a list of IDs of templates that this unit can make.
@@ -340,7 +354,7 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		private final boolean acceptsGold;
 		private final boolean acceptsWood;
 		private final int foodProvided;
-		private final int durationMove;
+		private final Map<TerrainType, Integer> durationMove;
 		private final int durationAttack;
 		private final int durationGatherGold;
 		private final int durationGatherWood;
@@ -376,7 +390,8 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 			acceptsGold = template.canAcceptGold;
 			acceptsWood = template.canAcceptWood;
 			foodProvided = template.getFoodProvided();
-			durationMove = template.getDurationMove();
+			
+			durationMove = new EnumMap<TerrainType, Integer>(template.durationMove);
 			durationAttack = template.getDurationAttack();
 			durationDeposit = template.getDurationDeposit();
 			durationGatherGold = template.getDurationGatherGold();
@@ -501,10 +516,11 @@ public class UnitTemplate extends Template<Unit> implements Serializable
 		public int getFoodProvided() {return foodProvided; }
 		/**
 		 * Get the duration of a primitive move action.  This is the base amount for how many consecutive steps the primitive action needs to be repeated before it has an effect.
-		 * Actual number of steps may depend on other factors, determined by the Planner and Model being used. 
+		 * Actual number of steps may depend on other factors, determined by the Planner and Model being used.
+		 * @param terrainType The type of terrain to get the move duration for 
 		 * @return The base duration of a primitive move action.
 		 */
-		public int getDurationMove() {return durationMove;};
+		public int getDurationMove(TerrainType terrainType) {Integer duration = durationMove.get(terrainType); return duration == null ? NO_DURATION : duration.intValue();};
 		/**
 		 * Get the duration of a primitive gather action on a gold mine.  This is the base amount for how many consecutive steps the primitive action needs to be repeated before it has an effect.
 		 * Actual number of steps may depend on other factors, determined by the Planner and Model being used. 

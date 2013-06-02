@@ -26,6 +26,7 @@ import org.json.*;
 
 import edu.cwru.sepia.environment.model.state.IDDistributer;
 import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 
@@ -299,21 +300,29 @@ public final class TypeLoader {
 		
 		
 		//Various duration fields:
+		
+		//There is a DurationMove for backwards compatibility that sets for all terrains (or the default if you define others)
+		//Give a default duration of 1
+		for (TerrainType terrainType : TerrainType.values()) {
+			template.setDurationMove(1, terrainType);
+		}
 		if(obj.has("DurationMove"))
 		{
 			int duration = obj.getInt("DurationMove");
-			//negative durations are meanless
-			//zero duration is meaningless so long as a unit can do only one action per turn
-			if (duration < 1)
-			{
-				throw new IllegalArgumentException("DurationMove must be positive");
+			//negative durations indicate impassible terrain
+			for (TerrainType terrainType : TerrainType.values()) {
+				template.setDurationMove(duration, terrainType);
 			}
-			template.setDurationMove(duration);
 		}
-		else
-		{
-			template.setDurationMove(1);
+		for (TerrainType terrainType : TerrainType.values()) {
+			if(obj.has("DurationMove."+terrainType.toString())) {
+				int duration = obj.getInt("DurationMove."+terrainType.toString());
+				//negative durations indicate impassible terrain
+				
+				template.setDurationMove(duration, terrainType);
+			}
 		}
+		
 		if(obj.has("DurationAttack"))
 		{
 			int duration = obj.getInt("DurationAttack");

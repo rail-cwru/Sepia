@@ -46,6 +46,7 @@ import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.GameMap;
@@ -328,7 +329,9 @@ public class ActionFeedbackTest {
 		assertTrue("Initialization failed, player2 should have more units",st.getUnitIds(player2).size()>=2);
 		
 		UnitView u = st.getUnit(st.getUnitIds(player2).get(0));
-		assertTrue("Precondition not satisfied, actions are too durative",u.getTemplateView().getDurationMove()==1);
+		for (TerrainType terrainType : TerrainType.values()) {
+			assertTrue("Precondition not satisfied, actions are too durative for terrainType "+terrainType, u.getTemplateView().getDurationMove(terrainType)==1);
+		}
 		int stx = u.getXPosition();
 		int sty = u.getYPosition();
 		int enx = stx+2;

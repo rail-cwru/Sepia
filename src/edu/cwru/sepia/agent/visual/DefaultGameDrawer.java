@@ -32,6 +32,7 @@ import edu.cwru.sepia.environment.model.state.ResourceNode.ResourceView;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State.StateView;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
 /**
@@ -45,6 +46,10 @@ public class DefaultGameDrawer implements GameDrawer {
 	private Color[] playerColors;
 	private Color backgroundColor;
 	private Color groundColor;
+	private Color waterColor = Color.BLUE;
+	private Color shallowColor = Color.GREEN;
+	private Color cliffColor = new Color(150, 75, 0);
+	private Color unknownColor = Color.MAGENTA;
 	private boolean drawAttacks;
 	private boolean drawUnits;
 	private boolean drawResourceNodes;
@@ -77,8 +82,26 @@ public class DefaultGameDrawer implements GameDrawer {
             return;
         if(x < 0 || y < 0 || x > context.getPixelWidth() || y > context.getPixelHeight())
             return;
-        g.setColor(groundColor);
-        g.fillRect(context.convertGameWorldToPixelX(x), context.convertGameWorldToPixelY(y), context.getScalingFactor(),context.getScalingFactor());//brown background for ground
+        int tlPixelX = context.convertGameWorldToPixelX(x);
+        int tlPixelY = context.convertGameWorldToPixelY(y);
+        int tilePixelXSize = context.getScalingFactor();
+        int tilePixelYSize = context.getScalingFactor(); 
+        switch (state.terrainAt(x,y)) {
+        case LAND:
+        	drawTerrainLand(g, tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+        	break;
+        case WATER:
+        	drawTerrainWater(g, tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+        	break;
+        case SHALLOWS:
+        	drawTerrainShallows(g, tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+        	break;
+        case CLIFF:
+        	drawTerrainCliff(g, tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+        	break;
+        default:
+        	drawTerrainOther(g, tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize, state.terrainAt(x, y));
+        }
         Color oldColor = g.getColor();
 		
         
@@ -136,6 +159,82 @@ public class DefaultGameDrawer implements GameDrawer {
         
 	}
 
+	/**
+	 * @param g
+	 * @param tlPixelX
+	 * @param tlPixelY
+	 * @param tilePixelXSize
+	 * @param tilePixelYSize
+	 */
+	void drawTerrainLand(Graphics g, int tlPixelX, int tlPixelY,
+			int tilePixelXSize, int tilePixelYSize) {
+		Color oldColor = g.getColor();
+		g.setColor(groundColor);
+		g.fillRect(tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+		g.setColor(oldColor);
+	}
+	/**
+	 * @param g
+	 * @param tlPixelX
+	 * @param tlPixelY
+	 * @param tilePixelXSize
+	 * @param tilePixelYSize
+	 */
+	void drawTerrainWater(Graphics g, int tlPixelX, int tlPixelY,
+			int tilePixelXSize, int tilePixelYSize) {
+		Color oldColor = g.getColor();
+		g.setColor(waterColor);
+		g.fillRect(tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+		g.setColor(oldColor);
+	}
+	/**
+	 * @param g
+	 * @param tlPixelX
+	 * @param tlPixelY
+	 * @param tilePixelXSize
+	 * @param tilePixelYSize
+	 */
+	void drawTerrainShallows(Graphics g, int tlPixelX, int tlPixelY,
+			int tilePixelXSize, int tilePixelYSize) {
+		Color oldColor = g.getColor();
+		g.setColor(shallowColor);
+		g.fillRect(tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+		g.setColor(oldColor);
+	}
+	/**
+	 * @param g
+	 * @param tlPixelX
+	 * @param tlPixelY
+	 * @param tilePixelXSize
+	 * @param tilePixelYSize
+	 */
+	void drawTerrainCliff(Graphics g, int tlPixelX, int tlPixelY,
+			int tilePixelXSize, int tilePixelYSize) {
+		Color oldColor = g.getColor();
+		g.setColor(cliffColor);
+		g.fillRect(tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+		g.setColor(oldColor);
+		
+	}
+	/**
+	 * Draw any terrain that is not one of the predefined ones
+	 * @param g
+	 * @param tlPixelX
+	 * @param tlPixelY
+	 * @param tilePixelXSize
+	 * @param tilePixelYSize
+	 * @param terrainAt
+	 */
+	void drawTerrainOther(Graphics g, int tlPixelX, int tlPixelY,
+			int tilePixelXSize, int tilePixelYSize, TerrainType terrainType) {
+		Color oldColor = g.getColor();
+		g.setColor(unknownColor);
+		g.fillRect(tlPixelX, tlPixelY, tilePixelXSize, tilePixelYSize);
+		g.setColor(Color.black);
+//		g.drawString(terrainType.toString(), tlPixelX + tilePixelXSize/2, tlPixelY + tilePixelYSize/2);
+		g.setColor(oldColor);
+		
+	}
 	/**
 	 * Draw a resource node at a particular x and y coordinate
 	 * @param context
@@ -229,6 +328,9 @@ public class DefaultGameDrawer implements GameDrawer {
 		this.history = history;
 	}
 
+	public void drawTerrainLand(Graphics g, int topLeftX, int topLeftY) {
+		
+	}
 	
 	/**
 	 * Internal method to draw happy little trees.
@@ -257,7 +359,7 @@ public class DefaultGameDrawer implements GameDrawer {
 	 * @param scaleX
 	 * @param scaleY
 	 */
-	private void drawMine(Graphics g, int topLeftX, int topLeftY) {
+	void drawMine(Graphics g, int topLeftX, int topLeftY) {
 		Color previous = g.getColor();
 		g.setColor(new Color(0xFF,0xFF,0x33));					
 		g.fillRect(topLeftX+6, topLeftY+6, 20, 20);

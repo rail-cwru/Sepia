@@ -21,7 +21,6 @@ package edu.cwru.sepia.environment.persistence;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import java.util.Random;
 import org.json.JSONException;
 import org.junit.BeforeClass;
 
-import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
 import edu.cwru.sepia.action.ActionResult;
 import edu.cwru.sepia.action.ActionType;
@@ -50,6 +48,7 @@ import edu.cwru.sepia.environment.model.persistence.generated.XmlProductionActio
 import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceQuantity;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlTargetedAction;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTerrainDuration;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUnit;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
@@ -57,7 +56,7 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
-import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.TypeLoader;
 
@@ -287,7 +286,12 @@ public class AdapterTestUtil {
 		xml.setSightRange(r.nextInt());
 		xml.setWoodGatherRate(r.nextInt());
 		xml.setDurationAttack(r.nextInt());
-		xml.setDurationMove(r.nextInt());
+		for (TerrainType terrainType : TerrainType.values()) {
+			XmlTerrainDuration terrainDuration = new XmlTerrainDuration();
+			terrainDuration.setDuration(r.nextInt());
+			terrainDuration.getTerrain().add(terrainType.toString());
+			xml.getDurationMove().add(terrainDuration);
+		}
 		xml.setDurationDeposit(r.nextInt());
 		xml.setDurationGatherGold(r.nextInt());
 		xml.setDurationGatherWood(r.nextInt());

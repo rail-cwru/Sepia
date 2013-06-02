@@ -40,6 +40,7 @@ public class PlayerHistory implements DeepEquatable
 		this.primitiveFeedback = new ActionResultLogger();
 		this.commandsIssued = new ActionLogger();
 		this.commandFeedback = new ActionResultLogger();
+		this.eventsSeen = new EventLogger();
 	}
 	public ActionLogger getCommandsIssued()
 	{

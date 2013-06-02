@@ -55,6 +55,7 @@ import edu.cwru.sepia.environment.model.state.StateCreator;
 import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.experiment.Configuration;
 import edu.cwru.sepia.experiment.ConfigurationValues;
 import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
@@ -65,7 +66,7 @@ public class ModelAndPlannerTimeTest {
 	static int player=0;
 	static int enemy = 1;
 	static int seed = 324234;
-	
+	static int temp = 0;
 	@Test
 	public void testTime() throws IOException, JSONException, InterruptedException, BackingStoreException {
 		boolean watchCalc=false;//An easy access point in case you want to watch the process
@@ -77,7 +78,7 @@ public class ModelAndPlannerTimeTest {
 			VisualAgent seer=null;
 			if (watchCalc)
 				seer = new VisualAgent(player, new String[]{"true","true"});
-			ScriptedGoalAgent scriptedAgent = new ScriptedGoalAgent(player, new BufferedReader(new FileReader("data/timetest_script.txt")), new Random(seed), watchCalc);
+ 			ScriptedGoalAgent scriptedAgent = new ScriptedGoalAgent(player, new BufferedReader(new FileReader("data/timetest_script.txt")), new Random(seed), watchCalc);
 			Agent[] agents;
 			agents = new Agent[]{scriptedAgent, seer};
 			model.createNewWorld();
@@ -93,6 +94,7 @@ public class ModelAndPlannerTimeTest {
 				}
 				if (watchCalc)
 				{
+					Unit u = model.getState().getUnit(0);
 					System.out.println("Step "+thisStep);
 					System.out.println("New commands: "+commandsIssued);
 					System.out.println("New command feedback: "+ model.getHistory().getPlayerHistory(player).getCommandFeedback().getActionResults(thisStep));
@@ -100,12 +102,12 @@ public class ModelAndPlannerTimeTest {
 					//Sort of hackish, should be replaced when method becomes right
 //					seer.middleStep(model.getState().getView(Agent.OBSERVER_ID), model.getHistory().getView(Agent.OBSERVER_ID));
 					System.out.println("now has "+model.getState().getResourceAmount(player, ResourceType.GOLD)+" gold");
-					System.out.println("Unit is at "+model.getState().getUnit(0).getxPosition() + ","+model.getState().getUnit(0).getyPosition());
+					System.out.println("Unit is at "+u.getxPosition() + ","+u.getyPosition());
 					System.out.println("Total nodes: "+model.getState().getResources().size());
 				}
 				
 				calculatedActions.put(thisStep, thisStepsActions);
-//				System.out.println("Step "+ thisStep + " has " + calculatedActions.get(thisStep).size() +" actions");
+				System.out.println("Step "+ thisStep + " has " + calculatedActions.get(thisStep).size() +" actions");
 			}
 		}
 		int nrounds=100;
@@ -156,7 +158,7 @@ public class ModelAndPlannerTimeTest {
 				if (t instanceof UnitTemplate)
 				{
 					((UnitTemplate)t).setDurationAttack(1);
-					((UnitTemplate)t).setDurationMove(1);
+					for (TerrainType terrainType : TerrainType.values()) ((UnitTemplate)t).setDurationMove(1, terrainType);
 					((UnitTemplate)t).setDurationDeposit(1);
 					((UnitTemplate)t).setDurationGatherGold(1);
 					((UnitTemplate)t).setDurationGatherWood(1);
@@ -173,7 +175,7 @@ public class ModelAndPlannerTimeTest {
 				if (t instanceof UnitTemplate)
 				{
 					((UnitTemplate)t).setDurationAttack(1);
-					((UnitTemplate)t).setDurationMove(1);
+					for (TerrainType terrainType : TerrainType.values()) ((UnitTemplate)t).setDurationMove(1, terrainType);
 					((UnitTemplate)t).setDurationDeposit(1);
 					((UnitTemplate)t).setDurationGatherGold(1);
 					((UnitTemplate)t).setDurationGatherWood(1);

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.environment.model.state.Tile;
 
 /**
  * Some utility methods to use DeepEquals on Collections, as well as null-checking on both.
@@ -232,6 +233,60 @@ public class DeepEquatableUtil {
 			for (Integer i : obj1)
 			{
 				if (!obj2.contains(i))
+					return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * @param deepEquatable1
+	 * @param deepEquatable2
+	 */
+	public static boolean deepEquals(DeepEquatable[][] deepEquatable1, DeepEquatable[][] deepEquatable2) {
+		boolean thisnull = deepEquatable1 == null;
+		boolean othernull = deepEquatable2 == null;
+		if ((thisnull == othernull)==false)
+		{
+			return false;
+		}
+		//if both aren't null, need to check deeper
+		if (!thisnull && !othernull)
+		{
+			if (deepEquatable1.length != deepEquatable2.length)
+				return false;
+			for (int i = 0; i<deepEquatable1.length;i++)
+			{
+				DeepEquatable[] thisinner=deepEquatable1[i];
+				DeepEquatable[] otherinner=deepEquatable2[i];
+				if (!deepEquals(thisinner,otherinner))
+					return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * @param deepEquatable1
+	 * @param deepEquatable2
+	 * @return
+	 */
+	public static boolean deepEquals(DeepEquatable[] deepEquatable1,
+			DeepEquatable[] deepEquatable2) {
+		boolean thisnull = deepEquatable1 == null;
+		boolean othernull = deepEquatable2 == null;
+		if ((thisnull == othernull)==false)
+		{
+			return false;
+		}
+		//if both aren't null, need to check deeper
+		if (!thisnull && !othernull)
+		{
+			if (deepEquatable1.length != deepEquatable2.length)
+				return false;
+			for (int i = 0; i<deepEquatable1.length;i++)
+			{
+				DeepEquatable thisinner=deepEquatable1[i];
+				DeepEquatable otherinner=deepEquatable2[i];
+				if (!deepEquals(thisinner,otherinner))
 					return false;
 			}
 		}

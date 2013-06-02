@@ -176,7 +176,7 @@ public class BasicGatheringCoordinator implements Serializable {
 	}
 	
 	private Action assignWorkerToGather(StateView state, UnitView worker, ResourceNode.Type resourceNodeType) {
-		Action gatherAction = null;
+		Action gatherAction = Action.createPermanentFail(worker.getID());
 		//find the nearest appropriate resource and tell it to gather from that node
 		int closestDist = Integer.MAX_VALUE;
 		int closestID = Integer.MIN_VALUE;
@@ -201,7 +201,7 @@ public class BasicGatheringCoordinator implements Serializable {
 	 * @return
 	 */
 	private Action assignWorkerToReturn(StateView state, UnitView worker) {
-		Action returnAction = null;
+		Action returnAction = Action.createPermanentFail(worker.getID());
 		if (worker.getCargoAmount() > 0) {
 			//find the nearest base and tell it to go there
 			int closestID = Integer.MIN_VALUE;
@@ -222,6 +222,8 @@ public class BasicGatheringCoordinator implements Serializable {
 			}
 			if (closestID != Integer.MIN_VALUE) {
 				returnAction = Action.createCompoundDeposit(worker.getID(), closestID);
+			} else {
+				
 			}
 		}
 		return returnAction;

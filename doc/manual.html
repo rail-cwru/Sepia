@@ -23,6 +23,7 @@
 			<ol>
 				<li><a href="#AgentSimulation">Running Look-Ahead/Simulations</a></li>
 			</ol>
+			<li><a href="#World">The World</a></li>
 			<li><a href="#FogofWar">Making Maps</a>
 			<li><a href="#ScripAgent">Using The Scripted Agent</a>
 			<li><a href="#Engine">The Engine</a>
@@ -479,6 +480,9 @@ StateCreator stateCreator = new XmlStateCreator();</pre>
 		</p>
 		<p> Action is used to convey commands between the agent and the simulation.  There are several subclasses, to prevent mistakes, they should be constructed using the static factory-style methods in Action itself.  Actions are divided into compound and primitive types.  Primitive types are the basic building blocks, like taking a step in one direction, gathering from an adjacent resource, or attacking a guy in range.  Compound actions are more goal based and are resolved by the simulator itself into the primitives needed to fulfill that goal.  As a result, compound actions are more robust, being self correcting to a point.  
 		</p>
+		<h2 id="World">10. The World</h2>
+		<h3 id="TerrainTypes">Terrain</h3>
+		<p>The world itself is made of tiles, the squares that are each x and y coordinate.  The tiles each have a terrain.  The default terrain when making a map is LAND, but WATER, SHALLOWS, CLIFF, and STUFF (an extra terrain, in case the user needs one) are also available.  These terrain choices are presently hardcoded as java enums.  The terrains act as tags for giving units different move speeds in different places and for putting up barriers.  It also allows seperate media for movement, allowing a greater seperation between fliers, ships, and land units</p>
 		<h2 id="FogofWar">10. Partial Observability</h2>
 		<p>Sepia implements partial observability through the common RTS element of "fog of war".  
 		Fog of war may be activated as part of the map creation process.  With the fog of war activated, many interactions change.
@@ -697,6 +701,15 @@ StateCreator stateCreator = new XmlStateCreator();</pre>
 							<li>
 								"DurationMove" : 3<br/>
 								This example denotes that the unit, if capable of moving, will take 3 steps to move from one place to an adjacent place.
+								This field is a nonnegative integer*.
+								This field is optional and defaults to 1 (the move will be applied to make the next state).
+								This field is irrelevant if the unit is unable to move (see the Mobile field).
+							</li>
+							<li>
+								"DurationMove.TERRAINTYPE" : 1<br/>
+								This example denotes that the unit, if capable of moving, will take 1 step to move from one place to an adjacent place when moving <i>into</i> the specified terrain.
+								This overrides the "DurationMove" that was specified.
+								See <a href="#TerrainTypes">terrain types</a> for details.
 								This field is a nonnegative integer*.
 								This field is optional and defaults to 1 (the move will be applied to make the next state).
 								This field is irrelevant if the unit is unable to move (see the Mobile field).

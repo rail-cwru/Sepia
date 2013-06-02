@@ -30,7 +30,7 @@ import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.util.DeepEquatable;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 /**
- * Logs the s for a single player.
+ * Logs the actions for a single player.
  * @author The Condor
  *
  */

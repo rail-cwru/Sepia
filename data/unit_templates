@@ -18,6 +18,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 16,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 25
 	},
 	"Archer" : {
@@ -39,6 +41,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 16,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 65,
 		"BuildPrereq" : ["LumberMill"]
 	},
@@ -62,6 +66,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 32,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 200,
 		"BuildPrereq" : ["Blacksmith","LumberMill"]
 	},
@@ -90,7 +96,9 @@
 		"DurationDeposit" : 25,
 		"DurationGatherGold" : 200,
 		"DurationGatherWood" : 1000,
-		"DurationMove" : 16
+		"DurationMove" : 16,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0
 	},
 	"Knight" : {
 		"Name" : "Knight",
@@ -111,6 +119,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 12,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 25,
 		"BuildPrereq" : ["Stables","Blacksmith"]
 	},
@@ -154,6 +164,7 @@
 		"AcceptsWood" : true,
 		"Produces" : ["Peasant","Keep","Castle"],
 		"Mobile" : false
+		
 	},
 	"LumberMill" : {
 		"Name" : "LumberMill",
@@ -459,8 +470,7 @@
 		"SightRangeIncrease" : 1,
 		"CharChange" : 'd',
 		"GoldCost" : 1000,
-		"Affects" : ["Archer"],
-		"UpgradePrereq" : ["Castle","Ranger"]
+		"Affects" : ["Knight"],
 	},
 	"Keep" : {
 		"Name" : "Keep",
@@ -474,7 +484,6 @@
 		"WoodCost" : 1000,
 		"OilCost" : 200,
 		"Affects" : ["TownHall"],
-		"UpgradePrereq" : ["Castle","Ranger"],
 		"BuildPrereq" : ["Barracks"]
 	},
 	"Castle" : {

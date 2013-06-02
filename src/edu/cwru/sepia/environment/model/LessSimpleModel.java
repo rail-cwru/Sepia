@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.action.ActionFeedback;
@@ -91,6 +93,7 @@ public class LessSimpleModel implements Model {
 	private boolean verbose;
 	private TurnTracker turnTracker;
 	private Configuration configuration;
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 	public LessSimpleModel(State init, int seed, StateCreator restartTactic, Configuration configuration) {
 		this.configuration = configuration;
 		state = init;
@@ -231,6 +234,7 @@ public class LessSimpleModel implements Model {
 			
 			int unitId = aent.getKey();
 			Action a = aent.getValue();
+
 			history.recordCommandRecieved(sendingPlayerNumber, state.getTurnNumber(), unitId, a);
 			//If the unit is not the same as in the action, ignore the action
 			if (a.getUnitId() != unitId)
@@ -272,6 +276,7 @@ public class LessSimpleModel implements Model {
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
 			case FAILED:
+			case FAILEDPERMANENTLY:
 				//The only primitive action needed to execute a primitive action is itself
 				primitives = new LinkedList<Action>();
 				primitives.add(action);
@@ -421,6 +426,7 @@ public class LessSimpleModel implements Model {
 							//if it can't move, that is a problem
 							if (!u.canMove())
 							{
+								logger.log(Level.FINER, "Unit " + u + " unable to move, action "+a +" failed");
 								failed.add(aq);
 								//recalcAndStuff();//This marks a place where recalculation would be called for
 							}
@@ -434,7 +440,7 @@ public class LessSimpleModel implements Model {
 								int ydest = u.getyPosition() + d.yComponent();
 								
 								//if it is not empty there is a problem
-								if (!empty(xdest, ydest))
+								if (!state.inBounds(xdest, ydest) || !state.positionPassible(u, xdest, ydest) || !accessible(u.getTemplate(), xdest, ydest))
 								{ 
 									failed.add(aq);
 									//recalcAndStuff();//This marks a place where recalculation would be called for
@@ -450,7 +456,7 @@ public class LessSimpleModel implements Model {
 									{
 										newdurativeamount = 1;
 									}
-									boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(), d);
+									boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(), d, state);
 									//if it will finish, then verify claim stuff
 									if (willcompletethisturn)
 									{
@@ -869,8 +875,9 @@ public class LessSimpleModel implements Model {
 				//only production actions that will complete should be in productionsuccessfulsofar
 				ProductionAction a = (ProductionAction)aq.peekPrimitive(); 
 				Unit u = state.getUnit(a.getUnitId());
+				Template<?> producedTemplate = state.getTemplate(a.getTemplateId());
 				//check if it is an upgrade and thus doesn't risk failure and can just succeed
-				if (state.getTemplate(a.getTemplateId()) instanceof UpgradeTemplate)
+				if (producedTemplate instanceof UpgradeTemplate)
 				{
 					successfulsofar.add(aq);
 				}
@@ -883,7 +890,7 @@ public class LessSimpleModel implements Model {
 					else
 					{
 						//find the nearest open position, which will be null if there is none
-						int[] newposition = getClosestEmptyUnclaimedPosition(u.getxPosition(), u.getyPosition(), moveclaimedspaces, productionclaimedspaces);
+						int[] newposition = getClosestEmptyUnclaimedPosition((UnitTemplate)producedTemplate, u.getxPosition(), u.getyPosition(), moveclaimedspaces, productionclaimedspaces);
 						if (newposition == null)
 						{//if no place for new unit
 							//then this fails
@@ -934,7 +941,7 @@ public class LessSimpleModel implements Model {
 						{
 							newdurativeamount = 1;
 						}
-						willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(),d);
+						willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(),d, state);
 						//if it will finish, then execute the atomic action
 						if (willcompletethisturn)
 						{
@@ -1223,20 +1230,21 @@ public class LessSimpleModel implements Model {
 	/**
 	 * More or less duplicates the functionality of getClosestPosition in state, with claims.
 	 * Also returns null instead of -1,-1 if nothing is available.
+	 * @param producedTemplate 
 	 * @param x
 	 * @param y
 	 * @param claims
 	 * @param otherclaims
 	 * @return The closest in bounds position, null if there is none.
 	 */
-	private int[] getClosestEmptyUnclaimedPosition(int x,
+	private int[] getClosestEmptyUnclaimedPosition(UnitTemplate producedTemplate, int x,
 			int y, Set<Integer> claims, Set<Integer> otherclaims) {
 		//This is fairly inefficient so that getCoordInt can be altered without fear
 		//It could be somewhat more efficient if it didn't check as many out-of-bounds positions
 		
 		//if the space in question is already open
 		Integer xy = getCoordInt(x, y);
-		if (empty(x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
+		if (accessible(producedTemplate, x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
 			return new int[]{x,y};
 		int xextent = state.getXExtent();
 		int yextent = state.getYExtent();
@@ -1251,28 +1259,28 @@ public class LessSimpleModel implements Model {
 			for (int i = 0; i<2*r;i++) {
 				y = y + 1;
 				xy = getCoordInt(x, y);
-				if (empty(x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
+				if (accessible(producedTemplate, x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
 					return new int[]{x,y};
 			}
 			//go right
 			for (int i = 0; i<2*r;i++) {
 				x = x + 1;
 				xy = getCoordInt(x, y);
-				if (empty(x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
+				if (accessible(producedTemplate, x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
 					return new int[]{x,y};
 			}
 			//go up
 			for (int i = 0; i<2*r;i++) {
 				y = y - 1;
 				xy = getCoordInt(x, y);
-				if (empty(x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
+				if (accessible(producedTemplate, x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
 					return new int[]{x,y};
 			}
 			//go left
 			for (int i = 0; i<2*r;i++) {
 				x = x - 1;
 				xy = getCoordInt(x, y);
-				if (empty(x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
+				if (accessible(producedTemplate, x,y)&&!claims.contains(xy) && !otherclaims.contains(xy))
 					return new int[]{x,y};
 			}
 		}
@@ -1305,8 +1313,8 @@ public class LessSimpleModel implements Model {
 
 		return damage;
 	}
-	private boolean empty(int x, int y) {
-		return state.inBounds(x, y) && state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
+	private boolean accessible(UnitTemplate unitTemplate, int x, int y) {
+		return unitTemplate.getDurationMove(state.terrainAt(x, y)) > 0 && state.inBounds(x, y) && state.unitAt(x, y) == null && state.resourceAt(x, y) == null;
 	}
 	@Override
 	public State getState() {

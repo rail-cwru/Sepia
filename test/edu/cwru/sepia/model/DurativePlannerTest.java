@@ -55,6 +55,7 @@ import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.experiment.DefaultConfigurationGenerator;
 import edu.cwru.sepia.util.Direction;
 import edu.cwru.sepia.util.DistanceMetrics;
@@ -134,7 +135,7 @@ public class DurativePlannerTest {
 				u.setDurativeStatus(Action.createPrimitiveMove(u.ID, headStartDirection), headStart);
 			}
 		}
-		testCompoundDurativeCompletion(toTest, distance-1, u.getTemplate().getDurationMove(), u.getTemplate().getDurationMove(), headStart);
+		testCompoundDurativeCompletion(toTest, distance-1, u.getTemplate().getDurationMove(TerrainType.LAND), u.getTemplate().getDurationMove(TerrainType.LAND), headStart);
 		
 	}
 	
@@ -196,7 +197,7 @@ public class DurativePlannerTest {
 			gatherDuration = u.getTemplate().getDurationGatherWood();
 		else
 			throw new RuntimeException(type+" unsupported");
-		testCompoundDurativeCompletion(toTest, distance-1, u.getTemplate().getDurationMove(), gatherDuration, headStart);
+		testCompoundDurativeCompletion(toTest, distance-1, u.getTemplate().getDurationMove(TerrainType.LAND), gatherDuration, headStart);
 		
 	}
 	private void testCompoundDurativeCompletion(Action action, int distanceTravelBeforeFinal, int moveDuration, int finalActionDuration, int preappliedHeadStart) {
@@ -312,7 +313,7 @@ public class DurativePlannerTest {
 		superUnit.setFoodCost(0);
 		superUnit.setDurationAttack(13);
 		superUnit.setDurationDeposit(17);
-		superUnit.setDurationMove(7);
+		for (TerrainType terrainType : TerrainType.values()) superUnit.setDurationMove(7, terrainType);
 		superUnit.setDurationGatherGold(5);
 		superUnit.setDurationGatherWood(11);
 		superUnit.setCharacter('?');

@@ -249,6 +249,7 @@ public class BestEffortModel implements Model {
 			case PRIMITIVEBUILD:
 			case PRIMITIVEPRODUCE:
 			case FAILED:
+			case FAILEDPERMANENTLY:
 				//The only primitive action needed to execute a primitive action is itself
 				primitives = new LinkedList<Action>();
 				primitives.add(action);
@@ -365,7 +366,7 @@ public class BestEffortModel implements Model {
 									wrongType=true;
 									break;
 								}
-								if(state.inBounds(xPrime, yPrime) && u.canMove() && empty(xPrime,yPrime)) {
+								if(state.inBounds(xPrime, yPrime) && u.canMove() && state.positionPassible(u, xPrime, yPrime) && empty(xPrime,yPrime)) {
 									int newdurativeamount;
 									if (a.equals(u.getActionProgressPrimitive()))
 									{
@@ -376,7 +377,7 @@ public class BestEffortModel implements Model {
 										newdurativeamount = 1;
 									}
 									Direction d = ((DirectedAction)a).getDirection();
-									boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(),d);
+									boolean willcompletethisturn = newdurativeamount== DurativePlanner.calculateMoveDuration(u,u.getxPosition(),u.getyPosition(),d,state);
 									//if it will finish, then execute the atomic action
 									if (willcompletethisturn)
 									{

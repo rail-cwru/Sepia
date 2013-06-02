@@ -445,7 +445,9 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 	}
 	@Override
 	public Map<Integer, Action> middleStep(StateView newstate, History.HistoryView statehistory) {
-		
+		if (newstate.getTurnNumber() == 1269) {
+			System.out.println("breakpoint");
+		}
 		try {
 			return act(newstate, statehistory);
 			}
@@ -542,8 +544,6 @@ public class ScriptedGoalAgent extends Agent implements Serializable {
 		}
 		gathercoordinator.assignActions(state, rsv, actions);
 		attackcoordinator.coordinate(state, actions);
-		
-		
 		
 		lastturncalled=state.getTurnNumber();
 		return actions;

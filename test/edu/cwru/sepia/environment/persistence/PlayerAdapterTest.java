@@ -33,6 +33,7 @@ import edu.cwru.sepia.environment.model.persistence.PlayerAdapter;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlPlayer;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlResourceQuantity;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlTemplate;
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTerrainDuration;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUnit;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUpgradeTemplate;
@@ -42,6 +43,7 @@ import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.util.DeepEquatableUtil;
 
 public class PlayerAdapterTest {
@@ -162,7 +164,19 @@ public class PlayerAdapterTest {
 			assertEquals(ut.getDurationGatherGold(),uxt.getDurationGatherGold());
 			assertEquals(ut.getDurationGatherWood(),uxt.getDurationGatherWood());
 			assertEquals(ut.getDurationDeposit(),uxt.getDurationDeposit());
-			assertEquals(ut.getDurationMove(),uxt.getDurationMove());
+			for (TerrainType terrainType : TerrainType.values()) {
+				int nonXmlDuration = ut.getDurationMove(terrainType);
+				int timesFound = 0;
+				int xmlDuration = -1;
+				for (XmlTerrainDuration xmlTerrainSpeed : uxt.getDurationMove()) {
+					if (xmlTerrainSpeed.getTerrain().contains(terrainType.toString())) {
+						timesFound++;
+						xmlDuration = xmlTerrainSpeed.getDuration();
+					}
+				}
+				assertEquals("Found the wrong number of durations for the terrain type "+terrainType, 1, timesFound);
+				assertEquals(nonXmlDuration, xmlDuration);
+			}
 			assertEquals(ut.getProduces().size(),uxt.getProduces().size());
 			for(Integer s : uxt.getProduces())
 			{

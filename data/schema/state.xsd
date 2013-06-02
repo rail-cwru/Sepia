@@ -78,7 +78,7 @@
 				<xs:element name="woodGatherRate" type="xs:int" />
 				<xs:element name="durationGatherWood" type="xs:int" />
 				<xs:element name="durationGatherGold" type="xs:int" />
-				<xs:element name="durationMove" type="xs:int" />
+				<xs:element name="durationMove" type="TerrainDuration" maxOccurs="unbounded" />
 				<xs:element name="durationAttack" type="xs:int" />
 				<xs:element name="durationDeposit" type="xs:int" />
 				<xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -87,6 +87,12 @@
 			</xs:sequence>
 		</xs:extension>
 	</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="TerrainDuration">
+	<xs:sequence>
+		<xs:element name="terrain" type="xs:string" minOccurs="1" maxOccurs="unbounded" />
+		<xs:element name="duration" type="xs:int" minOccurs="1" maxOccurs="1" />
+	</xs:sequence>
 </xs:complexType>
 <xs:complexType name="Template" abstract="true">
 	<xs:sequence>

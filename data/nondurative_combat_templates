@@ -18,6 +18,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 1,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 1
 	},
 	"Archer" : {
@@ -39,6 +41,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 1,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 1,
 	},
 	"Ballista" : {
@@ -61,6 +65,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 1,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 1,
 	},
 	"Knight" : {
@@ -82,6 +88,8 @@
 		"Gatherer" : false,
 		"Builder" : false,
 		"DurationMove" : 1,
+		"DurationMove.WATER" : 0,
+		"DurationMove.CLIFF" : 0,
 		"DurationAttack" : 1,
 	},
 	"Gryphon" : {

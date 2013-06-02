@@ -53,6 +53,7 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.ResourceType;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.UpgradeTemplate;
@@ -105,7 +106,7 @@ public class DurativeTest {
 	private void testMove(Direction d, int basicDuration, int headStart, int numConsecutiveTries) {
 		resetState();
 		//Change the template to make the duration right
-		superUnit.setDurationMove(basicDuration);
+		for (TerrainType terrainType : TerrainType.values()) superUnit.setDurationMove(basicDuration, terrainType);
 		
 		final Unit u = superUnit.produceInstance(state);
 		state.addUnit(u, state.getXExtent()/2, state.getYExtent()/2);
@@ -356,7 +357,7 @@ public class DurativeTest {
 		resetState();
 		int interruptingDuration=500;
 		//Change the template to make the duration right
-		superUnit.setDurationMove(interruptingDuration);
+		for (TerrainType terrainType : TerrainType.values()) superUnit.setDurationMove(interruptingDuration, terrainType);
 		final Unit u = superUnit.produceInstance(state);
 		state.addUnit(u, state.getXExtent()/2, state.getYExtent()/2);
 		final int initX = u.getxPosition();

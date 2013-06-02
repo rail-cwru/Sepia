@@ -24,8 +24,9 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.State.StateBuilder;
 import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.util.GameMap;
@@ -69,8 +71,9 @@ public class Editor extends JFrame {
 	GameScreen screen;
     GamePanel gamePanel;
 	State state;
-	JComboBox templateSelector;
-	JComboBox playerSelector;
+	JComboBox<String> templateSelector;
+	JComboBox<String> playerSelector;
+	JComboBox<TerrainType> terrainSelector;
 	JButton addPlayer;
 	ButtonGroup cursorGroup;
 	JTextField resourceAmount;
@@ -79,6 +82,7 @@ public class Editor extends JFrame {
 	JRadioButton selectTree;
 	JRadioButton selectMine;
 	JRadioButton selectRemove;
+	JRadioButton selectTerrain;
 	ButtonGroup fogOfWar;
 	JRadioButton fogOn;
 	JRadioButton fogOff;
@@ -101,7 +105,10 @@ public class Editor extends JFrame {
 		setTitle("Editor");
 		setLayout(new FlowLayout());
 		
-		gamePanel.addMouseListener(this.new EditorMouseListener());
+		EditorMouseListener editorMouseListener = this.new EditorMouseListener();
+		
+		gamePanel.addMouseListener(editorMouseListener);
+		gamePanel.addMouseMotionListener(editorMouseListener);
 		
 		DefaultComboBoxModel model = new DefaultComboBoxModel(new Object[]{});
 		playerSelector = new JComboBox(model);
@@ -148,6 +155,8 @@ public class Editor extends JFrame {
 		cursorGroup.add(selectMine);
 		selectRemove = new JRadioButton("Remove");
 		cursorGroup.add(selectRemove);
+		selectTerrain = new JRadioButton("Terrain");
+		cursorGroup.add(selectTerrain);
 		
 		
 		//Make a button group for fog of war, one radio button for on and one for off
@@ -242,7 +251,7 @@ public class Editor extends JFrame {
 			if (alltemplates.get(i) instanceof UnitTemplate)
 				unitnames.add(alltemplates.get(i).getName());
 		}
-		templateSelector = new JComboBox(unitnames.toArray(new String[0]));
+		templateSelector = new JComboBox<String>(unitnames.toArray(new String[0]));
 		templateSelector.addActionListener(new ActionListener() {
 			JRadioButton button;
 			public ActionListener setButton(JRadioButton button) {
@@ -254,6 +263,19 @@ public class Editor extends JFrame {
 				button.setSelected(true);
 			}			
 		}.setButton(selectUnit));
+		terrainSelector = new JComboBox<TerrainType>(TerrainType.values());
+		terrainSelector.addActionListener(new ActionListener() {
+			JRadioButton button;
+			public ActionListener setButton(JRadioButton button) {
+				this.button = button;
+				return this;
+			}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				button.setSelected(true);
+			}			
+		}.setButton(selectTerrain));
+		
 		error = new JTextArea(4,10);
 		error.setForeground(Color.RED);
 		error.setEditable(false);
@@ -409,11 +431,13 @@ public class Editor extends JFrame {
 		}.setStateAndFields(state,xSize,ySize,error,this));
 		add(templateSelector);
 		add(playerSelector);
+		add(terrainSelector);
 		add(addPlayer);
 		add(selectPointer);
 		add(selectUnit);
 		add(selectTree);
 		add(selectMine);
+		add(selectTerrain);
 		add(selectRemove);
 		add(resourceAmount);
 		add(save);
@@ -430,10 +454,33 @@ public class Editor extends JFrame {
 	}
 	
 	
-	private class EditorMouseListener extends MouseAdapter {
-
+	private class EditorMouseListener implements MouseListener, MouseMotionListener {
+		boolean pressed = false;
+		int lastWorldXPainted = -1;
+		int lastWorldYPainted = -1;
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mousePressed(MouseEvent e) {
+			paintSelected(e);
+			pressed = true;
+			lastWorldXPainted = gamePanel.convertPixelToGameX(e.getX());
+			lastWorldYPainted = gamePanel.convertPixelToGameY(e.getY());
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			pressed = false;
+			lastWorldXPainted = -1;
+			lastWorldYPainted = -1;
+		}
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			if(pressed && (lastWorldXPainted != gamePanel.convertPixelToGameX(e.getX()) || lastWorldYPainted != gamePanel.convertPixelToGameY(e.getY()))) {
+				lastWorldXPainted = gamePanel.convertPixelToGameX(e.getX());
+				lastWorldYPainted = gamePanel.convertPixelToGameY(e.getY());
+				paintSelected(e);
+			}
+		}
+		private void paintSelected(MouseEvent e) {
 			int x = gamePanel.convertPixelToGameX(e.getX());
 			int y = gamePanel.convertPixelToGameY(e.getY());
 			System.out.println(x+","+y);
@@ -484,6 +531,11 @@ public class Editor extends JFrame {
 				state.addResource(r);
 				error.setText("Mine id "+r.ID+" placed at "+x+","+y);
 			}
+			else if (selectTerrain.isSelected()) {
+				TerrainType terrainType = (TerrainType)terrainSelector.getSelectedItem();
+				state.getWorldBuilder().setTileType(x, y, terrainType);
+				error.setText("terrain type "+terrainType+" placed at "+x+","+y);
+			}
 			else if(selectRemove.isSelected())
 			{
 				//Remove something on that position
@@ -506,6 +558,42 @@ public class Editor extends JFrame {
 					
 			}
 			updateScreen();
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+		 */
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+		 */
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+		 */
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
+		 */
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
 		}
 
 	}

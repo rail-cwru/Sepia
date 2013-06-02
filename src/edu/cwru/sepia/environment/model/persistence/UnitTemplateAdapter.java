@@ -19,7 +19,9 @@
  */
 package edu.cwru.sepia.environment.model.persistence;
 
+import edu.cwru.sepia.environment.model.persistence.generated.XmlTerrainDuration;
 import edu.cwru.sepia.environment.model.persistence.generated.XmlUnitTemplate;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 
@@ -51,7 +53,12 @@ public class UnitTemplateAdapter {
 		ut.setCanMove(xml.isCanMove());//if(obj.has("Mobile"))
 		ut.setDurationAttack(xml.getDurationAttack());
 		ut.setDurationDeposit(xml.getDurationDeposit());
-		ut.setDurationMove(xml.getDurationMove());
+		for (XmlTerrainDuration durationMoveXml : xml.getDurationMove()) {
+			for (String terrainString : durationMoveXml.getTerrain()) {
+				TerrainType terrainType = TerrainType.valueOf(terrainString);
+				ut.setDurationMove(durationMoveXml.getDuration(), terrainType);
+			}
+		}
 		ut.setDurationGatherGold(xml.getDurationGatherGold());
 		ut.setDurationGatherWood(xml.getDurationGatherWood());
 		ut.setPlayer(player);
@@ -98,7 +105,12 @@ public class UnitTemplateAdapter {
 		xml.setWoodGatherRate(ut.getGatherRate(Type.TREE));
 		xml.setDurationAttack(ut.getDurationAttack());
 		xml.setDurationDeposit(ut.getDurationDeposit());
-		xml.setDurationMove(ut.getDurationMove());
+		for (TerrainType terrainType : TerrainType.values()) {
+			XmlTerrainDuration xmlTerrainDuration = new XmlTerrainDuration();
+			xmlTerrainDuration.getTerrain().add(terrainType.toString());
+			xmlTerrainDuration.setDuration(ut.getDurationMove(terrainType));
+			xml.getDurationMove().add(xmlTerrainDuration);
+		}
 		xml.setDurationGatherGold(ut.getDurationGatherGold());
 		xml.setDurationGatherWood(ut.getDurationGatherWood());
 		for (Integer i : ut.getProduces())

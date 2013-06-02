@@ -28,6 +28,7 @@ import edu.cwru.sepia.action.Action;
 import edu.cwru.sepia.environment.model.state.ResourceNode;
 import edu.cwru.sepia.environment.model.state.State;
 import edu.cwru.sepia.environment.model.state.Template;
+import edu.cwru.sepia.environment.model.state.Tile.TerrainType;
 import edu.cwru.sepia.environment.model.state.Unit;
 import edu.cwru.sepia.environment.model.state.UnitTemplate;
 import edu.cwru.sepia.environment.model.state.State.StateView;
@@ -64,13 +65,16 @@ public class DurativePlanner implements Serializable {
 	public MovePlan getDirections(Unit u, int startingx, int startingy, int endingx, int endingy, int tolerancedistance, boolean isFirstMove)
 	{
 //		System.out.println("calling A* to get the unit at "+u.getxPosition() + ","+u.getyPosition() + " from "+startingx + "," + startingy+" to "+endingx+","+endingy + " within a tolerance of "+tolerancedistance);
+		int maxMoveDuration = calculateMinimumMoveDuration(u);
+		
+		
 		//make a list of nodes that need to be checked
 		PriorityQueue<AStarNode> queue = new PriorityQueue<AStarNode>();
 		//make a list of nodes that were already checked
 		HashSet<AStarNode> checked = new HashSet<AStarNode>();
 		AStarNode bestvalidpath = null;
 		//put the starting place in the queue
-		queue.offer(new AStarNode(startingx,startingy,DistanceMetrics.chebyshevDistance(startingx, startingy, endingx, endingy)*calculateMaxMoveDuration(u)));
+		queue.offer(new AStarNode(startingx,startingy,DistanceMetrics.chebyshevDistance(startingx, startingy, endingx, endingy)*calculateMinimumMoveDuration(u)));
 		//mark this as the first place only if this call is the first move.
 		boolean firstPlace=isFirstMove;
 		//loop as long as you haven't checked everywhere and haven't found a path yet
@@ -92,14 +96,14 @@ public class DurativePlanner implements Serializable {
 					int newx=currentplace.x + d.xComponent();
 					int newy=currentplace.y + d.yComponent();
 					
-					int newdisttogoal = DistanceMetrics.chebyshevDistance(newx,newy,endingx,endingy);
+					int newChebyshevDistToGoal = DistanceMetrics.chebyshevDistance(newx,newy,endingx,endingy);
 					//valid if the new state is within max distance and unoccupied 
 					if (state.inBounds(newx, newy) && (state.unitAt(newx, newy) ==null && state.resourceAt(newx, newy)==null)) {
 						
-						int durativedisttogoal = calculateMaxMoveDuration(u)*newdisttogoal;
-						int durativestep=calculateMoveDuration(u, currentplace.x,currentplace.y, d);
-						//only proceed if the durative step is nonnegative and less than the maximum, otherwise assume impassibility
-						if (durativestep >= 1 && durativestep <= calculateMaxMoveDuration(u))
+						int durativedisttogoal = maxMoveDuration*newChebyshevDistToGoal;
+						int durativestep=calculateMoveDuration(u, currentplace.x,currentplace.y, d, state);
+						//only proceed if the durative step is positive, otherwise assume impassibility
+						if (durativestep > 0)
 						{
 							//If this is the first move, then you can continue based on your current progress
 							if (firstPlace)
@@ -402,25 +406,32 @@ public class DurativePlanner implements Serializable {
 	 * @param d
 	 * @return
 	 */
-	public static int calculateMoveDuration(Unit u, int startingx, int startingy, Direction d) {
-		return u.getTemplate().getDurationMove();
+	public static int calculateMoveDuration(Unit u, int startingx, int startingy, Direction d, State state) {
+		return u.getTemplate().getDurationMove(state.terrainAt(startingx + d.xComponent(), startingy + d.yComponent()));
 		//TODO: Remove this
 	}
 	/**
 	 * <pre>
-	 * Calculate the maximum move possible for a Unit.
+	 * Calculate the minimum move possible for a Unit over passible terrain for use in the A* heuristic
+	 * <br>(negative and zero are impassible)
 	 * These values must tie to {@link #calculateMoveDuration}
 	 * </pre>
 	 * 
 	 * @param u The unit whose maximum move we are probing.
 	 * @return
 	 */
-	public static int calculateMaxMoveDuration(Unit u) {
-		return u.getTemplate().getDurationMove();
-		//TODO: Remove this
+	public static int calculateMinimumMoveDuration(Unit u) {
+		int min = Integer.MAX_VALUE;
+		for (TerrainType terrainType : TerrainType.values()) {
+			int terrainDuration = u.getTemplate().getDurationMove(terrainType);
+			if (terrainDuration > 0) {
+				min = Math.min(terrainDuration, min);
+			}
+		}
+		return min;
 	}
 	/**
-	 * Calculate the duration of a 
+	 * Calculate the duration of a deposit
 	 * @param u
 	 * @param townhall
 	 * @return
