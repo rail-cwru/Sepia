@@ -771,6 +771,20 @@ public class State implements Serializable, Cloneable, IDDistributer, DeepEquata
 	}
 	
 	/**
+	 * Clear out last state's views
+	 */
+	public void clearOldView() {
+		//Set each unit not to keep the old view
+		for (Unit u : getUnits().values()) {
+			u.deprecateOldView();
+		}
+		//Set each template to not keep the old view
+		for (Integer player : getPlayers())
+			for (Template<?> t : getTemplates(player).values())
+				t.deprecateOldView();
+	}
+	
+	/**
 	 * Get a StateCreator that will duplicate what this state is when the function is called.
 	 * @return
 	 * @throws IOException

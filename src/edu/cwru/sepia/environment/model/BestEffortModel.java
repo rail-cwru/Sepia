@@ -292,14 +292,7 @@ public class BestEffortModel implements Model {
 	@Override
 	public void executeStep() {
 		
-		//Set each agent to have no task
-		for (Unit u : state.getUnits().values()) {
-			u.deprecateOldView();
-		}
-		//Set each template to not keep the old view
-		for (Integer player : state.getPlayers())
-			for (@SuppressWarnings("rawtypes") Template t : state.getTemplates(player).values())
-				t.deprecateOldView();
+		state.clearOldView();
 		
 		//Run the Action
 		for (Integer player : state.getPlayers())

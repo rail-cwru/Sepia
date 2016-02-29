@@ -1198,13 +1198,7 @@ public class LessSimpleModel implements Model {
 		}
 		
 		state.incrementTurn();
-		for (Unit u : state.getUnits().values()) {
-			u.deprecateOldView();
-		}
-		//Set each template to not keep the old view
-		for (Integer player : state.getPlayers())
-			for (@SuppressWarnings("rawtypes") Template t : state.getTemplates(player).values())
-				t.deprecateOldView();
+		state.clearOldView();
 	}
 
 	
