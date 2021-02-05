@@ -1,3 +1,11 @@
 bin
 artifact
 *.swp
+
+# Maven output
+target/
+
+# Eclipse project
+.classpath
+.project
+.settings/
