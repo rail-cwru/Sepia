@@ -33,14 +33,6 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jaxb2-maven-plugin</artifactId>
 					<version>2.5.0</version>
-					<executions>
-						<execution>
-							<id>xjc</id>
-							<goals>
-								<goal>xjc</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -49,6 +41,52 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
+
+				<!--
+					Workaround: generate XML bindings separately
+
+					Both state.xsd and config.xsd leave targetNamespace
+					unspecified, so xjc creates bindings that map to
+					the root namespace. A unique namespace should be
+					defined for each schema definition. As a workaround,
+					a separate xjc is executed for each schema
+					definition.
+
+					TODO: map schema definitions to specific namespaces,
+					      and remove this workaround
+				-->
+				<executions>
+					<execution>
+						<id>xjc-state</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/generated-sources/jaxb-state</outputDirectory>
+							<sources>
+								<source>src/main/xsd/state.xsd</source>
+							</sources>
+							<xjbSources>
+								<xjbSource>src/main/xjb/state-binding.xjb</xjbSource>
+							</xjbSources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>xjc-config</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/generated-sources/jaxb-config</outputDirectory>
+							<sources>
+								<source>src/main/xsd/config.xsd</source>
+							</sources>
+							<xjbSources>
+								<xjbSource>src/main/xjb/config-binding.xjb</xjbSource>
+							</xjbSources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
