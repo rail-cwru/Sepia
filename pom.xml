@@ -11,6 +11,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<!--
+		TODO: avoid third-party repos
+	-->
+	<repositories>
+		<repository>
+			<id>clojars</id>
+			<name>clojars.org</name>
+			<url>https://clojars.org/repo/</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -113,9 +124,24 @@
 		</dependency>
 
 		<dependency>
-			<groupId>edu.cwru.SimpleRTS</groupId>
-			<artifactId>SimpleRTS</artifactId>
-			<version>3.1</version>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20131018</version>
+		</dependency>
+
+		<!--
+			TODO: avoid third-party repo and move to submodule
+		-->
+		<dependency>
+			<groupId>kephale</groupId>
+			<artifactId>matlabcontrol</artifactId>
+			<version>4.1.0</version>
 		</dependency>
 	</dependencies>
 
