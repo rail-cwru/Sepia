@@ -1,7 +1,20 @@
 Sepia example documentation
 ---------------------------
 
-TODO: JDK, Maven, and Eclipse installation instructions
+Prerequisites:
+
+- Java Development Kit >= 8
+  - Freely available from https://adoptopenjdk.net/
+- Apache Maven
+  - See: https://maven.apache.org/download.cgi
+  - See: https://maven.apache.org/install.html
+- If using Eclipse: m2e plugin
+  - Note: "Eclipse IDE for Java Developers" includes the m2e plugin by
+    default
+  - If not installed:
+    1. Help > Install new software...
+    2. Work with: --All Available Sites--
+    3. General Purpose Tools > m2e - Maven Integration for Eclipse
 
 Sepia is maintained as a Maven project. The use of Maven allows for
 some nice project management features, including dependency
